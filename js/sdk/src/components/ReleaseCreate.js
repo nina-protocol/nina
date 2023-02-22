@@ -679,14 +679,14 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                     setOpen={setShowLowUploadAccountBalanceModal}
                     lowUploadBalance={true}
                     uploadSize={uploadSize}
-                    solBalance={availableSol}
-                    releaseCreateFee={releaseCreateFee}
+                    currentSolBalance={availableSol}
+                    currentReleaseCreateFee={releaseCreateFee}
                   />
                   <LowSolWarningModal
                     open={showLowSolWarningModal}
                     setOpen={setShowLowSolWarningModal}
                     requiredSol={releaseCreateFee.toFixed(3)}
-                    solBalance={availableSol.toFixed(3)}
+                    availableSol={availableSol.toFixed(3)}
                   />
                   <BundlrModal inCreate={false} displaySmall={true} />
                 </Box>

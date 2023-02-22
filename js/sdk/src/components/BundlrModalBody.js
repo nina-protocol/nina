@@ -20,8 +20,8 @@ const BundlrModalBody = ({
   setOpen,
   lowUploadBalance,
   uploadSize,
-  solBalance,
-  releaseCreateFee,
+  currentSolBalance,
+  currentReleaseCreateFee,
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const {
@@ -35,7 +35,7 @@ const BundlrModalBody = ({
     getSolPrice,
     initBundlr,
   } = useContext(Nina.Context)
-  const lowSolBalance = releaseCreateFee > solBalance
+  const lowSolBalance = currentReleaseCreateFee > currentSolBalance
   const [amount, setAmount] = useState(lowSolBalance ? 0 : 0.05)
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,

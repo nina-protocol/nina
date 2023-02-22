@@ -7,7 +7,7 @@ import Fade from '@mui/material/Fade'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
-const LowSolWarningModal = ({ open, setOpen, requiredSol, solBalance }) => {
+const LowSolWarningModal = ({ open, setOpen, requiredSol, availableSol }) => {
   return (
     <StyledModal
       aria-labelledby="transition-modal-title"
@@ -33,7 +33,7 @@ const LowSolWarningModal = ({ open, setOpen, requiredSol, solBalance }) => {
             {`${requiredSol} SOL is required to publish a release.`}
           </ModalTypography>
           <ModalTypography variant="body1" component="p" gutterBottom>
-            {`You currently have ${solBalance}
+            {`You currently have ${availableSol}
             SOL in your wallet.`}
           </ModalTypography>
           <ModalTypography variant="body1" component="p" gutterBottom>
