@@ -91,7 +91,6 @@ const ReusableTableHead = (props) => {
       headCells.push({ id: 'remaining', label: 'Remaining' })
       headCells.push({ id: 'collected', label: 'Earnings' })
       headCells.push({ id: 'collect', label: 'Collect' })
-      headCells.push({ id: 'releaseDate', label: 'Release Date' })
     }
   }
 
