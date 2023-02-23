@@ -17,6 +17,8 @@ const HubHeader = ({ hubData }) => {
     setHubDescription(hubData?.data.description)
   }, [hubData?.data])
 
+  const imageUrl = getImageFromCDN(hubData?.data?.image, 400, hubData.datetime)
+
   return (
     <Wrapper>
       <ResponsiveHubHeader>
@@ -27,11 +29,7 @@ const HubHeader = ({ hubData }) => {
                 height={100}
                 width={100}
                 layout="responsive"
-                src={getImageFromCDN(
-                  hubData?.data?.image,
-                  400,
-                  Date.parse(hubData?.createdAt)
-                )}
+                src={imageUrl}
                 alt={hubData?.data?.displayName}
                 priority={true}
                 loader={loader}

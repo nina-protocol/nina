@@ -515,6 +515,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                   values={formValues}
                   releasePubkey={releasePubkey}
                   track={track}
+                  artwork={artwork}
                   disabled={
                     isPublishing || releaseCreated || awaitingPendingReleases
                   }
