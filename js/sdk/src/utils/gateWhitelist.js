@@ -150,7 +150,7 @@ const gateWhitelist = [
   '58YNpbDAA1eHrY7t4yEZ8vvY9wYwbPVaeaAxHH1aaSvJ',
   '5ucLkCEb2adY3VxMSCcgWNcTSCJ2GGCFUPYK2kryBpmf',
   'BS6S7Pk2RBGCvdta7irfLN1zxbVrZbFia66EWRib2bLk',
-  'J5NiWVTVwrzZX8VYyAqZrTpL8ABedgNzAjVALjNxzWXB'
+  'J5NiWVTVwrzZX8VYyAqZrTpL8ABedgNzAjVALjNxzWXB',
 ]
 
 export default gateWhitelist
