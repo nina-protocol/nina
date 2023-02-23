@@ -87,8 +87,9 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const { getHubsForUser, fetchedHubsForUser, filterHubsForUser, hubState } =
     useContext(Hub.Context)
 
-  const releaseCreateFee =
-    NinaProgramActionCost?.RELEASE_INIT_WITH_CREDIT.toFixed(3)
+  const releaseCreateFee = parseFloat(
+    NinaProgramActionCost?.RELEASE_INIT_VIA_HUB.toFixed(3)
+  )
   const formattedSolBalance = ninaClient
     .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
     .toFixed(3)
@@ -273,6 +274,8 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol)
     ) {
       setShowLowSolWarningModal(true)
+    } else {
+      setShowLowSolWarningModal(false)
     }
   }, [solBalance, releaseCreateFee])
 

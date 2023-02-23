@@ -7,23 +7,18 @@ import Fade from '@mui/material/Fade'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
-const LowSolWarningModal = ({
-  open,
-  setOpen,
-  requiredSol,
-  formattedSolBalance,
-}) => {
+const LowSolWarningModal = ({ open, requiredSol, formattedSolBalance }) => {
   return (
     <StyledModal
       aria-labelledby="transition-modal-title"
       aria-describedby="transition-modal-description"
       open={open}
-      onClose={() => setOpen(false)}
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
         timeout: 500,
       }}
+      disableBackdropClick
     >
       <Fade in={open}>
         <StyledPaper>
@@ -32,7 +27,7 @@ const LowSolWarningModal = ({
             component="h2"
             sx={{ paddingBottom: '16px' }}
           >
-            You do not have enough SOL to publish a Release
+            You do not have enough SOL in your wallet to publish a Release
           </Typography>
           <ModalTypography variant="body1" component="p" gutterBottom>
             {`${requiredSol} SOL is required to publish a Release.`}
@@ -66,7 +61,7 @@ const LowSolWarningModal = ({
             .
           </ModalTypography>
 
-          <ModalButton
+          {/* <ModalButton
             color="primary"
             fullWidth
             variant="outlined"
@@ -77,7 +72,7 @@ const LowSolWarningModal = ({
             <Typography variant="body1" sx={{ textDecoration: 'uppercase' }}>
               Okay
             </Typography>
-          </ModalButton>
+          </ModalButton> */}
         </StyledPaper>
       </Fade>
     </StyledModal>
