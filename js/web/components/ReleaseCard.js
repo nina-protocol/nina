@@ -2,6 +2,7 @@ import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Button from '@mui/material/Button'
@@ -45,6 +46,7 @@ const ReleaseCard = (props) => {
     setInitialized,
   } = useContext(Audio.Context)
   const { hubState } = useContext(Hub.Context)
+  const { displayNameForAccount } = useContext(Nina.Context)
   const { releaseState } = useContext(Release.Context)
 
   const { enqueueSnackbar } = useSnackbar()
@@ -173,8 +175,8 @@ const ReleaseCard = (props) => {
           <>
             <Fade in={true}>
               <Typography variant="subtitle" color="white" align="left">
-                <Link href={`/hubs/${hub.handle}`}>
-                  <a style={{ color: 'white' }}>{hub.data.displayName}</a>
+                <Link href={hub ? `/hubs/${hub.handle}` : `/profiles/${release?.authority}`}>
+                  <a style={{ color: 'white' }}>{hub ? hub.data.displayName : displayNameForAccount(release?.authority)}</a>
                 </Link>
               </Typography>
             </Fade>
