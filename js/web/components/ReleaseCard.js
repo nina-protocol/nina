@@ -1,6 +1,8 @@
 import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
+import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
@@ -42,7 +44,15 @@ const ReleaseCard = (props) => {
     track,
     setInitialized,
   } = useContext(Audio.Context)
+  const { hubState } = useContext(Hub.Context)
+  const { releaseState } = useContext(Release.Context)
+
   const { enqueueSnackbar } = useSnackbar()
+  const hub = useMemo(() => {
+    const hubPublicKey =
+      releaseState.metadata[releasePubkey].publishedThroughHub
+    return hubState[hubPublicKey]
+  }, [releaseState, hubState, releasePubkey])
 
   const image = useMemo(() => metadata?.image)
   const title = useMemo(() => {
@@ -159,19 +169,23 @@ const ReleaseCard = (props) => {
             </Box>
           </CtaWrapper>
         )}
-
         {metadata && (
-          <Fade in={true}>
-            <Typography variant="h4" color="white" align="left">
-              <Link href={`/profiles/${release?.authority}`}>
-                <a style={{ color: 'white' }}>
-                  {metadata?.properties?.artist.substring(0, 100) ||
-                    metadata?.artist.substring(0, 100)}
-                </a>
-              </Link>
-              , <i>{title}</i>
-            </Typography>
-          </Fade>
+          <>
+            <Fade in={true}>
+              <Typography variant="subtitle" color="white" align="left">
+                <Link href={`/hubs/${hub.handle}`}>
+                  <a style={{ color: 'white' }}>{hub.data.displayName}</a>
+                </Link>
+              </Typography>
+            </Fade>
+            <Fade in={true}>
+              <Typography variant="h4" color="white" align="left">
+                {metadata?.properties?.artist.substring(0, 100) ||
+                  metadata?.artist.substring(0, 100)}{' '}
+                - <i>{title}</i>
+              </Typography>
+            </Fade>
+          </>
         )}
       </StyledReleaseInfo>
 
@@ -219,6 +233,7 @@ const StyledReleaseCard = styled(Box)(() => ({
 
 const CtaWrapper = styled(Box)(() => ({
   display: 'flex',
+  paddingBottom: '10px',
   justifyContent: 'space-between',
   '& .MuiButton-root:not(:last-child)': {
     width: '21px',

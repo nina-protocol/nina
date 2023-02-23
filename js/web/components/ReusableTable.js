@@ -73,8 +73,7 @@ const ReusableTableHead = (props) => {
   if (tableType === 'profilePublishedReleases') {
     headCells.push({ id: 'ctas', label: '' })
     headCells.push({ id: 'image', label: '' })
-    headCells.push({ id: 'artist', label: 'Artist' })
-    headCells.push({ id: 'title', label: 'Title' })
+    headCells.push({ id: 'title', label: '' })
     headCells.push({ id: 'releaseDate', label: 'Release Date' })
     if (inDashboard) {
       headCells.push({ id: 'price', label: 'Price' })
@@ -87,8 +86,7 @@ const ReusableTableHead = (props) => {
   if (tableType === 'profileCollectionReleases') {
     headCells.push({ id: 'ctas', label: '' })
     headCells.push({ id: 'image', label: '' })
-    headCells.push({ id: 'artist', label: 'Artist' })
-    headCells.push({ id: 'title', label: 'Title' })
+    headCells.push({ id: 'title', label: '' })
     headCells.push({ id: 'releaseDate', label: 'Release Date' })
   }
 
@@ -105,8 +103,7 @@ const ReusableTableHead = (props) => {
   if (tableType === 'hubReleases') {
     headCells.push({ id: 'ctas', label: '' })
     headCells.push({ id: 'image', label: '' })
-    headCells.push({ id: 'artist', label: 'Artist' })
-    headCells.push({ id: 'title', label: 'Title' })
+    headCells.push({ id: 'title', label: '' })
     headCells.push({ id: 'releaseDate', label: 'Release Date' })
   }
 
@@ -150,7 +147,6 @@ const ReusableTableHead = (props) => {
         {headCells?.map((headCell, i) => (
           <StyledTableHeadCell key={headCell.id} sx={{ cursor: 'default' }}>
             {headCell.id === 'artist' ||
-            headCell.id === 'title' ||
             headCell.id === 'releaseDate' ||
             headCell.id === 'hubName' ? (
               <TableSortLabel
@@ -317,8 +313,7 @@ const ReusableTableBody = (props) => {
         link: `/${releasePubkey}`,
         image: data?.metadata?.image,
         date: data?.metadata?.properties?.date,
-        artist: data?.metadata?.properties?.artist,
-        title: data?.metadata?.properties?.title,
+        title: `${data?.metadata?.properties?.artist} - ${data?.metadata?.properties?.title}`,
         releaseDate: formattedDate,
       }
       if (inDashboard) {
@@ -381,8 +376,7 @@ const ReusableTableBody = (props) => {
         ...formattedData,
         id: data?.releasePubkey,
         image: data?.image,
-        artist: data?.properties.artist,
-        title: data?.properties.title,
+        title: `${data?.properties.artist} - ${data?.properties.title}`,
         link: `/${data?.releasePubkey}`,
         date: data?.properties?.date,
         releaseDate: formattedDate,
@@ -554,7 +548,10 @@ const ReusableTableBody = (props) => {
                 } else if (cellName === 'title') {
                   return (
                     <StyledProfileTableCell key={cellName} type={'profile'}>
-                      <OverflowContainer inDashboard={inDashboard}>
+                      <OverflowContainer
+                        inDashboard={inDashboard}
+                        style={{ minWidth: '300px' }}
+                      >
                         <Typography sx={{ textDecoration: 'underline' }} noWrap>
                           {cellData}
                         </Typography>
@@ -852,13 +849,18 @@ const StyledProfileTableCell = styled(TableCell)(({ theme }) => ({
     paddingRight: '10px',
   },
 }))
+
 const HubTableCell = styled(TableCell)(({ theme }) => ({
   width: '8vw',
 }))
+
 const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
   textAlign: 'left',
   padding: '5px',
+  maxWidth: '100px',
+  width: '50px',
 }))
+
 const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
   width: '100px',
   textAlign: 'left',
@@ -949,6 +951,7 @@ const SearchResultOverflowContainer = styled(Box)(({ theme }) => ({
   width: '70vw',
   textAlign: 'left',
   textOverflow: 'ellipsis',
+  border: '2px solid red',
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
     width: '80vw',
