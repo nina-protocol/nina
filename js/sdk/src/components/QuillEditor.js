@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useMemo } from 'react'
+import React, { useEffect, useRef, useMemo, useContext } from 'react'
 import ReactQuill from 'react-quill'
 import { stripQuotesIfNeeded } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
+import Nina from '../contexts/Nina'
 import { styled } from '@mui/material/styles'
 import InputLabel from '@mui/material/InputLabel'
 
@@ -18,6 +19,7 @@ import Box from '@mui/material/Box'
 const { Quill } = ReactQuill
 
 const QuillEditor = ({ formikProps, type }) => {
+  const { bundlrUpload } = useContext(Nina.Context)
   const quillRef = useRef(null)
   const theme = type === 'release' ? 'bubble' : 'snow'
 
@@ -27,29 +29,25 @@ const QuillEditor = ({ formikProps, type }) => {
     input.setAttribute('accept', 'image/*')
     input.click()
 
-    input.onchange = async() => {
-      const file = input.files ? input.files[0] : null
-      
+    input.onchange = async () => {
+      const file = input && input.files ? input.files[0] : null
+      const formData = new FormData()
+      // append file to form data and declare type
+      formData.append('file', file)
+      // formData.append('resource_type', 'raw')
       const quillObj = quillRef.current.getEditor()
-      const range = quillObj.getSelection(true)
+      const range = quillObj.getSelection()
+      console.log('file', file)
+      let image = await bundlrUpload(file)
+      console.log('image', image)
+      // handlers go here
 
-      if (file){
-        console.log('yoyo', file)
-        const formData = new FormData()
-        // append file to form data and declare type
-        formData.append('image', file)
-        formData.append('resource_type', 'raw')
-        console.log(formData)
-        // handlers go here
-
-        // inset image into quill, pass in endpoint instead of file in this instance
-        quillObj.insertEmbed(
-          range.index,
-          'image',
-          'https://res.cloudinary.com/nina-protocol/image/upload/v1634040000/nina-protocol/og-image.png'
-        )
-      }
-
+      // inset image into quill, pass in endpoint instead of file in this instance
+      // quillObj.insertEmbed(
+      //   range.index,
+      //   'image',
+      //   'https://res.cloudinary.com/nina-protocol/image/upload/v1634040000/nina-protocol/og-image.png'
+      // )
     }
   }
 
@@ -84,15 +82,21 @@ const QuillEditor = ({ formikProps, type }) => {
   }
   const modules = useMemo(
     () => ({
-      toolbar: {
-        container: toolbarValues,
-        handlers: {
-          image: imageHandler,
-        },
-      },
+      toolbar: toolbarValues
+        ? {
+            container: toolbarValues,
+            handlers: {
+              image: imageHandler,
+            },
+          }
+        : toolbarValues,
       clipboard: {
         matchVisual: false,
       },
+      // imageResize: {
+      //   parchment: Quill.import('parchment'),
+      //   modules: ['Resize', 'DisplaySize'],
+      // },
       magicUrl: true,
     }),
     []

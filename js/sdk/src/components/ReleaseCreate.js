@@ -306,6 +306,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
             }
           )
           artworkResult = await bundlrUpload(artwork.file)
+          console.log('artworkResult', artworkResult)
           setArtworkTx(artworkResult)
           upload = createUpload(
             UploadType.artwork,
