@@ -44,16 +44,13 @@ const ReleaseCard = (props) => {
     track,
     setInitialized,
   } = useContext(Audio.Context)
-  const {
-    hubState,
-  } = useContext(Hub.Context)
-  const {
-    releaseState
-  } = useContext(Release.Context)
+  const { hubState } = useContext(Hub.Context)
+  const { releaseState } = useContext(Release.Context)
 
   const { enqueueSnackbar } = useSnackbar()
   const hub = useMemo(() => {
-    const hubPublicKey = releaseState.metadata[releasePubkey].publishedThroughHub
+    const hubPublicKey =
+      releaseState.metadata[releasePubkey].publishedThroughHub
     return hubState[hubPublicKey]
   }, [releaseState, hubState, releasePubkey])
 
@@ -94,7 +91,7 @@ const ReleaseCard = (props) => {
       enqueueSnackbar('Release Downloaded', { variant: 'error' })
     }
   }
-  console.log('releaseState', releaseState)
+
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
@@ -174,22 +171,20 @@ const ReleaseCard = (props) => {
         )}
         {metadata && (
           <>
-          <Fade in={true}>
-            <Typography variant="subtitle" color="white" align="left">
-            <Link href={`/hubs/${hub.handle}`}>
-              <a style={{ color: 'white' }}>
-                {hub.data.displayName}
-              </a>
-            </Link>
-            </Typography>
-          </Fade>
-          <Fade in={true}>
-            <Typography variant="h4" color="white" align="left">
+            <Fade in={true}>
+              <Typography variant="subtitle" color="white" align="left">
+                <Link href={`/hubs/${hub.handle}`}>
+                  <a style={{ color: 'white' }}>{hub.data.displayName}</a>
+                </Link>
+              </Typography>
+            </Fade>
+            <Fade in={true}>
+              <Typography variant="h4" color="white" align="left">
                 {metadata?.properties?.artist.substring(0, 100) ||
-                  metadata?.artist.substring(0, 100)}
-             {' '}- <i>{title}</i>
-            </Typography>
-          </Fade>
+                  metadata?.artist.substring(0, 100)}{' '}
+                - <i>{title}</i>
+              </Typography>
+            </Fade>
           </>
         )}
       </StyledReleaseInfo>

@@ -521,7 +521,7 @@ const ReusableTableBody = (props) => {
                   return (
                     <StyledImageTableCell align="left" key={cellName}>
                       <Box
-                        sx={{ width: '50px', textAlign: 'left', pr: '15px'}}
+                        sx={{ width: '50px', textAlign: 'left', pr: '15px' }}
                       >
                         {row.image.includes('https') ? (
                           <Image
@@ -548,7 +548,10 @@ const ReusableTableBody = (props) => {
                 } else if (cellName === 'title') {
                   return (
                     <StyledProfileTableCell key={cellName} type={'profile'}>
-                      <OverflowContainer inDashboard={inDashboard} style={{minWidth: '300px'}}>
+                      <OverflowContainer
+                        inDashboard={inDashboard}
+                        style={{ minWidth: '300px' }}
+                      >
                         <Typography sx={{ textDecoration: 'underline' }} noWrap>
                           {cellData}
                         </Typography>
