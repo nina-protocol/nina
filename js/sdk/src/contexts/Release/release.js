@@ -514,6 +514,11 @@ const releaseContextHelper = ({
         [releasePubkey]: true,
       })
 
+      setReleasePurchaseTransactionPending({
+        ...releasePurchaseTransactionPending,
+        [releasePubkey]: false,
+      })
+
       const txid = await releasePurchaseHelper(
         releasePubkey,
         provider,
@@ -521,11 +526,6 @@ const releaseContextHelper = ({
         usdcBalance,
         hubPubkey
       )
-
-      setReleasePurchaseTransactionPending({
-        ...releasePurchaseTransactionPending,
-        [releasePubkey]: false,
-      })
 
       await getConfirmTransaction(txid, provider.connection)
 
@@ -816,6 +816,10 @@ const releaseContextHelper = ({
     })
 
     try {
+      setReleasePurchaseTransactionPending({
+        ...releasePurchaseTransactionPending,
+        [releasePubkey]: false,
+      })
       const txid = await releasePurchaseHelper(
         releasePubkey,
         provider,
@@ -823,16 +827,8 @@ const releaseContextHelper = ({
         usdcBalance
       )
 
-      setReleasePurchaseTransactionPending({
-        ...releasePurchaseTransactionPending,
-        [releasePubkey]: false,
-      })
       await getConfirmTransaction(txid, provider.connection)
 
-      setReleasePurchasePending({
-        ...releasePurchasePending,
-        [releasePubkey]: false,
-      })
       await getUserBalances()
 
       await axios.get(
@@ -842,6 +838,11 @@ const releaseContextHelper = ({
       )
       await getRelease(releasePubkey)
       await addReleaseToCollection(releasePubkey)
+
+      setReleasePurchasePending({
+        ...releasePurchasePending,
+        [releasePubkey]: false,
+      })
 
       logEvent('release_purchase_success', 'engagement', {
         publicKey: releasePubkey,
