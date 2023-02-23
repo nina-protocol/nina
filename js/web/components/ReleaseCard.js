@@ -171,13 +171,22 @@ const ReleaseCard = (props) => {
             </Box>
           </CtaWrapper>
         )}
-        {console.log('hub: ', hub)}
         {metadata && (
           <>
             <Fade in={true}>
               <Typography variant="subtitle" color="white" align="left">
-                <Link href={hub ? `/hubs/${hub.handle}` : `/profiles/${release?.authority}`}>
-                  <a style={{ color: 'white' }}>{hub ? hub.data.displayName : displayNameForAccount(release?.authority)}</a>
+                <Link
+                  href={
+                    hub
+                      ? `/hubs/${hub.handle}`
+                      : `/profiles/${release?.authority}`
+                  }
+                >
+                  <a style={{ color: 'white' }}>
+                    {hub
+                      ? hub.data.displayName
+                      : displayNameForAccount(release?.authority)}
+                  </a>
                 </Link>
               </Typography>
             </Fade>
