@@ -5,7 +5,7 @@ import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
+// import Button from '@mui/material/Button'
 import Link from 'next/link'
 const LowSolWarningModal = ({ open, requiredSol, formattedSolBalance }) => {
   return (
@@ -99,12 +99,12 @@ const ModalTypography = styled(Typography)(() => ({
   marginBottom: '8px',
 }))
 
-const ModalButton = styled(Button)(() => ({
-  marginTop: '16px',
-  '&:hover': {
-    opacity: 0.5,
-  },
-}))
+// const ModalButton = styled(Button)(() => ({
+//   marginTop: '16px',
+//   '&:hover': {
+//     opacity: 0.5,
+//   },
+// }))
 
 const ContactTypography = styled(Typography)(({ theme }) => ({
   color: theme.palette.blue,
