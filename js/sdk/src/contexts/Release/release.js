@@ -48,6 +48,7 @@ const ReleaseContextProvider = ({ children }) => {
     tokenData: {},
     releaseMintMap: {},
     redemptionRecords: {},
+    collectedDates: {},
   })
   const [gatesState, setGatesState] = useState({})
   const [releasesRecentState, setReleasesRecentState] = useState({
@@ -514,6 +515,11 @@ const releaseContextHelper = ({
         [releasePubkey]: true,
       })
 
+      setReleasePurchaseTransactionPending({
+        ...releasePurchaseTransactionPending,
+        [releasePubkey]: false,
+      })
+
       const txid = await releasePurchaseHelper(
         releasePubkey,
         provider,
@@ -521,11 +527,6 @@ const releaseContextHelper = ({
         usdcBalance,
         hubPubkey
       )
-
-      setReleasePurchaseTransactionPending({
-        ...releasePurchaseTransactionPending,
-        [releasePubkey]: false,
-      })
 
       await getConfirmTransaction(txid, provider.connection)
 
@@ -816,6 +817,10 @@ const releaseContextHelper = ({
     })
 
     try {
+      setReleasePurchaseTransactionPending({
+        ...releasePurchaseTransactionPending,
+        [releasePubkey]: false,
+      })
       const txid = await releasePurchaseHelper(
         releasePubkey,
         provider,
@@ -823,16 +828,8 @@ const releaseContextHelper = ({
         usdcBalance
       )
 
-      setReleasePurchaseTransactionPending({
-        ...releasePurchaseTransactionPending,
-        [releasePubkey]: false,
-      })
       await getConfirmTransaction(txid, provider.connection)
 
-      setReleasePurchasePending({
-        ...releasePurchasePending,
-        [releasePubkey]: false,
-      })
       await getUserBalances()
 
       await axios.get(
@@ -842,6 +839,11 @@ const releaseContextHelper = ({
       )
       await getRelease(releasePubkey)
       await addReleaseToCollection(releasePubkey)
+
+      setReleasePurchasePending({
+        ...releasePurchasePending,
+        [releasePubkey]: false,
+      })
 
       logEvent('release_purchase_success', 'engagement', {
         publicKey: releasePubkey,
@@ -1097,9 +1099,9 @@ const releaseContextHelper = ({
         withAccountData
       )
       const newState = updateStateForReleases([
-        ...collected,
         ...published,
         ...revenueShares,
+        ...collected,
       ])
       setReleaseState((prevState) => ({
         ...prevState,
@@ -1108,6 +1110,10 @@ const releaseContextHelper = ({
         releaseMintMap: {
           ...prevState.releaseMintMap,
           ...newState.releaseMintMap,
+        },
+        collectedDates: {
+          ...prevState.collectedDates,
+          ...newState.collectedDates,
         },
       }))
 
@@ -1162,6 +1168,7 @@ const releaseContextHelper = ({
       tokenData: {},
       metadata: {},
       releaseMintMap: {},
+      collectedDates: {},
     }
     releases.forEach((release) => {
       if (release.accountData) {
@@ -1174,6 +1181,10 @@ const releaseContextHelper = ({
         publishedThroughHub: release.publishedThroughHub || undefined,
       }
       updatedReleaseState.releaseMintMap[release.publicKey] = release.mint
+      if (release.collectedDate) {
+        updatedReleaseState.collectedDates[release.publicKey] =
+          release.collectedDate
+      }
     })
     return updatedReleaseState
   }
@@ -1332,6 +1343,7 @@ const releaseContextHelper = ({
     releasePublicKeys?.forEach((releasePubkey) => {
       const tokenData = releaseState.tokenData[releasePubkey]
       const metadata = releaseState.metadata[releasePubkey]
+      metadata.collectedDate = releaseState.collectedDates[releasePubkey]
       if (metadata) {
         releases.push({ tokenData, metadata, releasePubkey })
       }

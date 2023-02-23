@@ -39,6 +39,16 @@ const descendingComparator = (a, b, orderBy) => {
       b = b[orderBy]?.toLowerCase()
       break
 
+    case 'dateAdded':
+      if (new Date(b.dateAdded) < new Date(a.dateAdded)) {
+        return -1
+      }
+      if (new Date(b.dateAdded) > new Date(a.dateAdded)) {
+        return 1
+      }
+
+      break
+
     case 'releaseDate':
       if (new Date(b.releaseDate) < new Date(a.releaseDate)) {
         return -1
@@ -87,7 +97,7 @@ const ReusableTableHead = (props) => {
     headCells.push({ id: 'ctas', label: '' })
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'title', label: '' })
-    headCells.push({ id: 'releaseDate', label: 'Release Date' })
+    headCells.push({ id: 'dateAdded', label: 'Added' })
   }
 
   if (tableType === 'profileHubs') {
@@ -148,6 +158,7 @@ const ReusableTableHead = (props) => {
           <StyledTableHeadCell key={headCell.id} sx={{ cursor: 'default' }}>
             {headCell.id === 'artist' ||
             headCell.id === 'releaseDate' ||
+            headCell.id === 'dateAdded' ||
             headCell.id === 'hubName' ? (
               <TableSortLabel
                 active={orderBy === headCell.id}
@@ -300,9 +311,6 @@ const ReusableTableBody = (props) => {
       releasePubkey,
     }
     let formattedData = {}
-    const formattedDate = new Date(
-      data.metadata?.properties?.date
-    ).toLocaleDateString()
     if (
       tableType === 'profilePublishedReleases' ||
       tableType === 'profileCollectionReleases'
@@ -314,7 +322,15 @@ const ReusableTableBody = (props) => {
         image: data?.metadata?.image,
         date: data?.metadata?.properties?.date,
         title: `${data?.metadata?.properties?.artist} - ${data?.metadata?.properties?.title}`,
-        releaseDate: formattedDate,
+      }
+      if (tableType === 'profileCollectionReleases') {
+        formattedData.dateAdded = new Date(
+          data.metadata?.collectedDate
+        ).toLocaleDateString()
+      } else {
+        formattedData.releaseDate = new Date(
+          data.metadata?.properties?.date
+        ).toLocaleDateString()
       }
       if (inDashboard) {
         const recipient = data.tokenData.revenueShareRecipients.find(
@@ -368,9 +384,6 @@ const ReusableTableBody = (props) => {
           (formattedData.hubExternal = `${process.env.NINA_HUBS_URL}/${data.handle}`)
       }
     } else if (tableType === 'hubReleases') {
-      const formattedDate = new Date(
-        data?.properties?.date
-      ).toLocaleDateString()
       formattedData = {
         ctas: playData,
         ...formattedData,
@@ -379,7 +392,7 @@ const ReusableTableBody = (props) => {
         title: `${data?.properties.artist} - ${data?.properties.title}`,
         link: `/${data?.releasePubkey}`,
         date: data?.properties?.date,
-        releaseDate: formattedDate,
+        releaseDate: new Date(data?.properties?.date).toLocaleDateString(),
         authorityPublicKey: data?.authority,
       }
     } else if (tableType === 'hubCollaborators') {
@@ -689,7 +702,10 @@ const ReusableTableBody = (props) => {
                       </CollectContainer>
                     </HubTableCell>
                   )
-                } else if (cellName === 'releaseDate') {
+                } else if (
+                  cellName === 'releaseDate' ||
+                  cellName === 'dateAdded'
+                ) {
                   return (
                     <HubTableCell key={cellName}>
                       <CollectContainer>

@@ -171,6 +171,7 @@ const ReleaseCard = (props) => {
             </Box>
           </CtaWrapper>
         )}
+        {console.log('hub: ', hub)}
         {metadata && (
           <>
             <Fade in={true}>
