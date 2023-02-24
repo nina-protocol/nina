@@ -20,7 +20,7 @@ const Balance = ({ profilePublishedReleases }) => {
   }
 
   return (
-    <Box sx={{ display: 'flex',}}>
+    <Box sx={{ display: 'flex' }}>
       <BalanceWrapper balance={true}>
         <Typography variant="body2" sx={{ textDecoration: 'underline' }}>
           Balances

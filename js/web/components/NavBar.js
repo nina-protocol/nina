@@ -1,7 +1,7 @@
 import React, { useContext, useMemo, useState, useEffect } from 'react'
 import * as anchor from '@project-serum/anchor'
 import Torus from '@toruslabs/customauth'
-import { getED25519Key } from "@toruslabs/openlogin-ed25519";
+import { getED25519Key } from '@toruslabs/openlogin-ed25519'
 import { configureScope } from '@sentry/nextjs'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
@@ -27,18 +27,18 @@ import DevnetIndicator from '@nina-protocol/nina-internal-sdk/esm/DevnetIndicato
 import PendingReleasesIndicator from '@nina-protocol/nina-internal-sdk/esm/PendingReleasesIndicator'
 import FeedDrawer from './FeedDrawer'
 
-const GOOGLE = "google";
-const AUTH_DOMAIN = "https://torus-test.auth0.com";
+const GOOGLE = 'google'
+const AUTH_DOMAIN = 'https://torus-test.auth0.com'
 
 const verifierMap = {
   [GOOGLE]: {
-    name: "Google",
-    typeOfLogin: "google",
+    name: 'Google',
+    typeOfLogin: 'google',
     clientId:
-      "909687642844-3ejteujpuh416mu7lv12moufiis0ha19.apps.googleusercontent.com",
-    verifier: "nina-google-testnet",
+      '909687642844-3ejteujpuh416mu7lv12moufiis0ha19.apps.googleusercontent.com',
+    verifier: 'nina-google-testnet',
   },
-};
+}
 
 const NavBar = () => {
   const router = useRouter()
@@ -56,7 +56,6 @@ const NavBar = () => {
     })
     await wallet.init()
     setEmbedWallet(wallet)
-    console.log('wallet', wallet)
     return wallet
   }
 
@@ -130,40 +129,36 @@ const NavBar = () => {
                   <Link href="/upload">Upload</Link>
                 </BlueTypography>
               )} */}
-                
-                <BlueTypography
-                  sx={{
-                    padding: { md: '2px', xs: '0px 0px' },
-                    border: '1px solid #2D81FF',
-                    width: '100%',
-                    textAlign: 'center',
-                  }}
-                  onClick={async () => {
-                    if (embedWalletPublicKey) {
-                      setEmbedWalletPublicKey(null)
-                    } else {
-                      const { typeOfLogin, clientId, verifier } = verifierMap['google'];
-                      const loginDetails = await embedWallet.triggerLogin({
-                        typeOfLogin,
-                        clientId,
-                        verifier,
-                        jwtParams: {
-                          domain: AUTH_DOMAIN,
-                        }
-                      })
-                      console.log('loginDetails', loginDetails)
-                      console.log('logged in as: ', loginDetails.userInfo.name)
-                      const { sk } = getED25519Key(loginDetails.privateKey);
-                      console.log('sk', sk)
-                      const account = new anchor.web3.Account(sk);
-                      console.log('account', account)
-                      console.log('publicKey', account.publicKey.toBase58())
-                      setEmbedWalletPublicKey(account.publicKey.toBase58())
-                    }
-                  }}
-                >
-                  <a>{embedWalletPublicKey ? 'Logout' : 'Login'}</a>
-                </BlueTypography>
+
+              <BlueTypography
+                sx={{
+                  padding: { md: '2px', xs: '0px 0px' },
+                  border: '1px solid #2D81FF',
+                  width: '100%',
+                  textAlign: 'center',
+                }}
+                onClick={async () => {
+                  if (embedWalletPublicKey) {
+                    setEmbedWalletPublicKey(null)
+                  } else {
+                    const { typeOfLogin, clientId, verifier } =
+                      verifierMap['google']
+                    const loginDetails = await embedWallet.triggerLogin({
+                      typeOfLogin,
+                      clientId,
+                      verifier,
+                      jwtParams: {
+                        domain: AUTH_DOMAIN,
+                      },
+                    })
+                    const { sk } = getED25519Key(loginDetails.privateKey)
+                    const account = new anchor.web3.Account(sk)
+                    setEmbedWalletPublicKey(account.publicKey.toBase58())
+                  }
+                }}
+              >
+                <a>{embedWalletPublicKey ? 'Logout' : 'Login'}</a>
+              </BlueTypography>
             </UploadWrapper>
             {wallet.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
@@ -173,10 +168,16 @@ const NavBar = () => {
                     sx={{ textTransform: 'none' }}
                   >
                     {wallet?.connected &&
-                      `${wallet.wallet.adapter.name} – ${walletDisplay}`
-                    }
-                    {embedWalletPublicKey && `Nina – ${embedWalletPublicKey.slice(0, 4) + '..' + embedWalletPublicKey.slice(-4)}`}
-                    {!wallet.connected && !embedWalletPublicKey && 'Connect Wallet'}
+                      `${wallet.wallet.adapter.name} – ${walletDisplay}`}
+                    {embedWalletPublicKey &&
+                      `Nina – ${
+                        embedWalletPublicKey.slice(0, 4) +
+                        '..' +
+                        embedWalletPublicKey.slice(-4)
+                      }`}
+                    {!wallet.connected &&
+                      !embedWalletPublicKey &&
+                      'Connect Wallet'}
                   </Typography>
                 </StyledWalletButton>
                 <Tooltip
@@ -189,7 +190,9 @@ const NavBar = () => {
                 >
                   <ConnectionDot
                     className={`${classes.connectionDot} ${
-                      wallet?.connected || embedWalletPublicKey ? connectedString : ''
+                      wallet?.connected || embedWalletPublicKey
+                        ? connectedString
+                        : ''
                     }`}
                   ></ConnectionDot>
                 </Tooltip>
