@@ -34,7 +34,6 @@
     "@nina-protocol/js-sdk": "^0.0.14",
     "@nina-protocol/nina-internal-sdk": "0.0.35",
     "@sentry/nextjs": "^7.8.0",
-    "@toruslabs/solana-embed": "../../solana-embed",
     "airtable": "^0.11.5",
     "ansi-regex": "^5.0.1",
     "env-cmd": "^10.1.0",
