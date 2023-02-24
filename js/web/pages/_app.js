@@ -9,6 +9,7 @@ import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
 import { GlowWalletAdapter } from '@solana/wallet-adapter-glow'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
+import { TorusWalletAdapter } from '@solana/wallet-adapter-torus'
 import { clusterApiUrl } from '@solana/web3.js'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
@@ -69,6 +70,7 @@ function Application({ Component, pageProps }) {
   }, [network])
 
   const walletOptions = [
+    new TorusWalletAdapter({ network }),
     new PhantomWalletAdapter({ network }),
     new SolflareWalletAdapter({ network }),
     new GlowWalletAdapter({ network }),
