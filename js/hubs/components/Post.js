@@ -99,6 +99,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
           setPostContent(file.result)
         })
     }
+    console.log('postContent', postContent)
   }, [postState[postPubkey]])
 
   const formattedDate = (date) => {
@@ -154,7 +155,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
               >
                 {displayNameForAccount(postData.publisher)}
               </a>{' '}
-              at{' '}
+              on{' '}
               <a
                 href={`https://explorer.solana.com/account/${postData.publicKey}`}
                 target="_blank"
@@ -176,6 +177,9 @@ const PostWrapper = styled(Box)(({ theme }) => ({
   overflowX: 'hidden',
   '&::-webkit-scrollbar': {
     display: 'none',
+  },
+  '& img': {
+    maxWidth: '100%',
   },
   [theme.breakpoints.down('md')]: {
     maxHeight: 'unset',
