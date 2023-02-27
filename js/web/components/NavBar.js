@@ -22,21 +22,17 @@ import SearchIcon from '@mui/icons-material/Search'
 import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 import DevnetIndicator from '@nina-protocol/nina-internal-sdk/esm/DevnetIndicator'
 import PendingReleasesIndicator from '@nina-protocol/nina-internal-sdk/esm/PendingReleasesIndicator'
+import WalletConnectModal from '@nina-protocol/nina-internal-sdk/esm/WalletConnectModal'
 import FeedDrawer from './FeedDrawer'
 
 
 const NavBar = () => {
   const router = useRouter()
-  const [embedWalletPublicKey, setEmbedWalletPublicKey] = useState()
-  const [embedWallet, setEmbedWallet] = useState()
   const { wallet, connectWalletEmbed } = useContext(Wallet.Context)
   const { pendingReleases } = useContext(Release.Context)
   const { healthOk, getSubscriptionsForUser, getUserBalances } = useContext(
     Nina.Context
   )
-  console.log('wallet', wallet)
-  console.log('wallet.publicKey', wallet?.publicKey?.toBase58())
-  console.log('wallet.wallet.adapter.name', wallet?.wallet?.adapter?.name)
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
     [wallet?.publicKey]
@@ -45,7 +41,7 @@ const NavBar = () => {
     if (!wallet || !base58) return null
     return base58.slice(0, 4) + '..' + base58.slice(-4)
   }, [wallet, base58])
-  console.log('walletDisplay', walletDisplay)
+
   const [connectedString, setConnectedString] = useState()
   useEffect(() => {
     setConnectedString(healthOk ? 'connected-healthy' : 'connected-unhealthy')
@@ -87,9 +83,7 @@ const NavBar = () => {
               <NavSearch />
             </SearchBarWrapper>
             <UploadWrapper>
-              {/* {!wallet.connected ? (
-                <EmailCapture size="small" />
-              ) : (
+              {wallet?.connected && 
                 <BlueTypography
                   sx={{
                     padding: { md: '2px', xs: '0px 0px' },
@@ -100,25 +94,7 @@ const NavBar = () => {
                 >
                   <Link href="/upload">Upload</Link>
                 </BlueTypography>
-              )} */}
-
-              <BlueTypography
-                sx={{
-                  padding: { md: '2px', xs: '0px 0px' },
-                  border: '1px solid #2D81FF',
-                  width: '100%',
-                  textAlign: 'center',
-                }}
-                onClick={async () => {
-                  if (wallet?.connected) {
-                    wallet.disconnect()
-                  } else {
-                    connectWalletEmbed()
-                  }
-                }}
-              >
-                <a>{wallet?.connected ? 'Logout' : 'Login'}</a>
-              </BlueTypography>
+              }
             </UploadWrapper>
             {wallet?.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
@@ -129,26 +105,9 @@ const NavBar = () => {
                   >
                     {wallet?.connected &&
                       `${wallet.wallet.adapter.name} – ${walletDisplay}`}
-                    {!wallet?.connected &&
-                      'Connect Wallet'}
+                    {!wallet?.connected && 'Connect Wallet'}
                   </Typography>
                 </StyledWalletButton>
-                <Tooltip
-                  title={
-                    healthOk
-                      ? 'Network Status: Good'
-                      : 'Network Status: Degraded - Transactions may fail.'
-                  }
-                  placement="bottom-end"
-                >
-                  <ConnectionDot
-                    className={`${classes.connectionDot} ${
-                      wallet?.connected || embedWalletPublicKey
-                        ? connectedString
-                        : ''
-                    }`}
-                  ></ConnectionDot>
-                </Tooltip>
                 <DevnetIndicator />
               </StyledWalletDialogProvider>
             )}
@@ -246,7 +205,7 @@ const Logo = styled('div')(({ theme }) => ({
 const DesktopWalletWrapper = styled(Box)(() => ({
   display: 'flex',
 }))
-const StyledWalletDialogProvider = styled(WalletDialogProvider)(
+const StyledWalletDialogProvider = styled(Box)(
   ({ theme }) => ({
     '& .MuiList-root': {
       background: `${theme.palette.transparent} !important`,
@@ -311,7 +270,7 @@ const StyledWalletDialogProvider = styled(WalletDialogProvider)(
   })
 )
 
-const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
+const StyledWalletButton = styled(WalletConnectModal)(({ theme }) => ({
   textTransform: 'capitalize',
   paddingRight: '20px',
   paddingLeft: '20px',

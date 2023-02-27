@@ -13,7 +13,7 @@ const DashboardPage = () => {
   const router = useRouter()
 
   useEffect(() => {
-    if (wallet.connected) {
+    if (wallet?.connected) {
       setPublicKey(wallet.publicKey.toBase58())
     }
   }, [wallet, publicKey])

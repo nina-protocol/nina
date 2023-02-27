@@ -25,14 +25,13 @@ const WalletContextProvider = ({ children }) => {
   const walletExtension = useWalletWalletAdapter()
   const [walletEmbed, setWalletEmbed] = useState(null)
   const [torus, setTorus] = useState()
-  const [wallet, setWallet] = useState()
 
   useEffect(() => {
     setupTorus()
   }, [])
 
-  useEffect(() => {
-    setWallet(walletEmbed || walletExtension)
+  const wallet = useMemo(() => {
+    return walletEmbed || walletExtension || {}
   }, [walletExtension, walletEmbed])
 
   const setupTorus = async () => {
@@ -46,17 +45,18 @@ const WalletContextProvider = ({ children }) => {
   }
 
   const {
-    useWallet,
     connectWalletEmbed,
   } = walletContextHelper({
     setWalletEmbed,
     torus,
     connection
   })
+
   return (
     <WalletContext.Provider
       value={{
         wallet,
+        walletExtension,
         connectWalletEmbed,
       }}>
       {children}
