@@ -108,24 +108,24 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
   }
   return (
     <Grid container>
-      <Grid
-        item
-        md={6}
-        xs={12}
-        sx={{
-          margin: { md: '0px auto auto', xs: '100px 0 15px' },
-          padding: '0 15px',
-          overflowX: 'hidden',
-        }}
-      >
-        {referenceReleaseMetadata && (
-          <PostRelease
-            metadata={referenceReleaseMetadata}
-            releasePubkey={referenceReleasePubkey}
-            hubPubkey={hubPubkey}
-          />
-        )}
-      </Grid>
+      {referenceReleaseMetadata && (
+        <Grid
+          item
+          md={6}
+          xs={12}
+          sx={{
+            margin: { md: '0px auto auto', xs: '100px 0 15px' },
+            padding: '0 15px',
+            overflowX: 'hidden',
+          }}
+        >
+            <PostRelease
+              metadata={referenceReleaseMetadata}
+              releasePubkey={referenceReleasePubkey}
+              hubPubkey={hubPubkey}
+            />
+        </Grid>
+      )}
       <Grid
         item
         md={6}

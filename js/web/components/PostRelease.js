@@ -161,14 +161,15 @@ const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
             </CtaWrapper>
           </>
         )}
-        {/* <ReleasePurchase
+        <ReleasePurchase
           releasePubkey={releasePubkey}
           metadata={metadata}
           inPost={true}
           hubPubkey={hubPubkey}
           amountHeld={amountHeld}
           setAmountHeld={setAmountHeld}
-        /> */}
+          inPost={true}
+        />
       </StyledGrid>
     </>
   )

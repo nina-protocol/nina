@@ -38,6 +38,7 @@ const ReleasePurchase = (props) => {
     setAmountHeld,
     isAuthority,
     releaseGates,
+    inPost
   } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -208,12 +209,12 @@ const ReleasePurchase = (props) => {
           .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`
 
-  let pathString = ''
-  if (router.pathname.includes('releases')) {
-    pathString = '/releases'
-  } else if (router.pathname.includes('collection')) {
-    pathString = '/collection'
-  }
+  // let pathString = ''
+  // if (router.pathname.includes('releases')) {
+  //   pathString = '/releases'
+  // } else if (router.pathname.includes('collection')) {
+  //   pathString = '/collection'
+  // }
 
   return (
     <Box>
@@ -240,7 +241,7 @@ const ReleasePurchase = (props) => {
       </Typography>
       <Typography variant="body2" align="left" paddingBottom="10px">
         {' '}
-        <StyledLink href={`${pathString}/${releasePubkey}/market`} passHref>
+        <StyledLink href={`/${releasePubkey}/market`} passHref>
           {`View Secondary Market (${exchangeTotalBuys + exchangeTotalSells})`}
         </StyledLink>
       </Typography>
@@ -298,7 +299,9 @@ const ReleasePurchase = (props) => {
           </StyledLink>
         </Typography>
       )}
-      <StyledDescription align="left">{description}</StyledDescription>
+      {!inPost && (
+        <StyledDescription align="left">{description}</StyledDescription>
+      )}
       <Box sx={{ mb: 1 }}>
         <form onSubmit={handleSubmit}>
           <Button
