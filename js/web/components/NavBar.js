@@ -25,7 +25,6 @@ import PendingReleasesIndicator from '@nina-protocol/nina-internal-sdk/esm/Pendi
 import WalletConnectModal from '@nina-protocol/nina-internal-sdk/esm/WalletConnectModal'
 import FeedDrawer from './FeedDrawer'
 
-
 const NavBar = () => {
   const router = useRouter()
   const { wallet, connectWalletEmbed } = useContext(Wallet.Context)
@@ -83,7 +82,7 @@ const NavBar = () => {
               <NavSearch />
             </SearchBarWrapper>
             <UploadWrapper>
-              {wallet?.connected && 
+              {wallet?.connected && (
                 <BlueTypography
                   sx={{
                     padding: { md: '2px', xs: '0px 0px' },
@@ -94,7 +93,7 @@ const NavBar = () => {
                 >
                   <Link href="/upload">Upload</Link>
                 </BlueTypography>
-              }
+              )}
             </UploadWrapper>
             {wallet?.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
@@ -205,70 +204,68 @@ const Logo = styled('div')(({ theme }) => ({
 const DesktopWalletWrapper = styled(Box)(() => ({
   display: 'flex',
 }))
-const StyledWalletDialogProvider = styled(Box)(
-  ({ theme }) => ({
-    '& .MuiList-root': {
-      background: `${theme.palette.transparent} !important`,
+const StyledWalletDialogProvider = styled(Box)(({ theme }) => ({
+  '& .MuiList-root': {
+    background: `${theme.palette.transparent} !important`,
+  },
+  '& .MuiButton-root': {
+    backgroundColor: `${theme.palette.white}`,
+  },
+  '& .MuiButton-startIcon': {
+    display: 'none',
+  },
+  '& .MuiPaper-root': {
+    width: '400px',
+    height: 'auto',
+    ...theme.helpers.gradient,
+    '& .MuiDialogTitle-root': {
+      color: `${theme.palette.white} !important`,
+      textAlign: 'center',
+      padding: '60px 0 0',
+      textTransform: 'uppercase',
+      margin: 'auto',
+      background: 'none !important',
+      fontSize: '16px !important',
+      fontWeight: '700 !important',
+      '& h2': {
+        backgroundColor: `${theme.palette.white} !important`,
+      },
+      '& .MuiButtonBase-root': {
+        display: 'none',
+      },
     },
-    '& .MuiButton-root': {
-      backgroundColor: `${theme.palette.white}`,
+    '& .MuiDialogContent-root': {
+      padding: '24px',
     },
-    '& .MuiButton-startIcon': {
-      display: 'none',
-    },
-    '& .MuiPaper-root': {
-      width: '400px',
-      height: 'auto',
-      ...theme.helpers.gradient,
-      '& .MuiDialogTitle-root': {
-        color: `${theme.palette.white} !important`,
+    '& .MuiListItem-root': {
+      padding: `8px 24px`,
+      boxShadow: 'none',
+      width: '241px',
+      margin: 'auto',
+      '&:hover': {
+        boxShadow: 'none',
+      },
+      '& .MuiButton-root': {
         textAlign: 'center',
-        padding: '60px 0 0',
+        borderRadius: '50px',
+        color: `${theme.palette.blue}`,
+        fontSize: '10px',
+        fontWeight: '700',
+        justifyContent: 'center',
         textTransform: 'uppercase',
-        margin: 'auto',
-        background: 'none !important',
-        fontSize: '16px !important',
-        fontWeight: '700 !important',
-        '& h2': {
-          backgroundColor: `${theme.palette.white} !important`,
+        padding: '6px 0',
+        '&:hover': {
+          opacity: '1',
+          backgroundColor: `${theme.palette.blue} !important`,
+          color: `${theme.palette.white}`,
         },
-        '& .MuiButtonBase-root': {
+        '& .MuiButton-endIcon': {
           display: 'none',
         },
       },
-      '& .MuiDialogContent-root': {
-        padding: '24px',
-      },
-      '& .MuiListItem-root': {
-        padding: `8px 24px`,
-        boxShadow: 'none',
-        width: '241px',
-        margin: 'auto',
-        '&:hover': {
-          boxShadow: 'none',
-        },
-        '& .MuiButton-root': {
-          textAlign: 'center',
-          borderRadius: '50px',
-          color: `${theme.palette.blue}`,
-          fontSize: '10px',
-          fontWeight: '700',
-          justifyContent: 'center',
-          textTransform: 'uppercase',
-          padding: '6px 0',
-          '&:hover': {
-            opacity: '1',
-            backgroundColor: `${theme.palette.blue} !important`,
-            color: `${theme.palette.white}`,
-          },
-          '& .MuiButton-endIcon': {
-            display: 'none',
-          },
-        },
-      },
     },
-  })
-)
+  },
+}))
 
 const StyledWalletButton = styled(WalletConnectModal)(({ theme }) => ({
   textTransform: 'capitalize',

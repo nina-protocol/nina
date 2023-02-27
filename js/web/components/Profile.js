@@ -110,7 +110,7 @@ const Profile = ({ profilePubkey }) => {
       setInDashboard(true)
     }
   }, [wallet, profilePubkey])
-  console.log('wallet dash', wallet)
+
   useEffect(() => {
     if (!activeView) {
       if (router.query.view) {

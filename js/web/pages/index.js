@@ -5,7 +5,7 @@ import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { useRouter } from 'next/router'
 
 export default function Home() {
-  const {wallet} = useContext(Wallet.Context)
+  const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
 
   useEffect(() => {

@@ -1,5 +1,4 @@
 import React, { useState, useContext, useMemo } from 'react'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
@@ -8,20 +7,20 @@ import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import { WalletReadyState } from '@solana/wallet-adapter-base';
+import { WalletReadyState } from '@solana/wallet-adapter-base'
 
-const WalletConnectModal = ({children}) => {
-  const { 
-    wallet,
-    walletExtension,
-    connectWalletEmbed,
-  } = useContext(Wallet.Context)
+const WalletConnectModal = ({ children }) => {
+  const { wallet, walletExtension, connectWalletEmbed } = useContext(
+    Wallet.Context
+  )
 
   const [open, setOpen] = useState(false)
 
   const supportedWallets = useMemo(() => {
     if (walletExtension) {
-      return walletExtension.wallets.filter((wallet) => wallet.readyState !== WalletReadyState.Unsupported);
+      return walletExtension.wallets.filter(
+        (wallet) => wallet.readyState !== WalletReadyState.Unsupported
+      )
     }
   }, [walletExtension])
 
@@ -77,12 +76,15 @@ const WalletConnectModal = ({children}) => {
             >
               <Typography>Log in with Google Account</Typography>
             </Button>
-            {supportedWallets?.map(wallet => (
+            {supportedWallets?.map((wallet) => (
               <Button
+                key={wallet.adapter.name}
                 style={{ marginTop: '15px' }}
                 color="primary"
                 variant="outlined"
-                onClick={(event) => handleWalletClickEvent(event, wallet.adapter.name)}
+                onClick={(event) =>
+                  handleWalletClickEvent(event, wallet.adapter.name)
+                }
               >
                 <Typography>Connect Wallet: {wallet.adapter.name}</Typography>
               </Button>
@@ -119,7 +121,4 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   flexDirection: 'column',
 }))
 
-const StyledTypography = styled(Typography)(() => ({
-  marginBottom: '20px',
-}))
 export default WalletConnectModal
