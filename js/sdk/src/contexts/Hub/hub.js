@@ -1055,6 +1055,7 @@ const hubContextHelper = ({
           ...post,
         }
       })
+      console.log('updatedPostState :>> ', updatedPostState);
       setPostState(updatedPostState)
       setHubContentState(updatedHubContent)
       setHubContentFetched(new Set([...hubContentFetched, hubPubkey]))

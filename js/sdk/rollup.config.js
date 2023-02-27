@@ -49,6 +49,7 @@ export default [
       BundlrModal: 'src/components/BundlrModal.js',
       CloseRelease: 'src/components/CloseRelease.js',
       Gates: 'src/components/Gates.js',
+      NotFound: 'src/components/NotFound.js',
       ReleaseSettingsModal: 'src/components/ReleaseSettingsModal.js',
     },
     output: [

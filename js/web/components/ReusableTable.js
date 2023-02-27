@@ -110,6 +110,11 @@ const ReusableTableHead = (props) => {
     headCells.push({ id: 'releaseDate', label: 'Release Date' })
   }
 
+  if (tableType === 'hubPosts') {
+    headCells.push({ id: 'title', label: 'Title' })
+    headCells.push({ id: 'date', label: 'Date' })
+  }
+
   if (tableType === 'allSearchResults') {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'name', label: '' })
@@ -222,6 +227,7 @@ const ReusableTableBody = (props) => {
     dashboardPublicKey,
     order,
     orderBy,
+    hubHandle
   } = props
   const router = useRouter()
   const {
@@ -388,6 +394,19 @@ const ReusableTableBody = (props) => {
         releaseDate: formattedDate,
         authorityPublicKey: data?.authority,
       }
+    } else if (tableType === 'hubPosts') {
+      const formattedDate = new Date(
+        data?.datetime
+        ).toLocaleDateString()
+        console.log('formattedDate :>> ', formattedDate);
+        console.log('data :>> ', data);
+        console.log('hubHandle!!! :>> ', hubHandle);
+      formattedData = {
+        id: data?.publicKey,
+        title: data?.data.title,
+        date: formattedDate,
+        link: `/hubs/${hubHandle}/posts/${data?.hubPostPublicKey}`,
+      }
     } else if (tableType === 'hubCollaborators') {
       formattedData = {
         link: `/profiles/${data.collaborator}`,
@@ -484,6 +503,8 @@ const ReusableTableBody = (props) => {
           >
             {Object.keys(row).map((cellName, i) => {
               const cellData = row[cellName]
+              // console.log('cellName :>> ', cellName);
+              // console.log('cellData :>> ', cellData);
               if (
                 cellName !== 'id' &&
                 cellName !== 'date' &&
@@ -692,11 +713,11 @@ const ReusableTableBody = (props) => {
                       </CollectContainer>
                     </HubTableCell>
                   )
-                } else if (cellName === 'releaseDate') {
+                } else if (cellName === 'releaseDate' || cellName === 'date') {
                   return (
                     <HubTableCell key={cellName}>
                       <CollectContainer>
-                        <Typography>{cellData}</Typography>
+                        <Typography>{cellData} date</Typography>
                       </CollectContainer>
                     </HubTableCell>
                   )
@@ -759,7 +780,9 @@ const ReusableTable = ({
   isActiveView,
   hasOverflow,
   minHeightOverride = false,
+  hubHandle,
 }) => {
+  console.log('hubHandle :>> ', hubHandle);
   const [order, setOrder] = useState('desc')
   const [orderBy, setOrderBy] = useState('')
   const handleRequestSort = (event, property) => {
@@ -793,6 +816,7 @@ const ReusableTable = ({
             isActiveView={isActiveView}
             order={order}
             orderBy={orderBy}
+            hubHandle={hubHandle}
           />
         </Table>
       </ResponsiveTableContainer>

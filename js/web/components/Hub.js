@@ -38,18 +38,25 @@ const HubComponent = ({ hubPubkey }) => {
     getSubscriptionsForHub,
     subscriptionState,
     filterSubscriptionsForHub,
+    postState,
   } = useContext(Nina.Context)
   const [hubReleases, setHubReleases] = useState(undefined)
+  const [hubPosts, setHubPosts] = useState(undefined)
   const [releaseData, setReleaseData] = useState(undefined)
+  const [postData, setPostData] = useState(undefined)
   const [hubCollaborators, setHubCollaborators] = useState(undefined)
   const [hubFollowers, setHubFollowers] = useState(undefined)
   const [activeView, setActiveView] = useState(undefined)
   const [fetched, setFetched] = useState(false)
+  const hubHandle = useMemo(() => {
+    return hubState[hubPubkey]?.handle
+  }, [hubState, hubPubkey])
 
   const [views, setViews] = useState([
     { name: 'releases', playlist: undefined, disabled: true, count: 0 },
     { name: 'collaborators', playlist: undefined, disabled: true, count: 0 },
     { name: 'followers', disabled: true, count: 0 },
+    { name: 'posts', disabled: true, count: 0 },
   ])
 
   const hasData = useMemo(() => {
@@ -67,9 +74,14 @@ const HubComponent = ({ hubPubkey }) => {
   }, [hubPubkey])
 
   useEffect(() => {
-    let [releases] = filterHubContentForHub(hubPubkey)
+    let [releases, posts] = filterHubContentForHub(hubPubkey)
     releases = releases.filter((release) => release.visible === true)
+    posts = posts.filter((post) => post.visible === true)
+    console.log('releases :>> ', releases);
     setHubReleases(releases)
+    console.log('posts :>> ', posts);
+    setHubPosts(posts)
+    console.log('hubContentState :>> ', hubContentState);
   }, [hubContentState])
 
   useEffect(() => {
@@ -101,6 +113,20 @@ const HubComponent = ({ hubPubkey }) => {
     viewIndex = updatedView.findIndex((view) => view.name === 'releases')
     updatedView[viewIndex].playlist = releaseData
   }, [releaseState, hubReleases])
+
+  useEffect(() => {
+    const data = hubPosts?.map((hubPost) => {
+      console.log('hubPost :>> ', hubPost);
+      const postData = postState[hubPost.post]
+      console.log('postData :>> ', postData);
+      return postData
+    })
+    console.log('data :>> ', data);
+    setPostData(data)
+
+  }, [hubPosts, postState])
+
+
 
   useEffect(() => {
     if (!activeView) {
@@ -148,9 +174,17 @@ const HubComponent = ({ hubPubkey }) => {
         updatedView[viewIndex].disabled = hubFollowers.length === 0
       }
 
+      if (hubPosts) {
+        let viewIndex = updatedView.findIndex(
+          (view) => view.name === 'posts'
+        )
+        updatedView[viewIndex].count = hubPosts.length
+        updatedView[viewIndex].disabled = hubPosts.length === 0
+      }
+
       setViews(updatedView)
     }
-  }, [fetched, hubReleases, hubCollaborators, hubFollowers])
+  }, [fetched, hubReleases, hubCollaborators, hubFollowers, hubPosts])
 
   const getHubData = useCallback(
     async (hubPubkey) => {
@@ -224,6 +258,20 @@ const HubComponent = ({ hubPubkey }) => {
               <ReusableTable
                 tableType={'followers'}
                 items={hubFollowers}
+                hasOverflow={true}
+                isActiveView={activeView === 2}
+              />
+            )}
+          </>
+        )
+      case 3:
+        return (
+          <>
+            {hasData && (
+              <ReusableTable
+                tableType={'hubPosts'}
+                hubHandle={hubHandle}
+                items={postData}
                 hasOverflow={true}
                 isActiveView={activeView === 2}
               />
