@@ -702,10 +702,12 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                 </CreateCta>
               </NinaBox>
             ) : (
-              <LowSolWarning
-                requiredSol={releaseCreateFee}
-                formattedSolBalance={formattedSolBalance}
-              />
+              <NinaBox columns="350px 400px" gridColumnGap="10px">
+                <LowSolWarning
+                  requiredSol={releaseCreateFee}
+                  formattedSolBalance={formattedSolBalance}
+                />
+              </NinaBox>
             )}
           </>
         )}

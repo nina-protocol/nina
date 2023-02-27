@@ -16,32 +16,34 @@ const LowSolWarning = ({ requiredSol, formattedSolBalance }) => {
         {`You currently have ${formattedSolBalance}
             SOL in your wallet.`}
       </ModalTypography>
-      <ModalTypography
-        variant="h3"
-        component="p"
-        gutterBottom
-        sx={{ display: 'flex', flexDirection: 'row' }}
-      >
-        {`For any questions, please reach out to us at `}
+      <ModalTypography variant="h3" component="p" gutterBottom>
+        {`Please add more SOL to your wallet to publish a Release.`}
+      </ModalTypography>
+      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+        <ModalTypography variant="h3" component="p" gutterBottom>
+          {`For any questions, please reach out to us at `}
+        </ModalTypography>
         <Link href="mailto:contact@ninaprotocol.com">
-          <a target="_blank" rel="noreferrer">
-            <ContactTypography
-              variant="h3"
-              component="p"
-              sx={{ marginLeft: '4px' }}
-            >
+          <a
+            target="_blank"
+            rel="noreferrer"
+            style={{ margin: '0px', textDecoration: 'none' }}
+          >
+            <ContactTypography variant="h3" component="p">
               {`contact@ninaprotocol.com`}
             </ContactTypography>
           </a>
         </Link>
-        .
-      </ModalTypography>
+        <ModalTypography variant="h3" component="p" gutterBottom>
+          {`.`}
+        </ModalTypography>
+      </Box>
     </LowSolBox>
   )
 }
 
-const LowSolBox = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2, 4, 3),
+const LowSolBox = styled(Box)(() => ({
+  margin: '0px auto',
   width: '50vw',
   maxHeight: '90vh',
   overflowY: 'auto',
@@ -57,6 +59,8 @@ const ContactTypography = styled(Typography)(({ theme }) => ({
   color: theme.palette.blue,
   marginTop: '0px',
   marginBottom: '0px',
+  marginLeft: '6px',
+  textDecoration: 'none',
 }))
 
 export default LowSolWarning
