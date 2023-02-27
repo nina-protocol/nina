@@ -6,6 +6,7 @@ import Nina from '../contexts/Nina'
 import { styled } from '@mui/material/styles'
 import InputLabel from '@mui/material/InputLabel'
 import ImageResize from 'quill-image-resize-module-react'
+import BlotFormatter from 'quill-blot-formatter'
 
 const QuillNoSSRWrapper = dynamic(
   async () => {
@@ -87,10 +88,11 @@ const QuillEditor = ({ formikProps, type }) => {
       clipboard: {
         matchVisual: false,
       },
-      // imageResize: {
-      //   parchment: Quill.import('parchment'),
-      //   modules: ['Resize', 'DisplaySize'],
-      // },
+      imageResize: {
+        parchment: Quill.import('parchment'),
+        modules: ['Resize', 'DisplaySize'],
+      },
+      blotFormatter: {},
       magicUrl: true,
     }),
     []
@@ -100,6 +102,8 @@ const QuillEditor = ({ formikProps, type }) => {
     if (Quill) {
       const MagicUrl = require('quill-magic-url').default // Install with 'yarn add quill-magic-url'
       Quill.register('modules/magicUrl', MagicUrl)
+      Quill.register('modules/imageResize', ImageResize)
+      Quill.register('modules/blotFormatter', BlotFormatter)
       var Link = Quill.import('formats/link')
       var builtInFunc = Link.sanitize
       Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
