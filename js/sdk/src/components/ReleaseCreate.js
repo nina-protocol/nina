@@ -26,6 +26,7 @@ import ReleaseCreateConfirm from './ReleaseCreateConfirm'
 import NinaBox from './NinaBox'
 import Dots from './Dots'
 import MediaDropzones from './MediaDropzones'
+import LowSolWarning from './LowSolWarning'
 import {
   createUpload,
   updateUpload,
@@ -40,9 +41,6 @@ const UploadInfoModal = dynamic(() => import('./UploadInfoModal'), {
 const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
 
-const LowSolWarning = dynamic(() => import('./LowSolWarning'), {
-  ssr: false,
-})
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist is required'),
   title: Yup.string().required('Title is required'),
@@ -560,7 +558,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                     }
                     handleProgress={handleProgress}
                     processingProgress={processingProgress}
-                    lowUploadBalance={lowUploadBalance}
                     mbs={mbs}
                   />
                 </Box>

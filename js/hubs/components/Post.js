@@ -99,7 +99,6 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
           setPostContent(file.result)
         })
     }
-    console.log('postContent', postContent)
   }, [postState[postPubkey]])
 
   const formattedDate = (date) => {
@@ -177,9 +176,6 @@ const PostWrapper = styled(Box)(({ theme }) => ({
   overflowX: 'hidden',
   '&::-webkit-scrollbar': {
     display: 'none',
-  },
-  '& img': {
-    maxWidth: '100%',
   },
   [theme.breakpoints.down('md')]: {
     maxHeight: 'unset',

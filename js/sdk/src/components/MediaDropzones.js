@@ -13,7 +13,6 @@ const MediaDropzones = ({
   handleProgress,
   disabled,
   processingProgress,
-  lowUploadBalance,
   mbs,
 }) => {
   return (
@@ -27,7 +26,6 @@ const MediaDropzones = ({
         handleProgress={handleProgress}
         disabled={disabled}
         processingProgress={processingProgress}
-        lowUploadBalance={lowUploadBalance}
         mbs={mbs}
       />
       <ImageMediaDropzone

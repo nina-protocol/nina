@@ -22,7 +22,6 @@ const MediaDropzone = ({
   inHubCreate,
   update,
   currentImageUrl,
-  lowUploadBalance,
   mbs,
 }) => {
   const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
@@ -147,7 +146,7 @@ const MediaDropzone = ({
         }
       }
     }
-  }, [artwork, uncroppedImage, croppedImage, lowUploadBalance])
+  }, [artwork, uncroppedImage, croppedImage])
 
   const inputLayout = (type) => {
     if (type === 'track') {
