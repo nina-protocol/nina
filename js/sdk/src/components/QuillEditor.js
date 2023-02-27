@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import Nina from '../contexts/Nina'
 import { styled } from '@mui/material/styles'
 import InputLabel from '@mui/material/InputLabel'
+import ImageResize from 'quill-image-resize-module-react'
 
 const QuillNoSSRWrapper = dynamic(
   async () => {
@@ -34,15 +35,11 @@ const QuillEditor = ({ formikProps, type }) => {
       const formData = new FormData()
       // append file to form data and declare type
       formData.append('image', file)
-      console.log('formData', formData.image)
       // formData.append('resource_type', 'raw')
       const quillObj = quillRef.current.getEditor()
       const range = quillObj.getSelection()
-      console.log('file', file)
       let image = await bundlrUpload(file)
-      console.log('image', image)
       // handlers go here
-      console.log('range', range)
       // inset image into quill, pass in endpoint instead of file in this instance
       quillObj.insertEmbed(range.index, 'image', `https://arweave.net/${image}`)
     }
