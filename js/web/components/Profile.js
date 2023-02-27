@@ -8,6 +8,7 @@ import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import {
   imageManager,
   timeSince,
@@ -24,7 +25,7 @@ const Subscribe = dynamic(() => import('./Subscribe'))
 const NewProfileCtas = dynamic(() => import('./NewProfileCtas'))
 
 const Profile = ({ profilePubkey }) => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
   const tableContainerRef = useRef(null)
   const {
@@ -109,7 +110,7 @@ const Profile = ({ profilePubkey }) => {
       setInDashboard(true)
     }
   }, [wallet, profilePubkey])
-
+  console.log('wallet dash', wallet)
   useEffect(() => {
     if (!activeView) {
       if (router.query.view) {

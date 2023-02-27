@@ -1,7 +1,4 @@
 import React, { useContext, useMemo, useState, useEffect } from 'react'
-import * as anchor from '@project-serum/anchor'
-import Torus from '@toruslabs/customauth'
-import { getED25519Key } from '@toruslabs/openlogin-ed25519'
 import { configureScope } from '@sentry/nextjs'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
@@ -10,10 +7,10 @@ import Tooltip from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import Link from 'next/link'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useRouter } from 'next/router'
 import {
   WalletDialogProvider,
@@ -27,45 +24,19 @@ import DevnetIndicator from '@nina-protocol/nina-internal-sdk/esm/DevnetIndicato
 import PendingReleasesIndicator from '@nina-protocol/nina-internal-sdk/esm/PendingReleasesIndicator'
 import FeedDrawer from './FeedDrawer'
 
-const GOOGLE = 'google'
-const AUTH_DOMAIN = 'https://torus-test.auth0.com'
-
-const verifierMap = {
-  [GOOGLE]: {
-    name: 'Google',
-    typeOfLogin: 'google',
-    clientId:
-      '909687642844-3ejteujpuh416mu7lv12moufiis0ha19.apps.googleusercontent.com',
-    verifier: 'nina-google-testnet',
-  },
-}
 
 const NavBar = () => {
   const router = useRouter()
+  const [embedWalletPublicKey, setEmbedWalletPublicKey] = useState()
   const [embedWallet, setEmbedWallet] = useState()
+  const { wallet, connectWalletEmbed } = useContext(Wallet.Context)
   const { pendingReleases } = useContext(Release.Context)
   const { healthOk, getSubscriptionsForUser, getUserBalances } = useContext(
     Nina.Context
   )
-  const [embedWalletPublicKey, setEmbedWalletPublicKey] = useState()
-  const setupEmbedWallet = async () => {
-    const wallet = new Torus({
-      baseUrl: `${window.location.origin}`,
-      enableLogging: true,
-      network: 'testnet',
-    })
-    await wallet.init()
-    setEmbedWallet(wallet)
-    return wallet
-  }
-
-  useEffect(() => {
-    if (!embedWallet) {
-      setupEmbedWallet()
-    }
-  }, [])
-
-  const wallet = useWallet()
+  console.log('wallet', wallet)
+  console.log('wallet.publicKey', wallet?.publicKey?.toBase58())
+  console.log('wallet.wallet.adapter.name', wallet?.wallet?.adapter?.name)
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
     [wallet?.publicKey]
@@ -73,14 +44,15 @@ const NavBar = () => {
   const walletDisplay = useMemo(() => {
     if (!wallet || !base58) return null
     return base58.slice(0, 4) + '..' + base58.slice(-4)
-  }, [wallet, base58, embedWalletPublicKey])
+  }, [wallet, base58])
+  console.log('walletDisplay', walletDisplay)
   const [connectedString, setConnectedString] = useState()
   useEffect(() => {
     setConnectedString(healthOk ? 'connected-healthy' : 'connected-unhealthy')
   }, [healthOk])
 
   useEffect(() => {
-    if (wallet.connected) {
+    if (wallet?.connected) {
       getSubscriptionsForUser(wallet.publicKey.toBase58())
       getUserBalances()
 
@@ -88,7 +60,7 @@ const NavBar = () => {
         scope.setTag('wallet', wallet.publicKey.toBase58())
       })
     }
-  }, [wallet.connected])
+  }, [wallet?.connected])
 
   return (
     <Root>
@@ -138,29 +110,17 @@ const NavBar = () => {
                   textAlign: 'center',
                 }}
                 onClick={async () => {
-                  if (embedWalletPublicKey) {
-                    setEmbedWalletPublicKey(null)
+                  if (wallet?.connected) {
+                    wallet.disconnect()
                   } else {
-                    const { typeOfLogin, clientId, verifier } =
-                      verifierMap['google']
-                    const loginDetails = await embedWallet.triggerLogin({
-                      typeOfLogin,
-                      clientId,
-                      verifier,
-                      jwtParams: {
-                        domain: AUTH_DOMAIN,
-                      },
-                    })
-                    const { sk } = getED25519Key(loginDetails.privateKey)
-                    const account = new anchor.web3.Account(sk)
-                    setEmbedWalletPublicKey(account.publicKey.toBase58())
+                    connectWalletEmbed()
                   }
                 }}
               >
-                <a>{embedWalletPublicKey ? 'Logout' : 'Login'}</a>
+                <a>{wallet?.connected ? 'Logout' : 'Login'}</a>
               </BlueTypography>
             </UploadWrapper>
-            {wallet.wallets && (
+            {wallet?.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
                 <StyledWalletButton>
                   <Typography
@@ -169,14 +129,7 @@ const NavBar = () => {
                   >
                     {wallet?.connected &&
                       `${wallet.wallet.adapter.name} – ${walletDisplay}`}
-                    {embedWalletPublicKey &&
-                      `Nina – ${
-                        embedWalletPublicKey.slice(0, 4) +
-                        '..' +
-                        embedWalletPublicKey.slice(-4)
-                      }`}
-                    {!wallet.connected &&
-                      !embedWalletPublicKey &&
+                    {!wallet?.connected &&
                       'Connect Wallet'}
                   </Typography>
                 </StyledWalletButton>
