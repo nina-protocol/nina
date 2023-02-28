@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -13,7 +14,6 @@ import MenuItem from '@mui/material/MenuItem'
 import AutorenewIcon from '@mui/icons-material/Autorenew'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 import HubPostCreate from './HubPostCreate'
@@ -21,7 +21,7 @@ import HubPostCreate from './HubPostCreate'
 const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const { hubAddRelease, getHubsForRelease, hubCollaboratorsState } =
     useContext(Hub.Context)
   const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(

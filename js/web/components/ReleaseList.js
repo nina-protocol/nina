@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import ReleaseListTable from './ReleaseListTable'
@@ -18,7 +18,7 @@ const ReleaseList = () => {
   } = useContext(Release.Context)
   const { collection, ninaClient } = useContext(Nina.Context)
 
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [userPublishedReleases, setUserPublishedReleases] = useState([])
   const [sales, setSales] = useState(0)
   const [editionTotal, setEditionTotal] = useState(0)

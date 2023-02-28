@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -8,13 +8,15 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { Divider } from '@mui/material'
-import { useWallet } from '@solana/wallet-adapter-react'
 import SettingsIcon from '@mui/icons-material/Settings'
 import gateWhitelist from '../utils/gateWhitelist'
+import Wallet from '../contexts/Wallet'
+
 const RELEASE_SETTINGS_WELCOME_PHASE_KEY = 'release-settings-welcome-phase-3'
 
 function ReleaseSettingsWelcome() {
-  const { publicKey } = useWallet()
+  const { wallet } = useContext(Wallet.Context)
+  const { publicKey } = wallet
   const [open, setOpen] = useState(false)
 
   useEffect(() => {

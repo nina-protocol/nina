@@ -2,9 +2,9 @@ import React, { createContext, useEffect, useState, useContext } from 'react'
 import * as anchor from '@project-serum/anchor'
 import NinaSdk from '@nina-protocol/js-sdk'
 import promiseRetry from 'promise-retry'
-import { useWallet } from '@solana/wallet-adapter-react'
 
 import Nina from '../Nina'
+import Wallet from '../Wallet'
 import {
   createMintInstructions,
   findOrCreateAssociatedTokenAccount,
@@ -39,7 +39,7 @@ const ReleaseContextProvider = ({ children }) => {
     releasePurchaseTransactionPending,
     setReleasePurchaseTransactionPending,
   ] = useState({})
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [pressingState, setPressingState] = useState(defaultPressingState)
   const [redeemableState, setRedeemableState] = useState({})
   const [searchResults, setSearchResults] = useState(searchResultsInitialState)

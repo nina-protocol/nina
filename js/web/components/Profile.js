@@ -1,6 +1,5 @@
 import { useEffect, useContext, useState, useMemo, useRef } from 'react'
 import dynamic from 'next/dynamic'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { Box, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
@@ -60,7 +59,7 @@ const Profile = ({ profilePubkey }) => {
   const [profileSubscriptions, setProfileSubscriptions] = useState()
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
   const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
-  const [profileVerifications, setProfileVerifications] = useState()
+  const [profileVerifications, setProfileVerifications] = useState([])
 
   const [inDashboard, setInDashboard] = useState(false)
 
@@ -89,26 +88,12 @@ const Profile = ({ profilePubkey }) => {
     }
   }, [fetchedProfiles, fetched, profilePubkey])
 
-  const artistNames = useMemo(() => {
-    if (profilePublishedReleases?.length > 0) {
-      return [
-        ...new Set(
-          profilePublishedReleases?.map(
-            (release) => release.metadata.properties.artist
-          )
-        ),
-      ]
-    }
-  }, [profilePublishedReleases])
-
   useEffect(() => {
     getUserData(profilePubkey)
   }, [profilePubkey])
 
   useEffect(() => {
-    if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
-      setInDashboard(true)
-    }
+    setInDashboard(wallet.connected && profilePubkey === wallet.publicKey?.toBase58())
   }, [wallet, profilePubkey])
 
   useEffect(() => {
@@ -416,12 +401,10 @@ const Profile = ({ profilePubkey }) => {
                     {wallet.connected && (
                       <Subscribe accountAddress={profilePubkey} />
                     )}
-                    {profileVerifications && (
-                      <IdentityVerification
-                        verifications={profileVerifications}
-                        profilePublicKey={profilePubkey}
-                      />
-                    )}
+                    <IdentityVerification
+                      verifications={profileVerifications}
+                      profilePublicKey={profilePubkey}
+                    />
                     {inDashboard && <CreateHub />}
                   </Box>
                 </>

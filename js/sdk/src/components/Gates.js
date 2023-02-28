@@ -3,12 +3,12 @@ import { styled } from '@mui/material/styles'
 import { encodeBase64 } from 'tweetnacl-util'
 import axios from 'axios'
 import Release from '../contexts/Release'
+import Wallet from '../contexts/Wallet'
 import { useSnackbar } from 'notistack'
 import GateCreateModal from './GateCreateModal'
 import GateUnlockModal from './GateUnlockModal'
 import GateManageModal from './GateManageModal'
 
-import { useWallet } from '@solana/wallet-adapter-react'
 
 const Gates = ({
   isAuthority,
@@ -17,7 +17,7 @@ const Gates = ({
   metadata,
   inSettings,
 }) => {
-  const wallet = useWallet()
+  const {wallet} = useContext(Wallet.Context)
   const { enqueueSnackbar } = useSnackbar()
   const { fetchGatesForRelease, gatesState } = useContext(Release.Context)
   const releaseGates = useMemo(

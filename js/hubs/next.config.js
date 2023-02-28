@@ -36,6 +36,8 @@ const moduleExports = {
       '@nina-protocol/nina-internal-sdk': path.resolve(
         '../node_modules/@nina-protocol/nina-internal-sdk'
       ),
+      https: path.resolve('../node_modules/https-browserify'),
+      http: path.resolve('../node_modules/http-browserify'),
       path: require.resolve('path-browserify'),
       react: path.resolve('../node_modules/react'),
       crypto: require.resolve('crypto-browserify'),

@@ -56,6 +56,7 @@ const WalletContextProvider = ({ children }) => {
   return (
     <WalletContext.Provider
       value={{
+        connection,
         wallet,
         walletExtension,
         connectWalletEmbed,

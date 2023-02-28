@@ -18,13 +18,13 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/router'
 import { orderBy } from 'lodash'
 import dynamic from 'next/dynamic'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const { getImageFromCDN, loader } = imageManager
@@ -219,7 +219,7 @@ const HubDescription = ({ description }) => {
 }
 
 const ReusableTableBody = (props) => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const {
     items,
     tableType,

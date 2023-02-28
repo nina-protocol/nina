@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect, useMemo } from 'react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { Box, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import { useSnackbar } from 'notistack'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useRouter } from 'next/router'
 import Dots from './Dots'
 import Link from 'next/link'
@@ -14,7 +14,7 @@ const Subscribe = ({
   inFeed = false,
   inHub = false,
 }) => {
-  const wallet = useWallet()
+  const {wallet} = useContext(Wallet.Context)
   const router = useRouter()
   const { subscriptionSubscribe, subscriptionUnsubscribe, userSubscriptions } =
     useContext(Nina.Context)
