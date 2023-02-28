@@ -7,17 +7,17 @@ const LowSolWarning = ({ requiredSol, formattedSolBalance }) => {
   return (
     <LowSolBox>
       <Typography variant="h5" component="h2" sx={{ paddingBottom: '16px' }}>
-        You do not have enough SOL in your wallet to publish a Release
+        You do not have enough SOL in your wallet to upload a Release
       </Typography>
       <ModalTypography variant="h3" component="p" gutterBottom>
-        {`${requiredSol} SOL is required to publish a Release.`}
+        {`${requiredSol} SOL is required to upload a Release.`}
       </ModalTypography>
       <ModalTypography variant="h3" component="p" gutterBottom>
         {`You currently have ${formattedSolBalance}
             SOL in your wallet.`}
       </ModalTypography>
       <ModalTypography variant="h3" component="p" gutterBottom>
-        {`Please add more SOL to your wallet to publish a Release.`}
+        {`Please add more SOL to your wallet to upload a Release.`}
       </ModalTypography>
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
         <ModalTypography variant="h3" component="p" gutterBottom>

@@ -69,7 +69,7 @@ const BundlrModal = ({
 
   return (
     <Root displaySmall={displaySmall}>
-      {!lowUploadBalance && renderCtas()}
+      {renderCtas()}
       <BundlrModalBody
         open={open}
         setOpen={setOpen}
