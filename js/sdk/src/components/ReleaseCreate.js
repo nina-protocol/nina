@@ -701,6 +701,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                       uploadSize={uploadSize}
                       inCreate={false}
                       displaySmall={true}
+                      setLowUploadBalance={setLowUploadBalance}
                     />
                   </Box>
                 </CreateCta>

@@ -15,7 +15,13 @@ import Nina from '../contexts/Nina'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 
-const BundlrModalBody = ({ open, setOpen, lowUploadBalance, uploadSize }) => {
+const BundlrModalBody = ({
+  open,
+  setOpen,
+  lowUploadBalance,
+  setLowUploadBalance,
+  uploadSize,
+}) => {
   const { enqueueSnackbar } = useSnackbar()
   const {
     bundlrBalance,
@@ -103,12 +109,18 @@ const BundlrModalBody = ({ open, setOpen, lowUploadBalance, uploadSize }) => {
   const handleToggleMode = () => {
     setMode(mode === 'deposit' ? 'withdraw' : 'deposit')
   }
+
+  const handleClose = () => {
+    setOpen(false)
+    setLowUploadBalance(false)
+  }
+
   return (
     <StyledModal
       aria-labelledby="transition-modal-title"
       aria-describedby="transition-modal-description"
       open={open}
-      onClose={() => setOpen(false)}
+      onClose={handleClose}
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{

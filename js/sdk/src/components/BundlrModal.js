@@ -9,6 +9,7 @@ const BundlrModal = ({
   inCreate,
   displaySmall,
   lowUploadBalance,
+  setLowUploadBalance,
   defaultOpen,
   uploadSize,
   availableSol,
@@ -76,6 +77,7 @@ const BundlrModal = ({
         lowUploadBalance={lowUploadBalance}
         uploadSize={uploadSize}
         availableSol={availableSol}
+        setLowUploadBalance={setLowUploadBalance}
       />
     </Root>
   )
