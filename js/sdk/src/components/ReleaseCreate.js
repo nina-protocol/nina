@@ -81,6 +81,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     solBalance,
     ninaClient,
     getUserBalances,
+    solBalanceFetched,
   } = useContext(Nina.Context)
 
   const { getHubsForUser, fetchedHubsForUser, filterHubsForUser, hubState } =
@@ -141,12 +142,11 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     const checkBalance = setInterval(() => {
-      getUserBalances()
+      if (releaseCreateFee > solBalance) {
+        getUserBalances()
+      }
     }, 5000)
-
-    if (releaseCreateFee > solBalance) {
-      return () => clearInterval(checkBalance)
-    }
+    return () => clearInterval(checkBalance)
   }, [getUserBalances, releaseCreateFee, solBalance])
 
   useEffect(async () => {
@@ -507,6 +507,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
       )}
 
       {wallet?.connected &&
+        solBalanceFetched &&
         !hubPubkey &&
         npcAmountHeld === 0 &&
         (!profileHubs || profileHubs?.length === 0) && (
@@ -531,7 +532,10 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
           </Box>
         )}
 
+      {wallet?.connected && !solBalanceFetched && <Dots size={'50px'} />}
+
       {wallet?.connected &&
+        solBalanceFetched &&
         (npcAmountHeld >= 1 || profileHubs?.length > 0 || hubPubkey) && (
           <>
             <UploadInfoModal
