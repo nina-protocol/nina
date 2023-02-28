@@ -7,7 +7,9 @@ import Torus from '@toruslabs/customauth'
 import { getED25519Key } from '@toruslabs/openlogin-ed25519'
 import * as anchor from '@project-serum/anchor'
 import nacl from 'tweetnacl'
-import { decodeUTF8 } from 'tweetnacl-util'
+import tweetnaclUtil from 'tweetnacl-util'
+
+const { decodeBase64 } = tweetnaclUtil
 
 const GOOGLE = 'google'
 const AUTH_DOMAIN = 'https://torus-test.auth0.com'
@@ -90,8 +92,8 @@ const walletContextHelper = ({ setWalletEmbed, torus, connection }) => {
       },
       publicKey: keypair.publicKey,
       signMessage: async (message) => {
-        const messageBytes = decodeUTF8(message)
-        const signature = nacl.sign.detached(messageBytes, keypair.secretKey)
+        const messageBytes = decodeBase64(message)
+        const signature = nacl.sign.detached(new Uint8Array(messageBytes), keypair.secretKey)
         return signature
       },
       signTransaction: async (transaction) => {

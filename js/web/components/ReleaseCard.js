@@ -52,8 +52,11 @@ const ReleaseCard = (props) => {
   const { enqueueSnackbar } = useSnackbar()
   const hub = useMemo(() => {
     const hubPublicKey =
-      releaseState.metadata[releasePubkey].publishedThroughHub
-    return hubState[hubPublicKey]
+      releaseState.metadata[releasePubkey]?.publishedThroughHub
+      if (hubPublicKey) {
+        return hubState[hubPublicKey]
+      }
+      return null
   }, [releaseState, hubState, releasePubkey])
 
   const image = useMemo(() => metadata?.image)

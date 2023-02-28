@@ -7,12 +7,14 @@ import {
   swapQuoteByOutputToken,
 } from '@orca-so/whirlpools-sdk'
 import { Percentage } from '@orca-so/common-sdk'
+import axios from 'axios'
 import {
   findOrCreateAssociatedTokenAccount,
   wrapSol,
   TOKEN_PROGRAM_ID,
 } from './web3'
 import { decodeNonEncryptedByteArray } from './encrypt'
+import { encodeBase64 } from 'tweetnacl-util'
 
 const PRIORITY_SWAP_FEE = 7500
 const WHIRLPOOL_PROGRAM_ID = new anchor.web3.PublicKey(
@@ -121,6 +123,29 @@ const releasePurchaseHelper = async (
   releasePubkey = new anchor.web3.PublicKey(releasePubkey)
   const program = await ninaClient.useProgram()
   const release = await program.account.release.fetch(releasePubkey)
+
+  if (release.price.toNumber() === 0) {
+    const message = new TextEncoder().encode(releasePubkey.toBase58())
+    const messageBase64 = encodeBase64(message)
+    console.log('wallet.publicKey.toBase58(): ', provider.wallet.publicKey.toBase58())
+    const signature = await provider.wallet.signMessage(messageBase64)
+    const signatureBase64 = encodeBase64(signature)
+
+    const response = await axios.get(
+      `${process.env.NINA_IDENTITY_ENDPOINT}/claim/${
+        releasePubkey.toBase58()
+      }?message=${encodeURIComponent(
+        messageBase64
+      )}&signature=${encodeURIComponent(
+        signatureBase64
+      )}&publicKey=${encodeURIComponent(
+        provider.wallet.publicKey.toBase58()
+      )}`,
+    )
+    
+    console.log('claim request response: ', response.data)
+    return response.data.txid
+  }
 
   let [payerTokenAccount, payerTokenAccountIx] =
     await findOrCreateAssociatedTokenAccount(
@@ -262,6 +287,7 @@ const releasePurchaseHelper = async (
       request.signers = signers
       request.accounts.payerTokenAccount = signers[0].publicKey
     }
+
     if (hub) {
       return await program.rpc.releasePurchaseViaHub(
         release.price,

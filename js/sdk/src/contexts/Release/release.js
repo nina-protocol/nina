@@ -139,6 +139,7 @@ const ReleaseContextProvider = ({ children }) => {
     solBalance,
     setGatesState,
     gatesState,
+    wallet,
   })
 
   useEffect(() => {
@@ -254,6 +255,7 @@ const releaseContextHelper = ({
   solBalance,
   setGatesState,
   gatesState,
+  wallet
 }) => {
   const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } =
     ninaClient
@@ -825,9 +827,9 @@ const releaseContextHelper = ({
         releasePubkey,
         provider,
         ninaClient,
-        usdcBalance
+        usdcBalance,
       )
-
+      console.log('txid', txid)
       await getConfirmTransaction(txid, provider.connection)
 
       await getUserBalances()
