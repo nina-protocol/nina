@@ -22,7 +22,7 @@ const MediaDropzone = ({
   inHubCreate,
   update,
   currentImageUrl,
-  mbs,
+  availableBalance,
 }) => {
   const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
     Nina.Context
@@ -98,12 +98,12 @@ const MediaDropzone = ({
             alert(`Your track is not an MP3. \nPlease upload an MP3.`)
           } else if (size > MAX_AUDIO_FILE_UPLOAD_SIZE) {
             alert(
-              `Your track is ${size} mb... \nPlease upload a file smaller than ${MAX_AUDIO_FILE_UPLOAD_SIZE} MBs`
+              `Your track is ${size} mb... \nPlease upload a file smaller than ${MAX_AUDIO_FILE_UPLOAD_SIZE} availableBalance`
             )
           }
         } else {
           alert(
-            `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} MBs`
+            `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} availableBalance`
           )
         }
         remove()
@@ -183,9 +183,9 @@ const MediaDropzone = ({
     return false
   }
 
-  const validateTrack = (fileWithMeta, mbs) => {
+  const validateTrack = (fileWithMeta, availableBalance) => {
     const size = fileWithMeta.file.size / 1000000
-    if (size > MAX_AUDIO_FILE_UPLOAD_SIZE || size > mbs) {
+    if (size > MAX_AUDIO_FILE_UPLOAD_SIZE || size > availableBalance) {
       return true
     }
     if (fileWithMeta.file.type !== 'audio/mpeg') {
@@ -272,7 +272,7 @@ const MediaDropzone = ({
         maxFiles={1}
         validate={
           type === 'track'
-            ? (fileWithMeta) => validateTrack(fileWithMeta, mbs)
+            ? (fileWithMeta) => validateTrack(fileWithMeta, availableBalance)
             : (fileWithMeta) => validateImage(fileWithMeta)
         }
         SubmitButtonComponent={null}

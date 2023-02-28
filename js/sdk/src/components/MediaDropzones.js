@@ -13,7 +13,7 @@ const MediaDropzones = ({
   handleProgress,
   disabled,
   processingProgress,
-  mbs,
+  availableBalance,
 }) => {
   return (
     <StyledDropZones>
@@ -26,7 +26,7 @@ const MediaDropzones = ({
         handleProgress={handleProgress}
         disabled={disabled}
         processingProgress={processingProgress}
-        mbs={mbs}
+        availableBalance={availableBalance}
       />
       <ImageMediaDropzone
         artwork={artwork}

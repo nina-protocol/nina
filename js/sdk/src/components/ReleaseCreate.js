@@ -124,7 +124,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const [lowUploadBalance, setLowUploadBalance] = useState(false)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
-  const mbs = useMemo(
+  const availableBalance = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
   )
@@ -247,7 +247,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         setButtonText(
           'There may have been an error creating this release. Please check for the release in your profile and contact us before trying again.'
         )
-      } else if (mbs < uploadSize) {
+      } else if (availableBalance < uploadSize) {
         setButtonText(
           `Release requires more storage than available in your bundlr account, please top up`
         )
@@ -271,10 +271,10 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   }, [pendingReleases])
 
   useEffect(() => {
-    if (mbs < uploadSize && !lowUploadBalance) {
+    if (availableBalance < uploadSize && !lowUploadBalance) {
       setLowUploadBalance(true)
     }
-  }, [mbs, uploadSize])
+  }, [availableBalance, uploadSize])
 
   const handleFormChange = useCallback(
     async (values) => {
@@ -558,7 +558,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                     }
                     handleProgress={handleProgress}
                     processingProgress={processingProgress}
-                    mbs={mbs}
+                    availableBalance={availableBalance}
                   />
                 </Box>
                 <CreateFormWrapper disabled={awaitingPendingReleases}>
@@ -589,7 +589,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                           isPublishing ||
                           !formIsValid ||
                           bundlrBalance === 0 ||
-                          mbs < uploadSize ||
+                          availableBalance < uploadSize ||
                           artwork?.meta.status === 'uploading' ||
                           (track?.meta.status === 'uploading' &&
                             !releaseCreated) ||
@@ -632,7 +632,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                         isPublishing ||
                         !formIsValid ||
                         bundlrBalance === 0 ||
-                        mbs < uploadSize ||
+                        availableBalance < uploadSize ||
                         artwork?.meta.status === 'uploading' ||
                         (track?.meta.status === 'uploading' && !releaseCreated)
                       }
@@ -671,8 +671,9 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                     {bundlrBalance > 0 && (
                       <BundlrBalanceInfo variant="subtitle1" align="left">
                         Balance: {bundlrBalance?.toFixed(4)} SOL / $
-                        {bundlrUsdBalance.toFixed(2)} / {mbs?.toFixed(2)} MB ($
-                        {(bundlrUsdBalance / mbs)?.toFixed(4)}/MB)
+                        {bundlrUsdBalance.toFixed(2)} /{' '}
+                        {availableBalance?.toFixed(2)} MB ($
+                        {(bundlrUsdBalance / availableBalance)?.toFixed(4)}/MB)
                       </BundlrBalanceInfo>
                     )}
                     {bundlrBalance === 0 && (
@@ -687,7 +688,10 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                         sx={{ margin: '5px 0' }}
                       >
                         Upload Size: {uploadSize} MB | Cost: $
-                        {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
+                        {(
+                          uploadSize *
+                          (bundlrUsdBalance / availableBalance)
+                        ).toFixed(2)}
                       </Typography>
                     )}
 
