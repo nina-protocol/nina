@@ -38,7 +38,7 @@ const BundlrModalBody = ({ open, setOpen, lowUploadBalance, uploadSize }) => {
   )
 
   const [amount, setAmount] = useState(0)
-  const mbs = useMemo(
+  const availableStorage = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
   )
@@ -61,7 +61,6 @@ const BundlrModalBody = ({ open, setOpen, lowUploadBalance, uploadSize }) => {
 
   useEffect(() => {
     const lowSolBalance = releaseCreateFee > formattedSolBalance
-
     if (!lowSolBalance) {
       setAmount(0.05)
     }
@@ -135,7 +134,8 @@ const BundlrModalBody = ({ open, setOpen, lowUploadBalance, uploadSize }) => {
                 This Release is {uploadSize} MBs.
               </Typography>
               <Typography sx={{ paddingBottom: '8px' }}>
-                You have {mbs?.toFixed(2)} MBs available in your Upload Account.
+                You have {availableStorage?.toFixed(2)} MBs available in your
+                Upload Account.
               </Typography>
               <Typography sx={{ paddingBottom: '8px' }}>
                 Top up your Upload Account to publish this Release.
@@ -160,9 +160,11 @@ const BundlrModalBody = ({ open, setOpen, lowUploadBalance, uploadSize }) => {
                 {bundlrUsdBalance.toFixed(2)})
               </Typography>
               <Typography>
-                Available Storage: {mbs?.toFixed(2)} MBs{' '}
-                {bundlrBalance > 0 && mbs > 0
-                  ? `($${(bundlrUsdBalance / mbs)?.toFixed(4)} /MB)`
+                Available Storage: {availableStorage?.toFixed(2)} MBs{' '}
+                {bundlrBalance > 0 && availableStorage > 0
+                  ? `($${(bundlrUsdBalance / availableStorage)?.toFixed(
+                      4
+                    )} /MB)`
                   : ''}
               </Typography>
             </>
