@@ -34,6 +34,7 @@ import {
   UploadType,
   uploadHasItemForType,
 } from '../utils/uploadManager'
+import roundUp from '../utils/formatting'
 
 const UploadInfoModal = dynamic(() => import('./UploadInfoModal'), {
   ssr: false,
@@ -495,11 +496,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         variant: 'error',
       })
     }
-  }
-
-  function roundUp(number, decimal) {
-    const dec = Math.pow(10, decimal)
-    return Math.ceil(number * dec) / dec
   }
 
   return (
