@@ -8,19 +8,23 @@ const BundlrModalBody = dynamic(() => import('./BundlrModalBody'), {})
 const BundlrModal = ({
   inCreate,
   displaySmall,
-  lowUploadBalance,
-  setLowUploadBalance,
-  defaultOpen,
+  showLowUploadModal,
+  handleLowUploadModalClose,
   uploadSize,
   availableSol,
 }) => {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    if (defaultOpen) {
+    if (showLowUploadModal) {
       setOpen(true)
     }
-  }, [defaultOpen])
+  }, [showLowUploadModal])
+
+  const handleClose = () => {
+    setOpen(false)
+    handleLowUploadModalClose()
+  }
 
   const renderCtas = () => {
     return (
@@ -74,10 +78,10 @@ const BundlrModal = ({
       <BundlrModalBody
         open={open}
         setOpen={setOpen}
-        lowUploadBalance={lowUploadBalance}
+        showLowUploadModal={showLowUploadModal}
         uploadSize={uploadSize}
         availableSol={availableSol}
-        setLowUploadBalance={setLowUploadBalance}
+        handleClose={handleClose}
       />
     </Root>
   )

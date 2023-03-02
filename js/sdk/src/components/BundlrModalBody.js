@@ -18,9 +18,9 @@ import Dots from './Dots'
 const BundlrModalBody = ({
   open,
   setOpen,
-  lowUploadBalance,
-  setLowUploadBalance,
+  showLowUploadModal,
   uploadSize,
+  handleClose,
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const {
@@ -110,11 +110,6 @@ const BundlrModalBody = ({
     setMode(mode === 'deposit' ? 'withdraw' : 'deposit')
   }
 
-  const handleClose = () => {
-    setOpen(false)
-    setLowUploadBalance(false)
-  }
-
   return (
     <StyledModal
       aria-labelledby="transition-modal-title"
@@ -135,12 +130,12 @@ const BundlrModalBody = ({
             id="transition-modal-title"
             gutterBottom
           >
-            {lowUploadBalance
+            {showLowUploadModal
               ? `You do not have space in your Upload Account to publish this Release.`
               : `Fund your Upload Account`}
           </Typography>
 
-          {lowUploadBalance ? (
+          {showLowUploadModal ? (
             <>
               <Typography sx={{ paddingBottom: '8px', paddingTop: '16px' }}>
                 This Release is {uploadSize} MBs.
@@ -182,7 +177,7 @@ const BundlrModalBody = ({
             </>
           )}
 
-          {bundlrBalance > 0 && !lowUploadBalance && (
+          {bundlrBalance > 0 && !showLowUploadModal && (
             <ToggleButtonGroup
               value={mode}
               exclusive

@@ -96,7 +96,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
     .toFixed(3)
   const [track, setTrack] = useState(undefined)
-  const [artwork, setArtwork] = useState()
+  const [artwork, setArtwork] = useState(undefined)
   const [uploadSize, setUploadSize] = useState()
   const [releasePubkey, setReleasePubkey] = useState(undefined)
   const [, setRelease] = useState(undefined)
@@ -123,7 +123,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const [selectedHub, setSelectedHub] = useState()
   const [processingProgress, setProcessingProgress] = useState()
   const [awaitingPendingReleases, setAwaitingPendingReleases] = useState(false)
-  const [lowUploadBalance, setLowUploadBalance] = useState(false)
+  const [showLowUploadModal, setShowLowUploadModal] = useState(false)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
   const availableStorage = useMemo(
@@ -272,8 +272,8 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   }, [pendingReleases])
 
   useEffect(() => {
-    if (availableStorage < uploadSize && !lowUploadBalance) {
-      setLowUploadBalance(true)
+    if (availableStorage < uploadSize && !showLowUploadModal) {
+      setShowLowUploadModal(true)
     }
   }, [availableStorage, uploadSize])
 
@@ -498,6 +498,16 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     }
   }
 
+  const handleLowUploadModalClose = () => {
+    setShowLowUploadModal(false)
+    if (artwork) {
+      artwork.remove()
+    }
+    if (track) {
+      track.remove()
+    }
+  }
+
   return (
     <Grid item md={12}>
       {!wallet.connected && (
@@ -558,7 +568,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                     }
                     handleProgress={handleProgress}
                     processingProgress={processingProgress}
-                    availableStorage={availableStorage}
                   />
                 </Box>
                 <CreateFormWrapper disabled={awaitingPendingReleases}>
@@ -696,12 +705,11 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                     )}
 
                     <BundlrModal
-                      defaultOpen={lowUploadBalance}
-                      lowUploadBalance={lowUploadBalance}
+                      showLowUploadModal={showLowUploadModal}
                       uploadSize={uploadSize}
                       inCreate={false}
                       displaySmall={true}
-                      setLowUploadBalance={setLowUploadBalance}
+                      handleLowUploadModalClose={handleLowUploadModalClose}
                     />
                   </Box>
                 </CreateCta>

@@ -22,7 +22,7 @@ const MediaDropzone = ({
   inHubCreate,
   update,
   currentImageUrl,
-  availableStorage,
+  closedBundlrModal,
 }) => {
   const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
     Nina.Context
@@ -133,6 +133,7 @@ const MediaDropzone = ({
           setUncroppedImage({
             file,
             meta,
+            remove,
           })
         }
       } else if (type === 'track') {
@@ -142,6 +143,7 @@ const MediaDropzone = ({
           setTrack({
             file,
             meta,
+            remove,
           })
         }
       }
@@ -183,9 +185,9 @@ const MediaDropzone = ({
     return false
   }
 
-  const validateTrack = (fileWithMeta, availableStorage) => {
+  const validateTrack = (fileWithMeta) => {
     const size = fileWithMeta.file.size / 1000000
-    if (size > MAX_AUDIO_FILE_UPLOAD_SIZE || size > availableStorage) {
+    if (size > MAX_AUDIO_FILE_UPLOAD_SIZE) {
       return true
     }
     if (fileWithMeta.file.type !== 'audio/mpeg') {
@@ -263,7 +265,6 @@ const MediaDropzone = ({
       }}
     />
   )
-
   return (
     <>
       <Dropzone
@@ -272,7 +273,7 @@ const MediaDropzone = ({
         maxFiles={1}
         validate={
           type === 'track'
-            ? (fileWithMeta) => validateTrack(fileWithMeta, availableStorage)
+            ? (fileWithMeta) => validateTrack(fileWithMeta, closedBundlrModal)
             : (fileWithMeta) => validateImage(fileWithMeta)
         }
         SubmitButtonComponent={null}
