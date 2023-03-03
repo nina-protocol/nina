@@ -13,6 +13,7 @@ const MediaDropzones = ({
   handleProgress,
   disabled,
   processingProgress,
+  closedBundlrModal,
 }) => {
   return (
     <StyledDropZones>
@@ -25,6 +26,7 @@ const MediaDropzones = ({
         handleProgress={handleProgress}
         disabled={disabled}
         processingProgress={processingProgress}
+        closedBundlrModal={closedBundlrModal}
       />
       <ImageMediaDropzone
         artwork={artwork}

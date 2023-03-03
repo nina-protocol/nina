@@ -154,7 +154,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
               >
                 {displayNameForAccount(postData.publisher)}
               </a>{' '}
-              at{' '}
+              on{' '}
               <a
                 href={`https://explorer.solana.com/account/${postData.publicKey}`}
                 target="_blank"

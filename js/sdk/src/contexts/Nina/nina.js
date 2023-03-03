@@ -59,6 +59,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [subscriptionState, setSubscriptionState] = useState({})
   const [verificationState, setVerificationState] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
+  const [solBalanceFetched, setSolBalanceFetched] = useState(false)
   const [solBalance, setSolBalance] = useState(0)
   const [lowSolBalance, setLowSolBalance] = useState(false)
   const [solUsdcBalance, setSolUsdcBalance] = useState(0)
@@ -150,6 +151,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     setSolUsdcBalance,
     solBalance,
     setSolBalance,
+    setSolBalanceFetched,
     verificationState,
     setVerificationState,
     setLowSolBalance,
@@ -217,6 +219,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         filterSubscriptionsForHub,
         submitEmailRequest,
         lowSolBalance,
+        solBalanceFetched,
         getUsdcToSolSwapData,
         MAX_AUDIO_FILE_UPLOAD_SIZE,
         MAX_IMAGE_FILE_UPLOAD_SIZE,
@@ -246,6 +249,7 @@ const ninaContextHelper = ({
   setSolUsdcBalance,
   solBalance,
   setSolBalance,
+  setSolBalanceFetched,
   verificationState,
   setVerificationState,
   setLowSolBalance,
@@ -600,6 +604,7 @@ const ninaContextHelper = ({
     )
 
     setSolBalance(solUsdcBalanceResult)
+    setSolBalanceFetched(true)
     if (solUsdcBalanceResult < 10000000) {
       setLowSolBalance(true)
     }
