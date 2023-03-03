@@ -299,7 +299,7 @@ const ReleasePurchase = (props) => {
         </Typography>
       )}
       <StyledDescription align="left">{description}</StyledDescription>
-      <Box sx={{ mb: 1 }}>
+      <Box sx={{ mb: 1, mt: 1 }}>
         <form onSubmit={handleSubmit}>
           <Button
             variant="outlined"

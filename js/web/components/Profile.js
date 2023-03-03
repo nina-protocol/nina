@@ -189,8 +189,8 @@ const Profile = ({ profilePubkey }) => {
       filteredCollection = filterReleasesUserCollection(profilePubkey)?.sort(
         (a, b) => {
           return (
-            new Date(b.metadata.properties.date) -
-            new Date(a.metadata.properties.date)
+            new Date(b.metadata.collectedDate) -
+            new Date(a.metadata.collectedDate)
           )
         }
       )

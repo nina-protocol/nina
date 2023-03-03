@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import Dropzone from 'react-dropzone-uploader'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
@@ -6,65 +6,149 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined'
 import Image from 'next/image'
 import Nina from '../contexts/Nina'
+import { styled } from '@mui/material/styles'
 
 const MediaDropzone = ({
   type,
+  artwork,
   setArtwork,
   setTrack,
   disabled,
   processingProgress,
+  setUncroppedImage,
+  setCroppedImage,
+  uncroppedImage,
+  croppedImage,
+  inHubCreate,
+  update,
+  currentImageUrl,
+  closedBundlrModal,
 }) => {
   const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
     Nina.Context
   )
+  const styles = inHubCreate
+    ? {
+        dropzone: {
+          minHeight: 60,
+          display: 'flex',
+          justifyContent: 'center',
+          minWidth: '100px',
+          width: 'auto',
+          height: '100px',
+          cursor: 'pointer',
+          marginBottom: '15px',
+          boxShadow: 'inset 0px 0px 30px 0px #0000001A',
+          backgroundColor: '#EAEAEA',
+          backgroundImage: update ? `url("${currentImageUrl}")` : '',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'contain',
+        },
+        preview: {
+          margin: 'auto',
+          alignItems: 'center',
+        },
+        previewImage: {
+          width: '100%',
+          maxHeight: '100%',
+          maxWidth: 'unset',
+        },
+        inputLabel: {
+          cursor: 'pointer',
+          textAlign: 'left',
+          padding: '15px',
+          margin: 'auto',
+        },
+      }
+    : {
+        dropzone: {
+          minHeight: 60,
+          display: 'flex',
+          justifyContent: 'center',
+          width: '100%',
+          height: type === 'track' ? '113px' : '350px',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          marginBottom: type === 'track' ? '15px' : '',
+          boxShadow: 'inset 0px 0px 30px 0px #0000001A',
+          backgroundColor: '#EAEAEA',
+        },
+        preview: {
+          margin: 'auto',
+          alignItems: 'center',
+        },
+        previewImage: {
+          width: '100%',
+          maxHeight: '100%',
+          maxWidth: 'unset',
+        },
+        inputLabel: {
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          width: '100%',
+          textAlign: 'left',
+          padding: '15px',
+        },
+      }
 
-  const handleChangeStatus = ({ meta, file, remove }, status) => {
-    if (meta.status === 'error_validation') {
-      const height = meta.height
-      const width = meta.width
-      const size = meta.size / 1000000
-      if (file.type.includes('audio')) {
-        if (file.type !== 'audio/mpeg') {
-          alert(`Your track is not an MP3. \nPlease upload an MP3.`)
+  const handleChangeStatus = useMemo(() => {
+    return ({ meta, file, remove }, status) => {
+      if (meta.status === 'error_validation') {
+        const size = meta.size / 1000000
+        if (file.type.includes('audio')) {
+          if (file.type !== 'audio/mpeg') {
+            alert(`Your track is not an MP3. \nPlease upload an MP3.`)
+          } else if (size > MAX_AUDIO_FILE_UPLOAD_SIZE) {
+            alert(
+              `Your track is ${size} mb... \nPlease upload a file smaller than ${MAX_AUDIO_FILE_UPLOAD_SIZE} mbs`
+            )
+          }
         } else {
           alert(
-            `Your track is ${size} mb... \nPlease upload a file smaller than ${MAX_AUDIO_FILE_UPLOAD_SIZE} MBs`
+            `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} mbs`
           )
         }
-      } else {
-        if (height !== width) {
-          alert(
-            `your image's dimensions are ${height} x ${width}... \nPlease upload a square image`
-          )
-        } else {
-          alert(
-            `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} MBs`
-          )
-        }
+        remove()
       }
-      remove()
-    }
 
-    if (type === 'artwork') {
-      if (status === 'removed') {
-        setArtwork(undefined)
-      } else {
-        setArtwork({
-          file,
-          meta,
-        })
-      }
-    } else if (type === 'track') {
-      if (status === 'removed') {
-        setTrack(undefined)
-      } else {
-        setTrack({
-          file,
-          meta,
-        })
+      if (type === 'artwork') {
+        if (status === 'removed') {
+          setArtwork(undefined)
+          setUncroppedImage(undefined)
+          setCroppedImage(undefined)
+        } else if (status === 'done') {
+          if (!artwork) {
+            try {
+              setArtwork({
+                file,
+                meta,
+              })
+            } catch (error) {
+              console.warn('error :>> ', error)
+            }
+          }
+        }
+      } else if (type === 'cropper') {
+        if (status === 'removed') {
+          setUncroppedImage(undefined)
+        } else {
+          setUncroppedImage({
+            file,
+            meta,
+            remove,
+          })
+        }
+      } else if (type === 'track') {
+        if (status === 'removed') {
+          setTrack(undefined)
+        } else {
+          setTrack({
+            file,
+            meta,
+            remove,
+          })
+        }
       }
     }
-  }
+  }, [artwork, uncroppedImage, croppedImage])
 
   const inputLayout = (type) => {
     if (type === 'track') {
@@ -79,21 +163,21 @@ const MediaDropzone = ({
       return (
         <>
           <AddOutlinedIcon />
-          <Typography variant="h2">Upload Artwork</Typography>
-          <Typography variant="subtitle1">File Formats: JPG, PNG</Typography>
+          {!inHubCreate && (
+            <>
+              <Typography variant="h2">Upload Artwork</Typography>
+              <Typography variant="subtitle1">
+                File Formats: JPG, PNG
+              </Typography>
+            </>
+          )}
         </>
       )
     }
   }
 
   const validateImage = (fileWithMeta) => {
-    const height = fileWithMeta.meta.height
-    const width = fileWithMeta.meta.width
     const size = fileWithMeta.file.size / 1000000
-
-    if (height !== width) {
-      return true
-    }
 
     if (size > MAX_IMAGE_FILE_UPLOAD_SIZE) {
       return true
@@ -181,58 +265,46 @@ const MediaDropzone = ({
       }}
     />
   )
-
   return (
-    <Dropzone
-      onChangeStatus={handleChangeStatus}
-      accept={type === 'track' ? 'audio/*' : 'image/*'}
-      maxFiles={1}
-      validate={
-        type === 'track'
-          ? (fileWithMeta) => validateTrack(fileWithMeta)
-          : (fileWithMeta) => validateImage(fileWithMeta)
-      }
-      SubmitButtonComponent={null}
-      autoUpload={false}
-      canRestart={false}
-      classNames={{
-        dropzone: classes.dropZone,
-        inputLabel: classes.dropZoneInputLabel,
-        preview: classes.dropZonePreviewWrapper,
-        previewStatusContainer: classes.dropZonePreviewStatusContainer,
-      }}
-      disabled={disabled}
-      inputContent={inputLayout(type)}
-      PreviewComponent={Preview}
-      styles={{
-        dropzone: {
-          minHeight: 60,
-          display: 'flex',
-          justifyContent: 'center',
-          width: '100%',
-          height: type === 'track' ? '113px' : '350px',
-          cursor: disabled ? 'not-allowed' : 'pointer',
-          marginBottom: type === 'track' ? '15px' : '',
-          boxShadow: 'inset 0px 0px 30px 0px #0000001A',
-          backgroundColor: '#EAEAEA',
-        },
-        preview: {
-          margin: 'auto',
-          alignItems: 'center',
-        },
-        previewImage: {
-          width: '100%',
-          maxHeight: '100%',
-          maxWidth: 'unset',
-        },
-        inputLabel: {
-          cursor: disabled ? 'not-allowed' : 'pointer',
-          width: '100%',
-          textAlign: 'left',
-          padding: '15px',
-        },
-      }}
-    />
+    <>
+      <Dropzone
+        onChangeStatus={handleChangeStatus}
+        accept={type === 'track' ? 'audio/*' : 'image/*'}
+        maxFiles={1}
+        validate={
+          type === 'track'
+            ? (fileWithMeta) => validateTrack(fileWithMeta, closedBundlrModal)
+            : (fileWithMeta) => validateImage(fileWithMeta)
+        }
+        SubmitButtonComponent={null}
+        autoUpload={false}
+        canRestart={false}
+        classNames={{
+          dropzone: classes.dropZone,
+          inputLabel: classes.dropZoneInputLabel,
+          preview: classes.dropZonePreviewWrapper,
+          previewStatusContainer: classes.dropZonePreviewStatusContainer,
+        }}
+        disabled={disabled}
+        inputContent={inputLayout(type)}
+        PreviewComponent={Preview}
+        initialFiles={croppedImage ? [croppedImage] : []}
+        styles={styles}
+      />
+
+      {inHubCreate && (
+        <Copy>
+          <Typography variant="body1">Upload Hub Logo Image</Typography>
+          <Typography variant="subtitle1">File Formats: JPG, PNG</Typography>
+
+          {update && (
+            <Typography variant="subtitle1">
+              Click current image to replace hub image
+            </Typography>
+          )}
+        </Copy>
+      )}
+    </>
   )
 }
 
@@ -244,5 +316,17 @@ const classes = {
   dropZonePreviewWrapper: `${PREFIX}-dropZonePreviewWrapper`,
   dropZonePreviewStatusContainer: `${PREFIX}-dropZonePreviewStatusContainer`,
 }
+
+const Copy = styled(Box)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  textAlign: 'left',
+  paddingLeft: '15px',
+  '& p': {
+    color: 'rgba(0,0,0, 0.6) !important',
+    fontSize: '14px !important',
+    textTransform: 'uppercase',
+  },
+}))
 
 export default MediaDropzone

@@ -9060,6 +9060,11 @@ normalize-url@^6.0.1:
   resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-6.1.0.tgz#40d0885b535deffe3f3147bec877d05fe4c5668a"
   integrity sha512-DlL+XwOy3NxAQ8xuC0okPgK46iuVNAK01YN7RueYBqqFeGsBjV9XmCAzAdgt+667bCl5kPh9EqKKDwnaPG1I7A==
 
+normalize-wheel@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/normalize-wheel/-/normalize-wheel-1.0.1.tgz#aec886affdb045070d856447df62ecf86146ec45"
+  integrity sha512-1OnlAPZ3zgrk8B91HyRj+eVv+kS5u+Z0SCsak6Xil/kmgEia50ga7zfkumayonZrImffAxPU/5WcyGhzetHNPA==
+
 notistack@^2.0.3, notistack@^2.0.8:
   version "2.0.8"
   resolved "https://registry.yarnpkg.com/notistack/-/notistack-2.0.8.tgz#78cdf34c64e311bf1d1d71c2123396bcdea5e95b"
@@ -10236,6 +10241,14 @@ react-dropzone-uploader@^2.11.0:
   integrity sha512-1DpdPMGKP7vYL5SeCh13HCl+Xrz0F6jGrDPU5Tj2ojEIXGMCtfflrZhyXdr7u40IkQ+hYjAUEEtJW24SiY8WRA==
   dependencies:
     "@babel/runtime" "^7.1.2"
+
+react-easy-crop@^4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/react-easy-crop/-/react-easy-crop-4.7.0.tgz#b323f9f8854fda167cfb8829401e8022ca39ec64"
+  integrity sha512-vZqCzbSctdHgntDx4Eha4fZV0YKDHZIPWhWXgk00ZRPMI2W+H52uCufKuaraT28RwU7spg5QJ0cSxgrRXuLlTw==
+  dependencies:
+    normalize-wheel "^1.0.1"
+    tslib "2.0.1"
 
 react-event-listener@^0.6.0:
   version "0.6.6"
