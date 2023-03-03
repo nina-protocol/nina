@@ -56,6 +56,7 @@ const ReleaseCard = (props) => {
   }, [metadata.properties.title])
 
   const downloadAs = async (url, name) => {
+    console.log('downloadAs', url, name)
     logEvent('track_download', 'engagement', {
       publicKey: releasePubkey,
     })
@@ -69,6 +70,7 @@ const ReleaseCard = (props) => {
         },
         responseType: 'blob',
       })
+
       if (response?.data) {
         const a = document.createElement('a')
         const url = window.URL.createObjectURL(response.data)

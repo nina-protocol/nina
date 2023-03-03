@@ -11,6 +11,7 @@ import TableRow from '@mui/material/TableRow'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
+import DownloadIcon from '@mui/icons-material/Download'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
@@ -25,6 +26,8 @@ import { useRouter } from 'next/router'
 import { orderBy } from 'lodash'
 import dynamic from 'next/dynamic'
 import { useWallet } from '@solana/wallet-adapter-react'
+import axios from 'axios'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 
 const { getImageFromCDN, loader } = imageManager
@@ -233,6 +236,7 @@ const ReusableTableBody = (props) => {
     dashboardPublicKey,
     order,
     orderBy,
+    inCollection,
   } = props
   const router = useRouter()
   const {
@@ -302,6 +306,33 @@ const ReusableTableBody = (props) => {
     }
   }
 
+  const downloadAs = async (url, name, releasePubkey) => {
+    logEvent('track_download', 'engagement', {
+      publicKey: releasePubkey,
+    })
+
+    try {
+      const response = await axios.get(url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        },
+        responseType: 'blob',
+      })
+      if (response?.data) {
+        const a = document.createElement('a')
+        const url = window.URL.createObjectURL(response.data)
+        a.href = url
+        a.download = name
+        a.click()
+      }
+      enqueueSnackbar('Release Downloaded', { variant: 'success' })
+    } catch (error) {
+      enqueueSnackbar('Release Downloaded', { variant: 'error' })
+    }
+  }
+
   const getComparator = (order, orderBy, type) => {
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
@@ -322,6 +353,8 @@ const ReusableTableBody = (props) => {
       formattedData = {
         ctas: playData,
         id: releasePubkey,
+        uri: data?.metadata.properties.files[0].uri,
+        fileName: data?.metadata.name,
         link: `/${releasePubkey}`,
         image: data?.metadata?.image,
         date: data?.metadata?.properties?.date,
@@ -500,6 +533,8 @@ const ReusableTableBody = (props) => {
               if (
                 cellName !== 'id' &&
                 cellName !== 'date' &&
+                cellName !== 'uri' &&
+                cellName !== 'fileName' &&
                 cellName !== 'link' &&
                 cellName !== 'authorityPublicKey' &&
                 cellName !== 'publicKey' &&
@@ -534,6 +569,22 @@ const ReusableTableBody = (props) => {
                           />
                         )}
                       </Button>
+                      {inCollection && (
+                        <Button
+                          onClickCapture={(e) => {
+                            e.stopPropagation()
+                            downloadAs(
+                              row.uri,
+                              `${row.fileName
+                                .replace(/[^a-z0-9]/gi, '_')
+                                .toLowerCase()}___nina.mp3`,
+                              row.id
+                            )
+                          }}
+                        >
+                          <DownloadIcon sx={{ color: 'black' }} />
+                        </Button>
+                      )}
                     </StyledTableCellButtonsContainer>
                   )
                 } else if (cellName === 'image') {
@@ -775,6 +826,7 @@ const ReusableTable = ({
   isActiveView,
   hasOverflow,
   minHeightOverride = false,
+  inCollection,
 }) => {
   const [order, setOrder] = useState('desc')
   const [orderBy, setOrderBy] = useState('')
@@ -809,6 +861,7 @@ const ReusableTable = ({
             isActiveView={isActiveView}
             order={order}
             orderBy={orderBy}
+            inCollection={inCollection}
           />
         </Table>
       </ResponsiveTableContainer>
@@ -880,7 +933,7 @@ const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
   textAlign: 'left',
   padding: '5px 0px',
   textAlign: 'left',
-  minWidth: '100px',
+  minWidth: '150px',
   [theme.breakpoints.down('md')]: {
     padding: '0px',
   },
