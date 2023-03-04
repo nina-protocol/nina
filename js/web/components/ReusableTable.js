@@ -302,6 +302,12 @@ const ReusableTableBody = (props) => {
     }
   }
 
+  const handleClickOut = (e, url) => {
+    if (e.ctrlKey || e.metaKey) {
+      window.open(url, '_blank')
+    }
+  }
+
   const getComparator = (order, orderBy, type) => {
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
@@ -568,7 +574,11 @@ const ReusableTableBody = (props) => {
                   return (
                     <StyledProfileTableCell key={cellName} type={'profile'}>
                       <OverflowContainer inDashboard={inDashboard}>
-                        <Typography sx={{ textDecoration: 'underline' }} noWrap>
+                        <Typography
+                          sx={{ textDecoration: 'underline' }}
+                          noWrap
+                          onClickCapture={(e) => handleClickOut(e)}
+                        >
                           {cellData}
                         </Typography>
                       </OverflowContainer>
@@ -595,14 +605,35 @@ const ReusableTableBody = (props) => {
                   )
                 } else if (cellName === 'artist') {
                   return (
-                    <StyledProfileTableCell key={cellName} type={'profile'}>
+                    <StyledProfileTableCell
+                      key={cellName}
+                      type={'profile'}
+                      onClickCapture={(e) =>
+                        handleClickOut(
+                          e,
+                          `/profiles/${row?.authorityPublicKey}}`
+                        )
+                      }
+                    >
                       <OverflowContainer
                         overflowWidth={'20vw'}
                         inDashboard={inDashboard}
+                        onClickCapture={(e) =>
+                          handleClickOut(
+                            e,
+                            `/profiles/${row?.authorityPublicKey}}`
+                          )
+                        }
                       >
                         <Typography
                           noWrap
                           sx={{ hover: 'pointer', maxWidth: '20vw' }}
+                          onClickCapture={(e) =>
+                            handleClickOut(
+                              e,
+                              `/profiles/${row?.authorityPublicKey}}`
+                            )
+                          }
                         >
                           <a
                             onClickCapture={() => {
