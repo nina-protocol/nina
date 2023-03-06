@@ -106,9 +106,6 @@ const Profile = ({ profilePubkey }) => {
       setInDashboard(true)
       setInCollection(true)
     }
-    if (inDashboard) {
-      setInCollection(true)
-    }
   }, [wallet, profilePubkey])
 
   useEffect(() => {

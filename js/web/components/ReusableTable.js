@@ -88,7 +88,7 @@ const ReusableTableHead = (props) => {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'artist', label: 'Artist' })
     headCells.push({ id: 'title', label: 'Title' })
-    headCells.push({ id: 'releaseDate', label: 'Release Date' })
+    headCells.push({ id: 'releaseDate', label: 'Release' })
     if (inDashboard) {
       headCells.push({ id: 'price', label: 'Price' })
       headCells.push({ id: 'remaining', label: 'Remaining' })
@@ -542,7 +542,11 @@ const ReusableTableBody = (props) => {
               ) {
                 if (cellName === 'ctas') {
                   return (
-                    <StyledTableCellButtonsContainer align="left" key={i}>
+                    <StyledTableCellButtonsContainer
+                      align="left"
+                      key={i}
+                      inCollection={inCollection}
+                    >
                       <Button
                         sx={{ cursor: 'pointer' }}
                         id={row.id}
@@ -928,16 +932,18 @@ const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
   textAlign: 'left',
   padding: '5px',
 }))
-const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
-  width: '100px',
-  textAlign: 'left',
-  padding: '5px 0px',
-  textAlign: 'left',
-  minWidth: '150px',
-  [theme.breakpoints.down('md')]: {
-    padding: '0px',
-  },
-}))
+const StyledTableCellButtonsContainer = styled(TableCell)(
+  ({ theme, inCollection }) => ({
+    width: '100px',
+    textAlign: 'left',
+    padding: '5px 0px',
+    textAlign: 'left',
+    minWidth: inCollection ? '150px' : '100px',
+    [theme.breakpoints.down('md')]: {
+      padding: '0px',
+    },
+  })
+)
 const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
   textAlign: 'left',
