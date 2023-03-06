@@ -766,9 +766,9 @@ const ReusableTableBody = (props) => {
                 ) {
                   return (
                     <HubTableCell key={cellName}>
-                      <CollectContainer>
+                      <Box sx={{ paddingLeft: '5px' }}>
                         <Typography>{cellData}</Typography>
-                      </CollectContainer>
+                      </Box>
                     </HubTableCell>
                   )
                 } else if (
@@ -904,11 +904,10 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 }))
 
 const StyledTableCell = styled(TableCell)(({ theme, type }) => ({
-  padding: '5px 5px',
+  padding: '5px 0px',
   textAlign: 'left',
   height: '50px',
-  width: '61vw',
-
+  width: '26vw',
   alignItems: 'center',
   [theme.breakpoints.down('md')]: {
     width: '30vw',
