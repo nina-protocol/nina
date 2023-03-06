@@ -26,7 +26,7 @@ import { orderBy } from 'lodash'
 import dynamic from 'next/dynamic'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
-
+import openInNewTab from '@nina-protocol/nina-internal-sdk/src/utils/openInNewTab'
 const { getImageFromCDN, loader } = imageManager
 
 const Subscribe = dynamic(() => import('./Subscribe'))
@@ -489,12 +489,7 @@ const ReusableTableBody = (props) => {
         ?.slice()
         .sort(getComparator(order, orderBy))
         .map((row, i) => (
-          <TableRow
-            key={i}
-            hover
-            sx={{ cursor: 'pointer' }}
-            onClick={() => router.push(row.link)}
-          >
+          <TableRow key={i} hover sx={{ cursor: 'pointer' }}>
             {Object.keys(row).map((cellName, i) => {
               const cellData = row[cellName]
               if (
@@ -564,12 +559,36 @@ const ReusableTableBody = (props) => {
                       key={cellName}
                     />
                   )
+                } else if (cellName === 'artist') {
+                  console.log('row', row)
+                  return (
+                    <StyledProfileTableCell key={cellName} type={'profile'}>
+                      <OverflowContainer
+                        overflowWidth={'20vw'}
+                        inDashboard={inDashboard}
+                      >
+                        <Typography
+                          noWrap
+                          sx={{ hover: 'pointer', maxWidth: '20vw' }}
+                        >
+                          <Link
+                            href={`/profiles/${row?.authorityPublicKey}`}
+                            passHref
+                          >
+                            <a>{cellData}</a>
+                          </Link>
+                        </Typography>
+                      </OverflowContainer>
+                    </StyledProfileTableCell>
+                  )
                 } else if (cellName === 'title') {
                   return (
                     <StyledProfileTableCell key={cellName} type={'profile'}>
                       <OverflowContainer inDashboard={inDashboard}>
                         <Typography sx={{ textDecoration: 'underline' }} noWrap>
-                          {cellData}
+                          <Link href={row?.link}>
+                            <a>{cellData}</a>
+                          </Link>
                         </Typography>
                       </OverflowContainer>
                     </StyledProfileTableCell>
@@ -585,30 +604,6 @@ const ReusableTableBody = (props) => {
                           <a
                             onClickCapture={() => {
                               router.push(`/profiles/${row?.publicKey}`)
-                            }}
-                          >
-                            {cellData}
-                          </a>
-                        </Typography>
-                      </OverflowContainer>
-                    </StyledProfileTableCell>
-                  )
-                } else if (cellName === 'artist') {
-                  return (
-                    <StyledProfileTableCell key={cellName} type={'profile'}>
-                      <OverflowContainer
-                        overflowWidth={'20vw'}
-                        inDashboard={inDashboard}
-                      >
-                        <Typography
-                          noWrap
-                          sx={{ hover: 'pointer', maxWidth: '20vw' }}
-                        >
-                          <a
-                            onClickCapture={() => {
-                              router.push(
-                                `/profiles/${row?.authorityPublicKey}`
-                              )
                             }}
                           >
                             {cellData}
