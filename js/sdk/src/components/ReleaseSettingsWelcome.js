@@ -10,7 +10,6 @@ import Button from '@mui/material/Button'
 import { Divider } from '@mui/material'
 import { useWallet } from '@solana/wallet-adapter-react'
 import SettingsIcon from '@mui/icons-material/Settings'
-import gateWhitelist from '../utils/gateWhitelist'
 const RELEASE_SETTINGS_WELCOME_PHASE_KEY = 'release-settings-welcome-phase-3'
 
 function ReleaseSettingsWelcome() {
@@ -60,34 +59,28 @@ function ReleaseSettingsWelcome() {
             <Typography variant="body1" gutterBottom>
               {`We'll be adding some more Release Settings here soon.`}
             </Typography>
-            {gateWhitelist.includes(publicKey?.toBase58()) && (
-              <>
-                <Divider sx={{ margin: '15px 0' }} />
-                <Typography
-                  variant="h4"
-                  gutterBottom
-                  sx={{ textDecoration: 'underline' }}
-                >
-                  Gates
-                </Typography>
-                <Typography variant="body1" gutterBottom>
-                  {`You have early access to Gates.  This feature allows you to upload files (lossless audio, stems, outtakes, PDFs, etc) that are exclusively available to collectors of your release.`}
-                </Typography>
-              </>
-            )}
-            <>
-              <Divider sx={{ margin: '15px 0' }} />
-              <Typography
-                variant="h4"
-                gutterBottom
-                sx={{ textDecoration: 'underline' }}
-              >
-                Close Edition
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                {`You can now close your Releases.  When you close your Release it will become Sold Out with an edition size equal to the total amount purchased.`}
-              </Typography>
-            </>
+            <Divider sx={{ margin: '15px 0' }} />
+            <Typography
+              variant="h4"
+              gutterBottom
+              sx={{ textDecoration: 'underline' }}
+            >
+              Gates
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {`Gates allow you to upload files (lossless audio, stems, outtakes, PDFs, etc) that are exclusively available to collectors of your release.`}
+            </Typography>
+            <Divider sx={{ margin: '15px 0' }} />
+            <Typography
+              variant="h4"
+              gutterBottom
+              sx={{ textDecoration: 'underline' }}
+            >
+              Close Edition
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {`You can now close your Releases.  When you close your Release it will become Sold Out with an edition size equal to the total amount purchased.`}
+            </Typography>
             <Button
               variant="outlined"
               onClick={() => handleClose()}

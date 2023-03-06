@@ -12,7 +12,6 @@ import Royalty from './Royalty'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import CloseIcon from '@mui/icons-material/Close'
 import CloseRelease from './CloseRelease'
-import gateWhitelist from '../utils/gateWhitelist'
 import ReleaseSettingsWelcome from './ReleaseSettingsWelcome'
 const ReleaseSettingsModal = ({
   releasePubkey,
@@ -71,7 +70,7 @@ const ReleaseSettingsModal = ({
               <Royalty releasePubkey={releasePubkey} release={release} />
             )}
 
-            {isAuthority && gateWhitelist.includes(publicKey.toBase58()) && (
+            {isAuthority && (
               <>
                 <Gates
                   release={release}
