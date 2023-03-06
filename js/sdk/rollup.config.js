@@ -50,6 +50,7 @@ export default [
       CloseRelease: 'src/components/CloseRelease.js',
       Gates: 'src/components/Gates.js',
       ReleaseSettingsModal: 'src/components/ReleaseSettingsModal.js',
+      WalletButton: 'src/components/WalletButton.js',
     },
     output: [
       {

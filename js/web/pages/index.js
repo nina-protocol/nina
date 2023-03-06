@@ -9,14 +9,10 @@ export default function Home() {
   const router = useRouter()
 
   useEffect(() => {
-    if (wallet.connected) {
-      let path = '/dashboard'
-      if (router.query.code) {
-        path += `?code=${router.query.code}`
-      }
-      router.push(path)
+    if (wallet.connected && router?.query?.code) {
+      router.push(`/dashboard?code=${router.query.code}`)
     }
-  }, [wallet])
+  }, [wallet, router.query.code])
   return (
     <>
       <Head>
