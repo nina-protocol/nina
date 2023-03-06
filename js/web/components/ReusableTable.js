@@ -88,7 +88,7 @@ const ReusableTableHead = (props) => {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'artist', label: 'Artist' })
     headCells.push({ id: 'title', label: 'Title' })
-    headCells.push({ id: 'releaseDate', label: 'Release' })
+    headCells.push({ id: 'releaseDate', label: 'Released' })
     if (inDashboard) {
       headCells.push({ id: 'price', label: 'Price' })
       headCells.push({ id: 'remaining', label: 'Remaining' })
