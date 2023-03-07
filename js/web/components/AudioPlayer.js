@@ -43,15 +43,17 @@ const WebAudioPlayer = () => {
           <Box width="60px">
             {track && (
               <Link href={`/${track.releasePubkey}`} passHref>
-                <AlbumArt>
-                  <Image
-                    src={getImageFromCDN(track.cover, 100)}
-                    loader={loader}
-                    height="60px"
-                    width="60px"
-                    layout="responsive"
-                  />
-                </AlbumArt>
+                <a>
+                  <AlbumArt>
+                    <Image
+                      src={getImageFromCDN(track.cover, 100)}
+                      loader={loader}
+                      height="60px"
+                      width="60px"
+                      layout="responsive"
+                    />
+                  </AlbumArt>
+                </a>
               </Link>
             )}
           </Box>
@@ -94,11 +96,15 @@ const WebAudioPlayer = () => {
             {track && (
               <ArtistInfo align="left" variant="subtitle1">
                 <Link href={`/profiles/${authority}`} passHref>
-                  <ReleaseArtist>{track.artist}, </ReleaseArtist>
+                  <a>
+                    <ReleaseArtist>{track.artist}, </ReleaseArtist>
+                  </a>
                 </Link>
 
                 <Link href={`/${track.releasePubkey}`} passHref>
-                  <ReleaseTitle>{track.title}</ReleaseTitle>
+                  <a>
+                    <ReleaseTitle>{track.title}</ReleaseTitle>
+                  </a>
                 </Link>
               </ArtistInfo>
             )}

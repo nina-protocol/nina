@@ -86,7 +86,7 @@ const CollectorModal = (props) => {
                         <tr key={i}>
                           <td>
                             <Link href={`/profiles/${entry}`} passHref>
-                              {displayNameForAccount(entry)}
+                              <a>{displayNameForAccount(entry)}</a>
                             </Link>
                           </td>
                           <td>
@@ -94,7 +94,7 @@ const CollectorModal = (props) => {
                               href={`/profiles/${entry}?view=collection`}
                               passHref
                             >
-                              View Collection
+                              <a>View Collection</a>
                             </Link>
                           </td>
                           {/* <td>

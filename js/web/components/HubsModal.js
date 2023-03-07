@@ -65,7 +65,7 @@ const HubsModal = (props) => {
                         <tr key={i}>
                           <td>
                             <Link href={`/hubs/${entry?.handle}`}>
-                              {entry?.data.displayName}
+                              <a>{entry?.data.displayName}</a>
                             </Link>
                           </td>
                         </tr>
