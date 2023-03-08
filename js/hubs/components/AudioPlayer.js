@@ -127,9 +127,7 @@ const HubAudioPlayer = ({ hubPubkey }) => {
                             : track.hubReleaseId
                         }`}
                       >
-                        <a>
-                        {`${track.artist} - ${track.title}`}
-                        </a>
+                        <a>{`${track.artist} - ${track.title}`}</a>
                       </Link>
                     </Typography>
                     <Typography>{`${formatDuration(

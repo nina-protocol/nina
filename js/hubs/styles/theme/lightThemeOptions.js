@@ -263,6 +263,9 @@ const lightThemeOptions = {
         'a, p, h1, h2, h3, h4, h4, h5, h6, figure, blockquote, dl, dd': {
           margin: '8px 0',
         },
+        a: {
+          textDecoration: 'none',
+        },
         '.ql-toolbar': {
           // QL classes are for overriding Quill components
           textAlign: 'left',
