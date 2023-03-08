@@ -14,7 +14,7 @@ import {
 } from '@nina-protocol/nina-internal-sdk/src/utils'
 import IdentityVerification from './IdentityVerification'
 import CreateHub from './CreateHub'
-
+import Balance from './Balance'
 const { getImageFromCDN, loader } = imageManager
 
 const Dots = dynamic(() => import('./Dots'))
@@ -426,10 +426,13 @@ const Profile = ({ profilePubkey }) => {
                 </>
               )}
             </Box>
-            {hasData && artistNames?.length > 0 && (
+            {/* {hasData && artistNames?.length > 0 && (
               <ProfileOverflowContainer>
                 {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
               </ProfileOverflowContainer>
+            )} */}
+            {inDashboard && (
+              <Balance profilePublishedReleases={profilePublishedReleases} />
             )}
           </ProfileHeaderContainer>
         </ProfileHeaderWrapper>
