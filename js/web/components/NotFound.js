@@ -1,16 +1,23 @@
-import React from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
 
-const NotFound = (props) => {
+const NotFound = ({path}) => {
+
   return (
     <StyledBox>
       <Typography variant="h2" align="left">
-        There&apos;s nothing here...
+        There was a problem loading the release.
       </Typography>
-
+      <BlueTypography
+        variant="h2"
+        align="left"
+        sx={{ mt: '15px', color: `palette.blue` }}
+      >
+        <Link href={path}>Retry?</Link>
+      </BlueTypography>
       <BlueTypography
         variant="h2"
         align="left"
