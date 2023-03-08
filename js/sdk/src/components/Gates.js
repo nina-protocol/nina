@@ -28,7 +28,7 @@ const Gates = ({
     () => gatesState[releasePubkey],
     [gatesState, releasePubkey]
   )
-  console.log('releaseGates: ', releaseGates)
+
   const unlockGate = async (gate) => {
     const releasePubkey = gate.releasePublicKey
 

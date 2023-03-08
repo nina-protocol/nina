@@ -202,54 +202,50 @@ const ReleasePurchase = (props) => {
         </Typography>
       )}
       <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
+      <Box display="flex" flexDirection="row" justifyContent="space-between">
         <Box
-          display="flex"
-          flexDirection="row"
-          justifyContent="space-between"
+          sx={{
+            width: '50%',
+            paddingRight: '4px',
+          }}
         >
-          <Box
-            sx={{
-              width: '50%',
-              paddingRight: '4px',
-            }}
+          <BuyButton
+            fullWidth
+            variant="outlined"
+            soldOut={release.remainingSupply === 0}
+            disabled={release.remainingSupply === 0 ? true : false}
+            onClick={(e) => handleSubmit(e)}
           >
-            <BuyButton
-              fullWidth
-              variant="outlined"
+            <BuyButtonTypography
               soldOut={release.remainingSupply === 0}
-              disabled={release.remainingSupply === 0 ? true : false}
-              onClick={(e) => handleSubmit(e)}
+              variant="body2"
+              align="left"
             >
-              <BuyButtonTypography
-                soldOut={release.remainingSupply === 0}
-                variant="body2"
-                align="left"
-              >
-                {txPending && <Dots msg="Preparing transaction" />}
-                {!txPending && pending && <Dots msg="Awaiting wallet approval" />}
-                {!txPending && !pending && buttonText}
-              </BuyButtonTypography>
-            </BuyButton>
-          </Box>
-          <Box
-            sx={{
-              width: '50%',
-              paddingLeft: '4px',
-            }}
-          >
-            <Gates
-              release={release}
-              metadata={metadata}
-              releasePubkey={releasePubkey}
-              isAuthority={isAuthority}
-              amountHeld={amountHeld}
-              inSettings={false}
-            />
-          </Box>
+              {txPending && <Dots msg="Preparing transaction" />}
+              {!txPending && pending && <Dots msg="Awaiting wallet approval" />}
+              {!txPending && !pending && buttonText}
+            </BuyButtonTypography>
+          </BuyButton>
         </Box>
+        <Box
+          sx={{
+            width: '50%',
+            paddingLeft: '4px',
+          }}
+        >
+          <Gates
+            release={release}
+            metadata={metadata}
+            releasePubkey={releasePubkey}
+            isAuthority={isAuthority}
+            amountHeld={amountHeld}
+            inSettings={false}
+          />
+        </Box>
+      </Box>
     </ReleasePurchaseWrapper>
   )
-}  
+}
 
 const BuyButton = styled(Button)(({ theme, soldOut }) => ({
   border: soldOut

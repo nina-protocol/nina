@@ -127,7 +127,6 @@ const MediaDropzone = ({
         }
       } else if (type === 'cropper') {
         if (status === 'removed') {
-          console.log('status === removed')
           setUncroppedImage(undefined)
         } else {
           setUncroppedImage({
