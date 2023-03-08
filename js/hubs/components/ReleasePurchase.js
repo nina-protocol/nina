@@ -213,7 +213,7 @@ const ReleasePurchase = (props) => {
             fullWidth
             variant="outlined"
             soldOut={release.remainingSupply === 0}
-            disabled={release.remainingSupply === 0 ? true : false}
+            disabled={release.remainingSupply === 0}
             onClick={(e) => handleSubmit(e)}
           >
             <BuyButtonTypography
