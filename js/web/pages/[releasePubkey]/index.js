@@ -4,24 +4,13 @@ import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
 import Dots from '../../components/Dots'
-import axios from 'axios'
 const Release = dynamic(() => import('../../components/Release'))
 const NotFound = dynamic(() => import('../../components/NotFound'))
 
 const ReleasePage = (props) => {
   const { metadata, loading, releasePubkey } = props
 
-  const revalidate = async (releasePubkey) => {
-    await axios.post(`${process.env.SERVERLESS_HOST}/api/revalidate?token=${process.env.REVALIDATE_TOKEN}`, {
-      path: `/${releasePubkey}`,
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-  }
   if (!metadata) {
-    revalidate(releasePubkey)
     return <NotFound path={`/${releasePubkey}`} />
   }
 

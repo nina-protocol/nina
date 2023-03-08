@@ -3,8 +3,26 @@ import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
+import axios from 'axios'
 
 const NotFound = ({path}) => {
+  const [revalidationAttempted, setRevalidationAttemped] = useState(false) 
+  const revalidate = async (path) => {
+    await axios.post(`${process.env.SERVERLESS_HOST}/api/revalidate?token=${process.env.REVALIDATE_TOKEN}`, {
+      path,
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  }
+
+  useEffect(() => {
+    if (!revalidationAttempted) {
+      revalidate(path)
+      setRevalidationAttemped(true)
+    }
+  }, [revalidationAttempted, path])
 
   return (
     <StyledBox>
