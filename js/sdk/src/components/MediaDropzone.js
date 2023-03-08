@@ -101,12 +101,11 @@ const MediaDropzone = ({
               `Your track is ${size} mb... \nPlease upload a file smaller than ${MAX_AUDIO_FILE_UPLOAD_SIZE} mbs`
             )
           }
-        } else {
+        } else if (type === 'artwork') {
           alert(
             `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} mbs`
           )
         }
-        remove()
       }
 
       if (type === 'artwork') {
@@ -128,6 +127,7 @@ const MediaDropzone = ({
         }
       } else if (type === 'cropper') {
         if (status === 'removed') {
+          console.log('status === removed')
           setUncroppedImage(undefined)
         } else {
           setUncroppedImage({
