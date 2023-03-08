@@ -27,7 +27,7 @@ const NotFound = ({path}) => {
   return (
     <StyledBox>
       <Typography variant="h2" align="left">
-        There was a problem loading the release.
+        There was a problem loading the Release.
       </Typography>
       <BlueTypography
         variant="h2"

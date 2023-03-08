@@ -5,13 +5,36 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import axios from 'axios'
 
 const NotFound = (props) => {
-  let { hub } = props
+  let { hub, path } = props
   const [hubHandle, setHubHandle] = useState()
   let hubPubkey
   const { saveHubsToState, getHubContent, hubState } = useContext(Hub.Context)
   const router = useRouter()
+
+  const [revalidationAttempted, setRevalidationAttemped] = useState(false)
+  const revalidate = async (path) => {
+    await axios.post(
+      `${process.env.SERVERLESS_HOST}/api/revalidate?token=${process.env.REVALIDATE_TOKEN}`,
+      {
+        path,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+  }
+
+  useEffect(() => {
+    if (!revalidationAttempted) {
+      revalidate(path)
+      setRevalidationAttemped(true)
+    }
+  }, [revalidationAttempted, path])
 
   useEffect(() => {
     if (hub) {
@@ -43,7 +66,14 @@ const NotFound = (props) => {
   return (
     <StyledBox>
       <Typography variant="h2" align="left">
-        There&apos;s nothing here...
+        There was a problem loading the Hub.
+      </Typography>
+      <Typography
+        variant="h2"
+        align="left"
+        sx={{ mt: '15px', color: `palette.blue` }}
+      >
+        <Link href={path}>Retry?</Link>
       </Typography>
 
       <Typography variant="h2" align="left" sx={{ mt: '15px' }}>
