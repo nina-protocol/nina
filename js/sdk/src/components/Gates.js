@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useEffect, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import { encodeBase64 } from 'tweetnacl-util'
 import axios from 'axios'
@@ -20,10 +20,15 @@ const Gates = ({
   const wallet = useWallet()
   const { enqueueSnackbar } = useSnackbar()
   const { fetchGatesForRelease, gatesState } = useContext(Release.Context)
+  useEffect(() => {
+    fetchGatesForRelease(releasePubkey)
+  }, [releasePubkey])
+
   const releaseGates = useMemo(
     () => gatesState[releasePubkey],
     [gatesState, releasePubkey]
   )
+
   const unlockGate = async (gate) => {
     const releasePubkey = gate.releasePublicKey
 
