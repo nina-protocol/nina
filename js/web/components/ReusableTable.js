@@ -560,7 +560,6 @@ const ReusableTableBody = (props) => {
                     />
                   )
                 } else if (cellName === 'artist') {
-                  console.log('row', row)
                   return (
                     <StyledProfileTableCell key={cellName} type={'profile'}>
                       <OverflowContainer
