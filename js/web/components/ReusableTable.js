@@ -31,6 +31,7 @@ import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import openInNewTab from '@nina-protocol/nina-internal-sdk/src/utils/openInNewTab'
 import Dots from './Dots'
+import openInNewTab from '@nina-protocol/nina-internal-sdk/src/utils/openInNewTab'
 const { getImageFromCDN, loader } = imageManager
 
 const Subscribe = dynamic(() => import('./Subscribe'))
@@ -526,6 +527,7 @@ const ReusableTableBody = (props) => {
         ?.slice()
         .sort(getComparator(order, orderBy))
         .map((row, i) => (
+<<<<<<< HEAD
           <TableRow
             key={i}
             hover
@@ -533,6 +535,9 @@ const ReusableTableBody = (props) => {
             onClickCapture={(e) => openInNewTab(e, window, row?.link, router)}
             // onClickCapture={() => console.log('row')}
           >
+=======
+          <TableRow key={i} hover sx={{ cursor: 'pointer' }}>
+>>>>>>> 0e70273 (link component fix)
             {Object.keys(row).map((cellName, i) => {
               const cellData = row[cellName]
               if (
@@ -632,6 +637,10 @@ const ReusableTableBody = (props) => {
                     />
                   )
                 } else if (cellName === 'artist') {
+<<<<<<< HEAD
+=======
+                  console.log('row', row)
+>>>>>>> 0e70273 (link component fix)
                   return (
                     <StyledProfileTableCell key={cellName} type={'profile'}>
                       <OverflowContainer
@@ -642,7 +651,16 @@ const ReusableTableBody = (props) => {
                           noWrap
                           sx={{ hover: 'pointer', maxWidth: '20vw' }}
                         >
+<<<<<<< HEAD
                           {cellData}
+=======
+                          <Link
+                            href={`/profiles/${row?.authorityPublicKey}`}
+                            passHref
+                          >
+                            <a>{cellData}</a>
+                          </Link>
+>>>>>>> 0e70273 (link component fix)
                         </Typography>
                       </OverflowContainer>
                     </StyledProfileTableCell>
