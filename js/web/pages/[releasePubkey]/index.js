@@ -13,7 +13,7 @@ const ReleasePage = (props) => {
   if (!metadata) {
     return <NotFound />
   }
-  
+
   return (
     <>
       <Head>
@@ -44,7 +44,11 @@ const ReleasePage = (props) => {
         <meta name="twitter:image" content={metadata?.image} />
         <meta name="og:image" content={metadata?.image} />
       </Head>
-      {loading ? <Dots size="80px" /> : <Release metadataSsr={metadata} hub={hub} />}
+      {loading ? (
+        <Dots size="80px" />
+      ) : (
+        <Release metadataSsr={metadata} hub={hub} />
+      )}
     </>
   )
 }
@@ -75,12 +79,12 @@ export const getStaticProps = async (context) => {
   try {
     await initSdkIfNeeded(true)
     const { release } = await NinaSdk.Release.fetch(releasePubkey)
-    
+
     const metadata = release.metadata
     if (release.publishedThroughHub) {
       metadata.publishedThroughHub = release.publishedThroughHub
     }
-  
+
     let hub
     if (release.publishedThroughHub) {
       hub = await NinaSdk.Hub.fetch(release.publishedThroughHub)
