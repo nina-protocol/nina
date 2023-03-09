@@ -84,7 +84,9 @@ const Releases = ({ type }) => {
 
         {type === 'new' && (
           <BlueTypography variant="h1">
-            <Link href="/releases">All Releases</Link>
+            <Link href="/releases">
+              <a>All Releases</a>
+            </Link>
           </BlueTypography>
         )}
       </ScrollablePageWrapper>

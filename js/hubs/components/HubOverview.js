@@ -186,7 +186,9 @@ const CtaButton = (params) => {
       <Typography display="inline">{title}</Typography>
       {link && (
         <Link href={link}>
-          <LinkTypography>({action})</LinkTypography>
+          <a>
+            <LinkTypography>({action})</LinkTypography>
+          </a>
         </Link>
       )}
       {!link && (

@@ -52,7 +52,9 @@ const Hubs = () => {
                 align="left"
                 sx={{ padding: { md: '40px 165px', xs: '0px 0px 10px' } }}
               >
-                <Link href="/all">Hubs </Link>
+                <Link href="/all">
+                  <a>Hubs</a>
+                </Link>
                 are a new way to publish, share, and discuss music.
               </BlueTypography>
 
@@ -65,7 +67,7 @@ const Hubs = () => {
                   className={classes.sectionHeader}
                 >
                   <Link href="/all" sx={{ textDecoration: 'none' }}>
-                    Featured Hubs
+                    <a>Featured Hubs</a>
                   </Link>
                 </Typography>
               </Box>
@@ -117,7 +119,7 @@ const Hubs = () => {
                       className={classes.sectionHeader}
                     >
                       <Link href="/all" sx={{ textDecoration: 'none' }}>
-                        Featured Hubs
+                        <a>Featured Hubs</a>
                       </Link>
                     </Typography>
                   </Box>
@@ -224,7 +226,7 @@ const Hubs = () => {
                             return (
                               <DashboardEntry key={hub.publicKey}>
                                 <Link href={`/${hub.handle}`}>
-                                  {hub?.data?.displayName}
+                                  <a>{hub?.data?.displayName}</a>
                                 </Link>
                               </DashboardEntry>
                             )

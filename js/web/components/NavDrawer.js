@@ -242,9 +242,11 @@ const NavDrawer = () => {
                   key={link}
                   passHref
                 >
-                  <ListItem button key={link}>
-                    <StyledListItemText primary={link} />
-                  </ListItem>
+                  <a>
+                    <ListItem button key={link}>
+                      <StyledListItemText primary={link} />
+                    </ListItem>
+                  </a>
                 </Link>
               )
           }

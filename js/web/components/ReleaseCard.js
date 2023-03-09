@@ -71,6 +71,7 @@ const ReleaseCard = (props) => {
         },
         responseType: 'blob',
       })
+
       if (response?.data) {
         const a = document.createElement('a')
         const url = window.URL.createObjectURL(response.data)
