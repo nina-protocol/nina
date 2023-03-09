@@ -31,7 +31,6 @@ import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import openInNewTab from '@nina-protocol/nina-internal-sdk/src/utils/openInNewTab'
 import Dots from './Dots'
-import openInNewTab from '@nina-protocol/nina-internal-sdk/src/utils/openInNewTab'
 const { getImageFromCDN, loader } = imageManager
 
 const Subscribe = dynamic(() => import('./Subscribe'))
@@ -642,12 +641,7 @@ const ReusableTableBody = (props) => {
                           noWrap
                           sx={{ hover: 'pointer', maxWidth: '20vw' }}
                         >
-                          <Link
-                            href={`/profiles/${row?.authorityPublicKey}`}
-                            passHref
-                          >
-                            <a>{cellData}</a>
-                          </Link>
+                          {cellData}
                         </Typography>
                       </OverflowContainer>
                     </StyledProfileTableCell>
