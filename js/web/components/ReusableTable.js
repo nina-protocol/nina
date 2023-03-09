@@ -311,7 +311,6 @@ const ReusableTableBody = (props) => {
     logEvent('track_download_dashboard', 'engagement', {
       publicKey: releasePubkey,
     })
-    console.log('downloadAs', url, name, releasePubkey)
     try {
       const response = await axios.get(url, {
         method: 'GET',
