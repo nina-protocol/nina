@@ -72,9 +72,11 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
     <DashboardWrapper md={9} columnSpacing={2} columnGap={2}>
       <Grid item md={6} sx={{ display: { xs: 'none', md: 'block' } }}>
         <Link href={`/${hubData.handle}/dashboard?action=publishRelease`}>
-          <CreateCta variant="outlined" fullWidth>
-            Publish a new release
-          </CreateCta>
+          <a>
+            <CreateCta variant="outlined" fullWidth>
+              Publish a new release
+            </CreateCta>
+          </a>
         </Link>
 
         <Typography fontStyle="italic" gutterBottom>
@@ -106,11 +108,13 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
                     <Link
                       href={`/${hubData.handle}/releases/${hubRelease.publicKey}`}
                     >
-                      {`${hubRelease.publishedThroughHub ? '*' : ''}${
-                        releaseState.metadata[hubRelease.release]?.name
-                      } (${hubRelease.sales} ${
-                        hubRelease.sales === 1 ? 'sale' : 'sales'
-                      })`}
+                      <a>
+                        {`${hubRelease.publishedThroughHub ? '*' : ''}${
+                          releaseState.metadata[hubRelease.release]?.name
+                        } (${hubRelease.sales} ${
+                          hubRelease.sales === 1 ? 'sale' : 'sales'
+                        })`}
+                      </a>
                     </Link>
                     {canToggleRelease(hubRelease.release) &&
                       hubReleasesShowArchived && (

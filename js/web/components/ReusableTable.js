@@ -29,6 +29,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import axios from 'axios'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import openInNewTab from '@nina-protocol/nina-internal-sdk/src/utils/openInNewTab'
 import Dots from './Dots'
 const { getImageFromCDN, loader } = imageManager
 
@@ -518,6 +519,7 @@ const ReusableTableBody = (props) => {
     }
     return formattedData
   })
+
   return (
     <TableBody>
       {rows
@@ -528,7 +530,7 @@ const ReusableTableBody = (props) => {
             key={i}
             hover
             sx={{ cursor: 'pointer' }}
-            onClick={() => router.push(row.link)}
+            onClickCapture={(e) => openInNewTab(e, window, row?.link, router)}
           >
             {Object.keys(row).map((cellName, i) => {
               const cellData = row[cellName]
@@ -628,12 +630,30 @@ const ReusableTableBody = (props) => {
                       key={cellName}
                     />
                   )
+                } else if (cellName === 'artist') {
+                  return (
+                    <StyledProfileTableCell key={cellName} type={'profile'}>
+                      <OverflowContainer
+                        overflowWidth={'20vw'}
+                        inDashboard={inDashboard}
+                      >
+                        <Typography
+                          noWrap
+                          sx={{ hover: 'pointer', maxWidth: '20vw' }}
+                        >
+                          {cellData}
+                        </Typography>
+                      </OverflowContainer>
+                    </StyledProfileTableCell>
+                  )
                 } else if (cellName === 'title') {
                   return (
                     <StyledProfileTableCell key={cellName} type={'profile'}>
                       <OverflowContainer inDashboard={inDashboard}>
                         <Typography sx={{ textDecoration: 'underline' }} noWrap>
-                          {cellData}
+                          <Link href={row?.link}>
+                            <a>{cellData}</a>
+                          </Link>
                         </Typography>
                       </OverflowContainer>
                     </StyledProfileTableCell>
@@ -649,30 +669,6 @@ const ReusableTableBody = (props) => {
                           <a
                             onClickCapture={() => {
                               router.push(`/profiles/${row?.publicKey}`)
-                            }}
-                          >
-                            {cellData}
-                          </a>
-                        </Typography>
-                      </OverflowContainer>
-                    </StyledProfileTableCell>
-                  )
-                } else if (cellName === 'artist') {
-                  return (
-                    <StyledProfileTableCell key={cellName} type={'profile'}>
-                      <OverflowContainer
-                        overflowWidth={'20vw'}
-                        inDashboard={inDashboard}
-                      >
-                        <Typography
-                          noWrap
-                          sx={{ hover: 'pointer', maxWidth: '20vw' }}
-                        >
-                          <a
-                            onClickCapture={() => {
-                              router.push(
-                                `/profiles/${row?.authorityPublicKey}`
-                              )
                             }}
                           >
                             {cellData}

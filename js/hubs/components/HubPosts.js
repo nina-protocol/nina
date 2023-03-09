@@ -112,7 +112,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
                       <Link
                         href={`/${hubData.handle}/posts/${hubPost.publicKey}`}
                       >
-                        {postContent.data.title}
+                        <a>{postContent.data.title}</a>
                       </Link>
                       {canTogglePost(hubPost) && hubPostsShowArchived && (
                         <AddIcon
