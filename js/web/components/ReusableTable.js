@@ -483,13 +483,20 @@ const ReusableTableBody = (props) => {
     }
     return formattedData
   })
+
   return (
     <TableBody>
       {rows
         ?.slice()
         .sort(getComparator(order, orderBy))
         .map((row, i) => (
-          <TableRow key={i} hover sx={{ cursor: 'pointer' }}>
+          <TableRow
+            key={i}
+            hover
+            sx={{ cursor: 'pointer' }}
+            onClickCapture={(e) => openInNewTab(e, window, row?.link, router)}
+            // onClickCapture={() => console.log('row')}
+          >
             {Object.keys(row).map((cellName, i) => {
               const cellData = row[cellName]
               if (
@@ -570,12 +577,7 @@ const ReusableTableBody = (props) => {
                           noWrap
                           sx={{ hover: 'pointer', maxWidth: '20vw' }}
                         >
-                          <Link
-                            href={`/profiles/${row?.authorityPublicKey}`}
-                            passHref
-                          >
-                            <a>{cellData}</a>
-                          </Link>
+                          {cellData}
                         </Typography>
                       </OverflowContainer>
                     </StyledProfileTableCell>
