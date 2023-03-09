@@ -11,6 +11,7 @@ import TableRow from '@mui/material/TableRow'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
+import DownloadIcon from '@mui/icons-material/Download'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
@@ -25,8 +26,11 @@ import { useRouter } from 'next/router'
 import { orderBy } from 'lodash'
 import dynamic from 'next/dynamic'
 import { useWallet } from '@solana/wallet-adapter-react'
+import axios from 'axios'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import openInNewTab from '@nina-protocol/nina-internal-sdk/src/utils/openInNewTab'
+import Dots from './Dots'
 const { getImageFromCDN, loader } = imageManager
 
 const Subscribe = dynamic(() => import('./Subscribe'))
@@ -85,7 +89,7 @@ const ReusableTableHead = (props) => {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'artist', label: 'Artist' })
     headCells.push({ id: 'title', label: 'Title' })
-    headCells.push({ id: 'releaseDate', label: 'Release Date' })
+    headCells.push({ id: 'releaseDate', label: 'Released' })
     if (inDashboard) {
       headCells.push({ id: 'price', label: 'Price' })
       headCells.push({ id: 'remaining', label: 'Remaining' })
@@ -233,6 +237,7 @@ const ReusableTableBody = (props) => {
     dashboardPublicKey,
     order,
     orderBy,
+    inCollection,
   } = props
   const router = useRouter()
   const {
@@ -249,7 +254,7 @@ const ReusableTableBody = (props) => {
     useContext(Nina.Context)
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
-
+  const [downloadId, setDownloadId] = useState(false)
   const snackbarHandler = (message) => {
     const snackbarMessage = enqueueSnackbar(message, {
       persistent: 'true',
@@ -302,6 +307,35 @@ const ReusableTableBody = (props) => {
     }
   }
 
+  const downloadAs = async (url, name, releasePubkey) => {
+    setDownloadId(releasePubkey)
+    logEvent('track_download_dashboard', 'engagement', {
+      publicKey: releasePubkey,
+    })
+    try {
+      const response = await axios.get(url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        },
+        responseType: 'blob',
+      })
+      if (response?.data) {
+        const a = document.createElement('a')
+        const url = window.URL.createObjectURL(response.data)
+        a.href = url
+        a.download = name
+        a.click()
+      }
+      enqueueSnackbar('Release Downloaded', { variant: 'success' })
+      setDownloadId(undefined)
+    } catch (error) {
+      enqueueSnackbar('Release Not Downloaded', { variant: 'error' })
+      setDownloadId(undefined)
+    }
+  }
+
   const getComparator = (order, orderBy, type) => {
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
@@ -322,6 +356,8 @@ const ReusableTableBody = (props) => {
       formattedData = {
         ctas: playData,
         id: releasePubkey,
+        uri: data?.metadata.properties.files[0].uri,
+        fileName: data?.metadata.name,
         link: `/${releasePubkey}`,
         image: data?.metadata?.image,
         date: data?.metadata?.properties?.date,
@@ -502,6 +538,8 @@ const ReusableTableBody = (props) => {
               if (
                 cellName !== 'id' &&
                 cellName !== 'date' &&
+                cellName !== 'uri' &&
+                cellName !== 'fileName' &&
                 cellName !== 'link' &&
                 cellName !== 'authorityPublicKey' &&
                 cellName !== 'publicKey' &&
@@ -509,7 +547,11 @@ const ReusableTableBody = (props) => {
               ) {
                 if (cellName === 'ctas') {
                   return (
-                    <StyledTableCellButtonsContainer align="left" key={i}>
+                    <StyledTableCellButtonsContainer
+                      align="left"
+                      key={i}
+                      inCollection={inCollection}
+                    >
                       <Button
                         sx={{ cursor: 'pointer' }}
                         id={row.id}
@@ -536,6 +578,29 @@ const ReusableTableBody = (props) => {
                           />
                         )}
                       </Button>
+                      {inCollection && (
+                        <Button
+                          onClickCapture={(e) => {
+                            e.stopPropagation()
+                            downloadAs(
+                              row.uri,
+                              `${row.fileName
+                                .replace(/[^a-z0-9]/gi, '_')
+                                .toLowerCase()}___nina.mp3`,
+                              row.id
+                            )
+                          }}
+                          disabled={downloadId === row.id}
+                        >
+                          {downloadId === row.id ? (
+                            <Box sx={{ marginLeft: '8px' }}>
+                              <Dots />
+                            </Box>
+                          ) : (
+                            <DownloadIcon sx={{ color: 'black' }} />
+                          )}
+                        </Button>
+                      )}
                     </StyledTableCellButtonsContainer>
                   )
                 } else if (cellName === 'image') {
@@ -707,9 +772,9 @@ const ReusableTableBody = (props) => {
                 ) {
                   return (
                     <HubTableCell key={cellName}>
-                      <CollectContainer>
+                      <Box sx={{ paddingLeft: '5px' }}>
                         <Typography>{cellData}</Typography>
-                      </CollectContainer>
+                      </Box>
                     </HubTableCell>
                   )
                 } else if (
@@ -771,6 +836,7 @@ const ReusableTable = ({
   isActiveView,
   hasOverflow,
   minHeightOverride = false,
+  inCollection,
 }) => {
   const [order, setOrder] = useState('desc')
   const [orderBy, setOrderBy] = useState('')
@@ -805,6 +871,7 @@ const ReusableTable = ({
             isActiveView={isActiveView}
             order={order}
             orderBy={orderBy}
+            inCollection={inCollection}
           />
         </Table>
       </ResponsiveTableContainer>
@@ -843,11 +910,10 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
 }))
 
 const StyledTableCell = styled(TableCell)(({ theme, type }) => ({
-  padding: '5px 5px',
+  padding: '5px 0px',
   textAlign: 'left',
   height: '50px',
-  width: '61vw',
-
+  width: '26vw',
   alignItems: 'center',
   [theme.breakpoints.down('md')]: {
     width: '30vw',
@@ -871,16 +937,18 @@ const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
   textAlign: 'left',
   padding: '5px',
 }))
-const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
-  width: '100px',
-  textAlign: 'left',
-  padding: '5px 0px',
-  textAlign: 'left',
-  minWidth: '100px',
-  [theme.breakpoints.down('md')]: {
-    padding: '0px',
-  },
-}))
+const StyledTableCellButtonsContainer = styled(TableCell)(
+  ({ theme, inCollection }) => ({
+    width: '100px',
+    textAlign: 'left',
+    padding: '5px 0px',
+    textAlign: 'left',
+    minWidth: inCollection ? '150px' : '100px',
+    [theme.breakpoints.down('md')]: {
+      padding: '0px',
+    },
+  })
+)
 const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
   textAlign: 'left',
