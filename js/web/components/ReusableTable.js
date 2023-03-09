@@ -29,7 +29,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import axios from 'axios'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
-
+import Dots from './Dots'
 const { getImageFromCDN, loader } = imageManager
 
 const Subscribe = dynamic(() => import('./Subscribe'))
@@ -253,7 +253,7 @@ const ReusableTableBody = (props) => {
     useContext(Nina.Context)
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
-
+  const [downloadId, setDownloadId] = useState(false)
   const snackbarHandler = (message) => {
     const snackbarMessage = enqueueSnackbar(message, {
       persistent: 'true',
@@ -307,10 +307,11 @@ const ReusableTableBody = (props) => {
   }
 
   const downloadAs = async (url, name, releasePubkey) => {
+    setDownloadId(releasePubkey)
     logEvent('track_download_dashboard', 'engagement', {
       publicKey: releasePubkey,
     })
-
+    console.log('downloadAs', url, name, releasePubkey)
     try {
       const response = await axios.get(url, {
         method: 'GET',
@@ -328,8 +329,10 @@ const ReusableTableBody = (props) => {
         a.click()
       }
       enqueueSnackbar('Release Downloaded', { variant: 'success' })
+      setDownloadId(undefined)
     } catch (error) {
-      enqueueSnackbar('Release Downloaded', { variant: 'error' })
+      enqueueSnackbar('Release Not Downloaded', { variant: 'error' })
+      setDownloadId(undefined)
     }
   }
 
@@ -585,8 +588,15 @@ const ReusableTableBody = (props) => {
                               row.id
                             )
                           }}
+                          disabled={downloadId === row.id}
                         >
-                          <DownloadIcon sx={{ color: 'black' }} />
+                          {downloadId === row.id ? (
+                            <Box sx={{ marginLeft: '8px' }}>
+                              <Dots />
+                            </Box>
+                          ) : (
+                            <DownloadIcon sx={{ color: 'black' }} />
+                          )}
                         </Button>
                       )}
                     </StyledTableCellButtonsContainer>
