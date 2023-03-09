@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect, useMemo } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
@@ -11,7 +12,7 @@ import NinaBox from './NinaBox'
 import ReleaseCard from './ReleaseCard'
 import ReleasePurchase from './ReleasePurchase'
 import ExchangeComponent from './Exchange'
-const ReleaseComponent = ({ metadataSsr }) => {
+const ReleaseComponent = ({ metadataSsr, hub }) => {
   const router = useRouter()
   const releasePubkey = router.query.releasePubkey
   const [amountHeld, setAmountHeld] = useState()
@@ -22,10 +23,11 @@ const ReleaseComponent = ({ metadataSsr }) => {
   const { getHubsForUser, filterHubsForUser, hubState } = useContext(
     Hub.Context
   )
+  const { getVerificationsForUser } = useContext(Nina.Context)
   const [userHubs, setUserHubs] = useState()
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [releaseGates, setReleaseGates] = useState()
-
+  const [hasLoadedVerifications, setHasLoadedVerifications] = useState(false)
   const [metadata, setMetadata] = useState(
     metadataSsr || releaseState?.metadata[releasePubkey] || null
   )
@@ -41,6 +43,18 @@ const ReleaseComponent = ({ metadataSsr }) => {
       return false
     }
   }, [release, wallet.connected])
+
+  useEffect(() => {
+    const handleGetVerifications = async (authority) => {
+      if (authority && !hasLoadedVerifications) {
+        await getVerificationsForUser(authority)
+        setHasLoadedVerifications(true)
+      }
+    }
+    if (release) {
+      handleGetVerifications(release.authority)
+    }
+  }, [release])
 
   useEffect(() => {
     handleFetchGates(releasePubkey)
@@ -119,6 +133,7 @@ const ReleaseComponent = ({ metadataSsr }) => {
               amountHeld={amountHeld}
               isAuthority={isAuthority}
               userIsRecipient={userIsRecipient}
+              hub={hub}
             />
             <ReleaseCtaWrapper>
               <ReleasePurchase
