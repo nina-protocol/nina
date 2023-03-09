@@ -8,10 +8,7 @@ import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import {
-  imageManager,
-  timeSince,
-} from '@nina-protocol/nina-internal-sdk/src/utils'
+import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import IdentityVerification from './IdentityVerification'
 import CreateHub from './CreateHub'
 
@@ -62,7 +59,7 @@ const Profile = ({ profilePubkey }) => {
   const [profileVerifications, setProfileVerifications] = useState()
 
   const [inDashboard, setInDashboard] = useState(false)
-
+  const [inCollection, setInCollection] = useState(false)
   const [fetched, setFetched] = useState(false)
 
   const [views, setViews] = useState([
@@ -107,6 +104,7 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
       setInDashboard(true)
+      setInCollection(true)
     }
   }, [wallet, profilePubkey])
 
@@ -278,7 +276,7 @@ const Profile = ({ profilePubkey }) => {
     tableContainerRef.current.scrollTo(0, 0)
   }
 
-  const renderTables = (activeView, inDashboard, profilePublicKey) => {
+  const renderTables = (activeView, inDashboard) => {
     switch (activeView) {
       case 0:
         return (
@@ -314,6 +312,7 @@ const Profile = ({ profilePubkey }) => {
                 tableType={'profileCollectionReleases'}
                 items={profileCollectionReleases}
                 hasOverflow={true}
+                inCollection={inCollection}
               />
             )}
           </>
@@ -460,7 +459,7 @@ const Profile = ({ profilePubkey }) => {
             </ProfileDotWrapper>
           )}
           <ProfileTableContainer ref={tableContainerRef}>
-            {hasData && renderTables(activeView, inDashboard)}
+            {hasData && renderTables(activeView, inDashboard, inCollection)}
           </ProfileTableContainer>
         </>
       </ProfileContainer>
