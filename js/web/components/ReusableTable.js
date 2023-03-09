@@ -307,7 +307,7 @@ const ReusableTableBody = (props) => {
   }
 
   const downloadAs = async (url, name, releasePubkey) => {
-    logEvent('track_download', 'engagement', {
+    logEvent('track_download_dashboard', 'engagement', {
       publicKey: releasePubkey,
     })
 
