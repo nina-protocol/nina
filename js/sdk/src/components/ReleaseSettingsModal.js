@@ -14,6 +14,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import CloseRelease from './CloseRelease'
 import gateWhitelist from '../utils/gateWhitelist'
 import ReleaseSettingsWelcome from './ReleaseSettingsWelcome'
+import ShareToTwitter from './ShareToTwitter'
 const ReleaseSettingsModal = ({
   releasePubkey,
   metadata,
@@ -30,7 +31,7 @@ const ReleaseSettingsModal = ({
   const handleClose = () => {
     setOpen(false)
   }
-
+  console.log('release', metadata)
   return (
     <Root>
       {isAuthority && <ReleaseSettingsWelcome />}
@@ -70,7 +71,11 @@ const ReleaseSettingsModal = ({
             {userIsRecipient && (
               <Royalty releasePubkey={releasePubkey} release={release} />
             )}
-
+            <ShareToTwitter
+              artist={metadata.properties.artist}
+              title={metadata.properties.title}
+              url={metadata.external_url?.slice(8)}
+            />
             {isAuthority && gateWhitelist.includes(publicKey.toBase58()) && (
               <>
                 <Gates

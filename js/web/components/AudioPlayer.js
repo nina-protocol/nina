@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton'
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import PauseIcon from '@mui/icons-material/Pause'
+import ShareIcon from '@mui/icons-material/Share'
 import Typography from '@mui/material/Typography'
 import Image from 'next/image'
 import QueueDrawer from './QueueDrawer'
@@ -159,8 +160,16 @@ const WebAudioPlayer = () => {
                 }
                 disableFocusRipple={true}
                 disableRipple={true}
+                sx={{ color: 'black', marginLeft: '30px', padding: '0' }}
               >
-                <Image src={'/shareArrow.svg'} width="15px" height="15px" />
+                <a>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ padding: '0', textTransform: 'none' }}
+                  >
+                    Share
+                  </Typography>
+                </a>
               </Button>
             </LinkWrapper>
           )}
