@@ -64,7 +64,7 @@ const Gates = ({
           publicKey: releasePubkey,
           wallet: wallet?.publicKey?.toBase58() || 'unknown',
         })
-  
+
         const a = document.createElement('a')
         const url = window.URL.createObjectURL(response.data)
         a.href = url

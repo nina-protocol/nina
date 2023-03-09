@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -22,8 +21,6 @@ const ReleaseSettingsModal = ({
   amountHeld,
   releaseGates,
 }) => {
-  const { publicKey } = useWallet()
-
   const [open, setOpen] = useState(false)
 
   const handleClose = () => {

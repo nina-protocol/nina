@@ -49,7 +49,7 @@ const GateCreateModal = ({
       const signature = await wallet.signMessage(message)
       const signatureBase64 = encodeBase64(signature)
       const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.]/g, '_')
-      
+
       const response = await axios.post(`${process.env.NINA_GATE_URL}/gate`, {
         fileSize: file.size,
         fileName: sanitizedFileName,
@@ -231,13 +231,14 @@ const GateCreateModal = ({
                     case 'psd':
                       setFile(e.target.files[0])
                       break
-                                    
+
                     default:
                       enqueueSnackbar('File type not supported', {
                         variant: 'failure',
                       })
                       break
-                  }}}
+                  }
+                }}
                 style={{ display: 'none' }}
               />
             </Button>
