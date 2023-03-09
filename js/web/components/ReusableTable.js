@@ -527,17 +527,12 @@ const ReusableTableBody = (props) => {
         ?.slice()
         .sort(getComparator(order, orderBy))
         .map((row, i) => (
-<<<<<<< HEAD
           <TableRow
             key={i}
             hover
             sx={{ cursor: 'pointer' }}
             onClickCapture={(e) => openInNewTab(e, window, row?.link, router)}
-            // onClickCapture={() => console.log('row')}
           >
-=======
-          <TableRow key={i} hover sx={{ cursor: 'pointer' }}>
->>>>>>> 0e70273 (link component fix)
             {Object.keys(row).map((cellName, i) => {
               const cellData = row[cellName]
               if (
@@ -637,10 +632,6 @@ const ReusableTableBody = (props) => {
                     />
                   )
                 } else if (cellName === 'artist') {
-<<<<<<< HEAD
-=======
-                  console.log('row', row)
->>>>>>> 0e70273 (link component fix)
                   return (
                     <StyledProfileTableCell key={cellName} type={'profile'}>
                       <OverflowContainer
@@ -651,16 +642,12 @@ const ReusableTableBody = (props) => {
                           noWrap
                           sx={{ hover: 'pointer', maxWidth: '20vw' }}
                         >
-<<<<<<< HEAD
-                          {cellData}
-=======
                           <Link
                             href={`/profiles/${row?.authorityPublicKey}`}
                             passHref
                           >
                             <a>{cellData}</a>
                           </Link>
->>>>>>> 0e70273 (link component fix)
                         </Typography>
                       </OverflowContainer>
                     </StyledProfileTableCell>
