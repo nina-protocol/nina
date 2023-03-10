@@ -1,4 +1,4 @@
-import React, { useMemo, useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import NinaBox from './NinaBox'
 import Box from '@mui/material/Box'
@@ -7,14 +7,22 @@ import { Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import { useRouter } from 'next/router'
 import ShareToTwitter from './SharetoTwitter'
-import Gates from './Gates'
 import Release from '../contexts/Release'
+import GateCreateModal from './GateCreateModal'
 
 const ReleaseCreateSuccess = (props) => {
   const router = useRouter()
+  const {
+    hubHandle,
+    inHubs,
+    releasePubkey,
+    hubReleaseKey,
+    artist,
+    title,
+    url,
+    image,
+  } = props
   const { fetchGatesForRelease, gatesState } = useContext(Release.Context)
-
-  const { hubHandle, inHubs, releasePubkey } = props
   const releaseGates = useMemo(
     () => gatesState[releasePubkey],
     [gatesState, releasePubkey]
@@ -22,9 +30,9 @@ const ReleaseCreateSuccess = (props) => {
 
   const releaseCreateRerouteHandler = (inHubs) => {
     if (inHubs) {
-      router.push(`/${hubHandle}/releases/${releasePubkey}`)
+      router.push(`/${hubHandle}/releases/${hubReleaseKey}`)
     } else {
-      router.push(`/${releasePubkey}`)
+      router.push(`/${releasePubkey.toBase58()}`)
     }
   }
 
@@ -33,17 +41,26 @@ const ReleaseCreateSuccess = (props) => {
       <NinaBox>
         <HubSuccessWrapper>
           <Typography variant="h1" sx={{ paddingBottom: '16px' }}>
-            Your Release was created.
+            Your release was created.
           </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+            <img
+              src={`https://arweave.net/${image}`}
+              width={'200px'}
+              height={'200px'}
+            />
+            <Typography variant="h2" sx={{ paddingLeft: '16px' }}>
+              {artist} - {title}
+            </Typography>
+          </Box>
 
           <Box sx={{ paddingTop: '32px' }}>
-            <ShareToTwitter />
-            <Gates
-              inSettings={true}
-              releaseGates={releaseGates}
-              isAuthority={true}
-              releasePubkey={releasePubkey}
+            <ShareToTwitter artist={artist} title={title} url={url} />
+            <GateCreateModal
               fetchGatesForRelease={fetchGatesForRelease}
+              name={`${artist} - ${title}`}
+              releasePubkey={releasePubkey}
+              gates={releaseGates}
             />
             <Button
               fullWidth

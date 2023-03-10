@@ -128,7 +128,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const [awaitingPendingReleases, setAwaitingPendingReleases] = useState(false)
   const [showLowUploadModal, setShowLowUploadModal] = useState(false)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
-  const hubDataInWeb = useMemo(() =>  hubState[selectedHub], [hubState, hubPubkey])
 
   const availableStorage = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
@@ -138,7 +137,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
   )
-
   useEffect(() => {
     refreshBundlr()
     getUserBalances()
@@ -202,6 +200,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     let publicKey
+
     if (wallet.connected) {
       publicKey = wallet.publicKey.toBase58()
       getUserHubs(publicKey)
@@ -210,7 +209,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     if (wallet.connected) {
-       console.log('hubData', hubDataInWeb)
       let publicKey = wallet?.publicKey?.toBase58()
       if (fetchedHubsForUser.has(publicKey)) {
         const hubs = filterHubsForUser(publicKey)
@@ -513,7 +511,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     }
   }
 
- 
   return (
     <Grid item md={12}>
       {!wallet.connected && (
@@ -554,8 +551,17 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
       {releaseCreated && (
         <ReleaseCreateSuccess
           releasePubkey={releasePubkey}
+          hubReleaseKey={releaseInfo?.hubRelease?.toBase58()}
           inHubs={hubPubkey !== undefined}
-          hubHandle={hubPubkey !== undefined ? hubData.handle : hubDataInWeb.handle}
+          hubHandle={hubPubkey !== undefined ? hubData.handle : ''}
+          artist={formValues.releaseForm.artist}
+          title={formValues.releaseForm.title}
+          url={`/${
+            hubPubkey !== undefined
+              ? `${hubData.handle}/releases/${releasePubkey}`
+              : releasePubkey
+          }`}
+          image={artworkTx}
         />
       )}
 
