@@ -41,6 +41,9 @@ const UploadInfoModal = dynamic(() => import('./UploadInfoModal'), {
 })
 const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
+const ReleaseCreateSuccess = dynamic(() => import('./ReleaseCreateSuccess'), {
+  ssr: false,
+})
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist is required'),
@@ -545,10 +548,11 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
             </NpcMessage>
           </Box>
         )}
+      <ReleaseCreateSuccess />
 
       {wallet?.connected && !solBalanceFetched && <Dots size={'50px'} />}
-
       {wallet?.connected &&
+        releaseCreated &&
         solBalanceFetched &&
         (npcAmountHeld >= 1 || profileHubs?.length > 0 || hubPubkey) && (
           <>

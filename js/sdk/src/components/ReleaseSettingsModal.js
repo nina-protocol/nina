@@ -31,7 +31,6 @@ const ReleaseSettingsModal = ({
   const handleClose = () => {
     setOpen(false)
   }
-  console.log('release', metadata)
   return (
     <Root>
       {isAuthority && <ReleaseSettingsWelcome />}
