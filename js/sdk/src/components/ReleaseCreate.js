@@ -128,6 +128,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const [awaitingPendingReleases, setAwaitingPendingReleases] = useState(false)
   const [showLowUploadModal, setShowLowUploadModal] = useState(false)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
+  const hubDataInWeb = useMemo(() =>  hubState[selectedHub], [hubState, hubPubkey])
 
   const availableStorage = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
@@ -209,6 +210,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     if (wallet.connected) {
+       console.log('hubData', hubDataInWeb)
       let publicKey = wallet?.publicKey?.toBase58()
       if (fetchedHubsForUser.has(publicKey)) {
         const hubs = filterHubsForUser(publicKey)
@@ -511,6 +513,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     }
   }
 
+ 
   return (
     <Grid item md={12}>
       {!wallet.connected && (
@@ -548,11 +551,17 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
             </NpcMessage>
           </Box>
         )}
-      <ReleaseCreateSuccess />
+      {releaseCreated && (
+        <ReleaseCreateSuccess
+          releasePubkey={releasePubkey}
+          inHubs={hubPubkey !== undefined}
+          hubHandle={hubPubkey !== undefined ? hubData.handle : hubDataInWeb.handle}
+        />
+      )}
 
       {wallet?.connected && !solBalanceFetched && <Dots size={'50px'} />}
       {wallet?.connected &&
-        releaseCreated &&
+        !releaseCreated &&
         solBalanceFetched &&
         (npcAmountHeld >= 1 || profileHubs?.length > 0 || hubPubkey) && (
           <>

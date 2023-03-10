@@ -19,29 +19,6 @@ const ReleaseCreateSuccess = (props) => {
     () => gatesState[releasePubkey],
     [gatesState, releasePubkey]
   )
-  // const successCopy = inHubs
-  //   ? {
-  //       primary: `/${hubHandle}`,
-  //       secondary: `https://ninaprotocol.com/hubs/${hubHandle}`,
-  //       primaryString: `hubs.ninaprotocol.com/${hubHandle}`,
-  //       secondaryString: `ninaprotocol.com/hubs/${hubHandle}`,
-  //       primaryDescription: `  A customizable page that exclusively surfaces your
-  //                   content.`,
-  //       secondaryDescription: `This is where your Hub can be found on `,
-  //       primaryHyperlink: undefined,
-  //       secondaryHyperlink: `ninaprotocol.com`,
-  //     }
-  //   : {
-  //       primary: `/hubs/${hubHandle}`,
-  //       secondary: `${process.env.NINA_HUBS_URL}/${hubHandle}`,
-  //       primaryString: `ninaprotocol.com/hubs/${hubHandle}`,
-  //       secondaryString: `hubs.ninaprotocol.com/${hubHandle}`,
-  //       primaryDescription: `This is where your Hub can be found on `,
-  //       secondaryDescription: `  A customizable page that exclusively surfaces your
-  //                   content.`,
-  //       primaryHyperlink: `ninaprotocol.com`,
-  //       secondaryHyperlink: undefined,
-  //     }
 
   const releaseCreateRerouteHandler = (inHubs) => {
     if (inHubs) {
@@ -56,7 +33,7 @@ const ReleaseCreateSuccess = (props) => {
       <NinaBox>
         <HubSuccessWrapper>
           <Typography variant="h1" sx={{ paddingBottom: '16px' }}>
-            Your Release has been created.
+            Your Release was created.
           </Typography>
 
           <Box sx={{ paddingTop: '32px' }}>
@@ -75,7 +52,7 @@ const ReleaseCreateSuccess = (props) => {
               sx={{ height: '54px', mt: 1, '&:hover': { opacity: '50%' } }}
             >
               <Typography variant="body2" align="left">
-                View Release{' '}
+                View Release
               </Typography>
             </Button>
           </Box>
