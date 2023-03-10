@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid'
 import { Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import { useRouter } from 'next/router'
-import ShareToTwitter from './SharetoTwitter'
+import ShareToTwitter from './ShareToTwitter'
 import Release from '../contexts/Release'
 import GateCreateModal from './GateCreateModal'
 
