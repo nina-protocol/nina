@@ -23,6 +23,7 @@ import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 import DevnetIndicator from '@nina-protocol/nina-internal-sdk/esm/DevnetIndicator'
 import PendingReleasesIndicator from '@nina-protocol/nina-internal-sdk/esm/PendingReleasesIndicator'
 import FeedDrawer from './FeedDrawer'
+import WalletButton from '@nina-protocol/nina-internal-sdk/esm/WalletButton'
 
 const NavBar = () => {
   const router = useRouter()
@@ -103,7 +104,7 @@ const NavBar = () => {
             </UploadWrapper>
             {wallet.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
-                <StyledWalletButton>
+                <StyledWalletButton router={router}>
                   <Typography
                     variant="subtitle1"
                     sx={{ textTransform: 'none' }}
@@ -289,7 +290,7 @@ const StyledWalletDialogProvider = styled(WalletDialogProvider)(
   })
 )
 
-const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
+const StyledWalletButton = styled(WalletButton)(({ theme }) => ({
   textTransform: 'capitalize',
   paddingRight: '20px',
   paddingLeft: '20px',
