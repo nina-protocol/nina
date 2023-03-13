@@ -425,11 +425,6 @@ const Profile = ({ profilePubkey }) => {
                 </>
               )}
             </Box>
-            {hasData && artistNames?.length > 0 && (
-              <ProfileOverflowContainer>
-                {`Publishes as ${artistNames?.map((name) => name).join(', ')}`}
-              </ProfileOverflowContainer>
-            )}
           </ProfileHeaderContainer>
         </ProfileHeaderWrapper>
         {hasData && (
