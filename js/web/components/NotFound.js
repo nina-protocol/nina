@@ -33,13 +33,15 @@ const NotFound = ({ path }) => {
       <Typography variant="h2" align="left">
         There was a problem loading the Release.
       </Typography>
-      <BlueTypography
-        variant="h2"
-        align="left"
-        sx={{ mt: '15px', color: `palette.blue` }}
-      >
-        <Link href={path}>Retry?</Link>
-      </BlueTypography>
+      {path.length > 0 && (
+        <BlueTypography
+          variant="h2"
+          align="left"
+          sx={{ mt: '15px', color: `palette.blue` }}
+        >
+          <Link href={path}>Retry?</Link>
+        </BlueTypography>
+      )}
       <BlueTypography
         variant="h2"
         align="left"
