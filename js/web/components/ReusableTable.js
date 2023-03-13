@@ -732,14 +732,12 @@ const ReusableTableBody = (props) => {
                     return (
                       <SearchResultTableCell key={cellName}>
                         <SearchResultOverflowContainer>
-                          <SearchResultOverflowContainer>
-                            <Typography
-                              noWrap
-                              onClickCapture={() => router.push(`/${row?.id}`)}
-                            >
-                              <a>{cellData}</a>
-                            </Typography>
-                          </SearchResultOverflowContainer>
+                          <Typography
+                            noWrap
+                            onClickCapture={() => router.push(`/${row?.id}`)}
+                          >
+                            <a>{cellData}</a>
+                          </Typography>
                         </SearchResultOverflowContainer>
                       </SearchResultTableCell>
                     )
@@ -1105,7 +1103,6 @@ const SearchResultOverflowContainer = styled(Box)(({ theme }) => ({
   width: '70vw',
   textAlign: 'left',
   textOverflow: 'ellipsis',
-  border: '2px solid red',
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
     width: '80vw',
