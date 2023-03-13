@@ -77,7 +77,9 @@ const NotFound = (props) => {
       </Typography>
 
       <Typography variant="h2" align="left" sx={{ mt: '15px' }}>
-        <Link href="/all">Explore all Hubs</Link>
+        <Link href="/all">
+          <a>Explore all Hubs</a>
+        </Link>
       </Typography>
 
       {(router.query.hubPostPubkey || router.query.hubReleasePubkey) &&
@@ -85,9 +87,11 @@ const NotFound = (props) => {
           <>
             <Typography variant="h2" align="left" sx={{ mt: '15px' }}>
               <Link href={`/${router.query.hubPubkey}`}>
-                {`Explore ${
-                  hub?.data.displayName || hubData?.data.displayName
-                }`}
+                <a>
+                  {`Explore ${
+                    hub?.data.displayName || hubData?.data.displayName
+                  }`}
+                </a>
               </Link>
             </Typography>
           </>

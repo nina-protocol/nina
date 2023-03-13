@@ -528,13 +528,17 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
               </Typography>
               <EmailCapture size="medium" />
               <Typography variant="h3" sx={{ mt: 1 }}>
-                Check our <Link href="/faq">FAQ</Link> or hit us at{' '}
+                Check our{' '}
+                <Link href="/faq">
+                  <a>FAQ</a>
+                </Link>{' '}
+                or hit us at{' '}
                 <Link
                   target="_blank"
                   rel="noreferrer"
                   href="href=mailto:artists@ninaprotocol.com"
                 >
-                  artists@ninaprotocol.com
+                  <a>artists@ninaprotocol.com</a>
                 </Link>{' '}
                 with any questions.
               </Typography>

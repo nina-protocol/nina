@@ -63,14 +63,18 @@ const NavBar = () => {
         <Breadcrumbs />
         <SearchIconWrapper>
           <Link href="/search" passHref>
-            <SearchIcon onClick={() => router.push('/search')} />
+            <a>
+              <SearchIcon onClick={() => router.push('/search')} />
+            </a>
           </Link>
         </SearchIconWrapper>
       </NavLeft>
 
       <Logo>
         <Link href="/" passHref>
-          <Typography variant="h4">NINA</Typography>
+          <a>
+            <Typography variant="h4">NINA</Typography>
+          </a>
         </Link>
       </Logo>
 
@@ -92,7 +96,9 @@ const NavBar = () => {
                     textAlign: 'center',
                   }}
                 >
-                  <Link href="/upload">Upload</Link>
+                  <Link href="/upload">
+                    <a>Upload</a>
+                  </Link>
                 </BlueTypography>
               )}
             </UploadWrapper>

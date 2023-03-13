@@ -115,11 +115,11 @@ const Feed = ({
                 <Typography my={1}>
                   New Hub:{' '}
                   <Link href={`/hubs/${item?.hub?.handle}`} passHref>
-                    {`${item?.hub?.data?.displayName}`}
+                    <a>{`${item?.hub?.data?.displayName}`}</a>
                   </Link>{' '}
                   created by{' '}
                   <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
+                    <a>{displayNameForAccount(item.authority.publicKey)}</a>
                   </Link>
                 </Typography>
 
@@ -178,11 +178,13 @@ const Feed = ({
                 <Typography my={1}>
                   New Release:{' '}
                   <Link href={`/${item?.release?.publicKey}`} passHref>
-                    {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
+                    <a>
+                      {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
+                    </a>
                   </Link>{' '}
                   by{' '}
                   <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
+                    <a>{displayNameForAccount(item.authority.publicKey)}</a>
                   </Link>
                 </Typography>
 
@@ -241,11 +243,13 @@ const Feed = ({
                 <Typography my={1}>
                   New Release:{' '}
                   <Link href={`/${item?.release?.publicKey}`} passHref>
-                    {`${item?.release?.metadata?.properties?.artist} - ${item?.release?.metadata?.properties?.title}`}
+                    <a>
+                      {`${item?.release?.metadata?.properties?.artist} - ${item?.release?.metadata?.properties?.title}`}
+                    </a>
                   </Link>{' '}
                   via{' '}
                   <Link href={`/hubs/${item?.hub?.handle}`} passHref>
-                    {`${item?.hub?.data?.displayName}`}
+                    <a>{`${item?.hub?.data?.displayName}`}</a>
                   </Link>
                 </Typography>
                 <Typography fontWeight={600}>
@@ -304,18 +308,20 @@ const Feed = ({
                 <Typography my={1} align="left">
                   Purchase:{' '}
                   <Link href={`/${item.release?.publicKey}`} passHref>
-                    {`${item.release?.metadata.properties.artist} - ${item.release?.metadata.properties.title}`}
+                    <a>
+                      {`${item.release?.metadata.properties.artist} - ${item.release?.metadata.properties.title}`}
+                    </a>
                   </Link>{' '}
                   by{' '}
                   <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
+                    <a>{displayNameForAccount(item.authority.publicKey)}</a>
                   </Link>
                   {item.type === 'ReleasePurchaseViaHub' && (
                     <>
                       {' '}
                       from{' '}
                       <Link href={`/hubs/${item.hub.handle}`} passHref>
-                        {`${item?.hub?.data?.displayName}`}
+                        <a>{`${item?.hub?.data?.displayName}`}</a>
                       </Link>
                     </>
                   )}
@@ -331,25 +337,27 @@ const Feed = ({
           return (
             <ImageCard>
               <Link href={`/hubs/${item?.hub?.handle}`} passHref>
-                <Image
-                  height={'400px'}
-                  width={'400px'}
-                  layout="responsive"
-                  src={getImageFromCDN(
-                    item?.hub?.data.image,
-                    600,
-                    Date.parse(item.datetime)
-                  )}
-                  alt={i}
-                  priority={true}
-                  loader={loader}
-                  unoptimized={true}
-                />
+                <a>
+                  <Image
+                    height={'400px'}
+                    width={'400px'}
+                    layout="responsive"
+                    src={getImageFromCDN(
+                      item?.hub?.data.image,
+                      600,
+                      Date.parse(item.datetime)
+                    )}
+                    alt={i}
+                    priority={true}
+                    loader={loader}
+                    unoptimized={true}
+                  />
+                </a>
               </Link>
               <CopyWrapper>
                 <Typography my={1}>
                   <Link href={`/profiles/${item.authority.publicKey}`} passHref>
-                    {displayNameForAccount(item.authority.publicKey)}
+                    <a>{displayNameForAccount(item.authority.publicKey)}</a>
                   </Link>{' '}
                   added as a collaborator to{' '}
                   <Link
@@ -412,7 +420,9 @@ const Feed = ({
               <CopyWrapper>
                 <Typography my={1}>
                   <Link href={`/${item.release.publicKey}`} passHref>
-                    {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
+                    <a>
+                      {`${item.release.metadata.properties.artist} - ${item.release.metadata.properties.title}`}
+                    </a>
                   </Link>{' '}
                   reposted to{' '}
                   <Link
@@ -494,20 +504,26 @@ const Feed = ({
           return (
             <ImageCard>
               <Link href={`/profiles/${item.toAccount?.publicKey}`} passHref>
-                {image && image.includes('https') ? (
-                  <Image
-                    height={'400px'}
-                    width={'400px'}
-                    layout="responsive"
-                    src={getImageFromCDN(image, 600, Date.parse(item.datetime))}
-                    alt={i}
-                    priority={true}
-                    loader={loader}
-                    unoptimized={true}
-                  />
-                ) : (
-                  <img src={image} height={418} width={418} />
-                )}
+                <a>
+                  {image && image.includes('https') ? (
+                    <Image
+                      height={'400px'}
+                      width={'400px'}
+                      layout="responsive"
+                      src={getImageFromCDN(
+                        image,
+                        600,
+                        Date.parse(item.datetime)
+                      )}
+                      alt={i}
+                      priority={true}
+                      loader={loader}
+                      unoptimized={true}
+                    />
+                  ) : (
+                    <img src={image} height={418} width={418} />
+                  )}
+                </a>
               </Link>
               <CopyWrapper>
                 <Typography my={1}>
@@ -515,14 +531,14 @@ const Feed = ({
                     href={`/profiles/${item.authority?.publicKey}`}
                     passHref
                   >
-                    {displayNameForAccount(item.authority?.publicKey)}
+                    <a>{displayNameForAccount(item.authority?.publicKey)}</a>
                   </Link>{' '}
                   followed{' '}
                   <Link
                     href={`/profiles/${item.toAccount?.publicKey}`}
                     passHref
                   >
-                    {displayNameForAccount(item.toAccount?.publicKey)}
+                    <a>{displayNameForAccount(item.toAccount?.publicKey)}</a>
                   </Link>
                 </Typography>
                 <Typography my={1} fontWeight={600}>
@@ -535,20 +551,22 @@ const Feed = ({
           return (
             <ImageCard>
               <Link href={`/hubs/${item.toHub.handle}`} passHref>
-                <Image
-                  height={'400px'}
-                  width={'400px'}
-                  layout="responsive"
-                  src={getImageFromCDN(
-                    item.toHub.data.image,
-                    600,
-                    Date.parse(item.datetime)
-                  )}
-                  alt={i}
-                  priority={true}
-                  loader={loader}
-                  unoptimized={true}
-                />
+                <a>
+                  <Image
+                    height={'400px'}
+                    width={'400px'}
+                    layout="responsive"
+                    src={getImageFromCDN(
+                      item.toHub.data.image,
+                      600,
+                      Date.parse(item.datetime)
+                    )}
+                    alt={i}
+                    priority={true}
+                    loader={loader}
+                    unoptimized={true}
+                  />
+                </a>
               </Link>
               <CopyWrapper>
                 <Typography my={1}>
@@ -556,13 +574,12 @@ const Feed = ({
                     href={`/profiles/${item.authority?.publicKey}`}
                     passHref
                   >
-                    {displayNameForAccount(item.authority?.publicKey)}
+                    <a>{displayNameForAccount(item.authority?.publicKey)}</a>
                   </Link>{' '}
                   followed{' '}
-                  <Link
-                    href={`/hubs/${item.toHub.publicKey}`}
-                    passHref
-                  >{`${item?.toHub?.data?.displayName}`}</Link>
+                  <Link href={`/hubs/${item.toHub.publicKey}`} passHref>
+                    <a>{`${item?.toHub?.data?.displayName}`}</a>
+                  </Link>
                 </Typography>
                 <Typography my={1} fontWeight={600}>
                   {timeSince(Date.parse(item.datetime))} ago

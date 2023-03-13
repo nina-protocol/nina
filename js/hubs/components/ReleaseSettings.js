@@ -157,11 +157,13 @@ const ReleaseSettings = (props) => {
               sx={{ marginTop: '10px !important' }}
             >
               <Link href={`/${releasePubkey}`} passHref>
-                <Typography variant="body2">
-                  {metadata
-                    ? 'View Release'
-                    : 'Your release is currently being finalized...'}
-                </Typography>
+                <a>
+                  <Typography variant="body2">
+                    {metadata
+                      ? 'View Release'
+                      : 'Your release is currently being finalized...'}
+                  </Typography>
+                </a>
               </Link>
             </Button>
           )}

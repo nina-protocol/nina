@@ -45,7 +45,9 @@ const NotFound = ({ path }) => {
         align="left"
         sx={{ mt: '15px', color: `palette.blue` }}
       >
-        <Link href="/releases">Explore all Releases</Link>
+        <Link href="/releases">
+          <a>Explore all Releases</a>
+        </Link>
       </BlueTypography>
     </StyledBox>
   )
