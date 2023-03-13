@@ -82,7 +82,6 @@ const ReleaseSettingsModal = ({
                   inSettings={true}
                   releaseGates={releaseGates}
                 />
-
                 <CloseRelease releasePubkey={releasePubkey} release={release} />
               </>
             )}
