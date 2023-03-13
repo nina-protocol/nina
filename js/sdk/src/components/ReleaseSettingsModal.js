@@ -71,8 +71,7 @@ const ReleaseSettingsModal = ({
               title={metadata.properties.title}
               url={metadata.external_url?.slice(8)}
             />
-            {isAuthority && gateWhitelist.includes(publicKey.toBase58()) && (
-
+            {isAuthority && (
               <>
                 <Gates
                   release={release}
