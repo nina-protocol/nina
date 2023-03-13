@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -12,7 +11,6 @@ import Royalty from './Royalty'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import CloseIcon from '@mui/icons-material/Close'
 import CloseRelease from './CloseRelease'
-import gateWhitelist from '../utils/gateWhitelist'
 import ReleaseSettingsWelcome from './ReleaseSettingsWelcome'
 import ShareToTwitter from './ShareToTwitter'
 const ReleaseSettingsModal = ({
@@ -24,8 +22,6 @@ const ReleaseSettingsModal = ({
   amountHeld,
   releaseGates,
 }) => {
-  const { publicKey } = useWallet()
-
   const [open, setOpen] = useState(false)
 
   const handleClose = () => {
@@ -76,6 +72,7 @@ const ReleaseSettingsModal = ({
               url={metadata.external_url?.slice(8)}
             />
             {isAuthority && gateWhitelist.includes(publicKey.toBase58()) && (
+
               <>
                 <Gates
                   release={release}
