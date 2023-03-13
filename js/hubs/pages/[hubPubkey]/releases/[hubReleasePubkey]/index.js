@@ -8,10 +8,10 @@ import Dots from '../../../../components/Dots'
 const Release = dynamic(() => import('../../../../components/Release'))
 
 const ReleasePage = (props) => {
-  const { metadata, hub, releasePubkey, hubPubkey, loading } = props
+  const { metadata, hub, releasePubkey, hubReleasePubkey, hubPubkey, loading } = props
 
   if (!metadata) {
-    return <NotFound hub={hub} />
+    return <NotFound path={`/${hubPubkey}/releases/${hubReleasePubkey}`} />
   }
   return (
     <>
@@ -101,6 +101,7 @@ export const getStaticProps = async (context) => {
           releasePubkey: release.publicKey,
           metadata: release.metadata,
           hubPubkey: hub.publicKey,
+          hubReleasePubkey: context.params.hubReleasePubkey,
           hub,
         },
         revalidate: 10,

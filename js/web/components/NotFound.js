@@ -33,7 +33,7 @@ const NotFound = ({ path }) => {
       <Typography variant="h2" align="left">
         There was a problem loading the Release.
       </Typography>
-      {path.length > 0 && (
+      {path && (
         <BlueTypography
           variant="h2"
           align="left"

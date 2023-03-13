@@ -66,16 +66,19 @@ const NotFound = (props) => {
   return (
     <StyledBox>
       <Typography variant="h2" align="left">
-        There was a problem loading the Hub.
+        {path?.includes('releases') && <>There was a problem loading the Release.</>}
+        {path?.includes('posts') && <>There was a problem loading the Post.</>}
+        {!path && <>There was a problem loading the Hub.</>}
       </Typography>
-      <Typography
-        variant="h2"
-        align="left"
-        sx={{ mt: '15px', color: `palette.blue` }}
-      >
-        <Link href={path}>Retry?</Link>
-      </Typography>
-
+      {path && (
+        <Typography
+          variant="h2"
+          align="left"
+          sx={{ mt: '15px', color: `palette.blue` }}
+        >
+          <Link href={path}>Retry?</Link>
+        </Typography>
+      )}
       <Typography variant="h2" align="left" sx={{ mt: '15px' }}>
         <Link href="/all">
           <a>Explore all Hubs</a>
