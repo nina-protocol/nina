@@ -8,7 +8,8 @@ import Dots from '../../../../components/Dots'
 const Release = dynamic(() => import('../../../../components/Release'))
 
 const ReleasePage = (props) => {
-  const { metadata, hub, releasePubkey, hubReleasePubkey, hubPubkey, loading } = props
+  const { metadata, hub, releasePubkey, hubReleasePubkey, hubPubkey, loading } =
+    props
 
   if (!metadata) {
     return <NotFound path={`/${hubPubkey}/releases/${hubReleasePubkey}`} />

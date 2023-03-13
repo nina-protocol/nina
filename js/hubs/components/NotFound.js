@@ -66,7 +66,9 @@ const NotFound = (props) => {
   return (
     <StyledBox>
       <Typography variant="h2" align="left">
-        {path?.includes('releases') && <>There was a problem loading the Release.</>}
+        {path?.includes('releases') && (
+          <>There was a problem loading the Release.</>
+        )}
         {path?.includes('posts') && <>There was a problem loading the Post.</>}
         {!path && <>There was a problem loading the Hub.</>}
       </Typography>
