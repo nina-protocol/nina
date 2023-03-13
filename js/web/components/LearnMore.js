@@ -3,12 +3,8 @@ import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import NinaBox from '@nina-protocol/nina-internal-sdk/esm/NinaBox'
-import Image from 'next/image'
-import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import Link from 'next/link'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
-const { loader } = imageManager
 const LearnMore = () => {
   const examples = [
     {
