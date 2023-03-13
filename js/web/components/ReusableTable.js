@@ -1,4 +1,11 @@
-import { useState, useEffect, useContext, createElement, Fragment, useMemo } from 'react'
+import {
+  useState,
+  useEffect,
+  useContext,
+  createElement,
+  Fragment,
+  useMemo,
+} from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Box } from '@mui/system'
@@ -26,7 +33,7 @@ import { useRouter } from 'next/router'
 import { orderBy } from 'lodash'
 import dynamic from 'next/dynamic'
 import { useWallet } from '@solana/wallet-adapter-react'
-import TablePagination from '@mui/material/TablePagination';
+import TablePagination from '@mui/material/TablePagination'
 import axios from 'axios'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
@@ -358,7 +365,6 @@ const ReusableTableBody = (props) => {
         image: data?.metadata?.image,
         date: data?.metadata?.properties?.date,
         title: `${data?.metadata?.properties?.artist} - ${data?.metadata?.properties?.title}`,
-
       }
       if (tableType === 'profileCollectionReleases') {
         formattedData.dateAdded = new Date(
@@ -389,7 +395,11 @@ const ReusableTableBody = (props) => {
           <StyledCollectButton
             disabled={!collectable}
             onClick={(e) => handleCollect(e, recipient, releasePubkey)}
-            className={collectable ? 'collectable disableClickCapture' : 'disableClickCapture'}
+            className={
+              collectable
+                ? 'collectable disableClickCapture'
+                : 'disableClickCapture'
+            }
           >
             Collect
             {collectable && <span>{collectableAmount}</span>}
@@ -522,22 +532,22 @@ const ReusableTableBody = (props) => {
     return formattedData
   })
 
-    return (<TableBody>
+  return (
+    <TableBody>
       {rows
         ?.slice()
         .sort(getComparator(order, orderBy))
         .map((row, i) => {
-          // const memoizedRow =  useMemo(() => 
-            return (
-              <StyledTableRow
-                key={i}
-                hover
-                sx={{ cursor: 'pointer' }}
-                onClickCapture={(e) => openInNewTab(e, window, row?.link, router)}
+          // const memoizedRow =  useMemo(() =>
+          return (
+            <StyledTableRow
+              key={i}
+              hover
+              sx={{ cursor: 'pointer' }}
+              onClickCapture={(e) => openInNewTab(e, window, row?.link, router)}
             >
               {Object.keys(row).map((cellName, i) => {
                 const cellData = row[cellName]
-                console.log('row', row)
                 if (
                   cellName !== 'id' &&
                   cellName !== 'date' &&
@@ -593,10 +603,19 @@ const ReusableTableBody = (props) => {
                     )
                   } else if (cellName === 'image') {
                     return (
-                      <StyledImageTableCell align="left" key={cellName} className="imageCell">
+                      <StyledImageTableCell
+                        align="left"
+                        key={cellName}
+                        className="imageCell"
+                      >
                         <Box
-                          sx={{ width: '50px', textAlign: 'left', pr: '15px', position: 'relative' }}
-                        > 
+                          sx={{
+                            width: '50px',
+                            textAlign: 'left',
+                            pr: '15px',
+                            position: 'relative',
+                          }}
+                        >
                           {row.ctas?.releasePubkey && (
                             <Button
                               sx={{
@@ -667,7 +686,10 @@ const ReusableTableBody = (props) => {
                           inDashboard={inDashboard}
                           style={{ minWidth: '300px' }}
                         >
-                          <Typography sx={{ textDecoration: 'underline' }} noWrap>
+                          <Typography
+                            sx={{ textDecoration: 'underline' }}
+                            noWrap
+                          >
                             <Link href={row?.link}>
                               <a>{cellData}</a>
                             </Link>
@@ -728,7 +750,9 @@ const ReusableTableBody = (props) => {
                         <SearchResultOverflowContainer>
                           <Typography
                             noWrap
-                            onClickCapture={() => router.push(`/hubs/${row?.id}`)}
+                            onClickCapture={() =>
+                              router.push(`/hubs/${row?.id}`)
+                            }
                           >
                             <a>{cellData}</a>
                           </Typography>
@@ -763,7 +787,11 @@ const ReusableTableBody = (props) => {
                       <HubTableCell key={cellName}>
                         <CollectContainer>
                           <Link href={`${row?.hubDashboard}`} passHref>
-                            <a className="disableClickCapture" target="_blank" rel="noreferrer">
+                            <a
+                              className="disableClickCapture"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
                               VIEW HUB DASHBOARD
                             </a>
                           </Link>
@@ -775,7 +803,11 @@ const ReusableTableBody = (props) => {
                       <HubTableCell key={cellName}>
                         <CollectContainer>
                           <Link href={`${row?.hubExternal}`} passHref>
-                            <a className="disableClickCapture" target="_blank" rel="noreferrer">
+                            <a
+                              className="disableClickCapture"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
                               VIEW HUB
                             </a>
                           </Link>
@@ -836,10 +868,12 @@ const ReusableTableBody = (props) => {
                   }
                 }
               })}
-            </StyledTableRow>)
-      })}
+            </StyledTableRow>
+          )
+        })}
     </TableBody>
-  )}
+  )
+}
 
 const infinityUnicode = '\u221e'
 
@@ -1032,19 +1066,19 @@ const StyledTableDescriptionContainer = styled(Box)(({ theme }) => ({
 }))
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '.imageCell svg':{
-    display: 'none'
+  '.imageCell svg': {
+    display: 'none',
   },
   '&:hover': {
     '.imageCell': {
-      'img': {
-        opacity:'0.6',
+      img: {
+        opacity: '0.6',
       },
-      'svg': {
-        display: 'block'
-      }
-    }
-  }
+      svg: {
+        display: 'block',
+      },
+    },
+  },
 }))
 
 const ResponsiveContainer = styled(Box)(
