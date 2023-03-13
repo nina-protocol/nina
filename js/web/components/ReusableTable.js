@@ -538,7 +538,6 @@ const ReusableTableBody = (props) => {
         ?.slice()
         .sort(getComparator(order, orderBy))
         .map((row, i) => {
-          // const memoizedRow =  useMemo(() =>
           return (
             <StyledTableRow
               key={i}
