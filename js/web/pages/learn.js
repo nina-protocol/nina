@@ -3,7 +3,7 @@ import LearnMore from '../components/LearnMore'
 const Learn = () => {
   return (
     <>
-    <LearnMore />
+      <LearnMore />
     </>
   )
 }
