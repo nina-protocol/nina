@@ -150,6 +150,7 @@ const Root = styled('div')(() => ({
 
 const StyledTypographyButtonSub = styled(Typography)(({ theme }) => ({
   color: theme.palette.grey[500],
+  textAlign: 'center',
   paddingTop: '8px',
   fontSize: '12px',
 }))
