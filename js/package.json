@@ -40,7 +40,7 @@
     "ga-gtag": "^1.1.1",
     "glob-parent": "^5.1.2",
     "nanoid": "^3.1.31",
-    "next": "12.1.5",
+    "next": "12.2.0",
     "node-fetch": "^2.6.7",
     "node-forge": "^1.0.0",
     "quill-magic-url": "^4.1.4",

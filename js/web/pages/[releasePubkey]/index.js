@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
@@ -8,10 +8,10 @@ const Release = dynamic(() => import('../../components/Release'))
 const NotFound = dynamic(() => import('../../components/NotFound'))
 
 const ReleasePage = (props) => {
-  const { metadata, loading, hub } = props
+  const { metadata, loading, hub, releasePubkey } = props
 
   if (!metadata) {
-    return <NotFound />
+    return <NotFound path={`/${releasePubkey}`} />
   }
 
   return (
