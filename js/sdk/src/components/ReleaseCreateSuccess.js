@@ -30,13 +30,20 @@ const ReleaseCreateSuccess = (props) => {
   return (
     <>
       <ReleaseSuccessContainer>
+        <Typography
+          variant="h4"
+          align="left"
+          marginLeft={'auto'}
+          marginRight={'auto'}
+          marginBottom={'16px'}
+          width={'680px'}
+        >
+          {`${artist} -`} <i>{`${title}`}</i> {`has been created.`}
+        </Typography>
         <ReleaseSuccessBox columns={'repeat(2, 1fr)'}>
           <Box
             sx={{ display: 'flex', flexDirection: 'column', margin: 'auto' }}
           >
-            <Typography variant="h4" align="left" marginBottom={'16px'}>
-              {`${artist} - ${title} has been created.`}
-            </Typography>
             <img
               src={`https://arweave.net/${image}`}
               width={'300px'}
@@ -55,20 +62,12 @@ const ReleaseCreateSuccess = (props) => {
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                marginTop: '10%',
               }}
             >
-              <ShareToTwitter artist={artist} title={title} url={url} />
-              <GateCreateModal
-                fetchGatesForRelease={fetchGatesForRelease}
-                name={`${artist} - ${title}`}
-                releasePubkey={releasePubkey}
-                gates={releaseGates}
-              />
               <Button
                 fullWidth
                 variant="outlined"
-                sx={{ height: '54px', mt: 1, '&:hover': { opacity: '50%' } }}
+                sx={{ height: '54px', '&:hover': { opacity: '50%' } }}
               >
                 <Link
                   href={
@@ -84,6 +83,14 @@ const ReleaseCreateSuccess = (props) => {
                   </a>
                 </Link>
               </Button>
+
+              <GateCreateModal
+                fetchGatesForRelease={fetchGatesForRelease}
+                name={`${artist} - ${title}`}
+                releasePubkey={releasePubkey}
+                gates={releaseGates}
+              />
+
               <Button
                 fullWidth
                 variant="outlined"
@@ -103,6 +110,7 @@ const ReleaseCreateSuccess = (props) => {
                   </a>
                 </Link>
               </Button>
+              <ShareToTwitter artist={artist} title={title} url={url} />
             </Box>
           </Box>
         </ReleaseSuccessBox>
@@ -117,7 +125,7 @@ const ReleaseSuccessContainer = styled(Box)(() => ({
 const ReleaseSuccessBox = styled(Box)(() => ({
   display: 'grid',
   width: '765px',
-  minHeight: '547px',
+  // minHeight: '547px',
   margin: 'auto',
   gridTemplateColumns: 'repeat(2, 1fr)',
   gridColumnGap: '0px',
