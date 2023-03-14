@@ -556,7 +556,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
           hubHandle={hubPubkey !== undefined ? hubData.handle : ''}
           artist={formValues.releaseForm.artist}
           title={formValues.releaseForm.title}
-          url={`/${
+          url={`${
             hubPubkey !== undefined
               ? `${hubData.handle}/releases/${releasePubkey}`
               : releasePubkey

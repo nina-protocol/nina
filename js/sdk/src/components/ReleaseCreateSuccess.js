@@ -10,6 +10,7 @@ import ShareToTwitter from './ShareToTwitter'
 import Release from '../contexts/Release'
 import GateCreateModal from './GateCreateModal'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 const ReleaseCreateSuccess = (props) => {
   const {
     hubHandle,
@@ -21,12 +22,12 @@ const ReleaseCreateSuccess = (props) => {
     url,
     image,
   } = props
+  const router = useRouter()
   const { fetchGatesForRelease, gatesState } = useContext(Release.Context)
   const releaseGates = useMemo(
     () => gatesState[releasePubkey],
     [gatesState, releasePubkey]
   )
-
   return (
     <>
       <ReleaseSuccessContainer>
@@ -95,20 +96,13 @@ const ReleaseCreateSuccess = (props) => {
                 fullWidth
                 variant="outlined"
                 sx={{ height: '54px', mt: 1, '&:hover': { opacity: '50%' } }}
+                onClick={() => router.reload()}
               >
-                <Link
-                  href={
-                    inHubs
-                      ? `/${hubHandle}/dashboard?action=publishRelease`
-                      : `/upload`
-                  }
-                >
-                  <a>
-                    <Typography variant="body2" align="left">
-                      Create Another Release
-                    </Typography>
-                  </a>
-                </Link>
+                <a>
+                  <Typography variant="body2" align="left">
+                    Create Another Release
+                  </Typography>
+                </a>
               </Button>
               <ShareToTwitter artist={artist} title={title} url={url} />
             </Box>
