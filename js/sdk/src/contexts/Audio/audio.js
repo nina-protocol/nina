@@ -73,6 +73,7 @@ const AudioPlayerContextProvider = ({ children }) => {
     activeIndexRef,
     track,
     setInitialized,
+    broadcastChannel,
   })
 
   const updateTrack = (
@@ -161,6 +162,7 @@ const audioPlayerContextHelper = ({
   track,
   ninaClient,
   setInitialized,
+  broadcastChannel,
 }) => {
   const reorderPlaylist = (updatedPlaylist) => {
     setPlaylist([...updatedPlaylist])
@@ -276,6 +278,8 @@ const audioPlayerContextHelper = ({
     })
     setTrack(newPlaylist[0])
     setPlaylist(newPlaylist)
+    broadcastChannel.postMessage({ type: 'updateTabPlaying' })
+
     setIsPlaying(true)
   }
 
