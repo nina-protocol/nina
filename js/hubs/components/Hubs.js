@@ -55,7 +55,7 @@ const Hubs = () => {
                 <Link href="/all">
                   <a>Hubs</a>
                 </Link>
-                are a new way to publish, share, and discuss music.
+                {' '}are a new way to publish, share, and discuss music.
               </BlueTypography>
 
               <Box
