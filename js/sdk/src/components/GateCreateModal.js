@@ -48,7 +48,7 @@ const GateCreateModal = ({
       const messageBase64 = encodeBase64(message)
       const signature = await wallet.signMessage(message)
       const signatureBase64 = encodeBase64(signature)
-      const sanitizedFileName = file.name.replaceAll(' ', '_')
+      const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.]/g, '_')
 
       const response = await axios.post(`${process.env.NINA_GATE_URL}/gate`, {
         fileSize: file.size,
@@ -179,7 +179,66 @@ const GateCreateModal = ({
               {!file ? 'Choose File' : file.name}
               <input
                 type="file"
-                onChange={(e) => setFile(e.target.files[0])}
+                onChange={(e) => {
+                  const ext = e.target.files[0].name.split('.').pop()
+                  switch (ext) {
+                    case 'mp3':
+                    case 'wav':
+                    case 'm4a':
+                    case 'flac':
+                    case 'ogg':
+                    case 'aiff':
+                    case 'wma':
+                    case 'mp4':
+                    case 'mov':
+                    case 'avi':
+                    case 'wmv':
+                    case 'flv':
+                    case 'mkv':
+                    case 'mpg':
+                    case 'mpeg':
+                    case 'm4v':
+                    case 'webm':
+                    case '3gp':
+                    case '3g2':
+                    case 'gif':
+                    case 'png':
+                    case 'jpg':
+                    case 'jpeg':
+                    case 'bmp':
+                    case 'svg':
+                    case 'pdf':
+                    case 'txt':
+                    case 'doc':
+                    case 'tif':
+                    case 'tiff':
+                    case 'docx':
+                    case 'ppt':
+                    case 'pptx':
+                    case 'xls':
+                    case 'xlsx':
+                    case 'obj':
+                    case 'mtl':
+                    case 'fbx':
+                    case 'glb':
+                    case 'gltf':
+                    case 'stl':
+                    case 'blend':
+                    case 'dae':
+                    case '3ds':
+                    case 'max':
+                    case 'pd':
+                    case 'psd':
+                      setFile(e.target.files[0])
+                      break
+
+                    default:
+                      enqueueSnackbar('File type not supported', {
+                        variant: 'failure',
+                      })
+                      break
+                  }
+                }}
                 style={{ display: 'none' }}
               />
             </Button>

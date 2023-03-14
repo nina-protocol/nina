@@ -7,16 +7,18 @@ import AddIcon from '@mui/icons-material/Add'
 const CreateHub = () => {
   return (
     <Link href="/hubs/create" passHref>
-      <CtaWrapper>
-        <Button>
-          <Box display="flex" alignItems="center">
-            <AddIcon />
-            <Typography ml={0.5} variant="body2">
-              Create Hub
-            </Typography>
-          </Box>
-        </Button>
-      </CtaWrapper>
+      <a>
+        <CtaWrapper>
+          <Button>
+            <Box display="flex" alignItems="center">
+              <AddIcon />
+              <Typography ml={0.5} variant="body2">
+                Create Hub
+              </Typography>
+            </Box>
+          </Button>
+        </CtaWrapper>
+      </a>
     </Link>
   )
 }

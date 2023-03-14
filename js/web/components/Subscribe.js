@@ -87,6 +87,7 @@ const Subscribe = ({
             <Button
               color="primary"
               sx={{ padding: `${inFeed ? '0px' : '0 15px'}` }}
+              className="disableClickCapture"
               onClick={(e) => handleSubscribe(e, accountAddress, hubHandle)}
             >
               Follow
@@ -97,6 +98,7 @@ const Subscribe = ({
             <Button
               color="primary"
               sx={{ padding: `${inFeed ? '0px' : '0 15px'}` }}
+              className="disableClickCapture"
               onClick={(e) => handleUnsubscribe(e, accountAddress, hubHandle)}
             >
               Unfollow

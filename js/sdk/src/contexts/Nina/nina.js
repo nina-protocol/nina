@@ -823,6 +823,9 @@ const ninaContextHelper = ({
             ninaErrorHandler(error)
           }
           getBundlrBalance()
+          logEvent(`bundlr_upload_success`, 'engagement', {
+            wallet: provider.wallet.publicKey.toBase58(),
+          })
           resolve(txId)
         }
         reader.onerror = (error) => {
@@ -872,9 +875,6 @@ const ninaContextHelper = ({
       const error = new Error(
         `You do not have enough SOL to send the transaction: ${action}.  You need at least ${NinaProgramActionCost[action]} SOL.`
       )
-      logEvent(`bundlr_upload_init`, 'engagement', {
-        wallet: provider.wallet.publicKey.toBase58(),
-      })
       return ninaErrorHandler(error)
     }
     return undefined

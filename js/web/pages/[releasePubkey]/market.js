@@ -7,10 +7,10 @@ import Dots from '../../components/Dots'
 const NotFound = dynamic(() => import('../../components/NotFound'))
 
 const ReleaseMarketPage = (props) => {
-  const { metadata, loading } = props
+  const { metadata, loading, releasePubkey } = props
 
   if (!metadata) {
-    return <NotFound />
+    return <NotFound path={`/${releasePubkey}/market`} />
   }
   return (
     <>

@@ -6,7 +6,7 @@ import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkI
 import Dots from '../../components/Dots'
 
 const HubPage = (props) => {
-  const { hub, loading } = props
+  const { hub, loading, hubPubkey } = props
 
   if (!hub) {
     return (
@@ -26,7 +26,7 @@ const HubPage = (props) => {
             href="https://hubs.ninaprotocol.com/images/nina-blue.png"
           />
         </Head>
-        <NotFound />
+        <NotFound path={`/${hubPubkey}`} />
       </>
     )
   }
@@ -88,6 +88,7 @@ export const getStaticProps = async (context) => {
       return {
         props: {
           hub,
+          hubPubkey,
         },
         revalidate: 10,
       }
@@ -95,5 +96,9 @@ export const getStaticProps = async (context) => {
       console.warn(error)
     }
   }
-  return { props: {} }
+  return {
+    props: {
+      hubPubkey,
+    },
+  }
 }
