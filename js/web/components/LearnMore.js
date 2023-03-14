@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
@@ -8,35 +8,35 @@ import ScrollablePageWrapper from './ScrollablePageWrapper'
 const LearnMore = () => {
   const examples = [
     {
-      header: 'Limited Editions',
+      header: '1. Limited Editions',
       body: 'Release a limited quantity of your release. You can set the number of editions you want to release when publishing.',
       image: '/images/LimitedEdition.png',
       link: 'https://ninaprotocol.com/Hy42kGTy6HqJgTkBcvb8YoUjgwP46TLqbpz9nWHSHomM',
       linkText: 'Surgeon, Jet Pack Mack',
     },
     {
-      header: 'Open Editions',
+      header: '2. Open Editions',
       body: 'Create an unlimited supply of your release. You can close the sale at any time and your release will be sold out.',
       image: '/images/OpenEdition.png',
       link: 'https://ninaprotocol.com/8etCo8Gso93PLLjZeXWubjdm4Qd5NqLGL8qtHm76x5cN',
       linkText: 'Dasychira, Banyan Tree',
     },
     {
-      header: 'Closed Editions',
+      header: '3. Closed Editions',
       body: `Close the sale of your release at any time (possible for limited and open editions). The release will then be sold out, but it can still be sold on the secondary market.`,
       image: '/images/ClosedEdition.png',
       link: 'https://ninaprotocol.com/7oR7ETJW9QYXWm25mgLjP4kTRmjPGgQsH4HP1uwDGyKW',
       linkText: 'dBridge, Private Skies',
     },
     {
-      header: 'Gates',
+      header: '4. Gates',
       body: `Include additional material only available to fans who purchase your release—lossless files, bonus tracks, videos, PDFs, etc.`,
       image: '/images/Gates.png',
       link: 'https://ninaprotocol.com/2QfDZcQnT51mQTFrWfzKTPPDrB7G3rk5fSif1WTA7Dqd',
       linkText: 'gantz, evoker',
     },
     {
-      header: 'Editorial',
+      header: '5. Editorial',
       body: `Share additional context around your releases or make blog posts to share updates, stories, and musings with your community.`,
       image: '/images/Posts.png',
       link: `https://hubs.ninaprotocol.com/ledisko/posts/8BEauXrASkugBm6gR4wkH3T5RU5JAuwLwybkfbF1Pg7W`,
@@ -62,8 +62,21 @@ const LearnMore = () => {
     },
     {
       question: 'How are releases on Nina priced?',
-      answer:
-        'You can set whatever price you want when you publish your release. Most releases you will find Nina are $1-5, but some artists have found success with higher prices (see Joanna7459). Artists on Nina receive 100% of their sales.',
+      answer: (
+        <Fragment>
+          You can set whatever price you want when you publish your release.
+          Most releases you will find Nina are $1-5, but some artists have found
+          success with higher prices (see{' '}
+          <Link
+            href={
+              'https://www.ninaprotocol.com/FnuxAi3gFDZ5RE8HYKDk7MbAqycTcWrt6ThVpJXPbrd7'
+            }
+          >
+            <a target="_blank">Joanna7459</a>
+          </Link>
+          ). Artists on Nina receive 100% of their sales.
+        </Fragment>
+      ),
     },
     {
       question: 'Can I make my releases free?',
@@ -71,11 +84,39 @@ const LearnMore = () => {
     },
     {
       question: 'Why is Nina built on the blockchain?',
-      answer: `Nina utilizes the blockchain to allow artists to have the most control over their work. Publishing music on-chain allows artists to side-step platform fees and keep 100% of their sales. The technology enables easy revenue split automation, royalties on resales, shared pages with collaborators, and permanent web archiving via hosting on Arweave. We know a lot of artists are rightfully skeptical about anything blockchain-related, so we try to help them get comfortable with our tools so they can decide whether it's for them or not.`,
+      answer: (
+        <Fragment>
+          {`Nina utilizes the blockchain to allow artists to have the most
+          control over their work. Publishing music on-chain allows artists to
+          side-step platform fees and keep 100% of their sales. The technology
+          enables easy revenue split automation, royalties on resales, shared
+          pages with collaborators, and permanent web archiving via hosting on`}{' '}
+          <Link href={'https://arweave.org/'}>
+            <a target="_blank">Arweave</a>
+          </Link>
+          {`    . We know a lot of artists are rightfully skeptical about anything
+          blockchain-related, so we try to help them get comfortable with our
+          tools so they can decide whether it's for them or not.`}
+        </Fragment>
+      ),
     },
     {
       question: 'How do you buy music on Nina?',
-      answer: `You need a Solana wallet (we recommend Phantom) funded with SOL or USDC to purchase music on Nina. To fund a wallet, you can either purchase SOL with a credit card from inside the Phantom waller, or you can buy SOL on an exchange like Coinbase and send it to your Phantom wallet.`,
+      answer: (
+        <Fragment>
+          You need a Solana wallet (we recommend{' '}
+          <Link href={'https://phantom.app/'}>
+            <a target="_blank">Phantom</a>
+          </Link>
+          ) funded with SOL or USDC to purchase music on Nina. To fund a wallet,
+          you can either purchase SOL with a credit card from inside the Phantom
+          wallet, or you can buy SOL on an exchange like{' '}
+          <Link href={'https://www.coinbase.com/'}>
+            <a target="_blank">Coinbase</a>
+          </Link>{' '}
+          and send it to your Phantom wallet.
+        </Fragment>
+      ),
     },
   ]
 
@@ -90,15 +131,22 @@ const LearnMore = () => {
           see a list of FAQs.`}
             </Typography>
           </Box>
-          <Box mt={2} mb={2}>
-            <Typography variant="h2">{`How you can use Nina:`}</Typography>
+          <Box mt={2} mb={1}>
+            <Typography
+              variant="h2"
+              sx={{ textDecoration: 'underline' }}
+            >{`How you can use Nina:`}</Typography>
             {examples.map((example, index) => (
               <ExampleContainer key={index}>
-                <ExampleHeader variant="h1">{example.header}</ExampleHeader>
+                <ExampleHeader variant="h2">{example.header}</ExampleHeader>
                 <ExampleBody variant="h4">{example.body}</ExampleBody>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                   <Link href={example.link}>
-                    <a target="_blank">{example.linkText}</a>
+                    <a target="_blank">
+                      <Typography marginBottom={'8px'}>
+                        {example.linkText}
+                      </Typography>
+                    </a>
                   </Link>
                   <Link href={example.link}>
                     <a target="_blank">
@@ -118,14 +166,22 @@ const LearnMore = () => {
             ))}
           </Box>
           {/* FAQ */}
-          <Box mt={2} mb={2}>
-            <Typography variant="h1">{`FAQ`}</Typography>
+          <Box mb={2}>
+            <Typography variant="h2">{`FAQ`}</Typography>
             {faqs.map((faq, index) => (
               <FAQBox key={index}>
-                <Typography variant="h3">{faq.question}</Typography>
-                <Typography variant="" sx={{ width: '50%' }}>
-                  {faq.answer}
+                <Typography variant="h3" fontWeight={'bold'}>
+                  {faq.question}
                 </Typography>
+                <Box sx={{ paddingLeft: '16px' }}>
+                  <Typography
+                    variant=""
+                    fontWeight={'normal'}
+                    sx={{ width: '50%' }}
+                  >
+                    {faq.answer}
+                  </Typography>
+                </Box>
               </FAQBox>
             ))}
           </Box>
