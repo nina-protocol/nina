@@ -123,10 +123,10 @@ const ReusableTableHead = (props) => {
   }
 
   if (tableType === 'hubReleases') {
-    headCells.push({ id: 'ctas', label: '' })
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'title', label: 'Release' })
     headCells.push({ id: 'releaseDate', label: 'Release Date' })
+    headCells.push({ id: 'ctas', label: '' })
   }
 
   if (tableType === 'allSearchResults') {
