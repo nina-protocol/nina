@@ -18,6 +18,7 @@ const AudioPlayerContextProvider = ({ children }) => {
   const [playlist, setPlaylist] = useState([])
   const [isPlaying, setIsPlaying] = useState(false)
   const [initialized, setInitialized] = useState(false)
+  const [broadcastChannel, setBroadcastChannel] = useState(null)
   const audioPlayerRef = useRef()
   const activeIndexRef = useRef()
 
@@ -42,16 +43,13 @@ const AudioPlayerContextProvider = ({ children }) => {
   }, [track])
 
   useEffect(() => {
-    const eventHandler = () => {
-      const thisInstance = localStorage.getItem(ninaClient.instanceId)
-      if (thisInstance && !thisInstance.playing) {
+    var bc = new BroadcastChannel('nina_channel')
+    bc.onmessage = function (ev) {
+      if (ev.data.type === 'updateTabPlaying') {
         setIsPlaying(false)
-      } 
+      }
     }
-
-    window.addEventListener('storage', eventHandler)
-
-    return () => { window.removeEventListener('storage', eventHandler) }
+    setBroadcastChannel(bc)
     //window emit event on change
   }, [])
 
@@ -77,35 +75,7 @@ const AudioPlayerContextProvider = ({ children }) => {
     setInitialized,
   })
 
-  const handleActiveInstance = () => {
-    try {
-      const instanceIds = Object.keys(localStorage).filter(key => key.includes('nina_instance_'))
-      instanceIds.forEach((id) => {
-        const instance = localStorage.getItem(id)
-        const parsedInstance = JSON.parse(instance)
-        parsedInstance.playing = (id === ninaClient.instanceId)
-        localStorage.setItem(id, JSON.stringify(parsedInstance))
-      })
-      window.dispatchEvent(new Event('storage'))
-    } catch (error) {
-      console.log('handleInstanceError: ', error)
-    }
-  }
-
-  const handlePong = () => {
-    const pong = localStorage.getItem('ninaPong')
-    const instances = localStorage.all().filter(item => item.key.includes('nina_instance'))
-    instances.forEach((instance) => {
-      if (instance.pong !== ninaPong) {
-        localStorage.removeItem(instance.key)
-      }
-    })
-    const newPong = 'nina_' + Math.floor(Math.random() * 100000)
-
-    localStorage.setItem('ninaPong', newPong)
-  }
-  
-  const updateTrack =  (
+  const updateTrack = (
     releasePubkey,
     shouldPlay = false,
     addToPlaylist = false,
@@ -114,11 +84,8 @@ const AudioPlayerContextProvider = ({ children }) => {
     setInitialized(true)
 
     if (shouldPlay) {
-      // handlePong()
-
-      handleActiveInstance()
+      broadcastChannel.postMessage({ type: 'updateTabPlaying' })
     }
-
 
     const existingTrack = playlist.filter(
       (item) => item.releasePubkey === releasePubkey
@@ -135,10 +102,8 @@ const AudioPlayerContextProvider = ({ children }) => {
     } else {
       setTrack(existingTrack)
     }
-    console.log('shouldPlay 1:>> ', shouldPlay);
 
     setIsPlaying(shouldPlay)
-    console.log('shouldPlay 2:>> ', shouldPlay);
 
     if (shouldPlay) {
       const params = {
