@@ -42,7 +42,7 @@ export const NINA_CLIENT_IDS = {
 const USDC_DECIMAL_AMOUNT = 6
 const SOL_DECIMAL_AMOUNT = 9
 
-const NinaClient = function (provider, network, instanceId) {
+const NinaClient = function (provider, network) {
   var obj = Object.create(NinaClient.prototype)
   obj.network = network
   obj.ids = NINA_CLIENT_IDS[network]

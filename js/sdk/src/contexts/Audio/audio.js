@@ -50,7 +50,6 @@ const AudioPlayerContextProvider = ({ children }) => {
       }
     }
     setBroadcastChannel(bc)
-    //window emit event on change
   }, [])
 
   const {
