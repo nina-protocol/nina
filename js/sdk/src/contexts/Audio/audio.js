@@ -42,18 +42,16 @@ const AudioPlayerContextProvider = ({ children }) => {
   }, [track])
 
   useEffect(() => {
-    window.addEventListener('storage', () => {
-      const instances = localStorage.getItem('ninaInstanceTracker')
-      const parsedInstances = JSON.parse(instances)
-      const thisInstance =  parsedInstances[ninaClient.instanceId]    
-      console.log('instances in event:>> ', parsedInstances);
-      console.log('ninaClient.instanceId in event listener :>> ', ninaClient.instanceId);
-      console.log('thisInstance in listener :>> ', thisInstance);  
-      console.log('thisInstance.playing :>> ', thisInstance);  
-      if (!thisInstance.playing){
+    const eventHandler = () => {
+      const thisInstance = localStorage.getItem(ninaClient.instanceId)
+      if (thisInstance && !thisInstance.playing) {
         setIsPlaying(false)
       } 
-    })
+    }
+
+    window.addEventListener('storage', eventHandler)
+
+    return () => { window.removeEventListener('storage', eventHandler) }
     //window emit event on change
   }, [])
 
@@ -79,6 +77,34 @@ const AudioPlayerContextProvider = ({ children }) => {
     setInitialized,
   })
 
+  const handleActiveInstance = () => {
+    try {
+      const instanceIds = Object.keys(localStorage).filter(key => key.includes('nina_instance_'))
+      instanceIds.forEach((id) => {
+        const instance = localStorage.getItem(id)
+        const parsedInstance = JSON.parse(instance)
+        parsedInstance.playing = (id === ninaClient.instanceId)
+        localStorage.setItem(id, JSON.stringify(parsedInstance))
+      })
+      window.dispatchEvent(new Event('storage'))
+    } catch (error) {
+      console.log('handleInstanceError: ', error)
+    }
+  }
+
+  const handlePong = () => {
+    const pong = localStorage.getItem('ninaPong')
+    const instances = localStorage.all().filter(item => item.key.includes('nina_instance'))
+    instances.forEach((instance) => {
+      if (instance.pong !== ninaPong) {
+        localStorage.removeItem(instance.key)
+      }
+    })
+    const newPong = 'nina_' + Math.floor(Math.random() * 100000)
+
+    localStorage.setItem('ninaPong', newPong)
+  }
+  
   const updateTrack =  (
     releasePubkey,
     shouldPlay = false,
@@ -86,21 +112,11 @@ const AudioPlayerContextProvider = ({ children }) => {
     hubPublicKey = null
   ) => {
     setInitialized(true)
-    const handleActiveInstance = () => {
-      console.log('ninaClient.instanceId in audio :>> ', ninaClient.instanceId);
-      const instances = JSON.parse(localStorage.getItem('ninaInstanceTracker'))
-      console.log('instances :>> ', instances);
-      Object.keys(instances).forEach((instance) => {
-        instances[instance].playing = false
-      })
-      if (instances[ninaClient.instanceId]) {
-        instances[ninaClient.instanceId].playing = true
-        localStorage.setItem('ninaInstanceTracker', JSON.stringify(instances))
-        console.log('instances after play :>> ', instances);
-        window.dispatchEvent(new Event('storage'))
-      } else {
-        console.log('instance not found in handler');
-      }
+
+    if (shouldPlay) {
+      // handlePong()
+
+      handleActiveInstance()
     }
 
 
@@ -119,9 +135,10 @@ const AudioPlayerContextProvider = ({ children }) => {
     } else {
       setTrack(existingTrack)
     }
+    console.log('shouldPlay 1:>> ', shouldPlay);
+
     setIsPlaying(shouldPlay)
-    console.log('shouldPlay :>> ', shouldPlay);
-    handleActiveInstance()
+    console.log('shouldPlay 2:>> ', shouldPlay);
 
     if (shouldPlay) {
       const params = {
