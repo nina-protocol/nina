@@ -42,12 +42,13 @@ export const NINA_CLIENT_IDS = {
 const USDC_DECIMAL_AMOUNT = 6
 const SOL_DECIMAL_AMOUNT = 9
 
-const NinaClient = function (provider, network) {
+const NinaClient = function (provider, network, instanceId) {
   var obj = Object.create(NinaClient.prototype)
   obj.network = network
   obj.ids = NINA_CLIENT_IDS[network]
   obj.provider = provider
   obj.NINA_VAULT_FEE = 12500
+  obj.instanceId = instanceId
   obj.ENDPOINT_ARWEAVE = 'https://arweave.net' //'https://h6chwwrsde.medianet.work'
   obj.endpoints = {
     arweave: obj.ENDPOINT_ARWEAVE,

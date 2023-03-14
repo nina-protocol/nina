@@ -41,6 +41,22 @@ const AudioPlayerContextProvider = ({ children }) => {
     activeIndexRef.current = playlist.indexOf(track) || 0
   }, [track])
 
+  useEffect(() => {
+    window.addEventListener('storage', () => {
+      const instances = localStorage.getItem('ninaInstanceTracker')
+      const parsedInstances = JSON.parse(instances)
+      const thisInstance =  parsedInstances[ninaClient.instanceId]    
+      console.log('instances in event:>> ', parsedInstances);
+      console.log('ninaClient.instanceId in event listener :>> ', ninaClient.instanceId);
+      console.log('thisInstance in listener :>> ', thisInstance);  
+      console.log('thisInstance.playing :>> ', thisInstance);  
+      if (!thisInstance.playing){
+        setIsPlaying(false)
+      } 
+    })
+    //window emit event on change
+  }, [])
+
   const {
     reorderPlaylist,
     removeTrackFromPlaylist,
@@ -63,13 +79,31 @@ const AudioPlayerContextProvider = ({ children }) => {
     setInitialized,
   })
 
-  const updateTrack = (
+  const updateTrack =  (
     releasePubkey,
     shouldPlay = false,
     addToPlaylist = false,
     hubPublicKey = null
   ) => {
     setInitialized(true)
+    const handleActiveInstance = () => {
+      console.log('ninaClient.instanceId in audio :>> ', ninaClient.instanceId);
+      const instances = JSON.parse(localStorage.getItem('ninaInstanceTracker'))
+      console.log('instances :>> ', instances);
+      Object.keys(instances).forEach((instance) => {
+        instances[instance].playing = false
+      })
+      if (instances[ninaClient.instanceId]) {
+        instances[ninaClient.instanceId].playing = true
+        localStorage.setItem('ninaInstanceTracker', JSON.stringify(instances))
+        console.log('instances after play :>> ', instances);
+        window.dispatchEvent(new Event('storage'))
+      } else {
+        console.log('instance not found in handler');
+      }
+    }
+
+
     const existingTrack = playlist.filter(
       (item) => item.releasePubkey === releasePubkey
     )[0]
@@ -86,6 +120,9 @@ const AudioPlayerContextProvider = ({ children }) => {
       setTrack(existingTrack)
     }
     setIsPlaying(shouldPlay)
+    console.log('shouldPlay :>> ', shouldPlay);
+    handleActiveInstance()
+
     if (shouldPlay) {
       const params = {
         publicKey: releasePubkey,
