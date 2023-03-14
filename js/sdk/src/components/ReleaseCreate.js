@@ -548,7 +548,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
             </NpcMessage>
           </Box>
         )}
-      {!releaseCreated && (
+      {releaseCreated && (
         <ReleaseCreateSuccess
           releasePubkey={releasePubkey}
           hubReleaseKey={releaseInfo?.hubRelease?.toBase58()}
@@ -567,7 +567,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
 
       {wallet?.connected && !solBalanceFetched && <Dots size={'50px'} />}
       {wallet?.connected &&
-        releaseCreated &&
+        !releaseCreated &&
         solBalanceFetched &&
         (npcAmountHeld >= 1 || profileHubs?.length > 0 || hubPubkey) && (
           <>
