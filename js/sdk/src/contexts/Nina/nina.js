@@ -825,7 +825,7 @@ const ninaContextHelper = ({
           getBundlrBalance()
           logEvent(`bundlr_upload_success`, 'engagement', {
             wallet: provider.wallet.publicKey.toBase58(),
-          })  
+          })
           resolve(txId)
         }
         reader.onerror = (error) => {
