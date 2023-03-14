@@ -9,7 +9,7 @@ import { useRouter } from 'next/router'
 import ShareToTwitter from './ShareToTwitter'
 import Release from '../contexts/Release'
 import GateCreateModal from './GateCreateModal'
-
+import Link from 'next/link'
 const ReleaseCreateSuccess = (props) => {
   const router = useRouter()
   const {
@@ -28,33 +28,29 @@ const ReleaseCreateSuccess = (props) => {
     [gatesState, releasePubkey]
   )
 
-  const releaseCreateRerouteHandler = (inHubs) => {
-    if (inHubs) {
-      router.push(`/${hubHandle}/releases/${hubReleaseKey}`)
-    } else {
-      router.push(`/${releasePubkey.toBase58()}`)
-    }
-  }
-
   return (
-    <StyledGrid item md={12}>
-      <NinaBox>
-        <HubSuccessWrapper>
-          <Typography variant="h1" sx={{ paddingBottom: '16px' }}>
-            Your release was created.
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-            <img
-              src={`https://arweave.net/${image}`}
-              width={'200px'}
-              height={'200px'}
-            />
-            <Typography variant="h2" sx={{ paddingLeft: '16px' }}>
-              {artist} - {title}
-            </Typography>
-          </Box>
+    <>
+      <ReleaseSuccessContainer>
+       <Box sx={}>
 
-          <Box sx={{ paddingTop: '32px' }}>
+        <Typography variant="h4" align="left">
+          bahdbsasfhkasdgfasgfkadhas been created.
+        </Typography>
+        <ReleaseSuccessBox columns={'repeat(2, 1fr)'}>
+          <img
+            src={`https://arweave.net/${image}`}
+            width={'300px'}
+            height={'300px'}
+          />
+          </Box>
+          <Box
+            sx={{
+              margin: 'auto',
+              width: 'calc(100% - 50px)',
+              paddingLeft: '50px',
+            }}
+          >
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <ShareToTwitter artist={artist} title={title} url={url} />
             <GateCreateModal
               fetchGatesForRelease={fetchGatesForRelease}
@@ -65,46 +61,62 @@ const ReleaseCreateSuccess = (props) => {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => releaseCreateRerouteHandler(inHubs)}
               sx={{ height: '54px', mt: 1, '&:hover': { opacity: '50%' } }}
             >
-              <Typography variant="body2" align="left">
-                View Release
-              </Typography>
+              <Link
+                href={
+                  inHubs
+                    ? `/${hubHandle}/releases/${hubReleaseKey}`
+                    : `/${releasePubkey?.toBase58()}`
+                }
+              >
+                <a>
+                  <Typography variant="body2" align="left">
+                    View Release
+                  </Typography>
+                </a>
+              </Link>
+            </Button>
+            <Button
+              fullWidth
+              variant="outlined"
+              sx={{ height: '54px', mt: 1, '&:hover': { opacity: '50%' } }}
+            >
+              <Link
+                href={
+                  inHubs
+                    ? `/${hubHandle}/dashboard?action=publishRelease`
+                    : `/upload`
+                }
+              >
+                <a>
+                  <Typography variant="body2" align="left">
+                    Create Another Release
+                  </Typography>
+                </a>
+              </Link>
             </Button>
           </Box>
-        </HubSuccessWrapper>
-      </NinaBox>
-    </StyledGrid>
+          </Box>
+        </ReleaseSuccessBox>
+      </ReleaseSuccessContainer>
+    </>
   )
 }
-const StyledGrid = styled(Grid)(({ theme }) => ({
-  paddingTop: '20px',
-  maxHeight: '90vh',
-  overflowY: 'scroll',
-  justifyContent: 'center',
-  alignItems: 'center',
-  '& a': {
-    textDecoration: 'none',
-    color: theme.palette.blue,
-    '&:hover': {
-      opacity: '85%',
-    },
-  },
-}))
-
-const HubSuccessWrapper = styled(Box)(() => ({
-  width: '100%',
-
-  margin: '0px auto ',
+const ReleaseSuccessContainer = styled(Box)(() => ({
+  height: '100%',
   display: 'flex',
   flexDirection: 'column',
-  gridColumn: '1/3',
+}))
 
-  maxWidth: '506px',
-  textAlign: 'left',
-  paddingLeft: '16px',
-  paddingRight: '16px',
+const ReleaseSuccessBox = styled(Box)(() => ({
+  display: 'grid',
+  width: '765px',
+  minHeight: '547px',
+  margin: 'auto',
+  gridTemplateColumns:  'repeat(2, 1fr)',
+  gridColumnGap: '0px',
+  gridAutoRows: 'auto',
 }))
 
 export default ReleaseCreateSuccess
