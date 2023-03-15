@@ -5,7 +5,8 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Link from 'next/link'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
-import {margin} from '@mui/system'
+import Image from 'next/image'
+
 const LearnMore = () => {
   const examples = [
     {
@@ -132,10 +133,7 @@ const LearnMore = () => {
           see a list of FAQs.`}
             </Typography>
           </Box>
-          <Box mt={2} mb={1} sx={{
-            // border: '2px solid red',
-            // width: '75%'
-          }}>
+          <Box mt={2} mb={1}>
             <Typography
               variant="h3"
               sx={{ textDecoration: 'underline' }}
@@ -152,22 +150,25 @@ const LearnMore = () => {
                       </Typography>
                     </a>
                   </Link>
-                  <Box sx={{
-                    border: '1px solid black',
-                    width: '66%',
-                    marginBottom: '15px',
-                    padding: '15px'
-                  }}>
+                  <Box
+                    sx={{
+                      border: '1px solid black',
+                      marginBottom: '15px',
+                      padding: '15px',
+                      height: '65%',
+                      width: '65%',
+                    }}
+                  >
                     <Link href={example.link}>
                       <a target="_blank">
-                        <img
+                        <Image
                           layout="responsive"
+                          width={660}
+                          height={404}
                           src={example.image}
                           alt={example.linkText}
-                          style={{
-                            objectFit: 'contain',
-                            width: '100%',
-                            height: 'auto',
+                          loader={({ src }) => {
+                            return src
                           }}
                         />
                       </a>
@@ -181,7 +182,11 @@ const LearnMore = () => {
             <Typography variant="h2">{`FAQ`}</Typography>
             {faqs.map((faq, index) => (
               <FAQBox key={index}>
-                <Typography variant="h3" fontWeight={'bold'} style={{marginBottom: '15px'}}>
+                <Typography
+                  variant="h3"
+                  fontWeight={'bold'}
+                  style={{ marginBottom: '15px' }}
+                >
                   {faq.question}
                 </Typography>
                 <Box sx={{ paddingLeft: '16px' }}>
