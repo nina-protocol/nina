@@ -586,7 +586,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
       {releaseCreated && (
         <ReleaseCreateSuccess
           releasePubkey={releasePubkey}
-          hubReleaseKey={releaseInfo?.hubRelease?.toBase58()}
+          hubReleasePubkey={releaseInfo?.hubRelease?.toBase58()}
           inHubs={hubPubkey !== undefined}
           hubHandle={hubPubkey !== undefined ? hubData.handle : ''}
           artist={formValues.releaseForm.artist}

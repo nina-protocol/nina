@@ -1,21 +1,19 @@
 import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
-
 import Box from '@mui/material/Box'
-
 import { Typography } from '@mui/material'
 import Button from '@mui/material/Button'
-
 import ShareToTwitter from './ShareToTwitter'
 import Release from '../contexts/Release'
 import GateCreateModal from './GateCreateModal'
 import Link from 'next/link'
+import Image from 'next/image'
 const ReleaseCreateSuccess = (props) => {
   const {
     hubHandle,
     inHubs,
     releasePubkey,
-    hubReleaseKey,
+    hubReleasePubkey,
     artist,
     title,
     url,
@@ -41,72 +39,62 @@ const ReleaseCreateSuccess = (props) => {
         >
           {`${artist} -`} <i>{`${title}`}</i> {`has been created.`}
         </Typography>
-        <ReleaseSuccessBox columns={'repeat(2, 1fr)'}>
-          <Box
-            sx={{ display: 'flex', flexDirection: 'column', margin: 'auto' }}
-          >
-            <img
+        <ReleaseSuccessBox>
+          <ImageBox>
+            <Image
               src={`https://arweave.net/${image}`}
+              alt={artist}
               width={'300px'}
               height={'300px'}
-            />
-          </Box>
-
-          <Box
-            sx={{
-              margin: 'auto',
-              width: 'calc(100% - 50px)',
-              paddingLeft: '50px',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
+              priority={true}
+              loader={({ src }) => {
+                return src
               }}
+            />
+          </ImageBox>
+
+          <CtaBox>
+            <Button
+              fullWidth
+              variant="outlined"
+              sx={{ height: '54px', '&:hover': { opacity: '50%' } }}
             >
-              <Button
-                fullWidth
-                variant="outlined"
-                sx={{ height: '54px', '&:hover': { opacity: '50%' } }}
-              >
-                <Link
-                  href={
-                    inHubs
-                      ? `/${hubHandle}/releases/${hubReleaseKey}`
-                      : `/${releasePubkey?.toBase58()}`
-                  }
-                >
-                  <a>
-                    <Typography variant="body2" align="left">
-                      View Release
-                    </Typography>
-                  </a>
-                </Link>
-              </Button>
-
-              <GateCreateModal
-                fetchGatesForRelease={fetchGatesForRelease}
-                name={`${artist} - ${title}`}
-                releasePubkey={releasePubkey}
-                gates={releaseGates}
-              />
-
-              <Button
-                fullWidth
-                variant="outlined"
-                sx={{ height: '54px', mt: 1, '&:hover': { opacity: '50%' } }}
-                onClick={() => handleReload()}
+              <Link
+                href={
+                  inHubs
+                    ? `/${hubHandle}/releases/${hubReleasePubkey}`
+                    : `/${releasePubkey?.toBase58()}`
+                }
               >
                 <a>
                   <Typography variant="body2" align="left">
-                    Create Another Release
+                    View Release
                   </Typography>
                 </a>
-              </Button>
-              <ShareToTwitter artist={artist} title={title} url={url} />
-            </Box>
-          </Box>
+              </Link>
+            </Button>
+
+            <GateCreateModal
+              fetchGatesForRelease={fetchGatesForRelease}
+              name={`${artist} - ${title}`}
+              releasePubkey={releasePubkey}
+              gates={releaseGates}
+            />
+
+            <Button
+              fullWidth
+              variant="outlined"
+              sx={{ height: '54px', mt: 1, '&:hover': { opacity: '50%' } }}
+              onClick={() => handleReload()}
+            >
+              <a>
+                <Typography variant="body2" align="left">
+                  Create Another Release
+                </Typography>
+              </a>
+            </Button>
+            <ShareToTwitter artist={artist} title={title} url={url} />
+          </CtaBox>
         </ReleaseSuccessBox>
       </ReleaseSuccessContainer>
     </>
@@ -119,11 +107,24 @@ const ReleaseSuccessContainer = styled(Box)(() => ({
 const ReleaseSuccessBox = styled(Box)(() => ({
   display: 'grid',
   width: '765px',
-  // minHeight: '547px',
   margin: 'auto',
   gridTemplateColumns: 'repeat(2, 1fr)',
   gridColumnGap: '0px',
   gridAutoRows: 'auto',
+  columns: 'repeat(2, 1fr)',
+}))
+
+const ImageBox = styled(Box)(() => ({
+  margin: 'auto',
+  width: '300px',
+}))
+
+const CtaBox = styled(Box)(() => ({
+  margin: 'auto',
+  width: 'calc(100% - 50px)',
+  paddingLeft: '50px',
+  display: 'flex',
+  flexDirection: 'column',
 }))
 
 export default ReleaseCreateSuccess
