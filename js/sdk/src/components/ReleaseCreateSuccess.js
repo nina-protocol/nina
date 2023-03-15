@@ -27,6 +27,7 @@ const ReleaseCreateSuccess = (props) => {
     () => gatesState[releasePubkey],
     [gatesState, releasePubkey]
   )
+
   return (
     <>
       <ReleaseSuccessContainer>

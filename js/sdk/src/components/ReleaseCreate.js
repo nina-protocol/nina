@@ -539,7 +539,11 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     setReleasePubkey(undefined)
     setUploadId(undefined)
     setAudioProgress(0)
-    router.push('/upload')
+    router.push(
+      hubPubkey !== undefined
+        ? `${hubData.handle}/dashboard?action=publishRelease`
+        : '/upload'
+    )
   }
 
   return (
