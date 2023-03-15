@@ -10,7 +10,6 @@ import ShareToTwitter from './ShareToTwitter'
 import Release from '../contexts/Release'
 import GateCreateModal from './GateCreateModal'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 const ReleaseCreateSuccess = (props) => {
   const {
     hubHandle,
@@ -21,8 +20,8 @@ const ReleaseCreateSuccess = (props) => {
     title,
     url,
     image,
+    handleReload,
   } = props
-  const router = useRouter()
   const { fetchGatesForRelease, gatesState } = useContext(Release.Context)
   const releaseGates = useMemo(
     () => gatesState[releasePubkey],
@@ -96,7 +95,7 @@ const ReleaseCreateSuccess = (props) => {
                 fullWidth
                 variant="outlined"
                 sx={{ height: '54px', mt: 1, '&:hover': { opacity: '50%' } }}
-                onClick={() => router.reload()}
+                onClick={() => handleReload()}
               >
                 <a>
                   <Typography variant="body2" align="left">

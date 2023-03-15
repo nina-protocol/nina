@@ -511,6 +511,37 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     }
   }
 
+  const handleReload = () => {
+    setTrack(undefined)
+    setArtwork(undefined)
+    setUploadSize(0)
+    setReleasePubkey(undefined)
+    setButtonText('Publish Release')
+    setFormIsValid(false)
+    setFormValues({ ...formValues, releaseForm: {} })
+    setImageProgress(0)
+    setAudioProgress(0)
+    setFormValuesConfirmed(false)
+    setReleaseInfo(undefined)
+    setArtworkTx(undefined)
+    setTrackTx(undefined)
+    setIsPublishing(false)
+    setMetadata(undefined)
+    setMetadataTx(undefined)
+    setReleaseCreated(false)
+    setUploadId(undefined)
+    setPublishingStepText(undefined)
+    setMd5Digest(undefined)
+    setProcessingProgress(0)
+    setTrack(undefined)
+    setMetadata(undefined)
+    setReleaseInfo(undefined)
+    setReleasePubkey(undefined)
+    setUploadId(undefined)
+    setAudioProgress(0)
+    router.push('/upload')
+  }
+
   return (
     <Grid item md={12}>
       {!wallet.connected && (
@@ -562,6 +593,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
               : releasePubkey
           }`}
           image={artworkTx}
+          handleReload={handleReload}
         />
       )}
 
