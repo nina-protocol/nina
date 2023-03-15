@@ -5,38 +5,39 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Link from 'next/link'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
+import {margin} from '@mui/system'
 const LearnMore = () => {
   const examples = [
     {
-      header: '1. Limited Editions',
+      header: 'Limited Editions',
       body: 'Release a limited quantity of your release. You can set the number of editions you want to release when publishing.',
       image: '/images/LimitedEdition.png',
       link: 'https://ninaprotocol.com/Hy42kGTy6HqJgTkBcvb8YoUjgwP46TLqbpz9nWHSHomM',
       linkText: 'Surgeon, Jet Pack Mack',
     },
     {
-      header: '2. Open Editions',
+      header: 'Open Editions',
       body: 'Create an unlimited supply of your release. You can close the sale at any time and your release will be sold out.',
       image: '/images/OpenEdition.png',
       link: 'https://ninaprotocol.com/8etCo8Gso93PLLjZeXWubjdm4Qd5NqLGL8qtHm76x5cN',
       linkText: 'Dasychira, Banyan Tree',
     },
     {
-      header: '3. Closed Editions',
+      header: 'Closed Editions',
       body: `Close the sale of your release at any time (possible for limited and open editions). The release will then be sold out, but it can still be sold on the secondary market.`,
       image: '/images/ClosedEdition.png',
       link: 'https://ninaprotocol.com/7oR7ETJW9QYXWm25mgLjP4kTRmjPGgQsH4HP1uwDGyKW',
       linkText: 'dBridge, Private Skies',
     },
     {
-      header: '4. Gates',
+      header: 'Gates',
       body: `Include additional material only available to fans who purchase your release—lossless files, bonus tracks, videos, PDFs, etc.`,
       image: '/images/Gates.png',
       link: 'https://ninaprotocol.com/2QfDZcQnT51mQTFrWfzKTPPDrB7G3rk5fSif1WTA7Dqd',
       linkText: 'gantz, evoker',
     },
     {
-      header: '5. Editorial',
+      header: 'Editorial',
       body: `Share additional context around your releases or make blog posts to share updates, stories, and musings with your community.`,
       image: '/images/Posts.png',
       link: `https://hubs.ninaprotocol.com/ledisko/posts/8BEauXrASkugBm6gR4wkH3T5RU5JAuwLwybkfbF1Pg7W`,
@@ -125,15 +126,18 @@ const LearnMore = () => {
       <StyledGrid>
         <LearnMoreWrapper>
           <Box mb={2}>
-            <Typography variant="h1">
+            <Typography variant="h2">
               {`Nina is an independent music ecosystem that offers artists new models
           for releasing music. Below you can learn more about how it works and
           see a list of FAQs.`}
             </Typography>
           </Box>
-          <Box mt={2} mb={1}>
+          <Box mt={2} mb={1} sx={{
+            // border: '2px solid red',
+            // width: '75%'
+          }}>
             <Typography
-              variant="h2"
+              variant="h3"
               sx={{ textDecoration: 'underline' }}
             >{`How you can use Nina:`}</Typography>
             {examples.map((example, index) => (
@@ -142,35 +146,42 @@ const LearnMore = () => {
                 <ExampleBody variant="h4">{example.body}</ExampleBody>
                 <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                   <Link href={example.link}>
-                    <a target="_blank">
-                      <Typography marginBottom={'8px'}>
+                    <a target="_blank" style={{ width: 'max-content' }}>
+                      <Typography marginBottom={'15px'}>
                         {example.linkText}
                       </Typography>
                     </a>
                   </Link>
-                  <Link href={example.link}>
-                    <a target="_blank">
-                      <img
-                        layout="responsive"
-                        src={example.image}
-                        alt={example.linkText}
-                        style={{
-                          width: '75%',
-                          height: 'auto',
-                        }}
-                      />
-                    </a>
-                  </Link>
+                  <Box sx={{
+                    border: '1px solid black',
+                    width: '66%',
+                    marginBottom: '15px',
+                    padding: '15px'
+                  }}>
+                    <Link href={example.link}>
+                      <a target="_blank">
+                        <img
+                          layout="responsive"
+                          src={example.image}
+                          alt={example.linkText}
+                          style={{
+                            objectFit: 'contain',
+                            width: '100%',
+                            height: 'auto',
+                          }}
+                        />
+                      </a>
+                    </Link>
+                  </Box>
                 </Box>
               </ExampleContainer>
             ))}
           </Box>
-          {/* FAQ */}
           <Box mb={2}>
             <Typography variant="h2">{`FAQ`}</Typography>
             {faqs.map((faq, index) => (
               <FAQBox key={index}>
-                <Typography variant="h3" fontWeight={'bold'}>
+                <Typography variant="h3" fontWeight={'bold'} style={{marginBottom: '15px'}}>
                   {faq.question}
                 </Typography>
                 <Box sx={{ paddingLeft: '16px' }}>
@@ -224,11 +235,12 @@ const FAQBox = styled(Box)(() => ({
 
 const ExampleHeader = styled(Typography)(() => ({
   marginTop: '30px',
+  fontSize: '30px !important',
 }))
 
 const ExampleBody = styled(Typography)(() => ({
   marginTop: '15px',
-  marginBottom: '30px',
+  marginBottom: '15px',
   width: '50%',
 }))
 
