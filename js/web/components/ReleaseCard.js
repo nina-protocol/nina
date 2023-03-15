@@ -55,8 +55,6 @@ const ReleaseCard = (props) => {
     return metadata.properties.title
   }, [metadata.properties.title])
 
-  console.log('release', release)
-
   const downloadAs = async (url, name) => {
     logEvent('track_download', 'engagement', {
       publicKey: releasePubkey,
