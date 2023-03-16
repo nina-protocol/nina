@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Link from 'next/link'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
-import {margin} from '@mui/system'
+import { margin } from '@mui/system'
 const LearnMore = () => {
   const examples = [
     {
@@ -132,10 +132,7 @@ const LearnMore = () => {
           see a list of FAQs.`}
             </Typography>
           </Box>
-          <Box mt={2} mb={1} sx={{
-            // border: '2px solid red',
-            // width: '75%'
-          }}>
+          <Box mt={2} mb={1}>
             <Typography
               variant="h3"
               sx={{ textDecoration: 'underline' }}
@@ -144,7 +141,12 @@ const LearnMore = () => {
               <ExampleContainer key={index}>
                 <ExampleHeader variant="h2">{example.header}</ExampleHeader>
                 <ExampleBody variant="h4">{example.body}</ExampleBody>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
                   <Link href={example.link}>
                     <a target="_blank" style={{ width: 'max-content' }}>
                       <Typography marginBottom={'15px'}>
@@ -152,12 +154,15 @@ const LearnMore = () => {
                       </Typography>
                     </a>
                   </Link>
-                  <Box sx={{
-                    border: '1px solid black',
-                    width: '66%',
-                    marginBottom: '15px',
-                    padding: '15px'
-                  }}>
+                  <Box
+                    sx={{
+                      border: '1px solid black',
+                      width: '66%',
+                      marginBottom: '15px',
+                      padding: '15px',
+                      width: { xs: '90%', sm: '66%' },
+                    }}
+                  >
                     <Link href={example.link}>
                       <a target="_blank">
                         <img
@@ -166,7 +171,7 @@ const LearnMore = () => {
                           alt={example.linkText}
                           style={{
                             objectFit: 'contain',
-                            width: '100%',
+                            width: '90%',
                             height: 'auto',
                           }}
                         />
@@ -180,11 +185,15 @@ const LearnMore = () => {
           <Box mb={2}>
             <Typography variant="h2">{`FAQ`}</Typography>
             {faqs.map((faq, index) => (
-              <FAQBox key={index}>
-                <Typography variant="h3" fontWeight={'bold'} style={{marginBottom: '15px'}}>
+              <FaqBox key={index}>
+                <Typography
+                  variant="h3"
+                  fontWeight={'bold'}
+                  style={{ marginBottom: '15px' }}
+                >
                   {faq.question}
                 </Typography>
-                <Box sx={{ paddingLeft: '16px' }}>
+                <Box sx={{ paddingLeft: {xs: '0px', md: '15px'} }}>
                   <Typography
                     variant=""
                     fontWeight={'normal'}
@@ -193,7 +202,7 @@ const LearnMore = () => {
                     {faq.answer}
                   </Typography>
                 </Box>
-              </FAQBox>
+              </FaqBox>
             ))}
           </Box>
         </LearnMoreWrapper>
@@ -217,7 +226,7 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
   },
 }))
 
-const LearnMoreWrapper = styled(Box)(() => ({
+const LearnMoreWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
   margin: '100px auto ',
   display: 'flex',
@@ -225,23 +234,35 @@ const LearnMoreWrapper = styled(Box)(() => ({
   gridColumn: '1/3',
   maxWidth: '1000px',
   textAlign: 'left',
+  [theme.breakpoints.down('md')]: {
+    width: '80%',
+  },
 }))
 
-const FAQBox = styled(Box)(() => ({
+const FaqBox = styled(Box)(({ theme }) => ({
   width: '50%',
   marginTop: '15px',
   marginBottom: '15px',
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+  },
 }))
 
-const ExampleHeader = styled(Typography)(() => ({
+const ExampleHeader = styled(Typography)(({ theme }) => ({
   marginTop: '30px',
   fontSize: '30px !important',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '20px !important',
+  },
 }))
 
-const ExampleBody = styled(Typography)(() => ({
+const ExampleBody = styled(Typography)(({ theme }) => ({
   marginTop: '15px',
   marginBottom: '15px',
   width: '50%',
+  [theme.breakpoints.down('md')]: {
+    width: '100%',
+  },
 }))
 
 const ExampleContainer = styled(Box)(() => ({
