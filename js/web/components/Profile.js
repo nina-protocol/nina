@@ -286,31 +286,32 @@ const Profile = ({ profilePubkey }) => {
   }
 
   const downloadAll = async (event, profileCollection) => {
-        setDownloadingCollection(true)
+    setDownloadingCollection(true)
     //call this function to download all files as ZIP archive
     event.stopPropagation()
-        const files = profileCollection.map((release) => {
-          return {
-            name: release.metadata.name,
-            url: release.metadata.properties.files[0].uri,
-            artist: release.metadata.properties.artist,
-            title: release.metadata.properties.album,
-            image: release.metadata.image,
-          }
-        })
-        
-        const collection = files.map((item) => {
-          console.log('item', item)
-          return downloadAndZip(item)
-        })
-        console.log('collection', downloadCollectionProgress)
-        await Promise.all(collection).then(() => {
-          zip.generateAsync({ type: 'blob' }).then((content) => {
-            saveAs(content, 'collection.zip')
-          })
-        })
-        setDownloadCollectionProgress(0)
-        setDownloadingCollection(false)
+    const files = profileCollection.map((release) => {
+      console.log('release', release)
+      return {
+        name: release.metadata.name,
+        url: release.metadata.properties.files[0].uri,
+        artist: release.metadata.properties.artist,
+        title: release.metadata.properties.title,
+        image: release.metadata.image,
+      }
+    })
+
+    const collection = files.map((item) => {
+      console.log('item', item)
+      return downloadAndZip(item)
+    })
+    console.log('collection', downloadCollectionProgress)
+    await Promise.all(collection).then(() => {
+      zip.generateAsync({ type: 'blob' }).then((content) => {
+        saveAs(content, 'collection.zip')
+      })
+    })
+    setDownloadCollectionProgress(0)
+    setDownloadingCollection(false)
     return
   }
 
@@ -325,8 +326,29 @@ const Profile = ({ profilePubkey }) => {
         },
         responseType: 'blob',
       })
-      .then((res) => {
-        zip.file(`${item.name}.mp3`, res.data, { binary: true })
+      .then(async (res) => {
+        console.log('res', res)
+        const buffer = await res.data.arrayBuffer()
+        let image = item.image
+        if (image) {
+          image = await fetch(image).then((r) => r.blob())
+          image = await new Response(image).arrayBuffer()
+        }
+        console.log('image',image)
+        const writer = new ID3Writer(buffer)
+        console.log(writer)
+        writer.setFrame('TIT2', item.title)
+        writer
+          .setFrame('TPE1', [item.artist])
+          writer.setFrame('APIC', {
+            type: 3,
+            data: image,
+            description: 'Cover',
+          }
+          )
+          .addTag()
+        const blob = writer.getBlob()
+        zip.file(`${item.name}.mp3`, blob, { binary: true })
       })
       .then(() =>
         setDownloadCollectionProgress(
@@ -492,8 +514,8 @@ const Profile = ({ profilePubkey }) => {
             >
               {downloadingCollection ? (
                 <>
-                  `Downloading {downloadCollectionProgress} of 
-                  {profileCollectionReleases.length}{' '}` <Dots />
+                  `Downloading {downloadCollectionProgress} of
+                  {profileCollectionReleases.length} ` <Dots />
                 </>
               ) : (
                 'Download Collection'
