@@ -5,7 +5,8 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Link from 'next/link'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
-import { margin } from '@mui/system'
+import Image from 'next/image'
+
 const LearnMore = () => {
   const examples = [
     {
@@ -165,14 +166,19 @@ const LearnMore = () => {
                   >
                     <Link href={example.link}>
                       <a target="_blank">
-                        <img
+                        <Image
                           layout="responsive"
+                          width={660}
+                          height={404}
                           src={example.image}
                           alt={example.linkText}
                           style={{
                             objectFit: 'contain',
                             width: '90%',
-                            height: 'auto',
+                            height: 'auto'
+                          }}
+                          loader={({ src }) => {
+                            return src
                           }}
                         />
                       </a>
