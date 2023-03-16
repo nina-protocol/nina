@@ -15,7 +15,6 @@ import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import axios from 'axios'
 import ID3Writer from 'browser-id3-writer'
-import FileReader from 'filereader'
 const { getImageFromCDN, loader } = imageManager
 
 const Dots = dynamic(() => import('./Dots'))
@@ -290,7 +289,6 @@ const Profile = ({ profilePubkey }) => {
     //call this function to download all files as ZIP archive
     event.stopPropagation()
     const files = profileCollection.map((release) => {
-      console.log('release', release)
       return {
         name: release.metadata.name,
         url: release.metadata.properties.files[0].uri,
@@ -301,10 +299,8 @@ const Profile = ({ profilePubkey }) => {
     })
 
     const collection = files.map((item) => {
-      console.log('item', item)
       return downloadAndZip(item)
     })
-    console.log('collection', downloadCollectionProgress)
     await Promise.all(collection).then(() => {
       zip.generateAsync({ type: 'blob' }).then((content) => {
         saveAs(content, 'collection.zip')
@@ -327,25 +323,21 @@ const Profile = ({ profilePubkey }) => {
         responseType: 'blob',
       })
       .then(async (res) => {
-        console.log('res', res)
         const buffer = await res.data.arrayBuffer()
         let image = item.image
         if (image) {
           image = await fetch(image).then((r) => r.blob())
           image = await new Response(image).arrayBuffer()
         }
-        console.log('image',image)
         const writer = new ID3Writer(buffer)
-        console.log(writer)
         writer.setFrame('TIT2', item.title)
+        writer.setFrame('TPE1', [item.artist])
         writer
-          .setFrame('TPE1', [item.artist])
-          writer.setFrame('APIC', {
+          .setFrame('APIC', {
             type: 3,
             data: image,
             description: 'Cover',
-          }
-          )
+          })
           .addTag()
         const blob = writer.getBlob()
         zip.file(`${item.name}.mp3`, blob, { binary: true })
