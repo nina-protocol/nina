@@ -1,7 +1,7 @@
 import { useEffect, useContext, useState, useMemo, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, Button } from '@mui/material'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import { styled } from '@mui/system'
@@ -11,7 +11,10 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import IdentityVerification from './IdentityVerification'
 import CreateHub from './CreateHub'
-
+import JSZip from 'jszip'
+import JSZipUtils from 'jszip-utils'
+import { saveAs } from 'file-saver'
+import axios from 'axios'
 const { getImageFromCDN, loader } = imageManager
 
 const Dots = dynamic(() => import('./Dots'))
@@ -21,6 +24,7 @@ const Subscribe = dynamic(() => import('./Subscribe'))
 const NewProfileCtas = dynamic(() => import('./NewProfileCtas'))
 
 const Profile = ({ profilePubkey }) => {
+  const zip = new JSZip()
   const wallet = useWallet()
   const router = useRouter()
   const tableContainerRef = useRef(null)
@@ -61,6 +65,8 @@ const Profile = ({ profilePubkey }) => {
   const [inDashboard, setInDashboard] = useState(false)
   const [inCollection, setInCollection] = useState(false)
   const [fetched, setFetched] = useState(false)
+  const [downloadingCollection, setDownloadingCollection] = useState(false)
+  const [setDownloadProgress, setDownloadProgress] = useState(0)
 
   const [views, setViews] = useState([
     { name: 'releases', playlist: undefined, disabled: true, count: 0 },
@@ -276,6 +282,48 @@ const Profile = ({ profilePubkey }) => {
     tableContainerRef.current.scrollTo(0, 0)
   }
 
+  const downloadAll = (event) => {
+    //call this function to download all files as ZIP archive
+    event.stopPropagation()
+    const files = profileCollectionReleases.map((release) => {
+      return {
+        name: release.metadata.name,
+        url: release.metadata.properties.files[0].uri,
+      }
+    })
+    console.log(files)
+    const collection = files.map((item) => downloadAndZip(item))
+    console.log(collection)
+    Promise.all(collection).then(() => {
+      zip.generateAsync({ type: 'blob' }).then((content) => {
+        saveAs(content, 'collection.zip')
+      })
+    })
+  }
+
+  const downloadAndZip = (item) => {
+    // download single file as blob and add to zip archive
+    const download = axios
+      .get(item.url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        },
+        responseType: 'blob',
+      })
+      .then((res) => {
+        JSZipUtils.getBinaryContent(item.url, function (err, data) {
+          if (err) {
+            throw err // or handle the error
+          }
+          zip.file(`${item.name}.mp3`, data, { binary: true })
+        })
+      })
+    console.log('download', download)
+    return download
+  }
+
   const renderTables = (activeView, inDashboard) => {
     switch (activeView) {
       case 0:
@@ -425,6 +473,7 @@ const Profile = ({ profilePubkey }) => {
                 </>
               )}
             </Box>
+            <Button onClick={(e) => downloadAll(e)}>Download Collection</Button>
           </ProfileHeaderContainer>
         </ProfileHeaderWrapper>
         {hasData && (

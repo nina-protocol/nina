@@ -577,6 +577,7 @@ const ReusableTableBody = (props) => {
                         {inCollection && (
                           <Button
                             onClickCapture={(e) => {
+                              console.log('download', row.uri)
                               e.stopPropagation()
                               downloadAs(
                                 row.uri,
