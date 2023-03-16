@@ -111,7 +111,7 @@ const Gates = ({
           <GateCreateModal
             releasePubkey={releasePubkey}
             fetchGatesForRelease={fetchGatesForRelease}
-            metadata={metadata}
+            name={metadata?.name}
             gates={releaseGates}
           />
         </>

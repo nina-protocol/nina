@@ -18,7 +18,7 @@ import Dots from './Dots'
 
 const GateCreateModal = ({
   fetchGatesForRelease,
-  metadata,
+  name,
   releasePubkey,
   gates,
 }) => {
@@ -41,7 +41,6 @@ const GateCreateModal = ({
         publicKey: releasePubkey,
         wallet: wallet?.publicKey?.toBase58() || 'unknown',
       })
-
       const FILE_CHUNK_SIZE = 10_000_000
 
       const message = new TextEncoder().encode(releasePubkey)
@@ -60,7 +59,6 @@ const GateCreateModal = ({
       })
 
       const { urls, UploadId } = response.data
-
       const uploader = axios.create()
       delete uploader.defaults.headers.put['Content-Type']
 
@@ -156,7 +154,7 @@ const GateCreateModal = ({
             <StyledTypography variant="h5" sx={{ mb: 1 }}>
               Select a file to be available exclusively to collectors of:
             </StyledTypography>
-            <StyledTypography variant="h5">{metadata?.name}</StyledTypography>
+            <StyledTypography variant="h5">{name}</StyledTypography>
 
             <TextField
               id="standard-multiline-static"

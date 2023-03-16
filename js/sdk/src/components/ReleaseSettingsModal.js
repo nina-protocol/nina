@@ -12,6 +12,7 @@ import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import CloseIcon from '@mui/icons-material/Close'
 import CloseRelease from './CloseRelease'
 import ReleaseSettingsWelcome from './ReleaseSettingsWelcome'
+import ShareToTwitter from './ShareToTwitter'
 const ReleaseSettingsModal = ({
   releasePubkey,
   metadata,
@@ -26,7 +27,6 @@ const ReleaseSettingsModal = ({
   const handleClose = () => {
     setOpen(false)
   }
-
   return (
     <Root>
       {isAuthority && <ReleaseSettingsWelcome />}
@@ -66,7 +66,11 @@ const ReleaseSettingsModal = ({
             {userIsRecipient && (
               <Royalty releasePubkey={releasePubkey} release={release} />
             )}
-
+            <ShareToTwitter
+              artist={metadata.properties.artist}
+              title={metadata.properties.title}
+              releasePubkey={releasePubkey}
+            />
             {isAuthority && (
               <>
                 <Gates
@@ -78,7 +82,6 @@ const ReleaseSettingsModal = ({
                   inSettings={true}
                   releaseGates={releaseGates}
                 />
-
                 <CloseRelease releasePubkey={releasePubkey} release={release} />
               </>
             )}
