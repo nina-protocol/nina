@@ -90,7 +90,7 @@ const moduleExports = withTM({
   images: {
     loader: 'imgix',
     path: `https://${IMGIX_URL}/`,
-    domains: ['www.arweave.net', 'arweave.net', IMGIX_URL, 'localhost'],
+    domains: ['www.arweave.net', 'arweave.net', IMGIX_URL],
     deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1920, 2048],
   },
 })
