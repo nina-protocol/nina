@@ -175,7 +175,7 @@ const LearnMore = () => {
                           style={{
                             objectFit: 'contain',
                             width: '90%',
-                            height: 'auto'
+                            height: 'auto',
                           }}
                           loader={({ src }) => {
                             return src
@@ -199,7 +199,7 @@ const LearnMore = () => {
                 >
                   {faq.question}
                 </Typography>
-                <Box sx={{ paddingLeft: {xs: '0px', md: '15px'} }}>
+                <Box sx={{ paddingLeft: { xs: '0px', md: '15px' } }}>
                   <Typography
                     variant=""
                     fontWeight={'normal'}
@@ -220,7 +220,6 @@ const LearnMore = () => {
 const StyledGrid = styled(Grid)(({ theme }) => ({
   paddingTop: '20px',
   maxHeight: '90vh',
-  overflowY: 'scroll',
   justifyContent: 'center',
   alignItems: 'center',
   '& a': {
@@ -242,6 +241,8 @@ const LearnMoreWrapper = styled(Box)(({ theme }) => ({
   textAlign: 'left',
   [theme.breakpoints.down('md')]: {
     width: '80%',
+    margin: '25px auto',
+    paddingBottom: '100px',
   },
 }))
 
