@@ -12,9 +12,10 @@ import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import IdentityVerification from './IdentityVerification'
 import CreateHub from './CreateHub'
 import JSZip from 'jszip'
-import JSZipUtils from 'jszip-utils'
 import { saveAs } from 'file-saver'
 import axios from 'axios'
+import ID3Writer from 'browser-id3-writer'
+import FileReader from 'filereader'
 const { getImageFromCDN, loader } = imageManager
 
 const Dots = dynamic(() => import('./Dots'))
@@ -25,6 +26,7 @@ const NewProfileCtas = dynamic(() => import('./NewProfileCtas'))
 
 const Profile = ({ profilePubkey }) => {
   const zip = new JSZip()
+
   const wallet = useWallet()
   const router = useRouter()
   const tableContainerRef = useRef(null)
@@ -66,7 +68,8 @@ const Profile = ({ profilePubkey }) => {
   const [inCollection, setInCollection] = useState(false)
   const [fetched, setFetched] = useState(false)
   const [downloadingCollection, setDownloadingCollection] = useState(false)
-  const [setDownloadProgress, setDownloadProgress] = useState(0)
+  const [downloadCollectionProgress, setDownloadCollectionProgress] =
+    useState(0)
 
   const [views, setViews] = useState([
     { name: 'releases', playlist: undefined, disabled: true, count: 0 },
@@ -282,23 +285,33 @@ const Profile = ({ profilePubkey }) => {
     tableContainerRef.current.scrollTo(0, 0)
   }
 
-  const downloadAll = (event) => {
+  const downloadAll = async (event, profileCollection) => {
+        setDownloadingCollection(true)
     //call this function to download all files as ZIP archive
     event.stopPropagation()
-    const files = profileCollectionReleases.map((release) => {
-      return {
-        name: release.metadata.name,
-        url: release.metadata.properties.files[0].uri,
-      }
-    })
-    console.log(files)
-    const collection = files.map((item) => downloadAndZip(item))
-    console.log(collection)
-    Promise.all(collection).then(() => {
-      zip.generateAsync({ type: 'blob' }).then((content) => {
-        saveAs(content, 'collection.zip')
-      })
-    })
+        const files = profileCollection.map((release) => {
+          return {
+            name: release.metadata.name,
+            url: release.metadata.properties.files[0].uri,
+            artist: release.metadata.properties.artist,
+            title: release.metadata.properties.album,
+            image: release.metadata.image,
+          }
+        })
+        
+        const collection = files.map((item) => {
+          console.log('item', item)
+          return downloadAndZip(item)
+        })
+        console.log('collection', downloadCollectionProgress)
+        await Promise.all(collection).then(() => {
+          zip.generateAsync({ type: 'blob' }).then((content) => {
+            saveAs(content, 'collection.zip')
+          })
+        })
+        setDownloadCollectionProgress(0)
+        setDownloadingCollection(false)
+    return
   }
 
   const downloadAndZip = (item) => {
@@ -313,14 +326,13 @@ const Profile = ({ profilePubkey }) => {
         responseType: 'blob',
       })
       .then((res) => {
-        JSZipUtils.getBinaryContent(item.url, function (err, data) {
-          if (err) {
-            throw err // or handle the error
-          }
-          zip.file(`${item.name}.mp3`, data, { binary: true })
-        })
+        zip.file(`${item.name}.mp3`, res.data, { binary: true })
       })
-    console.log('download', download)
+      .then(() =>
+        setDownloadCollectionProgress(
+          (downloadCollectionProgress) => downloadCollectionProgress + 1
+        )
+      )
     return download
   }
 
@@ -473,7 +485,20 @@ const Profile = ({ profilePubkey }) => {
                 </>
               )}
             </Box>
-            <Button onClick={(e) => downloadAll(e)}>Download Collection</Button>
+
+            <Button
+              disabled={downloadingCollection}
+              onClick={(e) => downloadAll(e, profileCollectionReleases)}
+            >
+              {downloadingCollection ? (
+                <>
+                  `Downloading {downloadCollectionProgress} of 
+                  {profileCollectionReleases.length}{' '}` <Dots />
+                </>
+              ) : (
+                'Download Collection'
+              )}
+            </Button>
           </ProfileHeaderContainer>
         </ProfileHeaderWrapper>
         {hasData && (

@@ -4220,6 +4220,11 @@ brotli-size@^4.0.0:
   dependencies:
     duplexer "0.1.1"
 
+browser-id3-writer@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/browser-id3-writer/-/browser-id3-writer-4.4.0.tgz#1810e86c214da30a1682f8fdf827bf47f7b23372"
+  integrity sha512-8xce9wo4VoKNR4udEGOAf8vndYxhToqQS+1wyrjdYVPQKRc4Wm6xwGG6XrKYgax28y5AvrbCkqK6t1RplPN2Ew==
+
 browserify-aes@^1.0.0, browserify-aes@^1.0.4, browserify-aes@^1.0.6, browserify-aes@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/browserify-aes/-/browserify-aes-1.2.0.tgz#326734642f403dabc3003209853bb70ad428ef48"
@@ -6391,6 +6396,11 @@ filelist@^1.0.1:
   integrity sha512-w1cEuf3S+DrLCQL7ET6kz+gmlJdbq9J7yXCSjK/OZCPA+qEN1WyF4ZAf0YYJa4/shHJra2t/d/r8SV4Ji+x+8Q==
   dependencies:
     minimatch "^5.0.1"
+
+filereader@^0.10.3:
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/filereader/-/filereader-0.10.3.tgz#c747d4a2cd8f61e5418a7c07fe1257a43f0acdb1"
+  integrity sha512-7F8w6GSXuHLN80ukaVOcHgBaiTRHUZr8GeEhNdqfAECcnBoROg4i8hTl+KqtF4yUPffOJVHEFg4iDJb7xIYFng==
 
 filesize@^6.1.0:
   version "6.4.0"
