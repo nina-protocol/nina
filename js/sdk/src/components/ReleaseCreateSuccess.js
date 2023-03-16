@@ -53,11 +53,7 @@ const ReleaseCreateSuccess = (props) => {
           </ImageBox>
 
           <CtaBox>
-            <Button
-              fullWidth
-              variant="outlined"
-              sx={{ height: '54px', '&:hover': { opacity: '50%' } }}
-            >
+            <Button fullWidth variant="outlined" sx={{ height: '54px' }}>
               <Link
                 href={
                   inHubs

@@ -69,7 +69,7 @@ const ReleaseSettingsModal = ({
             <ShareToTwitter
               artist={metadata.properties.artist}
               title={metadata.properties.title}
-              url={metadata.external_url?.slice(8)}
+              releasePubkey={releasePubkey}
             />
             {isAuthority && (
               <>

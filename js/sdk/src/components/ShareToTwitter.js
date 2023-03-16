@@ -3,13 +3,13 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 
 const ShareToTwitter = (props) => {
-  const { artist, title, url } = props
+  const { artist, title, releasePubkey } = props
   return (
     <Button
       variant="outlined"
       onClick={() =>
         window.open(
-          `https://twitter.com/intent/tweet?text=${`${artist} - "${title}" on Nina`}&url=ninaprotocol.com/${url}`,
+          `https://twitter.com/intent/tweet?text=${`${artist} - "${title}" on Nina`}&url=ninaprotocol.com/${releasePubkey}`,
           null,
           'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
         )
