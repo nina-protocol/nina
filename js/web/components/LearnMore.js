@@ -63,24 +63,6 @@ const LearnMore = () => {
         'No. We also cover costs for artists and label to get set up, helping you get storage space and bandwidth for your releases.',
     },
     {
-      question: 'How are releases on Nina priced?',
-      answer: (
-        <Fragment>
-          You can set whatever price you want when you publish your release.
-          Most releases you will find Nina are $1-5, but some artists have found
-          success with higher prices (see{' '}
-          <Link
-            href={
-              'https://www.ninaprotocol.com/FnuxAi3gFDZ5RE8HYKDk7MbAqycTcWrt6ThVpJXPbrd7'
-            }
-          >
-            <a target="_blank">Joanna7459</a>
-          </Link>
-          ). Artists on Nina receive 100% of their sales.
-        </Fragment>
-      ),
-    },
-    {
       question: 'Can I make my releases free?',
       answer: 'Yes. Just set the price to 0 when you publish.',
     },
