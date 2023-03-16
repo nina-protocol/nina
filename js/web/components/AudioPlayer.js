@@ -130,7 +130,8 @@ const WebAudioPlayer = () => {
             sx={{ padding: '0 30px', display: { xs: 'none', md: 'block' } }}
             variant="subtitle1"
           >
-            {formatDuration(trackProgress) || '00:00'}
+            {formatDuration(trackProgress) || '00:00'} /{' '}
+            {formatDuration(duration)}
           </Typography>
 
           {track && (

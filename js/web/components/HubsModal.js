@@ -25,12 +25,8 @@ const HubsModal = (props) => {
   return (
     <>
       {hubs.length > 0 && (
-        <Box sx={{paddingBottom: '10px'}}>
-          <Cta
-            onClick={() => setOpen(true)}
-            variant="body2"
-            align="left"
-          >
+        <Box sx={{ paddingBottom: '10px' }}>
+          <Cta onClick={() => setOpen(true)} variant="body2" align="left">
             {`View Hubs ${hubs ? `(${hubs.length})` : ''}`}
           </Cta>
           <StyledModal
@@ -130,7 +126,7 @@ const Header = styled(Typography)(({ theme }) => ({
 }))
 
 const CollectorTable = styled('table')(({ theme }) => ({
-  padding: `${theme.spacing(1, 1)}`,
+  padding: `${theme.spacing(1, 0)}`,
   display: 'block',
   maxHeight: '50vh',
   overflowY: 'scroll',
@@ -146,7 +142,7 @@ const CollectorTable = styled('table')(({ theme }) => ({
 const TableBody = styled('tbody')(({ theme }) => ({
   '& td': {
     '& ': {
-      padding: `${theme.spacing(0, 2)}`,
+      padding: `15px 0px`,
     },
     '& a': {
       color: `${theme.palette.white}`,

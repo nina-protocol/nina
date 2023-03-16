@@ -216,7 +216,7 @@ const ReleasePurchase = (props) => {
   }
 
   return (
-    <Box sx={{position: 'relative', height: '100%'}}>
+    <Box sx={{ position: 'relative', height: '100%' }}>
       <Box>
         <AmountRemaining variant="body2" align="left">
           {release.editionType === 'open' ? (
@@ -242,7 +242,9 @@ const ReleasePurchase = (props) => {
         <Typography variant="body2" align="left" paddingBottom="10px">
           {' '}
           <StyledLink href={`${pathString}/${releasePubkey}/market`} passHref>
-            {`View Secondary Market (${exchangeTotalBuys + exchangeTotalSells})`}
+            {`View Secondary Market (${
+              exchangeTotalBuys + exchangeTotalSells
+            })`}
           </StyledLink>
         </Typography>
         <CollectorModal releasePubkey={releasePubkey} metadata={metadata} />
@@ -299,10 +301,9 @@ const ReleasePurchase = (props) => {
             </StyledLink>
           </Typography>
         )}
-
       </Box>
       <StyledDescription align="left">{description}</StyledDescription>
-      <Box sx={{position: 'absolute', bottom: '0', width: '100%'}}>
+      <Box sx={{ position: 'absolute', bottom: '0', width: '100%' }}>
         <Box sx={{ mb: 1, mt: 1 }}>
           <form onSubmit={handleSubmit}>
             <Button
@@ -313,7 +314,9 @@ const ReleasePurchase = (props) => {
             >
               <Typography variant="body2">
                 {txPending && <Dots msg="preparing transaction" />}
-                {!txPending && pending && <Dots msg="awaiting wallet approval" />}
+                {!txPending && pending && (
+                  <Dots msg="awaiting wallet approval" />
+                )}
                 {!txPending && !pending && buttonText}
               </Typography>
             </Button>

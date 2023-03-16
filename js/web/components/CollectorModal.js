@@ -47,12 +47,8 @@ const CollectorModal = (props) => {
   return (
     <>
       {collectors?.length > 0 ? (
-        <Box sx={{paddingBottom: '10px'}}>
-          <Cta
-            onClick={() => setOpen(true)}
-            variant="body2"
-            align="left"
-          >
+        <Box sx={{ paddingBottom: '10px' }}>
+          <Cta onClick={() => setOpen(true)} variant="body2" align="left">
             {`View Collectors ${collectors ? `(${collectors?.length})` : ''}`}
           </Cta>
           <StyledModal
@@ -96,7 +92,6 @@ const CollectorModal = (props) => {
                               <a>View Collection</a>
                             </Link>
                           </td>
-              
                         </tr>
                       )
                     })}
