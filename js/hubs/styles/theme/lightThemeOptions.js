@@ -311,7 +311,6 @@ const lightThemeOptions = {
             fontSize: '10px',
             paddingTop: '0px',
             paddingBottom: '0px',
-            border: '2px solid red',
             '&:hover': {
               backgroundColor: `${colors.white}`,
               color: `${colors.blue}`,

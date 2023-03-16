@@ -10,6 +10,7 @@ import GateManageModal from './GateManageModal'
 import { logEvent } from '../utils/event'
 
 import { useWallet } from '@solana/wallet-adapter-react'
+import {PositionImpl} from '@orca-so/whirlpools-sdk'
 
 const Gates = ({
   isAuthority,
@@ -137,6 +138,7 @@ const Root = styled('div')(() => ({
   flexDirection: 'column',
   alignItems: 'center',
   width: '100%',
+  position: 'relative',
 }))
 
 export default Gates

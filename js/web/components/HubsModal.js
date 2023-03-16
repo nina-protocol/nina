@@ -25,12 +25,11 @@ const HubsModal = (props) => {
   return (
     <>
       {hubs.length > 0 && (
-        <Box>
+        <Box sx={{paddingBottom: '10px'}}>
           <Cta
             onClick={() => setOpen(true)}
             variant="body2"
             align="left"
-            paddingBottom="10px"
           >
             {`View Hubs ${hubs ? `(${hubs.length})` : ''}`}
           </Cta>
@@ -94,6 +93,7 @@ const classes = {
 
 const Cta = styled(Typography)(({ theme }) => ({
   cursor: 'pointer',
+  width: 'max-content',
   '& span': {
     color: `${theme.palette.blue}`,
   },
