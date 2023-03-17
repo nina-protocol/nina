@@ -221,17 +221,18 @@ const releasePurchaseHelper = async (
   if (hub && hub.referralFee.toNumber() > 0) {
     let releasePriceUi = ninaClient.nativeToUi(
       release.price.toNumber(),
-      ninaClient.ids.mints.usdc
+      release.paymentMint
     )
 
     let convertAmount =
       releasePriceUi + (releasePriceUi * hub.referralFee.toNumber()) / 1000000
     price = new anchor.BN(
-      ninaClient.uiToNative(convertAmount, ninaClient.ids.mints.usdc)
+      ninaClient.uiToNative(convertAmount, release.paymentMint)
     )
   }
-
-  if (requiresSwap(release, price, usdcBalance, ninaClient)) {
+  const isUsdc = ninaClient.isUsdc(release.paymentMint)
+  console.log('isUsdc', isUsdc)
+  if (isUsdc && requiresSwap(release, price, usdcBalance, ninaClient)) {
     return releasePurchaseWithOrcaSwap(
       release,
       price,
@@ -242,6 +243,7 @@ const releasePurchaseHelper = async (
       hub
     )
   } else {
+    console.log('bing')
     if (instructions.length > 0) {
       const formattedInstructions = []
       instructions.forEach((instruction) => {
@@ -249,19 +251,28 @@ const releasePurchaseHelper = async (
       })
       request.instructions = formattedInstructions
     }
+    console.log('bingo')
     if (ninaClient.isSol(release.paymentMint)) {
       const { instructions, signers } = await wrapSol(
         provider,
         new anchor.BN(release.price)
       )
+      console.log('instructions', instructions)
       if (!request.instructions) {
         request.instructions = [...instructions]
       } else {
         request.instructions.push(...instructions)
       }
       request.signers = signers
+      console.log('signers', signers)
+      console.log('signers[0].publicKey', signers[0].publicKey.toBase58())
       request.accounts.payerTokenAccount = signers[0].publicKey
     }
+    console.log('bing0')
+    console.log('request', request)
+    request.instructions.forEach((instruction) => {
+      console.log('instruction', instruction.programId.toBase58())
+    })
     if (hub) {
       return await program.rpc.releasePurchaseViaHub(
         release.price,

@@ -242,7 +242,7 @@ export const wrapSol = async (provider, amount) => {
   const instructions = []
   // Create new, rent exempt account.
   instructions.push(
-    anchor.Spl.token(provider)
+    await anchor.Spl.token(provider)
       .methods.initializeAccount()
       .accounts({
         account: wrappedSolAccount.publicKey,
@@ -261,6 +261,8 @@ export const wrapSol = async (provider, amount) => {
       lamports: amount.toNumber(),
     })
   )
+  console.log('instructions :>> ', instructions)
+  console.log('signers :>> ', signers)
   return { instructions, signers }
 }
 

@@ -132,7 +132,7 @@ const ReleasePurchase = (props) => {
           setDescription(file.result)
         })
     } else {
-      setDescription(metadata?.description)
+      setDescription(metadata?.description) 
     }
   }, [metadata?.description])
 
@@ -193,12 +193,12 @@ const ReleasePurchase = (props) => {
       </>
     )
   }
-
+  console.log('release -----', release)
   const buttonText =
     release.remainingSupply > 0 || release.remainingSupply === -1
       ? `${
           release.price > 0
-            ? `Buy $${ninaClient.nativeToUiString(
+            ? `Buy ${ninaClient.nativeToUiString(
                 release.price,
                 release.paymentMint
               )}`

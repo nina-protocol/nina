@@ -13,6 +13,7 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormControl from '@mui/material/FormControl'
 import FormLabel from '@mui/material/FormLabel'
+import { useWallet } from '@solana/wallet-adapter-react'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
 const ReleaseCreateForm = ({
@@ -25,7 +26,9 @@ const ReleaseCreateForm = ({
   touched,
   disabled,
 }) => {
+  const wallet = useWallet()
   const [isOpen, setIsOpen] = useState(false)
+  const [isUsdc, setIsUsdc] = useState(true)
   const [inputValue, setInputValue] = useState(undefined)
   const editionRef = useRef(isOpen)
 
@@ -34,6 +37,14 @@ const ReleaseCreateForm = ({
       onChange(values)
     }
   }, [values])
+
+  useEffect(() => {
+    if (wallet?.publicKey.toBase58() === 'HesfTj24Eatwy8vvra5UdhX1xJWLeqRM7QdDwjX1xmmk') {
+      setIsUsdc(false)
+    }
+  }, [wallet])
+
+  console.log('wallet', wallet)
 
   useEffect(() => {
     if (isOpen) {
@@ -46,6 +57,14 @@ const ReleaseCreateForm = ({
       setFieldValue('isOpen', false)
     }
   }, [isOpen])
+
+  useEffect(() => {
+    if (isUsdc) {
+      setFieldValue('isUsdc', true)
+    } else {
+      setFieldValue('isUsdc', false)
+    }
+  }, [isUsdc])
 
   const valuetext = (value) => {
     return `${value}%`
@@ -208,14 +227,13 @@ const ReleaseCreateForm = ({
             </Box>
           )}
         </Field>
-
         <Field name="retailPrice">
           {({ field }) => (
             <Box className={classes.fieldInputWrapper}>
               <TextField
                 className={`${classes.formField}`}
                 variant="standard"
-                label={formatPlaceholder('Price')}
+                label={`${formatPlaceholder('Price')}${!isUsdc ? ' (SOL)' : ''}`}
                 size="small"
                 InputLabelProps={touched.retailPrice ? { shrink: true } : ''}
                 placeholder={
@@ -382,6 +400,7 @@ export default withFormik({
       retailPrice: undefined,
       resalePercentage: 10,
       isOpen: false,
+      isUsdc: true,
     }
   },
 })(ReleaseCreateForm)
