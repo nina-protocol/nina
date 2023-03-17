@@ -33,12 +33,11 @@ import { useRouter } from 'next/router'
 import { orderBy } from 'lodash'
 import dynamic from 'next/dynamic'
 import { useWallet } from '@solana/wallet-adapter-react'
-import TablePagination from '@mui/material/TablePagination'
-import axios from 'axios'
-import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
-import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import openInNewTab from '@nina-protocol/nina-internal-sdk/src/utils/openInNewTab'
 import Dots from './Dots'
+import { downloadManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+
+const { downloadAs } = downloadManager
 const { getImageFromCDN, loader } = imageManager
 
 const Subscribe = dynamic(() => import('./Subscribe'))
@@ -312,35 +311,6 @@ const ReusableTableBody = (props) => {
     }
   }
 
-  const downloadAs = async (url, name, releasePubkey) => {
-    setDownloadId(releasePubkey)
-    logEvent('track_download_dashboard', 'engagement', {
-      publicKey: releasePubkey,
-    })
-    try {
-      const response = await axios.get(url, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/octet-stream',
-        },
-        responseType: 'blob',
-      })
-      if (response?.data) {
-        const a = document.createElement('a')
-        const url = window.URL.createObjectURL(response.data)
-        a.href = url
-        a.download = name
-        a.click()
-      }
-      enqueueSnackbar('Release Downloaded', { variant: 'success' })
-      setDownloadId(undefined)
-    } catch (error) {
-      enqueueSnackbar('Release Not Downloaded', { variant: 'error' })
-      setDownloadId(undefined)
-    }
-  }
-
   const getComparator = (order, orderBy, type) => {
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
@@ -365,6 +335,8 @@ const ReusableTableBody = (props) => {
         image: data?.metadata?.image,
         date: data?.metadata?.properties?.date,
         title: `${data?.metadata?.properties?.artist} - ${data?.metadata?.properties?.title}`,
+        artist: data?.metadata?.properties?.artist,
+        releaseName: data?.metadata?.properties?.title,
       }
       if (tableType === 'profileCollectionReleases') {
         formattedData.dateAdded = new Date(
@@ -555,7 +527,9 @@ const ReusableTableBody = (props) => {
                   cellName !== 'link' &&
                   cellName !== 'authorityPublicKey' &&
                   cellName !== 'publicKey' &&
-                  cellName !== 'handle'
+                  cellName !== 'handle' &&
+                  cellName !== 'artist' &&
+                  cellName !== 'releaseName'
                 ) {
                   if (cellName === 'ctas') {
                     return (
@@ -577,14 +551,18 @@ const ReusableTableBody = (props) => {
                         {inCollection && (
                           <Button
                             onClickCapture={(e) => {
-                              console.log('download', row.uri)
                               e.stopPropagation()
                               downloadAs(
                                 row.uri,
                                 `${row.fileName
                                   .replace(/[^a-z0-9]/gi, '_')
                                   .toLowerCase()}___nina.mp3`,
-                                row.id
+                                row.id,
+                                row.image,
+                                row.artist,
+                                row.releaseName,
+                                setDownloadId,
+                                enqueueSnackbar
                               )
                             }}
                             className="disableClickCapture"
@@ -662,22 +640,6 @@ const ReusableTableBody = (props) => {
                         description={cellData || null}
                         key={cellName}
                       />
-                    )
-                  } else if (cellName === 'artist') {
-                    return (
-                      <StyledProfileTableCell key={cellName} type={'profile'}>
-                        <OverflowContainer
-                          overflowWidth={'20vw'}
-                          inDashboard={inDashboard}
-                        >
-                          <Typography
-                            noWrap
-                            sx={{ hover: 'pointer', maxWidth: '20vw' }}
-                          >
-                            {cellData}
-                          </Typography>
-                        </OverflowContainer>
-                      </StyledProfileTableCell>
                     )
                   } else if (cellName === 'title') {
                     return (

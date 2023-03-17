@@ -15,6 +15,8 @@ import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import axios from 'axios'
 import ID3Writer from 'browser-id3-writer'
+import { downloadManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+const { downloadAll } = downloadManager
 const { getImageFromCDN, loader } = imageManager
 
 const Dots = dynamic(() => import('./Dots'))
@@ -284,72 +286,6 @@ const Profile = ({ profilePubkey }) => {
     tableContainerRef.current.scrollTo(0, 0)
   }
 
-  const downloadAll = async (event, profileCollection) => {
-    setDownloadingCollection(true)
-    //call this function to download all files as ZIP archive
-    event.stopPropagation()
-    const files = profileCollection.map((release) => {
-      return {
-        name: release.metadata.name,
-        url: release.metadata.properties.files[0].uri,
-        artist: release.metadata.properties.artist,
-        title: release.metadata.properties.title,
-        image: release.metadata.image,
-      }
-    })
-
-    const collection = files.map((item) => {
-      return downloadAndZip(item)
-    })
-    await Promise.all(collection).then(() => {
-      zip.generateAsync({ type: 'blob' }).then((content) => {
-        saveAs(content, 'collection.zip')
-      })
-    })
-    setDownloadCollectionProgress(0)
-    setDownloadingCollection(false)
-    return
-  }
-
-  const downloadAndZip = (item) => {
-    // download single file as blob and add to zip archive
-    const download = axios
-      .get(item.url, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/octet-stream',
-        },
-        responseType: 'blob',
-      })
-      .then(async (res) => {
-        const buffer = await res.data.arrayBuffer()
-        let image = item.image
-        if (image) {
-          image = await fetch(image).then((r) => r.blob())
-          image = await new Response(image).arrayBuffer()
-        }
-        const writer = new ID3Writer(buffer)
-        writer.setFrame('TIT2', item.title)
-        writer.setFrame('TPE1', [item.artist])
-        writer
-          .setFrame('APIC', {
-            type: 3,
-            data: image,
-            description: 'Cover',
-          })
-          .addTag()
-        const blob = writer.getBlob()
-        zip.file(`${item.name}.mp3`, blob, { binary: true })
-      })
-      .then(() =>
-        setDownloadCollectionProgress(
-          (downloadCollectionProgress) => downloadCollectionProgress + 1
-        )
-      )
-    return download
-  }
-
   const renderTables = (activeView, inDashboard) => {
     switch (activeView) {
       case 0:
@@ -502,7 +438,15 @@ const Profile = ({ profilePubkey }) => {
 
             <Button
               disabled={downloadingCollection}
-              onClick={(e) => downloadAll(e, profileCollectionReleases)}
+              onClick={(e) =>
+                downloadAll(
+                  e,
+                  profileCollectionReleases,
+                  setDownloadCollectionProgress,
+                  setDownloadingCollection,
+                  zip
+                )
+              }
             >
               {downloadingCollection ? (
                 <>

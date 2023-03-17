@@ -3,6 +3,7 @@ import * as web3 from './web3'
 import * as imageManager from './imageManager'
 import CryptoJS from 'crypto-js'
 import promiseRetry from 'promise-retry'
+import * as downloadManager from './downloadManager'
 
 const dateConverter = (date) => {
   var a = new Date(typeof date === 'object' ? date.toNumber() * 1000 : date)
@@ -216,6 +217,7 @@ export {
   formatPlaceholder,
   getConfirmTransaction,
   imageManager,
+  downloadManager,
   sleep,
   encrypt,
   web3,
