@@ -123,7 +123,6 @@ const RecentlyPublished = (props) => {
 }
 
 const RecentlyPublishedWrapper = styled(Box)(({ theme }) => ({
-  // border: '2px solid red',
   '& .sliderArrow': {
     top: '-12% !important',
     position: 'absolute',
@@ -152,9 +151,6 @@ const ReleaseSlideWrapper = styled(Box)(() => ({
   textAlign: 'center',
   display: 'flex',
   justifyContent: 'center',
-  '& .MuiSvgIcon-root': {
-    border: '2px solid red !important',
-  },
 }))
 
 const ReleaseSlide = styled(Box)(({ theme }) => ({

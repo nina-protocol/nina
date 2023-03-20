@@ -41,8 +41,8 @@ const GateCreateModal = ({
         publicKey: releasePubkey,
         wallet: wallet?.publicKey?.toBase58() || 'unknown',
       })
-      const FILE_CHUNK_SIZE = 10_000_000
 
+      const FILE_CHUNK_SIZE = 10 * 1024 * 1024
       const message = new TextEncoder().encode(releasePubkey)
       const messageBase64 = encodeBase64(message)
       const signature = await wallet.signMessage(message)

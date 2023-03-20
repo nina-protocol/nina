@@ -47,13 +47,8 @@ const CollectorModal = (props) => {
   return (
     <>
       {collectors?.length > 0 ? (
-        <Box>
-          <Cta
-            onClick={() => setOpen(true)}
-            variant="body2"
-            align="left"
-            paddingBottom="10px"
-          >
+        <Box sx={{ paddingBottom: '10px' }}>
+          <Cta onClick={() => setOpen(true)} variant="body2" align="left">
             {`View Collectors ${collectors ? `(${collectors?.length})` : ''}`}
           </Cta>
           <StyledModal
@@ -97,11 +92,6 @@ const CollectorModal = (props) => {
                               <a>View Collection</a>
                             </Link>
                           </td>
-                          {/* <td>
-                        <a href={`https://solscan.io/account/${entry}`} target="_blank" rel="noreferrer" passHref>
-                          View on Explorer
-                        </a>
-                      </td> */}
                         </tr>
                       )
                     })}
@@ -134,6 +124,7 @@ const classes = {
 
 const Cta = styled(Typography)(({ theme }) => ({
   cursor: 'pointer',
+  width: 'max-content',
   '& span': {
     color: `${theme.palette.blue}`,
   },

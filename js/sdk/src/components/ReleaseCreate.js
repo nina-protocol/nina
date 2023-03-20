@@ -369,7 +369,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
             const info = await initializeReleaseAndMint(
               hubPubkey ? hubPubkey : undefined
             )
-            // const info = await initializeReleaseAndMint()
 
             setReleaseInfo(info)
             setReleasePubkey(info.release)

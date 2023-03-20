@@ -58,6 +58,33 @@ const ReleaseCard = (props) => {
     return metadata.properties.title
   }, [metadata.properties.title])
 
+  const downloadAs = async (url, name) => {
+    logEvent('track_download', 'engagement', {
+      publicKey: releasePubkey,
+    })
+
+    try {
+      const response = await axios.get(url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        },
+        responseType: 'blob',
+      })
+
+      if (response?.data) {
+        const a = document.createElement('a')
+        const url = window.URL.createObjectURL(response.data)
+        a.href = url
+        a.download = name
+        a.click()
+      }
+      enqueueSnackbar('Release Downloaded', { variant: 'success' })
+    } catch (error) {
+      enqueueSnackbar('Release Downloaded', { variant: 'error' })
+    }
+  }
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>

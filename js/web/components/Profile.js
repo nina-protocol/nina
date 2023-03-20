@@ -318,6 +318,7 @@ const Profile = ({ profilePubkey }) => {
                 inCollection={inCollection}
                 profileCollection={profileCollectionReleases}
                 walletAddress={wallet?.publicKey.toBase58()}
+
               />
             )}
           </>

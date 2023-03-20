@@ -60,12 +60,25 @@ export default async function getCroppedImg(
   ctx.rotate(rotRad)
   ctx.scale(flip.horizontal ? -1 : 1, flip.vertical ? -1 : 1)
   ctx.translate(-image.width / 2, -image.height / 2)
+  ctx.imageSmoothingEnabled = false
 
   // draw rotated image
-  ctx.drawImage(image, 0, 0)
+  ctx.drawImage(
+    image,
+    0,
+    0,
+    image.width,
+    image.height,
+    0,
+    0,
+    image.width,
+    image.height
+  )
 
   // croppedAreaPixels values are bounding box relative
   // extract the cropped image using these values
+  ctx.imageSmoothingEnabled = false
+
   const data = ctx.getImageData(
     pixelCrop.x,
     pixelCrop.y,
@@ -76,6 +89,7 @@ export default async function getCroppedImg(
   // set canvas width to final desired crop size - this will clear existing context
   canvas.width = pixelCrop.width
   canvas.height = pixelCrop.height
+  ctx.imageSmoothingEnabled = false
 
   // paste generated rotate image at the top left corner
   ctx.putImageData(data, 0, 0)
@@ -85,8 +99,13 @@ export default async function getCroppedImg(
 
   // As a blob
   return new Promise((resolve) => {
-    canvas.toBlob((blob) => {
-      resolve(new File([blob], 'fileName.jpg', { type: 'image/jpeg' }))
-    }, 'image/jpeg')
+    canvas.imageSmoothingEnabled = false
+    canvas.toBlob(
+      (blob) => {
+        resolve(new File([blob], 'fileName.png', { type: 'image/png' }))
+      },
+      'image/png',
+      1
+    )
   })
 }
