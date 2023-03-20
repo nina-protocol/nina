@@ -16,7 +16,7 @@ export function getRadianAngle(degreeValue) {
  */
 export function rotateSize(width, height, rotation) {
   const rotRad = getRadianAngle(rotation)
-  
+
   return {
     width:
       Math.abs(Math.cos(rotRad) * width) + Math.abs(Math.sin(rotRad) * height),
@@ -80,7 +80,6 @@ export default async function getCroppedImg(
   ctx.imageSmoothingEnabled = false
 
   const data = ctx.getImageData(
-    
     pixelCrop.x,
     pixelCrop.y,
     pixelCrop.width,
