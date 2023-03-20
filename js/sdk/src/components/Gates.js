@@ -137,6 +137,7 @@ const Root = styled('div')(() => ({
   flexDirection: 'column',
   alignItems: 'center',
   width: '100%',
+  position: 'relative',
 }))
 
 export default Gates
