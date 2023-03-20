@@ -8,13 +8,17 @@ import { styled } from '@mui/system'
 import { Box } from '@mui/system'
 import Subscribe from './Subscribe'
 const { getImageFromCDN, loader } = imageManager
+import sanitizeHtml from 'sanitize-html'
 
 const HubHeader = ({ hubData }) => {
   const [hubDescription, setHubDescription] = useState(undefined)
   const wallet = useWallet()
 
   useEffect(() => {
-    setHubDescription(hubData?.data.description)
+    const sanitizedDescription = sanitizeHtml(
+      hubData.data.description.replaceAll('&gt;', '')
+    )
+    setHubDescription(sanitizedDescription)
   }, [hubData?.data])
 
   const imageUrl = getImageFromCDN(hubData?.data?.image, 400, hubData.datetime)
