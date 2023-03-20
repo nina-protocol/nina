@@ -151,28 +151,30 @@ const NavBar = ({ hubPubkey }) => {
       >
         {mobileView && canAddContent && displayMobile()}
         <Link href={`/${hubData?.handle || ''}`} passHref>
-          <LogoLinkWrapper>
-            {hubData?.data && (
-              <Image
-                loader={loader}
-                src={getImageFromCDN(
-                  hubData?.data?.image,
-                  100,
-                  new Date(hubData.datetime)
-                )}
-                height="50"
-                width="50"
-                alt="hub-logo"
-              />
-            )}
-            {hubData?.data ? (
-              <Typography style={{ marginLeft: '15px' }}>
-                {hubData?.data.displayName}
-              </Typography>
-            ) : (
-              <Typography variant="h4">NINA HUBS [beta]</Typography>
-            )}
-          </LogoLinkWrapper>
+          <a>
+            <LogoLinkWrapper>
+              {hubData?.data && (
+                <Image
+                  loader={loader}
+                  src={getImageFromCDN(
+                    hubData?.data?.image,
+                    100,
+                    new Date(hubData.datetime)
+                  )}
+                  height="50"
+                  width="50"
+                  alt="hub-logo"
+                />
+              )}
+              {hubData?.data ? (
+                <Typography style={{ marginLeft: '15px' }}>
+                  {hubData?.data.displayName}
+                </Typography>
+              ) : (
+                <Typography variant="h4">NINA HUBS [beta]</Typography>
+              )}
+            </LogoLinkWrapper>
+          </a>
         </Link>
         <CtaWrapper>
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
@@ -246,7 +248,9 @@ const NavBar = ({ hubPubkey }) => {
             key: label,
           }}
         >
-          <MenuItemContent>{label}</MenuItemContent>
+          <a>
+            <MenuItemContent>{label}</MenuItemContent>
+          </a>
         </Link>
       )
     })
@@ -265,7 +269,9 @@ const NavBar = ({ hubPubkey }) => {
                 key: label,
               }}
             >
-              <MenuItemContent>{label}</MenuItemContent>
+              <a>
+                <MenuItemContent>{label}</MenuItemContent>
+              </a>
             </Link>
           )
         })}
@@ -398,8 +404,6 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
     display: 'none',
   },
   '& .MuiButton-label': {
-    border: '2px solid red',
-
     color: theme.palette.black,
   },
 }))

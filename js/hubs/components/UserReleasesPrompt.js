@@ -164,7 +164,6 @@ const Root = styled('div')(({ theme }) => ({
 const ModalToggle = styled(Button)(({ theme }) => ({
   color: `${theme.palette.text.primary} !important`,
   width: '100% !important',
-  border: '2px solid red',
   ':disabled': {
     color: theme.palette.text.primary + 'a0',
   },

@@ -18,9 +18,8 @@ const ExchangeListItem = (props) => {
   } = props
   const wallet = useWallet()
   const { ninaClient } = useContext(Nina.Context)
-  const displayPrice = isSelling
-    ? ninaClient.nativeToUiString(amount, release.paymentMint)
-    : `${amount} USDC`
+  const displayPrice = ninaClient.nativeToUiString(amount, release.paymentMint)
+
   const itemData = (
     <Root>
       <Typography>

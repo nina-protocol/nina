@@ -62,12 +62,12 @@ const ExchangeHistoryModal = (props) => {
                       <td>{amount} USDC</td>
                       <td>
                         <Link className="link" href={`/profiles/${seller}`}>
-                          {displayNameForAccount(seller)}
+                          <a>{displayNameForAccount(seller)}</a>
                         </Link>
                       </td>
                       <td>
                         <Link className="link" href={`/profiles/${buyer}`}>
-                          {displayNameForAccount(buyer)}
+                          <a>{displayNameForAccount(buyer)}</a>
                         </Link>
                       </td>
                     </tr>

@@ -49,25 +49,9 @@ const GateManageModal = ({
     setActiveIndex(index)
     setAction('unlock')
     try {
-      logEvent('unlock_gate_admin_init', 'engagement', {
-        gateId: gate.id,
-        publicKey: releasePubkey,
-        wallet: wallet?.publicKey?.toBase58() || 'unknown',
-      })
       await unlockGate(gate)
-      logEvent('unlock_gate_admin_success', 'engagement', {
-        gateId: gate.id,
-        publicKey: releasePubkey,
-        wallet: wallet?.publicKey?.toBase58() || 'unknown',
-      })
-
       setOpen(false)
     } catch (error) {
-      logEvent('unlock_gate_admin_failure', 'engagement', {
-        gateId: gate.id,
-        publicKey: releasePubkey,
-        wallet: wallet?.publicKey?.toBase58() || 'unknown',
-      })
       console.warn(error)
     }
     setInProgress(false)

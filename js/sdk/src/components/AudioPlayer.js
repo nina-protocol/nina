@@ -40,6 +40,7 @@ const AudioPlayer = ({ hubPubkey = undefined, children }) => {
         }
       }
     })
+
     audioPlayerRef.current.addEventListener('play', function () {
       navigator.mediaSession.playbackState = 'playing'
     })

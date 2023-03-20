@@ -23,6 +23,7 @@ import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 import DevnetIndicator from '@nina-protocol/nina-internal-sdk/esm/DevnetIndicator'
 import PendingReleasesIndicator from '@nina-protocol/nina-internal-sdk/esm/PendingReleasesIndicator'
 import FeedDrawer from './FeedDrawer'
+import WalletButton from '@nina-protocol/nina-internal-sdk/esm/WalletButton'
 
 const NavBar = () => {
   const router = useRouter()
@@ -62,14 +63,18 @@ const NavBar = () => {
         <Breadcrumbs />
         <SearchIconWrapper>
           <Link href="/search" passHref>
-            <SearchIcon onClick={() => router.push('/search')} />
+            <a>
+              <SearchIcon onClick={() => router.push('/search')} />
+            </a>
           </Link>
         </SearchIconWrapper>
       </NavLeft>
 
       <Logo>
         <Link href="/" passHref>
-          <Typography variant="h4">NINA</Typography>
+          <a>
+            <Typography variant="h4">NINA</Typography>
+          </a>
         </Link>
       </Logo>
 
@@ -91,13 +96,15 @@ const NavBar = () => {
                     textAlign: 'center',
                   }}
                 >
-                  <Link href="/upload">Upload</Link>
+                  <Link href="/upload">
+                    <a>Upload</a>
+                  </Link>
                 </BlueTypography>
               )}
             </UploadWrapper>
             {wallet.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
-                <StyledWalletButton>
+                <StyledWalletButton router={router}>
                   <Typography
                     variant="subtitle1"
                     sx={{ textTransform: 'none' }}
@@ -283,7 +290,7 @@ const StyledWalletDialogProvider = styled(WalletDialogProvider)(
   })
 )
 
-const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
+const StyledWalletButton = styled(WalletButton)(({ theme }) => ({
   textTransform: 'capitalize',
   paddingRight: '20px',
   paddingLeft: '20px',

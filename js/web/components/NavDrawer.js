@@ -21,6 +21,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close'
 
 const linksConnected = [
+  'home',
   'dashboard',
   'all Releases',
   'hubs',
@@ -242,9 +243,11 @@ const NavDrawer = () => {
                   key={link}
                   passHref
                 >
-                  <ListItem button key={link}>
-                    <StyledListItemText primary={link} />
-                  </ListItem>
+                  <a>
+                    <ListItem button key={link}>
+                      <StyledListItemText primary={link} />
+                    </ListItem>
+                  </a>
                 </Link>
               )
           }

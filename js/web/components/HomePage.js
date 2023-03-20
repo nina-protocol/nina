@@ -56,7 +56,9 @@ const HomePage = ({ loading }) => {
               align="left"
               className={classes.sectionHeader}
             >
-              <Link href="/releases/highlights">Highlights</Link>
+              <Link href="/releases/highlights">
+                <a>Highlights</a>
+              </Link>
               {releasesRecent.highlights?.length > 0 && (
                 <Button
                   sx={{ padding: '6px 8px' }}
@@ -102,7 +104,9 @@ const HomePage = ({ loading }) => {
               align="left"
               className={classes.sectionHeader}
             >
-              <Link href="/hubs">Hubs</Link>
+              <Link href="/hubs">
+                <a>Hubs</a>
+              </Link>
             </Typography>
           </Box>
           <HubSlider hubs={hubs} loading={loading} />
