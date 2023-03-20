@@ -51,7 +51,7 @@ export const downloadAs = async (
             data: image,
             description: 'Cover',
           })
-          .addTag()
+          writer.addTag()
         const blob = writer.getBlob()
         saveAs(blob, `${title}.mp3`)
       })
@@ -135,7 +135,7 @@ export const downloadAndZip = async (
           data: image,
           description: 'Cover',
         })
-        .addTag()
+        writer.addTag()
       const blob = writer.getBlob()
       zip.file(`${item.name}.mp3`, blob, { binary: true })
     })
