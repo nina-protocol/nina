@@ -130,13 +130,13 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate }) => {
         </StyledModal>
       </Root>
       {amountHeld === 0 && (
-        <div>
+        <Box sx={{ position: 'absolute', top: '110%' }}>
           <StyledTypographyButtonSub>
             {`There ${gates.length > 1 ? 'are' : 'is'} ${gates.length} ${
               gates.length > 1 ? 'files' : 'file'
             } available for download exclusively to owners of this release.`}
           </StyledTypographyButtonSub>
-        </div>
+        </Box>
       )}
     </>
   )
