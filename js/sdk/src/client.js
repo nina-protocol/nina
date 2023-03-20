@@ -73,7 +73,6 @@ const NinaClient = function (provider, network) {
     return new anchor.Program(idl, NINA_ID, obj.provider)
   }
   obj.isUsdc = (mint) => {
-    console.log('mint', mint)
     if (typeof mint !== 'string') {
       return mint.toBase58() === obj.ids.mints.usdc
     }
@@ -91,7 +90,9 @@ const NinaClient = function (provider, network) {
       .toFixed(isUsdc || decimalOverride ? 2 : 3)
 
     if (showCurrency) {
-      amountString = `${isUsdc ? '$' : ''}${amountString} ${isUsdc ? 'USDC' : 'SOL'}`
+      amountString = `${isUsdc ? '$' : ''}${amountString} ${
+        isUsdc ? 'USDC' : 'SOL'
+      }`
     }
     return amountString
   }

@@ -1,4 +1,10 @@
-import React, { useState, useEffect, createElement, Fragment, useContext } from 'react'
+import React, {
+  useState,
+  useEffect,
+  createElement,
+  Fragment,
+  useContext,
+} from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
@@ -60,10 +66,9 @@ const ReleaseCreateConfirm = (props) => {
   const [description, setDescription] = useState()
   const [confirm, setConfirm] = useState()
   const data = formValues.releaseForm
-  console.log('data', data)
-  console.log('ninaClient', ninaClient.ids.mints.usdc)
-  const paymentMint = data.isUsdc ? ninaClient.ids.mints.usdc : ninaClient.ids.mints.wsol
-  console.log('paymentMint', paymentMint)
+  const paymentMint = data.isUsdc
+    ? ninaClient.ids.mints.usdc
+    : ninaClient.ids.mints.wsol
   const submitAndCloseModal = (e) => {
     e.preventDefault()
     setFormValuesConfirmed(true)
@@ -103,9 +108,6 @@ const ReleaseCreateConfirm = (props) => {
   const handleChangeCheckbox = (e) => {
     setConfirm(e.target.checked)
   }
-  console.log('data.retailPrice', data.retailPrice)
-  console.log('ninaClient.decimalsForMint(paymentMint)', ninaClient.decimalsForMint(paymentMint))
-  console.log('ninaClient.nativeToUiString(data.retailPrice, paymentMint)', ninaClient.nativeToUiString(ninaClient.uiToNative(data.retailPrice, paymentMint), paymentMint))
   return (
     <div>
       <Button
@@ -150,7 +152,12 @@ const ReleaseCreateConfirm = (props) => {
             <Value sx={{ mt: 1 }}>
               Retail Price:
               <span>
-                {data.retailPrice > 0 ? `${ninaClient.nativeToUiString(ninaClient.uiToNative(data.retailPrice, paymentMint), paymentMint)}` : 'Free'}
+                {data.retailPrice > 0
+                  ? `${ninaClient.nativeToUiString(
+                      ninaClient.uiToNative(data.retailPrice, paymentMint),
+                      paymentMint
+                    )}`
+                  : 'Free'}
               </span>
             </Value>
             <Value sx={{ mt: 1, mb: 1 }}>

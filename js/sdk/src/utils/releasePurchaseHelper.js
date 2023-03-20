@@ -9,9 +9,10 @@ import {
 import { Percentage } from '@orca-so/common-sdk'
 import {
   findOrCreateAssociatedTokenAccount,
-  wrapSol,
   TOKEN_PROGRAM_ID,
+  wrapSol,
 } from './web3'
+
 import { decodeNonEncryptedByteArray } from './encrypt'
 
 const PRIORITY_SWAP_FEE = 7500
@@ -231,7 +232,6 @@ const releasePurchaseHelper = async (
     )
   }
   const isUsdc = ninaClient.isUsdc(release.paymentMint)
-  console.log('isUsdc', isUsdc)
   if (isUsdc && requiresSwap(release, price, usdcBalance, ninaClient)) {
     return releasePurchaseWithOrcaSwap(
       release,
@@ -243,7 +243,6 @@ const releasePurchaseHelper = async (
       hub
     )
   } else {
-    console.log('bing')
     if (instructions.length > 0) {
       const formattedInstructions = []
       instructions.forEach((instruction) => {
@@ -251,28 +250,21 @@ const releasePurchaseHelper = async (
       })
       request.instructions = formattedInstructions
     }
-    console.log('bingo')
     if (ninaClient.isSol(release.paymentMint)) {
-      const { instructions, signers } = await wrapSol(
+      const [wrappedSolAccount, wrappedSolInstructions] = await wrapSol(
         provider,
-        new anchor.BN(release.price)
+        release.price,
+        release.paymentMint
       )
-      console.log('instructions', instructions)
+
       if (!request.instructions) {
-        request.instructions = [...instructions]
+        request.instructions = [...wrappedSolInstructions]
       } else {
-        request.instructions.push(...instructions)
+        request.instructions.push(...wrappedSolInstructions)
       }
-      request.signers = signers
-      console.log('signers', signers)
-      console.log('signers[0].publicKey', signers[0].publicKey.toBase58())
-      request.accounts.payerTokenAccount = signers[0].publicKey
+      request.accounts.payerTokenAccount = wrappedSolAccount
     }
-    console.log('bing0')
-    console.log('request', request)
-    request.instructions.forEach((instruction) => {
-      console.log('instruction', instruction.programId.toBase58())
-    })
+
     if (hub) {
       return await program.rpc.releasePurchaseViaHub(
         release.price,

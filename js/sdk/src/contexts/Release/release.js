@@ -925,10 +925,7 @@ const releaseContextHelper = ({
       getUserBalances()
       return {
         success: true,
-        msg: `You collected $${nativeToUi(
-          recipient.owed,
-          release.paymentMint
-        )}`,
+        msg: `You collected ${nativeToUi(recipient.owed, release.paymentMint)}`,
       }
     } catch (error) {
       console.warn(error)
