@@ -302,7 +302,13 @@ const ReleasePurchase = (props) => {
         )}
       </Box>
       <StyledDescription align="left">{description}</StyledDescription>
-      <Box sx={{ position: {xs: 'relative', md :'absolute'}, bottom: '0', width: '100%' }}>
+      <Box
+        sx={{
+          position: { xs: 'relative', md: 'absolute' },
+          bottom: '0',
+          width: '100%',
+        }}
+      >
         <Box sx={{ mb: 1, mt: 1 }}>
           <form onSubmit={handleSubmit}>
             <Button
