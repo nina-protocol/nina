@@ -13,11 +13,13 @@ export const downloadAs = async (
   description,
   link,
   setDownloadId,
-  enqueueSnackbar
+  enqueueSnackbar,
+  walletAddress
 ) => {
   setDownloadId(releasePubkey)
   logEvent('track_download_dashboard', 'engagement', {
     publicKey: releasePubkey,
+    wallet: walletAddress,
   })
   try {
     const download = await axios
@@ -70,7 +72,7 @@ export const downloadAll = async (
   setDownloadCollectionProgress,
   setDownloadingCollection,
   zip,
-    enqueueSnackbar
+    enqueueSnackbar, walletAddress
 ) => {
   setDownloadingCollection(true)
   event.stopPropagation()
@@ -89,7 +91,7 @@ export const downloadAll = async (
   })
 
   const collection = files?.map((item) => {
-    return downloadAndZip(item, setDownloadCollectionProgress, zip)
+    return downloadAndZip(item, setDownloadCollectionProgress, zip, walletAddress)
   })
   await Promise.all(collection).then(() => {
     zip.generateAsync({ type: 'blob' }).then((content) => {
@@ -105,10 +107,12 @@ export const downloadAll = async (
 export const downloadAndZip = async (
   item,
   setDownloadCollectionProgress,
-  zip
+  zip,
+  walletAddress
 ) => {
   logEvent('track_download_dashboard', 'engagement', {
     publicKey: item.releasePubkey,
+    walletAddress: walletAddress,
   })
   const download = axios
     .get(item.url, {

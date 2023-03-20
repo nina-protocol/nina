@@ -11,12 +11,7 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import IdentityVerification from './IdentityVerification'
 import CreateHub from './CreateHub'
-import JSZip from 'jszip'
-import { saveAs } from 'file-saver'
-import axios from 'axios'
-import ID3Writer from 'browser-id3-writer'
 import { downloadManager } from '@nina-protocol/nina-internal-sdk/src/utils'
-const { downloadAll } = downloadManager
 const { getImageFromCDN, loader } = imageManager
 
 const Dots = dynamic(() => import('./Dots'))
@@ -26,8 +21,6 @@ const Subscribe = dynamic(() => import('./Subscribe'))
 const NewProfileCtas = dynamic(() => import('./NewProfileCtas'))
 
 const Profile = ({ profilePubkey }) => {
-  const zip = new JSZip()
-
   const wallet = useWallet()
   const router = useRouter()
   const tableContainerRef = useRef(null)
@@ -324,6 +317,7 @@ const Profile = ({ profilePubkey }) => {
                 hasOverflow={true}
                 inCollection={inCollection}
                 profileCollection={profileCollectionReleases}
+                walletAddress={wallet?.publicKey.toBase58()}
               />
             )}
           </>
@@ -342,6 +336,7 @@ const Profile = ({ profilePubkey }) => {
                 items={profileHubs}
                 hasOverflow={true}
                 inDashboard={inDashboard}
+                walletConnected={wallet.connected}
               />
             )}
           </>
@@ -359,6 +354,7 @@ const Profile = ({ profilePubkey }) => {
                 tableType={'followers'}
                 items={profileSubscriptionsTo}
                 hasOverflow={true}
+                walletConnected={wallet.connected}
               />
             )}
           </>
@@ -376,6 +372,7 @@ const Profile = ({ profilePubkey }) => {
                 tableType={'following'}
                 items={profileSubscriptionsFrom}
                 hasOverflow={true}
+                walletConnected={wallet.connected}
               />
             )}
           </>

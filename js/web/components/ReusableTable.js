@@ -93,6 +93,7 @@ const ReusableTableHead = (props) => {
     order,
     inCollection,
     profileCollection,
+    walletAddress,
   } = props
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property)
@@ -226,7 +227,8 @@ const ReusableTableHead = (props) => {
                         setDownloadCollectionProgress,
                         setDownloadingCollection,
                         zip,
-                        enqueueSnackbar
+                        enqueueSnackbar,
+                        walletAddress
                       )
                     }
                   >
@@ -310,7 +312,6 @@ const HubDescription = ({ description }) => {
 }
 
 const ReusableTableBody = (props) => {
-  const wallet = useWallet()
   const {
     items,
     tableType,
@@ -321,6 +322,8 @@ const ReusableTableBody = (props) => {
     order,
     orderBy,
     inCollection,
+    walletAddress,
+    walletConnected,
   } = props
   const router = useRouter()
   const {
@@ -591,7 +594,6 @@ const ReusableTableBody = (props) => {
         ?.slice()
         .sort(getComparator(order, orderBy))
         .map((row, i) => {
-          console.log('rows', row)
           return (
             <StyledTableRow
               key={i}
@@ -648,7 +650,8 @@ const ReusableTableBody = (props) => {
                                 row.trackDescription,
                                 row.externalLink,
                                 setDownloadId,
-                                enqueueSnackbar
+                                enqueueSnackbar,
+                                walletAddress
                               )
                             }}
                             className="disableClickCapture"
@@ -874,7 +877,7 @@ const ReusableTableBody = (props) => {
                   } else if (
                     cellName === 'subscribe' &&
                     row?.subscribe &&
-                    wallet.connected
+                    walletConnected
                   ) {
                     return (
                       <TableCell key={cellName} sx={{ padding: '0 30px' }}>
@@ -935,6 +938,8 @@ const ReusableTable = ({
   minHeightOverride = false,
   inCollection,
   profileCollection,
+  walletAddress,
+  walletConnected,
 }) => {
   const [order, setOrder] = useState('desc')
   const [orderBy, setOrderBy] = useState('')
@@ -959,6 +964,8 @@ const ReusableTable = ({
               order={order}
               inCollection={inCollection}
               profileCollection={profileCollection}
+              walletAddress={walletAddress}
+              walletConnected={walletConnected}
             />
           )}
           <ReusableTableBody
@@ -972,6 +979,8 @@ const ReusableTable = ({
             order={order}
             orderBy={orderBy}
             inCollection={inCollection}
+            walletAddress={walletAddress}
+            walletConnected={walletConnected}
           />
         </Table>
       </ResponsiveTableContainer>
