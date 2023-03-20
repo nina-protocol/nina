@@ -17,7 +17,7 @@ Once Anchor environment is configured you can run tests for the on-chain program
 `anchor test ./tests`
 
 ## Frontend
-Nina's frontend packages can be found in the `/js` folder.  `/js/nina-common` contains the core components for interaction with the Nina Solana Program.  It will enentually contain shared UI components amongst the various Nina frontend projects (first will be the Nina UI, Embeddable packages, etc)
+Nina's frontend packages can be found in the `/js` folder.  `/js/nina-common` contains the core components for interaction with the Nina Solana Program.  It will eventually contain shared UI components amongst the various Nina frontend projects (first will be the Nina UI, Embeddable packages, etc)
 
 The Soft LP project can be run from the `/js` folder with the following commands:
 
