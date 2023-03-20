@@ -74,7 +74,7 @@ export const downloadAll = async (
 ) => {
   setDownloadingCollection(true)
   event.stopPropagation()
-  enqueueSnackbar('Downloading Collection', { variant: 'info' })
+  enqueueSnackbar('Downloading Collection, this could take a while depending on the size of your Collection.', { variant: 'info' })
   const files = profileCollection?.map((release) => {
     return {
       name: release.metadata.name,
@@ -93,7 +93,7 @@ export const downloadAll = async (
   })
   await Promise.all(collection).then(() => {
     zip.generateAsync({ type: 'blob' }).then((content) => {
-      saveAs(content, 'collection.zip')
+      saveAs(content, `Collection.zip`)
     })
   })
   setDownloadCollectionProgress(0)

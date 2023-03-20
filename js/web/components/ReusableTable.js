@@ -213,25 +213,50 @@ const ReusableTableHead = (props) => {
               return (
                 <StyledTableHeadCell
                   key={headCell.id}
-                  onClick={(e) =>
-                    downloadAll(
-                      e,
-                      profileCollection,
-                      setDownloadCollectionProgress,
-                      setDownloadingCollection,
-                      zip,
-                      enqueueSnackbar
-                    )
-                  }
+                  sx={{
+                    cursor: downloadingCollection ? 'not-allowed' : 'default',
+                  }}
                 >
-                  <TableSortLabel disabled={true}>
-                    <DownloadIcon
-                      sx={{ fontSize: '16px', padding: '0px 5px' }}
-                    />{' '}
+                  <DownloadCollectionCta
+                    disabled={downloadingCollection}
+                    onClick={(e) =>
+                      downloadAll(
+                        e,
+                        profileCollection,
+                        setDownloadCollectionProgress,
+                        setDownloadingCollection,
+                        zip,
+                        enqueueSnackbar
+                      )
+                    }
+                  >
+                    {downloadingCollection ? (
+                      <Box sx={{ paddingRight: '5px' }}>
+                        <Dots />
+                      </Box>
+                    ) : (
+                      <DownloadIcon
+                        sx={{
+                          fontSize: '18px',
+                          padding: '0px 5px',
+                          cursor: downloadingCollection
+                            ? 'not-allowed'
+                            : 'pointer',
+                        }}
+                      />
+                    )}{' '}
                     {downloadingCollection
-                      ? `(${downloadCollectionProgress} / ${profileCollection?.length})`
-                      : `(${profileCollection?.length})`}
-                  </TableSortLabel>
+                      ? ` (${downloadCollectionProgress} / ${
+                          profileCollection?.length > 99
+                            ? '99+'
+                            : profileCollection?.length
+                        })`
+                      : ` (${
+                          profileCollection?.length > 99
+                            ? '99+'
+                            : profileCollection?.length
+                        })`}
+                  </DownloadCollectionCta>
                 </StyledTableHeadCell>
               )
             } else {
@@ -566,6 +591,7 @@ const ReusableTableBody = (props) => {
         ?.slice()
         .sort(getComparator(order, orderBy))
         .map((row, i) => {
+          console.log('rows', row)
           return (
             <StyledTableRow
               key={i}
@@ -619,7 +645,7 @@ const ReusableTableBody = (props) => {
                                 row.image,
                                 row.artist,
                                 row.releaseName,
-                                row.description,
+                                row.trackDescription,
                                 row.externalLink,
                                 setDownloadId,
                                 enqueueSnackbar
@@ -983,20 +1009,16 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   },
 }))
 
-const DownloadCollectionCtaHeadCell = styled(TableCell)(({ theme }) => ({
-  padding: '5px 5px',
-  textAlign: 'left',
-  cursor: 'pointer',
-  borderBottom: 'none',
-  width: '15vw',
-}))
-
-const DownloadCollectionCta = styled(Typography)(
+const DownloadCollectionCta = styled(Button)(
   ({ theme, downloadingCollection }) => ({
     color: downloadingCollection
       ? theme.palette.greyLight
       : theme.palette.primary.main,
     cursor: downloadingCollection ? 'not-allowed' : 'pointer',
+    padding: '0px',
+    margin: '0px',
+    position: 'relative',
+    fontSize: '14px',
     '&:hover': {
       opacity: 0.7,
     },
