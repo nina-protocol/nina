@@ -36,8 +36,9 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import openInNewTab from '@nina-protocol/nina-internal-sdk/src/utils/openInNewTab'
 import Dots from './Dots'
 import { downloadManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+import JSZip from 'jszip'
 
-const { downloadAs } = downloadManager
+const { downloadAs, downloadAll } = downloadManager
 const { getImageFromCDN, loader } = imageManager
 
 const Subscribe = dynamic(() => import('./Subscribe'))
@@ -85,10 +86,22 @@ const descendingComparator = (a, b, orderBy) => {
 }
 
 const ReusableTableHead = (props) => {
-  const { tableType, inDashboard, onRequestSort, order } = props
+  const {
+    tableType,
+    inDashboard,
+    onRequestSort,
+    order,
+    inCollection,
+    profileCollection,
+  } = props
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property)
   }
+  const zip = new JSZip()
+
+  const [downloadingCollection, setDownloadingCollection] = useState(false)
+  const [downloadCollectionProgress, setDownloadCollectionProgress] =
+    useState(0)
   let headCells = []
 
   if (tableType === 'profilePublishedReleases') {
@@ -108,7 +121,7 @@ const ReusableTableHead = (props) => {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'title', label: 'Release' })
     headCells.push({ id: 'dateAdded', label: 'Added' })
-    headCells.push({ id: 'ctas', label: '' })
+    headCells.push({ id: 'download', label: '' })
   }
 
   if (tableType === 'profileHubs') {
@@ -165,35 +178,77 @@ const ReusableTableHead = (props) => {
   return (
     <TableHead>
       <TableRow>
-        {headCells?.map((headCell, i) => (
-          <StyledTableHeadCell key={headCell.id} sx={{ cursor: 'default' }}>
-            {headCell.id === 'artist' ||
-            headCell.id === 'releaseDate' ||
-            headCell.id === 'title' ||
-            headCell.id === 'dateAdded' ||
-            headCell.id === 'hubName' ? (
-              <TableSortLabel
-                active={orderBy === headCell.id}
-                direction={order}
-                onClick={createSortHandler(headCell.id)}
-                disabled={
-                  headCell.id === 'ctas' ||
-                  headCell.id === 'hubLink' ||
-                  headCell.id === 'hubDashboard'
-                }
-                sx={{ '& svg': { fontSize: '14px' } }}
-              >
-                <Typography sx={{ fontWeight: 'bold' }}>
-                  {headCell.label}
-                </Typography>
-              </TableSortLabel>
-            ) : (
-              <Typography sx={{ fontWeight: 'bold' }}>
-                {headCell.label}
-              </Typography>
-            )}
-          </StyledTableHeadCell>
-        ))}
+        {headCells?.map((headCell, i) => {
+          {
+            if (
+              headCell.id === 'artist' ||
+              headCell.id === 'releaseDate' ||
+              headCell.id === 'title' ||
+              headCell.id === 'dateAdded' ||
+              headCell.id === 'hubName'
+            ) {
+              return (
+                <StyledTableHeadCell
+                  key={headCell.id}
+                  sx={{ cursor: 'default' }}
+                >
+                  <TableSortLabel
+                    active={orderBy === headCell.id}
+                    direction={order}
+                    onClick={createSortHandler(headCell.id)}
+                    disabled={
+                      headCell.id === 'ctas' ||
+                      headCell.id === 'hubLink' ||
+                      headCell.id === 'hubDashboard'
+                    }
+                    sx={{ '& svg': { fontSize: '14px' } }}
+                  >
+                    <Typography sx={{ fontWeight: 'bold' }}>
+                      {headCell.label}
+                    </Typography>
+                  </TableSortLabel>
+                </StyledTableHeadCell>
+              )
+            } else if (headCell.id === 'download' && inCollection) {
+              return (
+                <DownloadCollectionCtaHeadCell key={headCell.id}>
+                  <DownloadCollectionCta
+                    downloadingCollection={downloadingCollection}
+                    onClick={(e) =>
+                      downloadAll(
+                        e,
+                        profileCollection,
+                        setDownloadCollectionProgress,
+                        setDownloadingCollection,
+                        zip
+                      )
+                    }
+                  >
+                    {downloadingCollection ? (
+                      <>
+                        Downloading {downloadCollectionProgress} of
+                        {profileCollection?.length}
+                      </>
+                    ) : (
+                      'Download Collection'
+                    )}
+                  </DownloadCollectionCta>
+                </DownloadCollectionCtaHeadCell>
+              )
+            } else {
+              return (
+                <StyledTableHeadCell
+                  key={headCell.id}
+                  sx={{ cursor: 'default' }}
+                >
+                  <Typography sx={{ fontWeight: 'bold' }}>
+                    {headCell.label}
+                  </Typography>
+                </StyledTableHeadCell>
+              )
+            }
+          }
+        })}
       </TableRow>
     </TableHead>
   )
@@ -535,7 +590,7 @@ const ReusableTableBody = (props) => {
                   cellName !== 'description' &&
                   cellName !== 'externalLink'
                 ) {
-                  if (cellName === 'ctas') {
+                  if (cellName === 'ctas' || cellName === 'download') {
                     return (
                       <StyledTableCellButtonsContainer
                         align="left"
@@ -854,6 +909,7 @@ const ReusableTable = ({
   hasOverflow,
   minHeightOverride = false,
   inCollection,
+  profileCollection,
 }) => {
   const [order, setOrder] = useState('desc')
   const [orderBy, setOrderBy] = useState('')
@@ -876,6 +932,8 @@ const ReusableTable = ({
               inDashboard={inDashboard}
               onRequestSort={handleRequestSort}
               order={order}
+              inCollection={inCollection}
+              profileCollection={profileCollection}
             />
           )}
           <ReusableTableBody
@@ -926,6 +984,26 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   },
 }))
 
+const DownloadCollectionCtaHeadCell = styled(TableCell)(({ theme }) => ({
+  padding: '5px 5px',
+  textAlign: 'left',
+  cursor: 'pointer',
+  borderBottom: 'none',
+  width: '15vw',
+}))
+
+const DownloadCollectionCta = styled(Typography)(
+  ({ theme, downloadingCollection }) => ({
+    color: downloadingCollection
+      ? theme.palette.greyLight
+      : theme.palette.primary.main,
+    cursor: downloadingCollection ? 'not-allowed' : 'pointer',
+    '&:hover': {
+      opacity: 0.7,
+    },
+  })
+)
+
 const StyledTableCell = styled(TableCell)(({ theme, type }) => ({
   padding: '5px 0px',
   textAlign: 'left',
@@ -964,18 +1042,16 @@ const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
   maxWidth: '100px',
   width: '50px',
 }))
-const StyledTableCellButtonsContainer = styled(TableCell)(
-  ({ theme, inCollection }) => ({
-    width: '150px',
-    textAlign: 'left',
-    padding: '5px 0px',
-    textAlign: 'left',
-    minWidth: '100px',
-    [theme.breakpoints.down('md')]: {
-      padding: '0px',
-    },
-  })
-)
+const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
+  width: '150px',
+  textAlign: 'left',
+  padding: '5px 0px',
+  textAlign: 'left',
+  minWidth: '100px',
+  [theme.breakpoints.down('md')]: {
+    padding: '0px',
+  },
+}))
 const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
   textAlign: 'left',

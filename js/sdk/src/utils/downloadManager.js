@@ -73,7 +73,7 @@ export const downloadAll = async (
 ) => {
   setDownloadingCollection(true)
   event.stopPropagation()
-  const files = profileCollection.map((release) => {
+  const files = profileCollection?.map((release) => {
     return {
       name: release.metadata.name,
       url: release.metadata.properties.files[0].uri,
@@ -86,7 +86,7 @@ export const downloadAll = async (
     }
   })
 
-  const collection = files.map((item) => {
+  const collection = files?.map((item) => {
     return downloadAndZip(item, setDownloadCollectionProgress, zip)
   })
   await Promise.all(collection).then(() => {

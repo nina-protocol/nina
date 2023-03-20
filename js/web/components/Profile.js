@@ -323,6 +323,7 @@ const Profile = ({ profilePubkey }) => {
                 items={profileCollectionReleases}
                 hasOverflow={true}
                 inCollection={inCollection}
+                profileCollection={profileCollectionReleases}
               />
             )}
           </>
@@ -435,28 +436,6 @@ const Profile = ({ profilePubkey }) => {
                 </>
               )}
             </Box>
-
-            <Button
-              disabled={downloadingCollection}
-              onClick={(e) =>
-                downloadAll(
-                  e,
-                  profileCollectionReleases,
-                  setDownloadCollectionProgress,
-                  setDownloadingCollection,
-                  zip
-                )
-              }
-            >
-              {downloadingCollection ? (
-                <>
-                  `Downloading {downloadCollectionProgress} of
-                  {profileCollectionReleases.length} ` <Dots />
-                </>
-              ) : (
-                'Download Collection'
-              )}
-            </Button>
           </ProfileHeaderContainer>
         </ProfileHeaderWrapper>
         {hasData && (
