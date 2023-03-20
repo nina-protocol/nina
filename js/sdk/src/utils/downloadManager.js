@@ -1,7 +1,7 @@
 import ID3Writer from 'browser-id3-writer'
 import { saveAs } from 'file-saver'
 import axios from 'axios'
-// import { logEvent } from 'utils/analytics'
+import { logEvent } from './event'
 
 export const downloadAs = async (
   url,
@@ -16,9 +16,9 @@ export const downloadAs = async (
   enqueueSnackbar
 ) => {
   setDownloadId(releasePubkey)
-  //   logEvent('track_download_dashboard', 'engagement', {
-  //     publicKey: releasePubkey,
-  //   })
+  logEvent('track_download_dashboard', 'engagement', {
+    publicKey: releasePubkey,
+  })
   try {
     const download = await axios
       .get(url, {
@@ -82,6 +82,7 @@ export const downloadAll = async (
       image: release.metadata.image,
       description: release.metadata.description,
       link: release.metadata.external_url,
+      releasePubkey: release.releasePubkey,
     }
   })
 
@@ -103,6 +104,9 @@ export const downloadAndZip = async (
   setDownloadCollectionProgress,
   zip
 ) => {
+  logEvent('track_download_dashboard', 'engagement', {
+    publicKey: item.releasePubkey,
+  })
   const download = axios
     .get(item.url, {
       method: 'GET',
