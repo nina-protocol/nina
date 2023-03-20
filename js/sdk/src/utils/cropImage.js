@@ -102,9 +102,9 @@ export default async function getCroppedImg(
     canvas.imageSmoothingEnabled = false
     canvas.toBlob(
       (blob) => {
-        resolve(new File([blob], 'fileName.jpg', { type: 'image/png' }))
+        resolve(new File([blob], 'fileName.png', { type: 'image/png' }))
       },
-      'image/jpeg',
+      'image/png',
       1
     )
   })
