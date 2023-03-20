@@ -255,7 +255,7 @@ const releaseContextHelper = ({
   setGatesState,
   gatesState,
 }) => {
-  const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints } =
+  const { provider, ids, nativeToUi, uiToNative, isSol, isUsdc, endpoints, nativeToUiString } =
     ninaClient
   const initializeReleaseAndMint = async (hubPubkey) => {
     const program = await ninaClient.useProgram()
@@ -925,7 +925,7 @@ const releaseContextHelper = ({
       getUserBalances()
       return {
         success: true,
-        msg: `You collected ${nativeToUi(recipient.owed, release.paymentMint)}`,
+        msg: `You collected ${nativeToUiString(recipient.owed, release.paymentMint)}`,
       }
     } catch (error) {
       console.warn(error)
