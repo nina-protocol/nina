@@ -14,12 +14,12 @@ import DownloadIcon from '@mui/icons-material/Download'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import axios from 'axios'
 import AddToHubModal from './AddToHubModal.js'
-// import ReleaseSettingsModal from './ReleaseSettingsModal.js'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
-
+import { downloadManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Link from 'next/link'
 import { useSnackbar } from 'notistack'
 
+const { downloadAs } = downloadManager
 const { getImageFromCDN, loader } = imageManager
 
 const ReleaseCard = (props) => {
@@ -45,7 +45,7 @@ const ReleaseCard = (props) => {
     setInitialized,
   } = useContext(Audio.Context)
   const { displayNameForAccount } = useContext(Nina.Context)
-
+  const [downloadId, setDownloadId] = useState()
   const image = useMemo(() => metadata?.image)
   const title = useMemo(() => {
     if (
@@ -56,34 +56,6 @@ const ReleaseCard = (props) => {
     }
     return metadata.properties.title
   }, [metadata.properties.title])
-
-  const downloadAs = async (url, name) => {
-    logEvent('track_download', 'engagement', {
-      publicKey: releasePubkey,
-    })
-
-    try {
-      const response = await axios.get(url, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/octet-stream',
-        },
-        responseType: 'blob',
-      })
-
-      if (response?.data) {
-        const a = document.createElement('a')
-        const url = window.URL.createObjectURL(response.data)
-        a.href = url
-        a.download = name
-        a.click()
-      }
-      enqueueSnackbar('Release Downloaded', { variant: 'success' })
-    } catch (error) {
-      enqueueSnackbar('Release Downloaded', { variant: 'error' })
-    }
-  }
 
   return (
     <StyledReleaseCard>
@@ -134,7 +106,15 @@ const ReleaseCard = (props) => {
                         metadata.properties.files[0].uri,
                         `${metadata.name
                           .replace(/[^a-z0-9]/gi, '_')
-                          .toLowerCase()}___nina.mp3`
+                          .toLowerCase()}___nina.mp3`,
+                        releasePubkey,
+                        metadata.image,
+                        metadata.properties.artist,
+                        metadata.properties.title,
+                        metadata.description,
+                        metadata.external_url,
+                        setDownloadId,
+                        enqueueSnackbar
                       )
                     }}
                     sx={{

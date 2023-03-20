@@ -337,6 +337,8 @@ const ReusableTableBody = (props) => {
         title: `${data?.metadata?.properties?.artist} - ${data?.metadata?.properties?.title}`,
         artist: data?.metadata?.properties?.artist,
         releaseName: data?.metadata?.properties?.title,
+        description: data?.metadata?.description,
+        externalLink: data?.metadata?.external_url,
       }
       if (tableType === 'profileCollectionReleases') {
         formattedData.dateAdded = new Date(
@@ -529,7 +531,9 @@ const ReusableTableBody = (props) => {
                   cellName !== 'publicKey' &&
                   cellName !== 'handle' &&
                   cellName !== 'artist' &&
-                  cellName !== 'releaseName'
+                  cellName !== 'releaseName' &&
+                  cellName !== 'description' &&
+                  cellName !== 'externalLink'
                 ) {
                   if (cellName === 'ctas') {
                     return (
@@ -561,6 +565,8 @@ const ReusableTableBody = (props) => {
                                 row.image,
                                 row.artist,
                                 row.releaseName,
+                                row.description,
+                                row.externalLink,
                                 setDownloadId,
                                 enqueueSnackbar
                               )

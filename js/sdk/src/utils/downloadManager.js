@@ -2,7 +2,7 @@ import ID3Writer from 'browser-id3-writer'
 import { saveAs } from 'file-saver'
 import axios from 'axios'
 // import { logEvent } from 'utils/analytics'
-// const { enqueueSnackbar } = useSnackbar()
+
 export const downloadAs = async (
   url,
   name,
@@ -10,6 +10,8 @@ export const downloadAs = async (
   artwork,
   artist,
   title,
+  description,
+  link,
   setDownloadId,
   enqueueSnackbar
 ) => {
@@ -37,6 +39,12 @@ export const downloadAs = async (
         const writer = new ID3Writer(buffer)
         writer.setFrame('TIT2', title)
         writer.setFrame('TPE1', [artist])
+        writer.setFrame('WPAY', link)
+        writer.setFrame('COMM', {
+          description: description,
+          text: `Downloaded from Nina Protocol: ${link}`,
+          language: 'eng',
+        })
         writer
           .setFrame('APIC', {
             type: 3,
@@ -73,6 +81,8 @@ export const downloadAll = async (
       artist: release.metadata.properties.artist,
       title: release.metadata.properties.title,
       image: release.metadata.image,
+      description: release.metadata.description,
+      link: release.metadata.external_url,
     }
   })
 
@@ -113,6 +123,12 @@ export const downloadAndZip = async (
       const writer = new ID3Writer(buffer)
       writer.setFrame('TIT2', item.title)
       writer.setFrame('TPE1', [item.artist])
+      writer.setFrame('WPAY', item.link)
+      writer.setFrame('COMM', {
+        description: item.description,
+        text: `Downloaded from Nina Protocol: ${item.link}`,
+        language: 'eng',
+      })
       writer
         .setFrame('APIC', {
           type: 3,
