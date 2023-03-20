@@ -45,13 +45,12 @@ export const downloadAs = async (
           text: `Downloaded from Nina Protocol: ${link}`,
           language: 'eng',
         })
-        writer
-          .setFrame('APIC', {
-            type: 3,
-            data: image,
-            description: 'Cover',
-          })
-          writer.addTag()
+        writer.setFrame('APIC', {
+          type: 3,
+          data: image,
+          description: 'Cover',
+        })
+        writer.addTag()
         const blob = writer.getBlob()
         saveAs(blob, `${title}.mp3`)
       })
@@ -129,13 +128,12 @@ export const downloadAndZip = async (
         text: `Downloaded from Nina Protocol: ${item.link}`,
         language: 'eng',
       })
-      writer
-        .setFrame('APIC', {
-          type: 3,
-          data: image,
-          description: 'Cover',
-        })
-        writer.addTag()
+      writer.setFrame('APIC', {
+        type: 3,
+        data: image,
+        description: 'Cover',
+      })
+      writer.addTag()
       const blob = writer.getBlob()
       zip.file(`${item.name}.mp3`, blob, { binary: true })
     })
