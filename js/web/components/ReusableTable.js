@@ -98,7 +98,7 @@ const ReusableTableHead = (props) => {
     onRequestSort(event, property)
   }
   const zip = new JSZip()
-
+  const { enqueueSnackbar } = useSnackbar()
   const [downloadingCollection, setDownloadingCollection] = useState(false)
   const [downloadCollectionProgress, setDownloadCollectionProgress] =
     useState(0)
@@ -211,29 +211,28 @@ const ReusableTableHead = (props) => {
               )
             } else if (headCell.id === 'download' && inCollection) {
               return (
-                <DownloadCollectionCtaHeadCell key={headCell.id}>
-                  <DownloadCollectionCta
-                    downloadingCollection={downloadingCollection}
-                    onClick={(e) =>
-                      downloadAll(
-                        e,
-                        profileCollection,
-                        setDownloadCollectionProgress,
-                        setDownloadingCollection,
-                        zip
-                      )
-                    }
-                  >
-                    {downloadingCollection ? (
-                      <>
-                        Downloading {downloadCollectionProgress} of
-                        {profileCollection?.length}
-                      </>
-                    ) : (
-                      'Download Collection'
-                    )}
-                  </DownloadCollectionCta>
-                </DownloadCollectionCtaHeadCell>
+                <StyledTableHeadCell
+                  key={headCell.id}
+                  onClick={(e) =>
+                    downloadAll(
+                      e,
+                      profileCollection,
+                      setDownloadCollectionProgress,
+                      setDownloadingCollection,
+                      zip,
+                      enqueueSnackbar
+                    )
+                  }
+                >
+                  <TableSortLabel disabled={true}>
+                    <DownloadIcon
+                      sx={{ fontSize: '16px', padding: '0px 5px' }}
+                    />{' '}
+                    {downloadingCollection
+                      ? `(${downloadCollectionProgress} / ${profileCollection?.length})`
+                      : `(${profileCollection?.length})`}
+                  </TableSortLabel>
+                </StyledTableHeadCell>
               )
             } else {
               return (
@@ -392,7 +391,7 @@ const ReusableTableBody = (props) => {
         title: `${data?.metadata?.properties?.artist} - ${data?.metadata?.properties?.title}`,
         artist: data?.metadata?.properties?.artist,
         releaseName: data?.metadata?.properties?.title,
-        description: data?.metadata?.description,
+        trackDescription: data?.metadata?.description,
         externalLink: data?.metadata?.external_url,
       }
       if (tableType === 'profileCollectionReleases') {
@@ -587,7 +586,7 @@ const ReusableTableBody = (props) => {
                   cellName !== 'handle' &&
                   cellName !== 'artist' &&
                   cellName !== 'releaseName' &&
-                  cellName !== 'description' &&
+                  cellName !== 'trackDescription' &&
                   cellName !== 'externalLink'
                 ) {
                   if (cellName === 'ctas' || cellName === 'download') {

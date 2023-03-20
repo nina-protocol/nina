@@ -69,10 +69,12 @@ export const downloadAll = async (
   profileCollection,
   setDownloadCollectionProgress,
   setDownloadingCollection,
-  zip
+  zip,
+    enqueueSnackbar
 ) => {
   setDownloadingCollection(true)
   event.stopPropagation()
+  enqueueSnackbar('Downloading Collection', { variant: 'info' })
   const files = profileCollection?.map((release) => {
     return {
       name: release.metadata.name,
@@ -95,6 +97,7 @@ export const downloadAll = async (
     })
   })
   setDownloadCollectionProgress(0)
+  enqueueSnackbar('Collection Downloaded', { variant: 'success' })
   setDownloadingCollection(false)
   return
 }
@@ -123,6 +126,8 @@ export const downloadAndZip = async (
         image = await fetch(image).then((r) => r.blob())
         image = await new Response(image).arrayBuffer()
       }
+      console.log('image before fetching',item.image)
+      console.log('image after fetching',image)
       const writer = new ID3Writer(buffer)
       writer.setFrame('TIT2', item.title)
       writer.setFrame('TPE1', [item.artist])
