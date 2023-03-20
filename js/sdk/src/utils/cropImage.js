@@ -45,6 +45,10 @@ export default async function getCroppedImg(
   const rotRad = getRadianAngle(rotation)
 
   // calculate bounding box of the rotated image
+
+  console.log('image.width :>> ', image.width)
+  console.log('image.height :>> ', image.height)
+
   const { width: bBoxWidth, height: bBoxHeight } = rotateSize(
     image.width,
     image.height,
@@ -60,9 +64,21 @@ export default async function getCroppedImg(
   ctx.rotate(rotRad)
   ctx.scale(flip.horizontal ? -1 : 1, flip.vertical ? -1 : 1)
   ctx.translate(-image.width / 2, -image.height / 2)
+  ctx.imageSmoothingEnabled = false
 
+  console.log('ctx :>> ', ctx)
   // draw rotated image
-  ctx.drawImage(image, 0, 0)
+  ctx.drawImage(
+    image,
+    0,
+    0,
+    image.width,
+    image.height,
+    0,
+    0,
+    image.width,
+    image.height
+  )
 
   // croppedAreaPixels values are bounding box relative
   // extract the cropped image using these values
@@ -85,8 +101,12 @@ export default async function getCroppedImg(
 
   // As a blob
   return new Promise((resolve) => {
-    canvas.toBlob((blob) => {
-      resolve(new File([blob], 'fileName.jpg', { type: 'image/jpeg' }))
-    }, 'image/jpeg')
+    canvas.toBlob(
+      (blob) => {
+        resolve(new File([blob], 'fileName.jpg', { type: 'image/jpeg' }))
+      },
+      'image/jpeg',
+      1
+    )
   })
 }
