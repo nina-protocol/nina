@@ -9,9 +9,10 @@ import {
 import { Percentage } from '@orca-so/common-sdk'
 import {
   findOrCreateAssociatedTokenAccount,
-  wrapSol,
   TOKEN_PROGRAM_ID,
+  wrapSol,
 } from './web3'
+
 import { decodeNonEncryptedByteArray } from './encrypt'
 
 const PRIORITY_SWAP_FEE = 7500
@@ -221,17 +222,17 @@ const releasePurchaseHelper = async (
   if (hub && hub.referralFee.toNumber() > 0) {
     let releasePriceUi = ninaClient.nativeToUi(
       release.price.toNumber(),
-      ninaClient.ids.mints.usdc
+      release.paymentMint
     )
 
     let convertAmount =
       releasePriceUi + (releasePriceUi * hub.referralFee.toNumber()) / 1000000
     price = new anchor.BN(
-      ninaClient.uiToNative(convertAmount, ninaClient.ids.mints.usdc)
+      ninaClient.uiToNative(convertAmount, release.paymentMint)
     )
   }
-
-  if (requiresSwap(release, price, usdcBalance, ninaClient)) {
+  const isUsdc = ninaClient.isUsdc(release.paymentMint)
+  if (isUsdc && requiresSwap(release, price, usdcBalance, ninaClient)) {
     return releasePurchaseWithOrcaSwap(
       release,
       price,
@@ -250,18 +251,20 @@ const releasePurchaseHelper = async (
       request.instructions = formattedInstructions
     }
     if (ninaClient.isSol(release.paymentMint)) {
-      const { instructions, signers } = await wrapSol(
+      const [wrappedSolAccount, wrappedSolInstructions] = await wrapSol(
         provider,
-        new anchor.BN(release.price)
+        release.price,
+        release.paymentMint
       )
+
       if (!request.instructions) {
-        request.instructions = [...instructions]
+        request.instructions = [...wrappedSolInstructions]
       } else {
-        request.instructions.push(...instructions)
+        request.instructions.push(...wrappedSolInstructions)
       }
-      request.signers = signers
-      request.accounts.payerTokenAccount = signers[0].publicKey
+      request.accounts.payerTokenAccount = wrappedSolAccount
     }
+
     if (hub) {
       return await program.rpc.releasePurchaseViaHub(
         release.price,

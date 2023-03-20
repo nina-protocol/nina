@@ -172,13 +172,13 @@ const exchangeContextHelper = ({
       }
 
       if (ninaClient.isSol(release.paymentMint) && exchange.isSelling) {
-        const { instructions, signers } = await wrapSol(
+        const [wrappedSolAccount, wrappedSolInstructions] = await wrapSol(
           provider,
-          exchange.expectedAmount
+          exchange.expectedAmount,
+          release.paymentMint
         )
-        request.instructions.push(...instructions)
-        request.signers.push(...signers)
-        request.accounts.takerSendingTokenAccount = signers[0].publicKey
+        request.instructions.push(...wrappedSolInstructions)
+        request.accounts.takerSendingTokenAccount = wrappedSolAccount
       }
 
       const params = {
@@ -316,17 +316,17 @@ const exchangeContextHelper = ({
       }
 
       if (ninaClient.isSol(releaseAccount.paymentMint) && !isSelling) {
-        const { instructions, signers } = await wrapSol(
+        const [wrappedSolAccount, wrappedSolInstructions] = await wrapSol(
           provider,
-          initializerAmount
+          initializerAmount,
+          new anchor.web3.PublicKey(ninaClient.ids.mints.wsol)
         )
         if (!request.instructions) {
-          request.instructions = [...instructions]
+          request.instructions = [...wrappedSolInstructions]
         } else {
-          request.instructions.push(...instructions)
+          request.instructions.push(...wrappedSolInstructions)
         }
-        request.signers.push(...signers)
-        request.accounts.initializerSendingTokenAccount = signers[0].publicKey
+        request.accounts.initializerSendingTokenAccount = wrappedSolAccount
       }
 
       const config = {
@@ -443,7 +443,7 @@ const exchangeContextHelper = ({
 
   const getExchange = async (
     publicKey,
-    withAccountInfo = false,
+    withAccountInfo = true,
     transactionId
   ) => {
     const { exchange } = await NinaSdk.Exchange.fetch(
@@ -465,7 +465,7 @@ const exchangeContextHelper = ({
     setExchangeState(updatedExchangeState)
   }
 
-  const getExchangesForUser = async (publicKey, withAccountData = false) => {
+  const getExchangesForUser = async (publicKey, withAccountData = true) => {
     try {
       const { exchanges } = await NinaSdk.Account.fetchExchanges(
         publicKey,
@@ -478,7 +478,6 @@ const exchangeContextHelper = ({
             ...updatedExchangeState[exchange.publicKey],
             ...exchange.accountData,
           }
-          delete exchange.accountData
         }
         updatedExchangeState[exchange.publicKey] = {
           ...updatedExchangeState[exchange.publicKey],
@@ -491,13 +490,13 @@ const exchangeContextHelper = ({
     }
   }
 
-  const getExchangesForRelease = async (publicKey, withAccountData = false) => {
+  const getExchangesForRelease = async (publicKey, withAccountData = true) => {
     try {
       const { exchanges } = await NinaSdk.Release.fetchExchanges(
         publicKey,
         withAccountData
       )
-      const updatedExchangeState = { ...exchangeState }
+      const updatedExchangeState = {}
       const updatedVerificationState = {}
       exchanges.forEach((exchange) => {
         if (exchange.accountData) {
@@ -505,7 +504,6 @@ const exchangeContextHelper = ({
             ...updatedExchangeState[exchange.publicKey],
             ...exchange.accountData,
           }
-          delete exchange.accountData
         }
 
         updatedExchangeState[exchange.publicKey] = {
@@ -527,7 +525,10 @@ const exchangeContextHelper = ({
         ...prevState,
         ...updatedVerificationState,
       }))
-      setExchangeState(updatedExchangeState)
+      setExchangeState((prevState) => ({
+        ...prevState,
+        ...updatedExchangeState,
+      }))
     } catch (err) {
       console.warn(err)
     }
@@ -542,7 +543,7 @@ const exchangeContextHelper = ({
     }
     exchangeItem.amount = exchange.isSale
       ? exchange.expectedAmount * 1000000
-      : exchange.initializerAmount
+      : exchange.initializerAmount * 1000000
     exchangeItem.isSelling = exchange.isSale
 
     return exchangeItem
