@@ -5,7 +5,6 @@ import { logEvent } from './event'
 
 export const downloadAs = async (
   url,
-  name,
   releasePubkey,
   artwork,
   artist,
@@ -14,11 +13,13 @@ export const downloadAs = async (
   link,
   setDownloadId,
   enqueueSnackbar,
-  walletAddress
+  walletAddress,
+  hubPubkey
 ) => {
   setDownloadId(releasePubkey)
   logEvent('track_download_dashboard', 'engagement', {
     publicKey: releasePubkey,
+    hub: hubPubkey,
     wallet: walletAddress,
   })
   try {
@@ -72,11 +73,15 @@ export const downloadAll = async (
   setDownloadCollectionProgress,
   setDownloadingCollection,
   zip,
-    enqueueSnackbar, walletAddress
+  enqueueSnackbar,
+  walletAddress
 ) => {
   setDownloadingCollection(true)
   event.stopPropagation()
-  enqueueSnackbar('Downloading Collection, this could take a while depending on the size of your Collection.', { variant: 'info' })
+  enqueueSnackbar(
+    'Downloading Collection, this could take a while depending on the size of your Collection.',
+    { variant: 'info' }
+  )
   const files = profileCollection?.map((release) => {
     return {
       name: release.metadata.name,
@@ -91,7 +96,12 @@ export const downloadAll = async (
   })
 
   const collection = files?.map((item) => {
-    return downloadAndZip(item, setDownloadCollectionProgress, zip, walletAddress)
+    return downloadAndZip(
+      item,
+      setDownloadCollectionProgress,
+      zip,
+      walletAddress
+    )
   })
   await Promise.all(collection).then(() => {
     zip.generateAsync({ type: 'blob' }).then((content) => {
@@ -130,8 +140,6 @@ export const downloadAndZip = async (
         image = await fetch(image).then((r) => r.blob())
         image = await new Response(image).arrayBuffer()
       }
-      console.log('image before fetching',item.image)
-      console.log('image after fetching',image)
       const writer = new ID3Writer(buffer)
       writer.setFrame('TIT2', item.title)
       writer.setFrame('TPE1', [item.artist])

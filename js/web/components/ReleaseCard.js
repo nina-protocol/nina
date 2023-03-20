@@ -34,6 +34,7 @@ const ReleaseCard = (props) => {
     isAuthority,
     userIsRecipient,
     hub,
+    walletAddress
   } = props
   const { enqueueSnackbar } = useSnackbar()
   const {
@@ -104,9 +105,6 @@ const ReleaseCard = (props) => {
                       e.stopPropagation()
                       downloadAs(
                         metadata.properties.files[0].uri,
-                        `${metadata.name
-                          .replace(/[^a-z0-9]/gi, '_')
-                          .toLowerCase()}___nina.mp3`,
                         releasePubkey,
                         metadata.image,
                         metadata.properties.artist,
@@ -114,7 +112,9 @@ const ReleaseCard = (props) => {
                         metadata.description,
                         metadata.external_url,
                         setDownloadId,
-                        enqueueSnackbar
+                        enqueueSnackbar,
+                        walletAddress,
+                        undefined
                       )
                     }}
                     sx={{

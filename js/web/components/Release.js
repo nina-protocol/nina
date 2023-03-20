@@ -134,6 +134,7 @@ const ReleaseComponent = ({ metadataSsr, hub }) => {
               isAuthority={isAuthority}
               userIsRecipient={userIsRecipient}
               hub={hub}
+              walletAddress={wallet?.publicKey?.toBase58()}
             />
             <ReleaseCtaWrapper>
               <ReleasePurchase

@@ -640,9 +640,6 @@ const ReusableTableBody = (props) => {
                               e.stopPropagation()
                               downloadAs(
                                 row.uri,
-                                `${row.fileName
-                                  .replace(/[^a-z0-9]/gi, '_')
-                                  .toLowerCase()}___nina.mp3`,
                                 row.id,
                                 row.image,
                                 row.artist,
@@ -651,7 +648,8 @@ const ReusableTableBody = (props) => {
                                 row.externalLink,
                                 setDownloadId,
                                 enqueueSnackbar,
-                                walletAddress
+                                walletAddress,
+                                undefined
                               )
                             }}
                             className="disableClickCapture"

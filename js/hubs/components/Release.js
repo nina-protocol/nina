@@ -32,6 +32,8 @@ import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { useSnackbar } from 'notistack'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
+import { downloadManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+const { downloadAs } = downloadManager
 
 const Button = dynamic(() => import('@mui/material/Button'))
 const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
@@ -54,7 +56,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [release, setRelease] = useState()
   const [amountHeld, setAmountHeld] = useState(0)
-
+  const [downloadId, setDownloadId] = useState()
   const isAuthority = useMemo(() => {
     if (wallet.connected) {
       return release?.authority === wallet?.publicKey.toBase58()
@@ -138,31 +140,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       setUserIsRecipient(false)
     }
   }, [wallet?.disconnecting])
-
-  const downloadAs = async (url, name) => {
-    logEvent('track_download', 'engagement', {
-      publicKey: releasePubkey,
-      hub: hubPubkey,
-      wallet: wallet?.publicKey?.toBase58(),
-    })
-
-    const response = await axios.get(url, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/octet-stream',
-      },
-      responseType: 'blob',
-    })
-    if (response?.data) {
-      const a = document.createElement('a')
-      const url = window.URL.createObjectURL(response.data)
-      a.href = url
-      a.download = name
-      a.click()
-    }
-  }
-
   return (
     <>
       <StyledGrid
@@ -263,9 +240,16 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                       e.stopPropagation()
                       downloadAs(
                         metadata.properties.files[0].uri,
-                        `${metadata.name
-                          .replace(/[^a-z0-9]/gi, '_')
-                          .toLowerCase()}___nina.mp3`
+                        releasePubkey,
+                        metadata.image,
+                        metadata.properties.artist,
+                        metadata.properties.title,
+                        metadata.description,
+                        metadata.external_url,
+                        setDownloadId,
+                        enqueueSnackbar,
+                        wallet.publicKey.toBase58(),
+                        hubPubkey
                       )
                     }}
                   >
