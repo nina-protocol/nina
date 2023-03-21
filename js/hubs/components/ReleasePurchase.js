@@ -156,13 +156,13 @@ const ReleasePurchase = (props) => {
     release.remainingSupply > 0 || release.remainingSupply === -1
       ? `${
           release.price > 0
-            ? `Buy $${ninaClient.nativeToUiString(
+            ? `Buy ${ninaClient.nativeToUiString(
                 release.price,
                 release.paymentMint
               )}`
             : 'Collect For Free'
         }`
-      : `Sold Out ($${ninaClient
+      : `Sold Out (${ninaClient
           .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`
 
