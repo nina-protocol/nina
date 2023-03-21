@@ -37,7 +37,6 @@ const ReleasePurchase = (props) => {
     amountHeld,
     setAmountHeld,
     isAuthority,
-    releaseGates,
   } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -47,6 +46,7 @@ const ReleasePurchase = (props) => {
     releasePurchaseTransactionPending,
     releaseState,
     getRelease,
+    gatesState,
   } = useContext(Release.Context)
   const {
     getAmountHeld,
@@ -75,6 +75,11 @@ const ReleasePurchase = (props) => {
   const pending = useMemo(
     () => releasePurchasePending[releasePubkey],
     [releasePubkey, releasePurchasePending]
+  )
+
+  const releaseGates = useMemo(
+    () => gatesState[releasePubkey],
+    [gatesState, releasePubkey]
   )
 
   useEffect(() => {
@@ -179,6 +184,8 @@ const ReleasePurchase = (props) => {
       }
     }
   }
+
+  console.log('releaseGates :>> ', releaseGates)
 
   const showCompletedTransaction = (result) => {
     enqueueSnackbar(result.msg, {
@@ -300,7 +307,9 @@ const ReleasePurchase = (props) => {
             </StyledLink>
           </Typography>
         )}
-        <StyledDescription align="left">{description}</StyledDescription>
+        <StyledDescription align="left" releaseGates={releaseGates}>
+          {description}
+        </StyledDescription>
       </Box>
       <Box
         sx={{
@@ -364,7 +373,7 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
 }))
 
-const StyledDescription = styled(Typography)(({ theme }) => ({
+const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({
   overflowWrap: 'anywhere',
   fontSize: '18px !important',
   lineHeight: '20.7px !important',
@@ -372,7 +381,7 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
     display: 'none',
   },
   [theme.breakpoints.up('md')]: {
-    maxHeight: '30vh',
+    maxHeight: releaseGates ? '182px' : '256px',
     overflowY: 'scroll',
   },
 }))
