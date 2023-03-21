@@ -36,7 +36,6 @@ const ReleasePurchase = (props) => {
     amountHeld,
     setAmountHeld,
     isAuthority,
-    releaseGates,
   } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
@@ -46,6 +45,7 @@ const ReleasePurchase = (props) => {
     releasePurchaseTransactionPending,
     releaseState,
     getRelease,
+    gatesState,
   } = useContext(Release.Context)
   const {
     getAmountHeld,
@@ -74,6 +74,11 @@ const ReleasePurchase = (props) => {
   const pending = useMemo(
     () => releasePurchasePending[releasePubkey],
     [releasePubkey, releasePurchasePending]
+  )
+
+  const releaseGates = useMemo(
+    () => gatesState[releasePubkey],
+    [gatesState, releasePubkey]
   )
 
   useEffect(() => {
@@ -299,16 +304,19 @@ const ReleasePurchase = (props) => {
             </StyledLink>
           </Typography>
         )}
+        <StyledDescription align="left" releaseGates={releaseGates}>
+          {description}
+        </StyledDescription>
       </Box>
-      <StyledDescription align="left">{description}</StyledDescription>
       <Box
         sx={{
           position: { xs: 'relative', md: 'absolute' },
           bottom: '0',
           width: '100%',
+          background: 'white',
         }}
       >
-        <Box sx={{ mb: 1, mt: 1 }}>
+        <Box sx={{ mb: 0, mt: 1 }}>
           <form onSubmit={handleSubmit}>
             <Button
               variant="outlined"
@@ -362,7 +370,7 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
 }))
 
-const StyledDescription = styled(Typography)(({ theme }) => ({
+const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({
   overflowWrap: 'anywhere',
   fontSize: '18px !important',
   lineHeight: '20.7px !important',
@@ -370,9 +378,8 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
     display: 'none',
   },
   [theme.breakpoints.up('md')]: {
-    maxHeight: '152px',
+    maxHeight: releaseGates ? '182px' : '256px',
     overflowY: 'scroll',
-    height: '152px',
   },
 }))
 

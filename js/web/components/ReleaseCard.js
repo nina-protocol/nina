@@ -165,7 +165,7 @@ const ReleaseCard = (props) => {
         )}
       </StyledReleaseInfo>
 
-      <Box>
+      <Box sx={{ minHeight: { xs: '300px', md: '382.5px' } }}>
         {preview && (
           <Image
             src={
