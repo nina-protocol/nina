@@ -6,7 +6,6 @@ import React, {
   createElement,
   Fragment,
 } from 'react'
-import axios from 'axios'
 import { styled } from '@mui/material/styles'
 import { useWallet } from '@solana/wallet-adapter-react'
 import Button from '@mui/material/Button'
