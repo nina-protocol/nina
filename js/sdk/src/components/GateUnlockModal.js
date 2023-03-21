@@ -19,7 +19,7 @@ import ListItemText from '@mui/material/ListItemText'
 import DownloadIcon from '@mui/icons-material/Download'
 import IconButton from '@mui/material/IconButton'
 
-const GateUnlockModal = ({ gates, amountHeld, unlockGate }) => {
+const GateUnlockModal = ({ gates, amountHeld, unlockGate, inHubs }) => {
   const [open, setOpen] = useState(false)
 
   const [inProgress, setInProgress] = useState(false)
@@ -43,7 +43,7 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate }) => {
   }
   return (
     <>
-      <Root sx={{mt: 1}}>
+      <Root sx={{mt: !inHubs ? 1 : 0}}>
         <Button
           variant="outlined"
           color="primary"
@@ -129,7 +129,7 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate }) => {
           </Fade>
         </StyledModal>
       </Root>
-      {amountHeld === 0 && (
+      {amountHeld === 0 && !inHubs && (
         <Box sx={{ position: 'absolute', top: '110%' }}>
           <StyledTypographyButtonSub>
             {`There ${gates.length > 1 ? 'are' : 'is'} ${gates.length} ${

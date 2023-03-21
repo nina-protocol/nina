@@ -240,6 +240,7 @@ const ReleasePurchase = (props) => {
             isAuthority={isAuthority}
             amountHeld={amountHeld}
             inSettings={false}
+            inHubs={true}
           />
         </Box>
       </Box>
