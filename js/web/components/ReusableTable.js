@@ -689,7 +689,7 @@ const ReusableTableBody = (props) => {
                             sx={{ textDecoration: 'underline' }}
                             noWrap
                           >
-                            <a>{cellData} test</a>
+                            <a>{cellData}</a>
                           </Typography>
                         </OverflowContainer>
                       </StyledProfileTableCell>
@@ -838,11 +838,7 @@ const ReusableTableBody = (props) => {
                       <StyledTableCell key={cellName}>
                         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                           <OverflowContainer>
-                            <Typography noWrap>
-                              <Link href={row.link} passHref>
-                                <a>{row?.hub}</a>
-                              </Link>
-                            </Typography>
+                            <Typography noWrap>{row?.hub}</Typography>
                           </OverflowContainer>
                           {row?.hub && <HubTag>HUB</HubTag>}
                         </Box>
@@ -853,9 +849,9 @@ const ReusableTableBody = (props) => {
                       <StyledTableCell key={cellName}>
                         <OverflowContainer>
                           <Typography noWrap>
-                            <Link href={row.link} passHref>
-                              <a>{cellData}</a>
-                            </Link>
+                            {/* <Link href={row.link} passHref> */}
+                            {cellData}
+                            {/* </Link> */}
                           </Typography>
                         </OverflowContainer>
                       </StyledTableCell>
