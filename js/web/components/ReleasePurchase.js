@@ -185,8 +185,6 @@ const ReleasePurchase = (props) => {
     }
   }
 
-  console.log('releaseGates :>> ', releaseGates)
-
   const showCompletedTransaction = (result) => {
     enqueueSnackbar(result.msg, {
       variant: result.success ? 'success' : 'warn',
