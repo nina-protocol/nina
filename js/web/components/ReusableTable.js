@@ -1073,11 +1073,11 @@ const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
   textAlign: 'left',
   padding: '5px 0px',
   textAlign: 'left',
-  padding: '5px',
-  maxWidth: '100px',
-  width: '50px',
+  minWidth: '100px',
+  [theme.breakpoints.down('md')]: {
+    padding: '0px',
+  },
 }))
-
 const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
   textAlign: 'left',
