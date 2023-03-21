@@ -34,7 +34,7 @@ const ReleaseCard = (props) => {
     isAuthority,
     userIsRecipient,
     hub,
-    walletAddress
+    walletAddress,
   } = props
   const { enqueueSnackbar } = useSnackbar()
   const {

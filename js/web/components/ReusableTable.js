@@ -32,16 +32,9 @@ import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/router'
 import { orderBy } from 'lodash'
 import dynamic from 'next/dynamic'
-import { useWallet } from '@solana/wallet-adapter-react'
-
 import { downloadManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import JSZip from 'jszip'
-
 const { downloadAs, downloadAll } = downloadManager
-import TablePagination from '@mui/material/TablePagination'
-import axios from 'axios'
-import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
-import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import openInNewTab from '@nina-protocol/nina-internal-sdk/src/utils/openInNewTab'
 import Dots from './Dots'
 const { getImageFromCDN, loader } = imageManager
@@ -398,35 +391,6 @@ const ReusableTableBody = (props) => {
     }
   }
 
-  const downloadAs = async (url, name, releasePubkey) => {
-    setDownloadId(releasePubkey)
-    logEvent('track_download_dashboard', 'engagement', {
-      publicKey: releasePubkey,
-    })
-    try {
-      const response = await axios.get(url, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/octet-stream',
-        },
-        responseType: 'blob',
-      })
-      if (response?.data) {
-        const a = document.createElement('a')
-        const url = window.URL.createObjectURL(response.data)
-        a.href = url
-        a.download = name
-        a.click()
-      }
-      enqueueSnackbar('Release Downloaded', { variant: 'success' })
-      setDownloadId(undefined)
-    } catch (error) {
-      enqueueSnackbar('Release Not Downloaded', { variant: 'error' })
-      setDownloadId(undefined)
-    }
-  }
-
   const getComparator = (order, orderBy, type) => {
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
@@ -652,7 +616,6 @@ const ReusableTableBody = (props) => {
                   cellName !== 'externalLink'
                 ) {
                   if (cellName === 'ctas' || cellName === 'download') {
-
                     return (
                       <StyledTableCellButtonsContainer
                         align="left"
@@ -1014,7 +977,6 @@ const ReusableTable = ({
             inCollection={inCollection}
             walletAddress={walletAddress}
             walletConnected={walletConnected}
-
           />
         </Table>
       </ResponsiveTableContainer>
@@ -1115,18 +1077,7 @@ const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
   maxWidth: '100px',
   width: '50px',
 }))
-const StyledTableCellButtonsContainer = styled(TableCell)(
-  ({ theme, inCollection }) => ({
-    width: '150px',
-    textAlign: 'left',
-    padding: '5px 0px',
-    textAlign: 'left',
-    minWidth: '100px',
-    [theme.breakpoints.down('md')]: {
-      padding: '0px',
-    },
-  })
-)
+
 const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
   textAlign: 'left',
