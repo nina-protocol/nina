@@ -838,7 +838,9 @@ const ReusableTableBody = (props) => {
                       <StyledTableCell key={cellName}>
                         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                           <OverflowContainer>
-                            <Typography noWrap>{row?.hub}</Typography>
+                            <Typography noWrap>
+                                  {row?.hub}
+                            </Typography>
                           </OverflowContainer>
                           {row?.hub && <HubTag>HUB</HubTag>}
                         </Box>
@@ -849,9 +851,7 @@ const ReusableTableBody = (props) => {
                       <StyledTableCell key={cellName}>
                         <OverflowContainer>
                           <Typography noWrap>
-                            {/* <Link href={row.link} passHref> */}
-                            {cellData}
-                            {/* </Link> */}
+                                {cellData} 
                           </Typography>
                         </OverflowContainer>
                       </StyledTableCell>
