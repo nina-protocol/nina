@@ -12,6 +12,7 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import DownloadIcon from '@mui/icons-material/Download'
+import Tooltip from '@mui/material/Tooltip'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
@@ -223,32 +224,36 @@ const ReusableTableHead = (props) => {
                       )
                     }
                   >
-                    {downloadingCollection ? (
-                      <Box sx={{ paddingRight: '5px' }}>
-                        <Dots />
-                      </Box>
-                    ) : (
-                      <DownloadIcon
-                        sx={{
-                          fontSize: '18px',
-                          padding: '0px 5px',
-                          cursor: downloadingCollection
-                            ? 'not-allowed'
-                            : 'pointer',
-                        }}
-                      />
-                    )}{' '}
-                    {downloadingCollection
-                      ? ` (${downloadCollectionProgress} / ${
-                          profileCollection?.length > 99
-                            ? '99+'
-                            : profileCollection?.length
-                        })`
-                      : ` (${
-                          profileCollection?.length > 99
-                            ? '99+'
-                            : profileCollection?.length
-                        })`}
+                    <>
+                      {downloadingCollection ? (
+                        <Box sx={{ paddingRight: '5px' }}>
+                          <Dots />
+                        </Box>
+                      ) : (
+                        <Tooltip title={'Download Collection'}>
+                          <DownloadIcon
+                            sx={{
+                              fontSize: '18px',
+                              padding: '0px 5px',
+                              cursor: downloadingCollection
+                                ? 'not-allowed'
+                                : 'pointer',
+                            }}
+                          />
+                        </Tooltip>
+                      )}{' '}
+                      {downloadingCollection
+                        ? ` (${downloadCollectionProgress} / ${
+                            profileCollection?.length > 99
+                              ? '99+'
+                              : profileCollection?.length
+                          })`
+                        : ` (${
+                            profileCollection?.length > 99
+                              ? '99+'
+                              : profileCollection?.length
+                          })`}
+                    </>
                   </DownloadCollectionCta>
                 </StyledTableHeadCell>
               )
@@ -1011,12 +1016,13 @@ const DownloadCollectionCta = styled(Button)(
   ({ theme, downloadingCollection }) => ({
     color: downloadingCollection
       ? theme.palette.greyLight
-      : theme.palette.primary.main,
+      : theme.palette.black,
     cursor: downloadingCollection ? 'not-allowed' : 'pointer',
     padding: '0px',
     margin: '0px',
     position: 'relative',
     fontSize: '14px',
+    fontWeight: 'bold',
     '&:hover': {
       opacity: 0.7,
     },

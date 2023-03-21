@@ -57,7 +57,9 @@ export const downloadAs = async (
         })
         writer.addTag()
         const blob = writer.getBlob()
-        saveAs(blob, `${title}.mp3`)
+        const formattedTitle = title.split('/').join('_')
+        const formattedArtist = artist.split('/').join('_')
+        saveAs(blob, `${formattedArtist} - ${formattedTitle}.mp3`)
       })
 
     enqueueSnackbar('Release Downloaded', { variant: 'success' })
@@ -106,8 +108,13 @@ export const downloadAll = async (
     )
   })
   await Promise.all(collection).then(() => {
+    const date = new Date()
+    
     zip.generateAsync({ type: 'blob' }).then((content) => {
-      saveAs(content, `Collection.zip`)
+      saveAs(
+        content,
+        `Nina Collection ${date.toLocaleDateString()}.zip`
+      )
     })
   })
   setDownloadCollectionProgress(0)
@@ -137,18 +144,20 @@ export const downloadAndZip = async (
     })
     .then(async (res) => {
       const buffer = await res.data.arrayBuffer()
+      const { name, title, artist, link, } = item
+      const formattedName = name.split('/').join('_')
       let image = item.image
       if (image) {
         image = await fetch(image).then((r) => r.blob())
         image = await new Response(image).arrayBuffer()
       }
       const writer = new ID3Writer(buffer)
-      writer.setFrame('TIT2', item.title)
-      writer.setFrame('TPE1', [item.artist])
-      writer.setFrame('WPAY', item.link)
+      writer.setFrame('TIT2', title)
+      writer.setFrame('TPE1', [artist])
+      writer.setFrame('WPAY', link)
       writer.setFrame('COMM', {
         description: item.description,
-        text: `Downloaded from Nina Protocol: ${item.link}`,
+        text: `Downloaded from Nina Protocol: ${link}`,
         language: 'eng',
       })
       writer.setFrame('APIC', {
@@ -158,7 +167,7 @@ export const downloadAndZip = async (
       })
       writer.addTag()
       const blob = writer.getBlob()
-      zip.file(`${item.name}.mp3`, blob, { binary: true })
+      zip.file(`${formattedName}.mp3`, blob, { binary: true })
     })
     .then(() =>
       setDownloadCollectionProgress(
