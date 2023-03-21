@@ -300,16 +300,17 @@ const ReleasePurchase = (props) => {
             </StyledLink>
           </Typography>
         )}
+        <StyledDescription align="left">{description}</StyledDescription>
       </Box>
-      <StyledDescription align="left">{description}</StyledDescription>
       <Box
         sx={{
           position: { xs: 'relative', md: 'absolute' },
           bottom: '0',
           width: '100%',
+          background: 'white'
         }}
       >
-        <Box sx={{ mb: 1, mt: 1 }}>
+        <Box sx={{ mb: 0, mt: 1 }}>
           <form onSubmit={handleSubmit}>
             <Button
               variant="outlined"
@@ -328,15 +329,15 @@ const ReleasePurchase = (props) => {
           </form>
         </Box>
 
-        <Gates
-          release={release}
-          metadata={metadata}
-          releasePubkey={releasePubkey}
-          isAuthority={isAuthority}
-          amountHeld={amountHeld}
-          inSettings={false}
-          releaseGates={releaseGates}
-        />
+          <Gates
+            release={release}
+            metadata={metadata}
+            releasePubkey={releasePubkey}
+            isAuthority={isAuthority}
+            amountHeld={amountHeld}
+            inSettings={false}
+            releaseGates={releaseGates}
+          />
       </Box>
     </Box>
   )
@@ -371,9 +372,8 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
     display: 'none',
   },
   [theme.breakpoints.up('md')]: {
-    maxHeight: '152px',
+    maxHeight: '30vh',
     overflowY: 'scroll',
-    height: '152px',
   },
 }))
 
