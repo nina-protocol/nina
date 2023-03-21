@@ -17,6 +17,8 @@ export const downloadAs = async (
   hubPubkey
 ) => {
   setDownloadId(releasePubkey)
+  enqueueSnackbar('Downloading Release', { variant: 'info' })
+
   logEvent('track_download_dashboard', 'engagement', {
     publicKey: releasePubkey,
     hub: hubPubkey,

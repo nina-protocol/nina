@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useMemo, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
@@ -11,14 +11,11 @@ import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutli
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from 'next/image'
 import DownloadIcon from '@mui/icons-material/Download'
-import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
-import axios from 'axios'
 import AddToHubModal from './AddToHubModal.js'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
 import { downloadManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Link from 'next/link'
 import { useSnackbar } from 'notistack'
-
 const { downloadAs } = downloadManager
 const { getImageFromCDN, loader } = imageManager
 
@@ -58,33 +55,6 @@ const ReleaseCard = (props) => {
     return metadata.properties.title
   }, [metadata.properties.title])
 
-  const downloadAs = async (url, name) => {
-    logEvent('track_download', 'engagement', {
-      publicKey: releasePubkey,
-    })
-
-    try {
-      const response = await axios.get(url, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/octet-stream',
-        },
-        responseType: 'blob',
-      })
-
-      if (response?.data) {
-        const a = document.createElement('a')
-        const url = window.URL.createObjectURL(response.data)
-        a.href = url
-        a.download = name
-        a.click()
-      }
-      enqueueSnackbar('Release Downloaded', { variant: 'success' })
-    } catch (error) {
-      enqueueSnackbar('Release Downloaded', { variant: 'error' })
-    }
-  }
   return (
     <StyledReleaseCard>
       <StyledReleaseInfo>
