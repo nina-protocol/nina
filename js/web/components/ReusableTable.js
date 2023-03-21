@@ -679,7 +679,6 @@ const ReusableTableBody = (props) => {
                       </StyledProfileTableCell>
                     )
                   } else if (cellName === 'title') {
-                    console.log('row.link :>> ', row.link)
                     return (
                       <StyledProfileTableCell key={cellName} type={'profile'}>
                         <OverflowContainer
