@@ -838,9 +838,7 @@ const ReusableTableBody = (props) => {
                       <StyledTableCell key={cellName}>
                         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                           <OverflowContainer>
-                            <Typography noWrap>
-                                  {row?.hub}
-                            </Typography>
+                            <Typography noWrap>{row?.hub}</Typography>
                           </OverflowContainer>
                           {row?.hub && <HubTag>HUB</HubTag>}
                         </Box>
@@ -850,9 +848,7 @@ const ReusableTableBody = (props) => {
                     return (
                       <StyledTableCell key={cellName}>
                         <OverflowContainer>
-                          <Typography noWrap>
-                                {cellData} 
-                          </Typography>
+                          <Typography noWrap>{cellData}</Typography>
                         </OverflowContainer>
                       </StyledTableCell>
                     )
