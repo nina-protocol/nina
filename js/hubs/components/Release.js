@@ -237,15 +237,18 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                       paddingTop: '12px',
                     }}
                     onClick={(e) => {
+                      const { artist, title } = metadata.properties
+                      const { uri } = metadata.properties.files[0]
+                      const { image, external_url, description } = metadata
                       e.stopPropagation()
                       downloadAs(
-                        metadata.properties.files[0].uri,
+                        uri,
                         releasePubkey,
-                        metadata.image,
-                        metadata.properties.artist,
-                        metadata.properties.title,
-                        metadata.description,
-                        metadata.external_url,
+                        image,
+                        artist,
+                        title,
+                        description,
+                        external_url,
                         setDownloadId,
                         enqueueSnackbar,
                         wallet.publicKey.toBase58(),
