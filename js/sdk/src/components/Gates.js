@@ -17,7 +17,7 @@ const Gates = ({
   amountHeld,
   metadata,
   inSettings,
-  inHubs
+  inHubs,
 }) => {
   const wallet = useWallet()
   const { enqueueSnackbar } = useSnackbar()

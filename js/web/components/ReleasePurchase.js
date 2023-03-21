@@ -307,7 +307,7 @@ const ReleasePurchase = (props) => {
           position: { xs: 'relative', md: 'absolute' },
           bottom: '0',
           width: '100%',
-          background: 'white'
+          background: 'white',
         }}
       >
         <Box sx={{ mb: 0, mt: 1 }}>
@@ -329,15 +329,15 @@ const ReleasePurchase = (props) => {
           </form>
         </Box>
 
-          <Gates
-            release={release}
-            metadata={metadata}
-            releasePubkey={releasePubkey}
-            isAuthority={isAuthority}
-            amountHeld={amountHeld}
-            inSettings={false}
-            releaseGates={releaseGates}
-          />
+        <Gates
+          release={release}
+          metadata={metadata}
+          releasePubkey={releasePubkey}
+          isAuthority={isAuthority}
+          amountHeld={amountHeld}
+          inSettings={false}
+          releaseGates={releaseGates}
+        />
       </Box>
     </Box>
   )

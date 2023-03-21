@@ -43,7 +43,7 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate, inHubs }) => {
   }
   return (
     <>
-      <Root sx={{mt: !inHubs ? 1 : 0}}>
+      <Root sx={{ mt: !inHubs ? 1 : 0 }}>
         <Button
           variant="outlined"
           color="primary"
