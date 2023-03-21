@@ -56,7 +56,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [release, setRelease] = useState()
   const [amountHeld, setAmountHeld] = useState(0)
-  const [downloadId, setDownloadId] = useState()
   const isAuthority = useMemo(() => {
     if (wallet.connected) {
       return release?.authority === wallet?.publicKey.toBase58()
@@ -249,10 +248,11 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                         title,
                         description,
                         external_url,
-                        setDownloadId,
+                        undefined,
                         enqueueSnackbar,
                         wallet.publicKey.toBase58(),
-                        hubPubkey
+                        hubPubkey,
+                        false
                       )
                     }}
                   >

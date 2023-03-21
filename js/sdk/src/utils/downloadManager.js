@@ -14,9 +14,12 @@ export const downloadAs = async (
   setDownloadId,
   enqueueSnackbar,
   walletAddress,
-  hubPubkey
+  hubPubkey,
+  inRow
 ) => {
-  setDownloadId(releasePubkey)
+  if (inRow) {
+    setDownloadId(releasePubkey)
+  }
   enqueueSnackbar('Downloading Release', { variant: 'info' })
 
   logEvent('track_download_dashboard', 'engagement', {
@@ -63,11 +66,15 @@ export const downloadAs = async (
       })
 
     enqueueSnackbar('Release Downloaded', { variant: 'success' })
-    setDownloadId(undefined)
+    if (inRow) {
+      setDownloadId(undefined)
+    }
     return download
   } catch (error) {
     enqueueSnackbar('Release Not Downloaded', { variant: 'error' })
-    setDownloadId(undefined)
+    if (inRow) {
+      setDownloadId(undefined)
+    }
   }
 }
 
@@ -109,12 +116,9 @@ export const downloadAll = async (
   })
   await Promise.all(collection).then(() => {
     const date = new Date()
-    
+
     zip.generateAsync({ type: 'blob' }).then((content) => {
-      saveAs(
-        content,
-        `Nina Collection ${date.toLocaleDateString()}.zip`
-      )
+      saveAs(content, `Nina Collection ${date.toLocaleDateString()}.zip`)
     })
   })
   setDownloadCollectionProgress(0)
@@ -144,7 +148,7 @@ export const downloadAndZip = async (
     })
     .then(async (res) => {
       const buffer = await res.data.arrayBuffer()
-      const { name, title, artist, link, } = item
+      const { name, title, artist, link } = item
       const formattedName = name.split('/').join('_')
       let image = item.image
       if (image) {

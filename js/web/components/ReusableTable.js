@@ -633,19 +633,30 @@ const ReusableTableBody = (props) => {
                         {inCollection && (
                           <Button
                             onClickCapture={(e) => {
+                              const {
+                                uri,
+                                id,
+                                image,
+                                title,
+                                artist,
+                                releaseName,
+                                trackDescription,
+                                externalLink,
+                              } = row
                               e.stopPropagation()
                               downloadAs(
-                                row.uri,
-                                row.id,
-                                row.image,
-                                row.artist,
-                                row.releaseName,
-                                row.trackDescription,
-                                row.externalLink,
+                                uri,
+                                id,
+                                image,
+                                artist,
+                                releaseName,
+                                trackDescription,
+                                externalLink,
                                 setDownloadId,
                                 enqueueSnackbar,
                                 walletAddress,
-                                undefined
+                                undefined,
+                                true
                               )
                             }}
                             className="disableClickCapture"

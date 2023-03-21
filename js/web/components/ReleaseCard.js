@@ -43,7 +43,6 @@ const ReleaseCard = (props) => {
     setInitialized,
   } = useContext(Audio.Context)
   const { displayNameForAccount } = useContext(Nina.Context)
-  const [downloadId, setDownloadId] = useState()
   const image = useMemo(() => metadata?.image)
   const title = useMemo(() => {
     if (
@@ -99,19 +98,23 @@ const ReleaseCard = (props) => {
                 <Box>
                   <Button
                     onClick={(e) => {
+                      const { artist, title } = metadata.properties
+                      const { uri } = metadata.properties.files[0]
+                      const { image, external_url, description } = metadata
                       e.stopPropagation()
                       downloadAs(
-                        metadata.properties.files[0].uri,
+                        uri,
                         releasePubkey,
-                        metadata.image,
-                        metadata.properties.artist,
-                        metadata.properties.title,
-                        metadata.description,
-                        metadata.external_url,
-                        setDownloadId,
+                        image,
+                        artist,
+                        title,
+                        description,
+                        external_url,
+                        undefined,
                         enqueueSnackbar,
                         walletAddress,
-                        undefined
+                        undefined,
+                        false
                       )
                     }}
                     sx={{
