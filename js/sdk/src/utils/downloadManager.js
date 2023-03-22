@@ -12,29 +12,21 @@ export const downloadAs = async (
   hubPubkey,
   inRow
 ) => {
-  let artist
-  let title
-  let uri
-  let image
-  let external_url
-  let description
+  let artist = metadata.properties
+    ? metadata.properties.artist
+    : metadata.artist
+  let title = metadata.properties
+    ? metadata.properties.title
+    : metadata.releaseName
+  let uri = metadata.properties
+    ? metadata.properties.files[0].uri
+    : metadata.uri
+  let image = metadata.image
+  let external_url = metadata.external_url
+  let description = metadata.description
   if (inRow) {
     setDownloadId(releasePubkey)
-    artist = metadata.artist
-    title = metadata.releaseName
-    uri = metadata.uri
-    image = metadata.image
-    external_url = metadata.externalLink
-    description = metadata.trackDescription
-  } else {
-    artist = metadata.properties.artist
-    title = metadata.properties.title
-    uri = metadata.properties.files[0].uri
-    image = metadata.image
-    external_url = metadata.external_url
-    description = metadata.description
   }
-
   enqueueSnackbar('Downloading Release', { variant: 'info' })
 
   logEvent('track_download_dashboard', 'engagement', {

@@ -415,8 +415,8 @@ const ReusableTableBody = (props) => {
         title: `${data?.metadata?.properties?.artist} - ${data?.metadata?.properties?.title}`,
         artist: data?.metadata?.properties?.artist,
         releaseName: data?.metadata?.properties?.title,
-        trackDescription: data?.metadata?.description,
-        externalLink: data?.metadata?.external_url,
+        description: data?.metadata?.description,
+        external_url: data?.metadata?.external_url,
       }
       if (tableType === 'profileCollectionReleases') {
         formattedData.dateAdded = new Date(
@@ -480,7 +480,7 @@ const ReusableTableBody = (props) => {
         date: data?.createdAt,
         image: data?.data.image,
         hubName: data?.data.displayName,
-        description: data?.data.description,
+        hubDescription: data?.data.description,
         publicKey: data?.publicKey,
         subscribe: true,
         handle: data?.handle,
@@ -610,8 +610,8 @@ const ReusableTableBody = (props) => {
                   cellName !== 'handle' &&
                   cellName !== 'artist' &&
                   cellName !== 'releaseName' &&
-                  cellName !== 'trackDescription' &&
-                  cellName !== 'externalLink'
+                  cellName !== 'description' &&
+                  cellName !== 'external_url'
                 ) {
                   if (cellName === 'ctas' || cellName === 'download') {
                     return (
@@ -713,7 +713,7 @@ const ReusableTableBody = (props) => {
                         </Box>
                       </StyledImageTableCell>
                     )
-                  } else if (cellName === 'description') {
+                  } else if (cellName === 'hubDescription') {
                     return (
                       <HubDescription
                         description={cellData || null}
