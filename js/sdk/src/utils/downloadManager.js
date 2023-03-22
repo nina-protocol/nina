@@ -68,7 +68,7 @@ export const downloadAs = async (
         writer.setFrame('WPAY', external_url)
         writer.setFrame('COMM', {
           description: description,
-          text: `Downloaded from Nina Protocol: ${external_url}`,
+          text: `Nina Protocol - ${external_url}`,
           language: 'eng',
         })
         writer.setFrame('APIC', {
