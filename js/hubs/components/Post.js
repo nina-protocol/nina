@@ -174,6 +174,7 @@ const PostWrapper = styled(Box)(({ theme }) => ({
   paddingBottom: '40px',
   maxHeight: '86vh',
   overflowX: 'hidden',
+  
   '&::-webkit-scrollbar': {
     display: 'none',
   },
@@ -181,6 +182,9 @@ const PostWrapper = styled(Box)(({ theme }) => ({
     maxHeight: 'unset',
     paddingBottom: '100px',
   },
+  'a': {
+    textDecoration: 'underline !important',
+  }
 }))
 
 export default Post
