@@ -60,8 +60,8 @@ export const downloadAs = async (
         })
         writer.addTag()
         const blob = writer.getBlob()
-        const formattedTitle = title.split('/').join('_')
-        const formattedArtist = artist.split('/').join('_')
+        const formattedTitle = title.split('/').join('-')
+        const formattedArtist = artist.split('/').join('-')
         saveAs(blob, `${formattedArtist} - ${formattedTitle}.mp3`)
       })
 
@@ -115,10 +115,9 @@ export const downloadAll = async (
     )
   })
   await Promise.all(collection).then(() => {
-    const date = new Date()
-
+    const formattedDate = new Date().toLocaleDateString().replace(/\//g, '-')
     zip.generateAsync({ type: 'blob' }).then((content) => {
-      saveAs(content, `Nina Collection ${date.toLocaleDateString()}.zip`)
+      saveAs(content, `Nina Collection ${formattedDate}.zip`)
     })
   })
   setDownloadCollectionProgress(0)
@@ -149,7 +148,7 @@ export const downloadAndZip = async (
     .then(async (res) => {
       const buffer = await res.data.arrayBuffer()
       const { name, title, artist, link } = item
-      const formattedName = name.split('/').join('_')
+      const formattedName = name.split('/').join('-')
       let image = item.image
       if (image) {
         image = await fetch(image).then((r) => r.blob())
