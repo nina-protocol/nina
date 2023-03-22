@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
@@ -98,18 +98,10 @@ const ReleaseCard = (props) => {
                 <Box>
                   <Button
                     onClick={(e) => {
-                      const { artist, title } = metadata.properties
-                      const { uri } = metadata.properties.files[0]
-                      const { image, external_url, description } = metadata
                       e.stopPropagation()
                       downloadAs(
-                        uri,
+                        metadata,
                         releasePubkey,
-                        image,
-                        artist,
-                        title,
-                        description,
-                        external_url,
                         undefined,
                         enqueueSnackbar,
                         walletAddress,

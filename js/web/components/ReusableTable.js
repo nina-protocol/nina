@@ -633,25 +633,10 @@ const ReusableTableBody = (props) => {
                         {inCollection && (
                           <Button
                             onClickCapture={(e) => {
-                              const {
-                                uri,
-                                id,
-                                image,
-                                title,
-                                artist,
-                                releaseName,
-                                trackDescription,
-                                externalLink,
-                              } = row
                               e.stopPropagation()
                               downloadAs(
-                                uri,
-                                id,
-                                image,
-                                artist,
-                                releaseName,
-                                trackDescription,
-                                externalLink,
+                                row,
+                                row.id,
                                 setDownloadId,
                                 enqueueSnackbar,
                                 walletAddress,

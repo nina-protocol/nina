@@ -4,22 +4,37 @@ import axios from 'axios'
 import { logEvent } from './event'
 
 export const downloadAs = async (
-  url,
+  metadata,
   releasePubkey,
-  artwork,
-  artist,
-  title,
-  description,
-  link,
   setDownloadId,
   enqueueSnackbar,
   walletAddress,
   hubPubkey,
   inRow
 ) => {
+  let artist
+  let title
+  let uri
+  let image
+  let external_url
+  let description
   if (inRow) {
     setDownloadId(releasePubkey)
+    artist = metadata.artist
+    title = metadata.releaseName
+    uri = metadata.uri
+    image = metadata.image
+    external_url = metadata.externalLink
+    description = metadata.trackDescription
+  } else {
+    artist = metadata.properties.artist
+    title = metadata.properties.title
+    uri = metadata.properties.files[0].uri
+    image = metadata.image
+    external_url = metadata.external_url
+    description = metadata.description
   }
+
   enqueueSnackbar('Downloading Release', { variant: 'info' })
 
   logEvent('track_download_dashboard', 'engagement', {
@@ -29,7 +44,7 @@ export const downloadAs = async (
   })
   try {
     const download = await axios
-      .get(url, {
+      .get(uri, {
         method: 'GET',
         mode: 'cors',
         headers: {
@@ -39,28 +54,34 @@ export const downloadAs = async (
       })
       .then(async (res) => {
         const buffer = await res.data.arrayBuffer()
-        let image = artwork
+
+        let artwork = image
         if (image) {
-          image = await fetch(image).then((r) => r.blob())
-          image = await new Response(image).arrayBuffer()
+          artwork = await fetch(artwork).then((r) => r.blob())
+          artwork = await new Response(artwork).arrayBuffer()
         }
+
         const writer = new ID3Writer(buffer)
+
         writer.setFrame('TIT2', title)
         writer.setFrame('TPE1', [artist])
-        writer.setFrame('WPAY', link)
+        writer.setFrame('WPAY', external_url)
         writer.setFrame('COMM', {
           description: description,
-          text: `Downloaded from Nina Protocol: ${link}`,
+          text: `Downloaded from Nina Protocol: ${external_url}`,
           language: 'eng',
         })
         writer.setFrame('APIC', {
           type: 3,
-          data: image,
+          data: artwork,
           description: 'Cover',
         })
         writer.addTag()
+
         const blob = writer.getBlob()
+
         const formattedTitle = title.split('/').join('-')
+
         const formattedArtist = artist.split('/').join('-')
         saveAs(blob, `${formattedArtist} - ${formattedTitle}.mp3`)
       })

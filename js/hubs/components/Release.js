@@ -6,7 +6,6 @@ import React, {
   Fragment,
   useMemo,
 } from 'react'
-import axios from 'axios'
 import dynamic from 'next/dynamic'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
@@ -30,7 +29,6 @@ import rehypeExternalLinks from 'rehype-external-links'
 const { getImageFromCDN, loader } = imageManager
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { useSnackbar } from 'notistack'
-import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
 import { downloadManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 const { downloadAs } = downloadManager
@@ -236,18 +234,10 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                       paddingTop: '12px',
                     }}
                     onClick={(e) => {
-                      const { artist, title } = metadata.properties
-                      const { uri } = metadata.properties.files[0]
-                      const { image, external_url, description } = metadata
                       e.stopPropagation()
                       downloadAs(
-                        uri,
+                        metadata,
                         releasePubkey,
-                        image,
-                        artist,
-                        title,
-                        description,
-                        external_url,
                         undefined,
                         enqueueSnackbar,
                         wallet.publicKey.toBase58(),
