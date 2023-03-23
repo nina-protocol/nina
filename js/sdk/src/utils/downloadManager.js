@@ -173,7 +173,7 @@ export const downloadAndZip = async (
       writer.setFrame('WPAY', link)
       writer.setFrame('COMM', {
         description: item.description,
-        text: `Downloaded from Nina Protocol: ${link}`,
+        text: `Nina Protocol - ${link}`,
         language: 'eng',
       })
       writer.setFrame('APIC', {
