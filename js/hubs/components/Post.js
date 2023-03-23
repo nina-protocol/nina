@@ -174,12 +174,16 @@ const PostWrapper = styled(Box)(({ theme }) => ({
   paddingBottom: '40px',
   maxHeight: '86vh',
   overflowX: 'hidden',
+
   '&::-webkit-scrollbar': {
     display: 'none',
   },
   [theme.breakpoints.down('md')]: {
     maxHeight: 'unset',
     paddingBottom: '100px',
+  },
+  a: {
+    textDecoration: 'underline !important',
   },
 }))
 
