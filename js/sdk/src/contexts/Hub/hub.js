@@ -205,7 +205,7 @@ const hubContextHelper = ({
       const hub = hubState[hubPubkey]
       await initSdkIfNeeded()
       const hubUpdateConfigTx = await NinaSdk.Hub.hubUpdateConfig(hub, uri, publishFee, referralFee, provider.wallet, provider.connection)
-    
+      //add getHubCall here so state updates
       if  (hubUpdateConfigTx){
         return {
           success: true,
@@ -227,57 +227,23 @@ const hubContextHelper = ({
   ) => {
     try {
       const hub = hubState[hubPubkey]
-      const program = await ninaClient.useProgram()
-      collaboratorPubkey = new anchor.web3.PublicKey(collaboratorPubkey)
-      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
-      const [hubCollaborator] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-collaborator')),
-          hubPubkey.toBuffer(),
-          collaboratorPubkey.toBuffer(),
-        ],
-        program.programId
-      )
-      const [authorityHubCollaborator] =
-        await anchor.web3.PublicKey.findProgramAddress(
-          [
-            Buffer.from(
-              anchor.utils.bytes.utf8.encode('nina-hub-collaborator')
-            ),
-            hubPubkey.toBuffer(),
-            provider.wallet.publicKey.toBuffer(),
-          ],
-          program.programId
-        )
-
-      const txid = await program.rpc.hubAddCollaborator(
+      const collaborator = await NinaSdk.Hub.hubAddCollaborator(
+        hub, 
+        collaboratorPubkey, 
         canAddContent,
         canAddCollaborator,
-        allowance,
-        hub.handle,
-        {
-          accounts: {
-            authority: provider.wallet.publicKey,
-            authorityHubCollaborator,
-            hub: hubPubkey,
-            hubCollaborator,
-            collaborator: collaboratorPubkey,
-            systemProgram: anchor.web3.SystemProgram.programId,
-            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-          },
+        allowance = 1, 
+        provider.wallet, 
+        provider.connection)
+     
+        await getHub(hubPubkey)
+
+      if (collaborator) { 
+        return {
+          success: true,
+          msg: 'Collaborator Added to hub',
         }
-      )
 
-      await getConfirmTransaction(txid, provider.connection)
-      await axios.get(
-        endpoints.api +
-          `/hubs/${hubPubkey}/collaborators/${hubCollaborator.toBase58()}`
-      )
-      await getHub(hubPubkey)
-
-      return {
-        success: true,
-        msg: 'Collaborator Added to hub',
       }
     } catch (error) {
       return ninaErrorHandler(error)
