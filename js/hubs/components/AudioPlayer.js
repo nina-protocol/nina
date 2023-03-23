@@ -81,7 +81,6 @@ const HubAudioPlayer = ({ hubPubkey }) => {
       }
     }
   }, [tracks, track])
-
   return (
     <AudioPlayer>
       {({
@@ -119,18 +118,12 @@ const HubAudioPlayer = ({ hubPubkey }) => {
                     <Typography>
                       Now Playing:{' '}
                       <Link
-                        href={`/${hubState[track.hub].handle}/${
-                          releaseState.metadata[track.releasePubkey]
-                            .hubPostPubkey
-                            ? 'posts'
-                            : 'releases'
+                        href={`/${track.hubHandle}/${
+                          track.contentType === 'post' ? 'posts' : 'releases'
                         }/${
-                          releaseState.metadata[track.releasePubkey]
-                            .hubPostPubkey
-                            ? releaseState.metadata[track.releasePubkey]
-                                .hubPostPubkey
-                            : releaseState.metadata[track.releasePubkey]
-                                .hubReleaseId
+                          track.contentType === 'post'
+                            ? track.hubPostPubkey
+                            : track.hubReleaseId
                         }`}
                       >
                         <a>{`${track.artist} - ${track.title}`}</a>
