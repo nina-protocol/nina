@@ -176,14 +176,14 @@ const hubContextHelper = ({
         wallet: provider.wallet.publicKey.toBase58(),
       })
       await initSdkIfNeeded()
-      const hub = await NinaSdk.Hub.hubInitWithCredit(hubParams, provider.wallet, provider.connection)
+      const hubPubkey = await NinaSdk.Hub.hubInitWithCredit(hubParams, provider.wallet, provider.connection)
  
       logEvent('hub_init_with_credit_success', 'engagement', {
         hub: hub.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
       })
 
-      if (hub) {
+      if (hubPubkey) {
         return {
           success: true,
           msg: 'Hub Created',
@@ -201,32 +201,17 @@ const hubContextHelper = ({
   }
 
   const hubUpdateConfig = async (hubPubkey, uri, publishFee, referralFee) => {
-    const hub = hubState[hubPubkey]
-    const program = await ninaClient.useProgram()
     try {
-      const txid = await program.rpc.hubUpdateConfig(
-        uri,
-        hub.handle,
-        new anchor.BN(publishFee * 10000),
-        new anchor.BN(referralFee * 10000),
-        {
-          accounts: {
-            authority: provider.wallet.publicKey,
-            hub: new anchor.web3.PublicKey(hubPubkey),
-          },
+      const hub = hubState[hubPubkey]
+      await initSdkIfNeeded()
+      const hubUpdateConfigTx = await NinaSdk.Hub.hubUpdateConfig(hub, uri, publishFee, referralFee, provider.wallet, provider.connection)
+    
+      if  (hubUpdateConfigTx){
+        return {
+          success: true,
+          msg: 'Hub Updated',
+          hubPubkey: hub,
         }
-      )
-
-      await getConfirmTransaction(txid, provider.connection)
-      await axios.get(
-        `${process.env.NINA_API_ENDPOINT}/hubs/${hubPubkey}/tx/${txid}`
-      )
-      await getHub(hubPubkey)
-
-      return {
-        success: true,
-        msg: 'Hub Updated',
-        hubPubkey: hub,
       }
     } catch (error) {
       return ninaErrorHandler(error)
