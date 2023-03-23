@@ -170,108 +170,25 @@ const hubContextHelper = ({
   const { ids, provider, endpoints } = ninaClient
 
   const hubInitWithCredit = async (hubParams) => {
-    console.log('top of function :>> ');
     try {
+        logEvent('hub_init_with_credit_initiated', 'engagement', {
+        hub: hub.toBase58(),
+        wallet: provider.wallet.publicKey.toBase58(),
+      })
       await initSdkIfNeeded()
-      // console.log('NinaSdk :>> ', NinaSdk.Hub.hubInitWithCredit(hubParams, provider.wallet, provider.connection, ids));
-      const hub = await NinaSdk.Hub.hubInitWithCredit(hubParams, provider.wallet, provider.connection, ids)
-      console.log('AFTER SDK FUNCTION');
-      // const program = await ninaClient.useProgram()
-      // const USDC_MINT = new anchor.web3.PublicKey(ids.mints.usdc)
-      // const WRAPPED_SOL_MINT = new anchor.web3.PublicKey(ids.mints.wsol)
-      // const HUB_CREDIT_MINT = new anchor.web3.PublicKey(ids.mints.hubCredit)
+      const hub = await NinaSdk.Hub.hubInitWithCredit(hubParams, provider.wallet, provider.connection)
+ 
+      logEvent('hub_init_with_credit_success', 'engagement', {
+        hub: hub.toBase58(),
+        wallet: provider.wallet.publicKey.toBase58(),
+      })
 
-      // hubParams.publishFee = new anchor.BN(hubParams.publishFee * 10000)
-      // hubParams.referralFee = new anchor.BN(hubParams.referralFee * 10000)
-      // const [hub] = await anchor.web3.PublicKey.findProgramAddress(
-      //   [
-      //     Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub')),
-      //     Buffer.from(anchor.utils.bytes.utf8.encode(hubParams.handle)),
-      //   ],
-      //   program.programId
-      // )
-
-      // logEvent('hub_init_with_credit_initiated', 'engagement', {
-      //   hub: hub.toBase58(),
-      //   wallet: provider.wallet.publicKey.toBase58(),
-      // })
-
-      // const [hubSigner, hubSignerBump] =
-      //   await anchor.web3.PublicKey.findProgramAddress(
-      //     [
-      //       Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-signer')),
-      //       hub.toBuffer(),
-      //     ],
-      //     program.programId
-      //   )
-      // hubParams.hubSignerBump = hubSignerBump
-
-      // const [hubCollaborator] = await anchor.web3.PublicKey.findProgramAddress(
-      //   [
-      //     Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-collaborator')),
-      //     hub.toBuffer(),
-      //     provider.wallet.publicKey.toBuffer(),
-      //   ],
-      //   program.programId
-      // )
-
-      // let [, usdcVaultIx] = await findOrCreateAssociatedTokenAccount(
-      //   provider.connection,
-      //   provider.wallet.publicKey,
-      //   hubSigner,
-      //   anchor.web3.SystemProgram.programId,
-      //   anchor.web3.SYSVAR_RENT_PUBKEY,
-      //   USDC_MINT
-      // )
-
-      // let [, wrappedSolVaultIx] = await findOrCreateAssociatedTokenAccount(
-      //   provider.connection,
-      //   provider.wallet.publicKey,
-      //   hubSigner,
-      //   anchor.web3.SystemProgram.programId,
-      //   anchor.web3.SYSVAR_RENT_PUBKEY,
-      //   WRAPPED_SOL_MINT
-      // )
-
-      // let [authorityHubCreditTokenAccount] =
-      //   await findOrCreateAssociatedTokenAccount(
-      //     provider.connection,
-      //     provider.wallet.publicKey,
-      //     provider.wallet.publicKey,
-      //     anchor.web3.SystemProgram.programId,
-      //     anchor.web3.SYSVAR_RENT_PUBKEY,
-      //     HUB_CREDIT_MINT
-      //   )
-
-      // //add IX for create
-      // const txid = await program.methods
-      //   .hubInitWithCredit(hubParams)
-      //   .accounts({
-      //     authority: provider.wallet.publicKey,
-      //     hub,
-      //     hubSigner,
-      //     hubCollaborator,
-      //     authorityHubCreditTokenAccount,
-      //     hubCreditMint: HUB_CREDIT_MINT,
-      //     systemProgram: anchor.web3.SystemProgram.programId,
-      //     tokenProgram: ids.programs.token,
-      //     rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-      //   })
-      //   .preInstructions([usdcVaultIx, wrappedSolVaultIx])
-      //   .rpc()
-
-      // await getConfirmTransaction(txid, provider.connection)
-      // await getHub(hub)
-
-      // logEvent('hub_init_with_credit_success', 'engagement', {
-      //   hub: hub.toBase58(),
-      //   wallet: provider.wallet.publicKey.toBase58(),
-      // })
-
-      return {
-        success: true,
-        msg: 'Hub Created',
-        hubPubkey: hub,
+      if (hub) {
+        return {
+          success: true,
+          msg: 'Hub Created',
+          hubPubkey: hub,
+        }
       }
     } catch (error) {
       logEvent('hub_init_with_credit_failure', 'engagement', {
