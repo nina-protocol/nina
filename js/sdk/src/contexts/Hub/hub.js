@@ -407,53 +407,25 @@ const hubContextHelper = ({
   ) => {
     try {
       const hub = hubState[hubPubkey]
-      const program = await ninaClient.useProgram()
-      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
-      contentAccountPubkey = new anchor.web3.PublicKey(contentAccountPubkey)
-
-      const [hubContent] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-content')),
-          hubPubkey.toBuffer(),
-          contentAccountPubkey.toBuffer(),
-        ],
-        program.programId
+      const toggledContentPubkey = await NinaSdk.Hub.hubContentToggleVisibility(
+        hub, contentAccountPubkey, type, provider.wallet, provider.connection
       )
-      const [hubChildPublicKey] =
-        await anchor.web3.PublicKey.findProgramAddress(
-          [
-            Buffer.from(
-              anchor.utils.bytes.utf8.encode(`nina-hub-${type.toLowerCase()}`)
-            ),
-            hubPubkey.toBuffer(),
-            contentAccountPubkey.toBuffer(),
-          ],
-          program.programId
-        )
 
-      const txid = await program.rpc.hubContentToggleVisibility(hub.handle, {
-        accounts: {
-          authority: provider.wallet.publicKey,
-          hub: hubPubkey,
-          hubContent,
-          contentAccount: contentAccountPubkey,
-          systemProgram: anchor.web3.SystemProgram.programId,
-        },
-      })
-      await provider.connection.getParsedTransaction(txid, 'finalized')
-      const toggledContent = Object.values(hubContentState).filter(
-        (c) => c.publicKey === hubChildPublicKey.toBase58()
-      )[0]
-      toggledContent.visible = !toggledContent.visible
-      const hubContentStateCopy = { ...hubContentState }
-
-      hubContentState[toggledContent.publicKey] = toggledContent
-      setHubContentState(hubContentStateCopy)
-      return {
-        success: true,
-        msg: `${type} has been ${
-          toggledContent.visible ? 'unarchived' : 'archived'
-        }`,
+      if (toggledContentPubkey) {
+        const toggledContent = Object.values(hubContentState).filter(
+          (c) => c.publicKey === toggledContentPubkey.toBase58()
+        )[0]
+        toggledContent.visible = !toggledContent.visible
+        const hubContentStateCopy = { ...hubContentState }
+  
+        hubContentState[toggledContent.publicKey] = toggledContent
+        setHubContentState(hubContentStateCopy)
+        return {
+          success: true,
+          msg: `${type} has been ${
+            toggledContent.visible ? 'unarchived' : 'archived'
+          }`,
+        }
       }
     } catch (error) {
       return ninaErrorHandler(error)
@@ -463,65 +435,72 @@ const hubContextHelper = ({
   const hubWithdraw = async (hubPubkey) => {
     try {
       const hub = hubState[hubPubkey]
-      const program = await ninaClient.useProgram()
-      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
-      const USDC_MINT = new anchor.web3.PublicKey(ids.mints.usdc)
-
-      const [hubSigner] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-signer')),
-          hubPubkey.toBuffer(),
-        ],
-        program.programId
-      )
-      let [withdrawTarget] = await findOrCreateAssociatedTokenAccount(
-        provider.connection,
-        provider.wallet.publicKey,
-        hubSigner,
-        anchor.web3.SystemProgram.programId,
-        anchor.web3.SYSVAR_RENT_PUBKEY,
-        USDC_MINT
+      const withdrawalSuccess = await NinaSdk.Hub.hubWithdraw(
+        hub, provider.wallet, provider.connection
       )
 
-      let [withdrawDestination] = await findOrCreateAssociatedTokenAccount(
-        provider.connection,
-        provider.wallet.publicKey,
-        provider.wallet.publicKey,
-        anchor.web3.SystemProgram.programId,
-        anchor.web3.SYSVAR_RENT_PUBKEY,
-        USDC_MINT
-      )
+      console.log('withdrawalSuccess :>> ', withdrawalSuccess);
+      // const program = await ninaClient.useProgram()
+      // hubPubkey = new anchor.web3.PublicKey(hubPubkey)
+      // const USDC_MINT = new anchor.web3.PublicKey(ids.mints.usdc)
 
-      let tokenAccounts =
-        await provider.connection.getParsedTokenAccountsByOwner(hubSigner, {
-          mint: USDC_MINT,
-        })
+      // const [hubSigner] = await anchor.web3.PublicKey.findProgramAddress(
+      //   [
+      //     Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-signer')),
+      //     hubPubkey.toBuffer(),
+      //   ],
+      //   program.programId
+      // )
+      // let [withdrawTarget] = await findOrCreateAssociatedTokenAccount(
+      //   provider.connection,
+      //   provider.wallet.publicKey,
+      //   hubSigner,
+      //   anchor.web3.SystemProgram.programId,
+      //   anchor.web3.SYSVAR_RENT_PUBKEY,
+      //   USDC_MINT
+      // )
 
-      const withdrawAmount =
-        tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount
+      // let [withdrawDestination] = await findOrCreateAssociatedTokenAccount(
+      //   provider.connection,
+      //   provider.wallet.publicKey,
+      //   provider.wallet.publicKey,
+      //   anchor.web3.SystemProgram.programId,
+      //   anchor.web3.SYSVAR_RENT_PUBKEY,
+      //   USDC_MINT
+      // )
 
-      const txid = await program.rpc.hubWithdraw(
-        new anchor.BN(ninaClient.uiToNative(withdrawAmount, USDC_MINT)),
-        hub.handle,
-        {
-          accounts: {
-            authority: provider.wallet.publicKey,
-            hub: hubPubkey,
-            hubSigner,
-            withdrawTarget,
-            withdrawDestination,
-            withdrawMint: USDC_MINT,
-            tokenProgram: ids.programs.token,
-          },
+      // let tokenAccounts =
+      //   await provider.connection.getParsedTokenAccountsByOwner(hubSigner, {
+      //     mint: USDC_MINT,
+      //   })
+
+      // const withdrawAmount =
+      //   tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount
+
+      // const txid = await program.rpc.hubWithdraw(
+      //   new anchor.BN(ninaClient.uiToNative(withdrawAmount, USDC_MINT)),
+      //   hub.handle,
+      //   {
+      //     accounts: {
+      //       authority: provider.wallet.publicKey,
+      //       hub: hubPubkey,
+      //       hubSigner,
+      //       withdrawTarget,
+      //       withdrawDestination,
+      //       withdrawMint: USDC_MINT,
+      //       tokenProgram: ids.programs.token,
+      //     },
+      //   }
+      // )
+      // await getConfirmTransaction(txid, provider.connection)
+      if (withdrawalSuccess){
+        await getHub(hubPubkey)
+        return {
+          success: true,
+          msg: 'Withdraw from Hub Successful.',
         }
-      )
-      await getConfirmTransaction(txid, provider.connection)
-
-      await getHub(hubPubkey)
-      return {
-        success: true,
-        msg: 'Withdraw from Hub Successful.',
       }
+      
     } catch (error) {
       return ninaErrorHandler(error)
     }
