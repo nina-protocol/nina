@@ -11,7 +11,6 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import IdentityVerification from './IdentityVerification'
 import CreateHub from './CreateHub'
-import { downloadManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 const { getImageFromCDN, loader } = imageManager
 
 const Dots = dynamic(() => import('./Dots'))
@@ -61,9 +60,6 @@ const Profile = ({ profilePubkey }) => {
   const [inDashboard, setInDashboard] = useState(false)
   const [inCollection, setInCollection] = useState(false)
   const [fetched, setFetched] = useState(false)
-  const [downloadingCollection, setDownloadingCollection] = useState(false)
-  const [downloadCollectionProgress, setDownloadCollectionProgress] =
-    useState(0)
 
   const [views, setViews] = useState([
     { name: 'releases', playlist: undefined, disabled: true, count: 0 },

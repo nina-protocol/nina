@@ -12,7 +12,6 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import DownloadIcon from '@mui/icons-material/Download'
-import Tooltip from '@mui/material/Tooltip'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
@@ -27,8 +26,7 @@ import { useRouter } from 'next/router'
 import { orderBy } from 'lodash'
 import dynamic from 'next/dynamic'
 import { downloadManager } from '@nina-protocol/nina-internal-sdk/src/utils'
-import JSZip from 'jszip'
-const { downloadAs, downloadAll } = downloadManager
+const { downloadAs } = downloadManager
 import openInNewTab from '@nina-protocol/nina-internal-sdk/src/utils/openInNewTab'
 import Dots from './Dots'
 const { getImageFromCDN, loader } = imageManager
@@ -78,23 +76,10 @@ const descendingComparator = (a, b, orderBy) => {
 }
 
 const ReusableTableHead = (props) => {
-  const {
-    tableType,
-    inDashboard,
-    onRequestSort,
-    order,
-    inCollection,
-    profileCollection,
-    walletAddress,
-  } = props
+  const { tableType, inDashboard, onRequestSort, order } = props
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property)
   }
-  const zip = new JSZip()
-  const { enqueueSnackbar } = useSnackbar()
-  const [downloadingCollection, setDownloadingCollection] = useState(false)
-  const [downloadCollectionProgress, setDownloadCollectionProgress] =
-    useState(0)
   let headCells = []
 
   if (tableType === 'profilePublishedReleases') {
@@ -114,7 +99,7 @@ const ReusableTableHead = (props) => {
     headCells.push({ id: 'image', label: '' })
     headCells.push({ id: 'title', label: 'Release' })
     headCells.push({ id: 'dateAdded', label: 'Added' })
-    headCells.push({ id: 'download', label: '' })
+    headCells.push({ id: 'ctas', label: '' })
   }
 
   if (tableType === 'profileHubs') {
@@ -200,61 +185,6 @@ const ReusableTableHead = (props) => {
                       {headCell.label}
                     </Typography>
                   </TableSortLabel>
-                </StyledTableHeadCell>
-              )
-            } else if (headCell.id === 'download' && inCollection) {
-              return (
-                <StyledTableHeadCell
-                  key={headCell.id}
-                  sx={{
-                    cursor: downloadingCollection ? 'not-allowed' : 'default',
-                  }}
-                >
-                  <DownloadCollectionCta
-                    disabled={downloadingCollection}
-                    onClick={(e) =>
-                      downloadAll(
-                        e,
-                        profileCollection,
-                        setDownloadCollectionProgress,
-                        setDownloadingCollection,
-                        zip,
-                        enqueueSnackbar,
-                        walletAddress
-                      )
-                    }
-                  >
-                    <>
-                      {downloadingCollection ? (
-                        <Box sx={{ paddingRight: '5px' }}>
-                          <Dots />
-                        </Box>
-                      ) : (
-                        <Tooltip title={'Download Collection'}>
-                          <DownloadIcon
-                            sx={{
-                              fontSize: '18px',
-                              padding: '0px 5px',
-                              cursor: downloadingCollection
-                                ? 'not-allowed'
-                                : 'pointer',
-                            }}
-                          />
-                        </Tooltip>
-                      )}{' '}
-                      {downloadingCollection
-                        ? ` (${downloadCollectionProgress} / ${
-                            profileCollection?.length > 99
-                              ? '99+'
-                              : profileCollection?.length
-                          })`
-                        : ` (${
-                            profileCollection?.length > 99
-                              ? '99+'
-                              : profileCollection?.length
-                          })`}
-                    </>
-                  </DownloadCollectionCta>
                 </StyledTableHeadCell>
               )
             } else {
@@ -396,7 +326,7 @@ const ReusableTableBody = (props) => {
   }
 
   let rows = items?.map((data) => {
-    const { releasePubkey, publicKey } = data
+    const { releasePubkey } = data
     const playData = {
       releasePubkey,
     }
@@ -613,7 +543,7 @@ const ReusableTableBody = (props) => {
                   cellName !== 'description' &&
                   cellName !== 'external_url'
                 ) {
-                  if (cellName === 'ctas' || cellName === 'download') {
+                  if (cellName === 'ctas') {
                     return (
                       <StyledTableCellButtonsContainer
                         align="left"
@@ -997,23 +927,6 @@ const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
     paddingTop: '10px',
   },
 }))
-
-const DownloadCollectionCta = styled(Button)(
-  ({ theme, downloadingCollection }) => ({
-    color: downloadingCollection
-      ? theme.palette.greyLight
-      : theme.palette.black,
-    cursor: downloadingCollection ? 'not-allowed' : 'pointer',
-    padding: '0px',
-    margin: '0px',
-    position: 'relative',
-    fontSize: '14px',
-    fontWeight: 'bold',
-    '&:hover': {
-      opacity: 0.7,
-    },
-  })
-)
 
 const StyledTableCell = styled(TableCell)(({ theme, type }) => ({
   padding: '5px 0px',
