@@ -205,7 +205,8 @@ const hubContextHelper = ({
       const hub = hubState[hubPubkey]
       await initSdkIfNeeded()
       const hubUpdateConfigTx = await NinaSdk.Hub.hubUpdateConfig(hub, uri, publishFee, referralFee, provider.wallet, provider.connection)
-      //add getHubCall here so state updates
+      await getHub(hubPubkey)
+
       if  (hubUpdateConfigTx){
         return {
           success: true,
@@ -259,53 +260,19 @@ const hubContextHelper = ({
   ) => {
     try {
       const hub = hubState[hubPubkey]
-      const program = await ninaClient.useProgram()
-      collaboratorPubkey = new anchor.web3.PublicKey(collaboratorPubkey)
-      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
 
-      const [hubCollaborator] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-collaborator')),
-          hubPubkey.toBuffer(),
-          collaboratorPubkey.toBuffer(),
-        ],
-        program.programId
+      const confirmedTransaction =  await NinaSdk.Hub.hubUpdateCollaboratorPermission(
+        hub, collaboratorPubkey, canAddContent, canAddCollaborator, allowance, provider.wallet, provider.connection
       )
 
-      const [authorityHubCollaborator] =
-        await anchor.web3.PublicKey.findProgramAddress(
-          [
-            Buffer.from(
-              anchor.utils.bytes.utf8.encode('nina-hub-collaborator')
-            ),
-            hubPubkey.toBuffer(),
-            provider.wallet.publicKey.toBuffer(),
-          ],
-          program.programId
-        )
-
-      const txid = await program.rpc.hubUpdateCollaboratorPermissions(
-        canAddContent,
-        canAddCollaborator,
-        allowance,
-        hub.handle,
-        {
-          accounts: {
-            authority: provider.wallet.publicKey,
-            authorityHubCollaborator,
-            hub: hubPubkey,
-            hubCollaborator,
-            collaborator: collaboratorPubkey,
-          },
+      if (confirmedTransaction) {
+        await getHub(hubPubkey)
+        return {
+          success: true,
+          msg: 'Hub Collaborator Permissions Updated',
         }
-      )
-      await getConfirmTransaction(txid, provider.connection)
-      await getHub(hubPubkey)
-
-      return {
-        success: true,
-        msg: 'Hub Collaborator Permissions Updated',
       }
+
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -413,41 +380,20 @@ const hubContextHelper = ({
   const hubRemoveCollaborator = async (hubPubkey, collaboratorPubkey) => {
     try {
       const hub = hubState[hubPubkey]
-      const program = await ninaClient.useProgram()
-      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
-      collaboratorPubkey = new anchor.web3.PublicKey(collaboratorPubkey)
-      const [hubCollaborator] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-collaborator')),
-          hubPubkey.toBuffer(),
-          collaboratorPubkey.toBuffer(),
-        ],
-        program.programId
+      const removedCollaborator = await NinaSdk.Hub.hubRemoveCollaborator(
+        hub, collaboratorPubkey, provider.wallet, provider.connection
       )
 
-      const txid = await program.rpc.hubRemoveCollaborator(hub.handle, {
-        accounts: {
-          authority: provider.wallet.publicKey,
-          hub: hubPubkey,
-          hubCollaborator,
-          collaborator: collaboratorPubkey,
-          systemProgram: anchor.web3.SystemProgram.programId,
-        },
-      })
-      await getConfirmTransaction(txid, provider.connection)
-      await axios.get(
-        endpoints.api +
-          `/hubs/${hubPubkey}/collaborators/${hubCollaborator.toBase58()}`
-      )
-      await getHub(hubPubkey)
-
-      const hubCollaboratorsStateCopy = { ...hubCollaboratorsState }
-      delete hubCollaboratorsStateCopy[hubCollaborator]
-      setHubCollaboratorsState(hubCollaboratorsStateCopy)
-
-      return {
-        success: true,
-        msg: 'Collaborator Removed From Hub',
+      if (removedCollaborator) {
+        await getHub(hubPubkey)
+        const hubCollaboratorsStateCopy = { ...hubCollaboratorsState }
+        delete hubCollaboratorsStateCopy[removedCollaborator.toBase58()]
+        setHubCollaboratorsState(hubCollaboratorsStateCopy)
+  
+        return {
+          success: true,
+          msg: 'Collaborator Removed From Hub',
+        } 
       }
     } catch (error) {
       return ninaErrorHandler(error)
