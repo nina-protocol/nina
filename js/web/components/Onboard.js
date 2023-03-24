@@ -7,11 +7,20 @@ import {styled} from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import  Box  from '@mui/system/Box'
 import Typography from '@mui/material/Typography'
-import { Button } from '@mui/material/Button'
+import Button  from '@mui/material/Button'
+import Link from 'next/link'
+import {WalletDialogButton, useWalletDialog} from '@solana/wallet-adapter-material-ui'
 const Onboard = () => {
   const [code, setCode] = useState()
   const wallet = useWallet()
   const [claimedStatus, setClaimedStatus] = useState(false)
+  const [headerCopy, setHeaderCopy] = useState('Your wallet is not connected, please connect your wallet to continue.')
+
+  useEffect(() => {
+    if (wallet.connected) {
+      setHeaderCopy('Click below to claim your onboarding code.')
+    }
+  }, [wallet.connected])
 
   const handleGenerateCode = async () => {
     const message = new TextEncoder().encode(wallet.publicKey.toBase58())
@@ -48,31 +57,45 @@ const Onboard = () => {
       setClaimedStatus(true)
     }
   }
-console.log(wallet.connected)
+
+  // const handleConnectWallet = async () => {
+  //   wallet.connect()
+  // }
+
   return (
     <ScrollablePageWrapper>
       <StyledGrid>
         <GetStartedPageWrapper>
           <Box mb={2}>
             <Typography variant="h2">
-              {`Welcome to Nina. Nina is an independent music ecosystem that offers artists new models
-          for releasing music. Below you can learn more about how it works and
-          see a list of FAQs.`}
+              {
+                'Welcome to Nina. Nina is an independent music ecosystem that offers artists new models for releasing music.'
+              }{' '}
+              {headerCopy}
             </Typography>
           </Box>
-          {
-            wallet.connected && (
-              <>
-              <Box>3
-              <Typography>Connect your wallet</Typography>
-<Typography variant="h4">or</Typography>
-<Typography>Create a wallet</Typography>
+          {!wallet.connected && (
+            <>
+              <Box>
+                <WalletDialogButton
+                
+                  type={'button'}
+                
+                >
+                 Connect Wallet
+                </WalletDialogButton>
+
+                <Typography variant="h3" mb={1}>
+                  or
+                </Typography>
+                <Link href="https://phantom.app">
+                  <a target="_blank" rel="noreferrer">
+                    <Typography variant="h3">Create a wallet</Typography>
+                  </a>
+                </Link>
               </Box>
-              
-              </>
-              
-            )
-          }
+            </>
+          )}
           {/* <button onClick={() => handleGenerateCode()}>Generate Code</button>
           <label for="code">OnboardingCode</label>
           <input

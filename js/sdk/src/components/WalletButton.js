@@ -72,13 +72,16 @@ const WalletButton = ({
       </WalletDialogButton>
     )
   }
+
   return (
     <>
       <Button
         color={color}
         variant={variant}
         type={type}
-        onClick={(event) => setAnchor(event.currentTarget)}
+        onClick={(event) => 
+        {  console.log('event.currentTarget: ', event.currentTarget)
+          setAnchor(event.currentTarget)}}
         aria-controls="wallet-menu"
         aria-haspopup="true"
         {...props}
