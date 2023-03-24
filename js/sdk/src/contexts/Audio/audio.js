@@ -294,6 +294,10 @@ const audioPlayerContextHelper = ({
         releasePubkey,
         cover: releaseMetadata.image,
         duration: releaseMetadata.properties.files[0].duration,
+        hubHandle: releaseMetadata.hubHandle,
+        contentType: releaseMetadata.contentType,
+        hubPostPubkey: releaseMetadata.hubPostPubkey,
+        hubReleaseId: releaseMetadata.hubReleaseId,
       }
     }
     return playlistEntry
