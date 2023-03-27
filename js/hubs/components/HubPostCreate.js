@@ -48,6 +48,8 @@ const HubPostCreate = ({
   userHasHubs,
   userHubs,
 }) => {
+
+
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const { postInitViaHub, hubState } = useContext(Hub.Context)
@@ -219,6 +221,10 @@ const HubPostCreate = ({
           const slug = `${hubData.handle
             .toLowerCase()
             .replace(' ', '_')}_${Math.round(new Date().getTime() / 1000)}`
+
+            console.log('hubPubKey right before:>> ', hubPubkey);
+            console.log('selectedHubId right before:>> ', selectedHubId);
+            
           let result = await postInitViaHub(
             selectedHubId || hubPubkey,
             slug,

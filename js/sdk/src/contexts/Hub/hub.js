@@ -286,12 +286,10 @@ const hubContextHelper = ({
       queue.add(releasePubkey)
       setAddToHubQueue(queue)
 
-      const hub = hubState[hubPubkey]
       const addedReleaseConfirmation = await NinaSdk.Hub.hubAddRelease(
-        hub, releasePubkey, fromHub, provider.wallet, provider.connection
+        hubPubkey, releasePubkey, fromHub, provider.wallet, provider.connection
       )
 
-  
       if (addedReleaseConfirmation){
         await getHubsForRelease(releasePubkey)
         queue = new Set(addToHubQueue)
@@ -449,20 +447,19 @@ const hubContextHelper = ({
     fromHub
   ) => {
     try {
-      const hub = hubState[hubPubkey]
-      console.log('hub :>> ', hub);
       const initializedPost = await NinaSdk.Hub.postInitViaHub(
-        hub, slug, uri, referenceRelease, fromHub, provider.wallet, provider.connection
+        hubPubkey, slug, uri, referenceRelease, fromHub, provider.wallet, provider.connection
       )
 
-      if (initializedPost) {
-        await NinaSdk.Hub.fetchHubPost(hubPubkey.toBase58(), hubPost.toBase58())
+      if (initializedPost.success) {
+        console.log('initializedPost :>> ', initializedPost);
+        await NinaSdk.Hub.fetchHubPost(hubPubkey, initializedPost.hubPost.toBase58())
         if (referenceRelease) {
           await NinaSdk.Hub.fetchHubRelease(
-            hubPubkey.toBase58(),
-            referenceReleaseHubRelease.toBase58()
+            hubPubkey,
+            initializedPost.referenceReleaseHubRelease.toBase58()
           )
-          await getHubsForRelease(referenceRelease.toBase58())
+          await getHubsForRelease(referenceRelease)
         }
         await getHub(hubPubkey)
   
