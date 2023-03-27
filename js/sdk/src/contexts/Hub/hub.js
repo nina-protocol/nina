@@ -291,8 +291,6 @@ const hubContextHelper = ({
       setAddToHubQueue(queue)
 
       const hub = hubState[hubPubkey]
-      console.log('hub :>> ', hub);
-      console.log('releasePubkey :>> ', releasePubkey);
       const addedReleaseConfirmation = await NinaSdk.Hub.hubAddRelease(
         hub, releasePubkey, fromHub, provider.wallet, provider.connection
       )
@@ -457,118 +455,27 @@ const hubContextHelper = ({
     fromHub
   ) => {
     try {
-      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
-      const program = await ninaClient.useProgram()
-      const hub = await program.account.hub.fetch(hubPubkey)
-      if (referenceRelease) {
-        referenceRelease = new anchor.web3.PublicKey(referenceRelease)
-      }
-      const slugHash = MD5(slug).toString().slice(0, 32)
-      const [post] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-post')),
-          hubPubkey.toBuffer(),
-          Buffer.from(anchor.utils.bytes.utf8.encode(slugHash)),
-        ],
-        program.programId
+      const hub = hubState[hubPubkey]
+      console.log('hub :>> ', hub);
+      const initializedPost = await NinaSdk.Hub.postInitViaHub(
+        hub, slug, uri, referenceRelease, fromHub, provider.wallet, provider.connection
       )
-      const [hubPost] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-post')),
-          hubPubkey.toBuffer(),
-          post.toBuffer(),
-        ],
-        program.programId
-      )
-      const [hubContent] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-content')),
-          hubPubkey.toBuffer(),
-          post.toBuffer(),
-        ],
-        program.programId
-      )
-      const [hubCollaborator] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-collaborator')),
-          hubPubkey.toBuffer(),
-          provider.wallet.publicKey.toBuffer(),
-        ],
-        program.programId
-      )
-      let txid
-      const handle = decodeNonEncryptedByteArray(hub.handle)
-      const params = [handle, slugHash, uri]
-      const request = {
-        accounts: {
-          author: provider.wallet.publicKey,
-          hub: hubPubkey,
-          post,
-          hubPost,
-          hubContent,
-          hubCollaborator,
-          systemProgram: anchor.web3.SystemProgram.programId,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        },
-      }
-      if (fromHub) {
-        request.remainingAccounts = [
-          {
-            pubkey: new anchor.web3.PublicKey(fromHub),
-            isWritable: false,
-            isSigner: false,
-          },
-        ]
-      }
-      let referenceReleaseHubRelease
-      if (referenceRelease) {
-        request.accounts.referenceRelease = referenceRelease
-        let [_referenceReleaseHubRelease] =
-          await anchor.web3.PublicKey.findProgramAddress(
-            [
-              Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
-              hubPubkey.toBuffer(),
-              referenceRelease.toBuffer(),
-            ],
-            program.programId
+
+      if (initializedPost) {
+        await NinaSdk.Hub.fetchHubPost(hubPubkey.toBase58(), hubPost.toBase58())
+        if (referenceRelease) {
+          await NinaSdk.Hub.fetchHubRelease(
+            hubPubkey.toBase58(),
+            referenceReleaseHubRelease.toBase58()
           )
-        request.accounts.referenceReleaseHubRelease =
-          _referenceReleaseHubRelease
-        referenceReleaseHubRelease = _referenceReleaseHubRelease
-
-        const [referenceReleaseHubContent] =
-          await anchor.web3.PublicKey.findProgramAddress(
-            [
-              Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-content')),
-              hubPubkey.toBuffer(),
-              referenceRelease.toBuffer(),
-            ],
-            program.programId
-          )
-        request.accounts.referenceReleaseHubContent = referenceReleaseHubContent
-        txid = await program.rpc.postInitViaHubWithReferenceRelease(
-          ...params,
-          request
-        )
-      } else {
-        txid = await program.rpc.postInitViaHub(...params, request)
-      }
-
-      await getConfirmTransaction(txid, provider.connection)
-
-      await NinaSdk.Hub.fetchHubPost(hubPubkey.toBase58(), hubPost.toBase58())
-      if (referenceRelease) {
-        await NinaSdk.Hub.fetchHubRelease(
-          hubPubkey.toBase58(),
-          referenceReleaseHubRelease.toBase58()
-        )
-        await getHubsForRelease(referenceRelease.toBase58())
-      }
-      await getHub(hubPubkey)
-
-      return {
-        success: true,
-        msg: 'Post created.',
+          await getHubsForRelease(referenceRelease.toBase58())
+        }
+        await getHub(hubPubkey)
+  
+        return {
+          success: true,
+          msg: 'Post created.',
+        }
       }
     } catch (error) {
       return ninaErrorHandler(error)
