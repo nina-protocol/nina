@@ -22,6 +22,7 @@ const NewProfileCtas = dynamic(() => import('./NewProfileCtas'))
 const Profile = ({ profilePubkey }) => {
   const wallet = useWallet()
   const router = useRouter()
+  const walletPubkey = wallet?.publicKey?.toBase58()
   const tableContainerRef = useRef(null)
   const {
     getUserCollectionAndPublished,
@@ -313,7 +314,7 @@ const Profile = ({ profilePubkey }) => {
                 hasOverflow={true}
                 inCollection={inCollection}
                 profileCollection={profileCollectionReleases}
-                walletAddress={wallet?.publicKey.toBase58()}
+                walletAddress={walletPubkey}
               />
             )}
           </>
