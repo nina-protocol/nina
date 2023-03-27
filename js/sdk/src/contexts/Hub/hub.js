@@ -230,7 +230,7 @@ const hubContextHelper = ({
         collaboratorPubkey, 
         canAddContent,
         canAddCollaborator,
-        allowance = 1, 
+        allowance, 
         provider.wallet, 
         provider.connection
         )
@@ -250,17 +250,15 @@ const hubContextHelper = ({
   }
 
   const hubUpdateCollaboratorPermission = async (
-    collaboratorPubkey,
     hubPubkey,
+    collaboratorPubkey,
     canAddContent,
     canAddCollaborator,
     allowance = 1
   ) => {
     try {
-      const hub = hubState[hubPubkey]
-
       const confirmedTransaction =  await NinaSdk.Hub.hubUpdateCollaboratorPermission(
-        hub, collaboratorPubkey, canAddContent, canAddCollaborator, allowance, provider.wallet, provider.connection
+        hubPubkey, collaboratorPubkey, canAddContent, canAddCollaborator, allowance, provider.wallet, provider.connection
       )
 
       if (confirmedTransaction) {
@@ -326,9 +324,8 @@ const hubContextHelper = ({
 
   const hubRemoveCollaborator = async (hubPubkey, collaboratorPubkey) => {
     try {
-      const hub = hubState[hubPubkey]
       const removedCollaborator = await NinaSdk.Hub.hubRemoveCollaborator(
-        hub, collaboratorPubkey, provider.wallet, provider.connection
+        hubPubkey, collaboratorPubkey, provider.wallet, provider.connection
       )
 
       if (removedCollaborator) {
@@ -353,9 +350,8 @@ const hubContextHelper = ({
     type
   ) => {
     try {
-      const hub = hubState[hubPubkey]
       const toggledContentPubkey = await NinaSdk.Hub.hubContentToggleVisibility(
-        hub, contentAccountPubkey, type, provider.wallet, provider.connection
+        hubPubkey, contentAccountPubkey, type, provider.wallet, provider.connection
       )
 
       if (toggledContentPubkey) {
