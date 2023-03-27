@@ -49,10 +49,14 @@ export const downloadAs = async (
 
         let artwork = image
         if (image) {
-          artwork = await fetch(artwork).then((r) => r.blob())
-          artwork = await new Response(artwork).arrayBuffer()
+          artwork = await axios
+            .get(image, {
+              method: 'GET',
+              responseType: 'arraybuffer',
+            })
+            .then((res) => res.data)
+            .catch((err) => console.error(err))
         }
-
         const writer = new ID3Writer(buffer)
 
         writer.setFrame('TIT2', title)
