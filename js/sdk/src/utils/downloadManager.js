@@ -1,8 +1,7 @@
 import ID3Writer from 'browser-id3-writer'
 import { saveAs } from 'file-saver'
-import axios from 'axios'
 import { logEvent } from './event'
-
+import getFromArweaveWithFallback from './getFromArweaveWithFallback'
 export const downloadAs = async (
   metadata,
   releasePubkey,
@@ -35,75 +34,42 @@ export const downloadAs = async (
     wallet: walletAddress,
   })
   try {
-    let artwork
-    const download = await axios
-      .get(uri, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/octet-stream',
-        },
-        responseType: 'blob',
+    const audioFile = await getFromArweaveWithFallback(
+      uri,
+      { 'Content-Type': 'application/octet-stream' },
+      'blob'
+    )
+
+    const artwork = await getFromArweaveWithFallback(image, {}, 'arraybuffer')
+
+    const writer = new ID3Writer(await audioFile.data.arrayBuffer())
+    writer.setFrame('TIT2', title)
+    writer.setFrame('TPE1', [artist])
+    writer.setFrame('WPAY', external_url)
+    writer.setFrame('COMM', {
+      description: description,
+      text: `Nina Protocol - ${external_url}`,
+      language: 'eng',
+    })
+    if (artwork) {
+      writer.setFrame('APIC', {
+        type: 3,
+        data: artwork.data,
+        description: 'Cover',
       })
-      .catch(async () => {
-        return await axios
-          .get(uri.replace('arweave.net', 'ar-io.net'), {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-              'Content-Type': 'application/octet-stream',
-            },
-            responseType: 'blob',
-          })
-      })
-      .then(async (res) => {
-        const buffer = await res.data.arrayBuffer()
+    }
+    writer.addTag()
 
-        artwork = await axios
-          .get(image, {
-            method: 'GET',
-            responseType: 'arraybuffer',
-          })
-          .catch(async () => {
-            return await axios
-              .get(image.replace('arweave.net', 'ar-io.net'), {
-                method: 'GET',
-                responseType: 'arraybuffer',
-              })
-          })
-          .then((res) => res.data)
-          .catch((err) => console.error(err))
-        
-        const writer = new ID3Writer(buffer)
-
-        writer.setFrame('TIT2', title)
-        writer.setFrame('TPE1', [artist])
-        writer.setFrame('WPAY', external_url)
-        writer.setFrame('COMM', {
-          description: description,
-          text: `Nina Protocol - ${external_url}`,
-          language: 'eng',
-        })
-        writer.setFrame('APIC', {
-          type: 3,
-          data: artwork,
-          description: 'Cover',
-        })
-        writer.addTag()
-
-        const blob = writer.getBlob()
-
-        const formattedTitle = title.split('/').join('-')
-
-        const formattedArtist = artist.split('/').join('-')
-        saveAs(blob, `${formattedArtist} - ${formattedTitle}.mp3`)
-      })
+    const blob = writer.getBlob()
+    const formattedTitle = title.replaceAll('/', '-')
+    const formattedArtist = artist.replaceAll('/', '-')
+    saveAs(blob, `${formattedArtist} - ${formattedTitle}.mp3`)
 
     enqueueSnackbar('Release Downloaded', { variant: 'success' })
     if (inRow) {
       setDownloadId(undefined)
     }
-    return download
+    return
   } catch (error) {
     enqueueSnackbar('Release Not Downloaded', { variant: 'error' })
     if (inRow) {
