@@ -78,7 +78,7 @@ const Onboard = () => {
             <>
               <Box>
                 <WalletDialogButton
-                
+                  variant="contained"
                   type={'button'}
                 
                 >
