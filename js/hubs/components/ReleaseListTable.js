@@ -9,12 +9,15 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
+import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 import { visuallyHidden } from '@mui/utils'
 import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
 import { useRouter } from 'next/router'
+
+const infinityUnicode = '\u221e'
 
 const descendingComparator = (a, b, orderBy) => {
   switch (orderBy) {
@@ -211,9 +214,10 @@ const ReleaseListTable = (props) => {
         tokenData.price,
         tokenData.paymentMint
       )}`
-      rowData[
-        'remaining'
-      ] = `${tokenData.remainingSupply} / ${tokenData.totalSupply} `
+      rowData['remaining'] =
+        tokenData.remainingSupply < 0
+          ? infinityUnicode
+          : `${tokenData.remainingSupply} / ${tokenData.totalSupply} `
       rowData['share'] = `${recipient.percentShare / 10000}%`
       rowData['date'] = `${
         new Date(tokenData.releaseDatetime).toISOString().split('T')[0]
@@ -272,6 +276,25 @@ const ReleaseListTable = (props) => {
                                 <span style={{ textDecoration: 'underline' }}>
                                   {cellData}
                                 </span>
+                              </TableCell>
+                            )
+                          } else if (cellName === 'remaining') {
+                            return (
+                              <TableCell
+                                align="center"
+                                size="small"
+                                key={cellName}
+                              >
+                                <Typography
+                                  sx={{
+                                    fontSize:
+                                      cellData === infinityUnicode
+                                        ? '22px !important'
+                                        : '',
+                                  }}
+                                >
+                                  {cellData}
+                                </Typography>
                               </TableCell>
                             )
                           } else {
