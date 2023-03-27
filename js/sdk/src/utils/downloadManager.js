@@ -35,6 +35,7 @@ export const downloadAs = async (
     wallet: walletAddress,
   })
   try {
+    let artwork
     const download = await axios
       .get(uri, {
         method: 'GET',
@@ -44,19 +45,35 @@ export const downloadAs = async (
         },
         responseType: 'blob',
       })
+      .catch(async () => {
+        return await axios
+          .get(uri.replace('arweave.net', 'ar-io.net'), {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+              'Content-Type': 'application/octet-stream',
+            },
+            responseType: 'blob',
+          })
+      })
       .then(async (res) => {
         const buffer = await res.data.arrayBuffer()
 
-        let artwork = image
-        if (image) {
-          artwork = await axios
-            .get(image, {
-              method: 'GET',
-              responseType: 'arraybuffer',
-            })
-            .then((res) => res.data)
-            .catch((err) => console.error(err))
-        }
+        artwork = await axios
+          .get(image, {
+            method: 'GET',
+            responseType: 'arraybuffer',
+          })
+          .catch(async () => {
+            return await axios
+              .get(image.replace('arweave.net', 'ar-io.net'), {
+                method: 'GET',
+                responseType: 'arraybuffer',
+              })
+          })
+          .then((res) => res.data)
+          .catch((err) => console.error(err))
+        
         const writer = new ID3Writer(buffer)
 
         writer.setFrame('TIT2', title)
