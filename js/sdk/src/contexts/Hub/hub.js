@@ -202,16 +202,14 @@ const hubContextHelper = ({
 
   const hubUpdateConfig = async (hubPubkey, uri, publishFee, referralFee) => {
     try {
-      const hub = hubState[hubPubkey]
       await initSdkIfNeeded()
-      const hubUpdateConfigTx = await NinaSdk.Hub.hubUpdateConfig(hub, uri, publishFee, referralFee, provider.wallet, provider.connection)
+      const hubUpdateConfigTx = await NinaSdk.Hub.hubUpdateConfig(hubPubkey, uri, publishFee, referralFee, provider.wallet, provider.connection)
       await getHub(hubPubkey)
 
       if  (hubUpdateConfigTx){
         return {
           success: true,
           msg: 'Hub Updated',
-          hubPubkey: hub,
         }
       }
     } catch (error) {
@@ -220,26 +218,26 @@ const hubContextHelper = ({
   }
 
   const hubAddCollaborator = async (
-    collaboratorPubkey,
     hubPubkey,
+    collaboratorPubkey,
     canAddContent,
     canAddCollaborator,
     allowance = 1
   ) => {
     try {
-      const hub = hubState[hubPubkey]
-      const collaborator = await NinaSdk.Hub.hubAddCollaborator(
-        hub, 
+      const collaboratorAdded = await NinaSdk.Hub.hubAddCollaborator(
+        hubPubkey, 
         collaboratorPubkey, 
         canAddContent,
         canAddCollaborator,
         allowance = 1, 
         provider.wallet, 
-        provider.connection)
+        provider.connection
+        )
      
         await getHub(hubPubkey)
 
-      if (collaborator) { 
+      if (collaboratorAdded) { 
         return {
           success: true,
           msg: 'Collaborator Added to hub',
