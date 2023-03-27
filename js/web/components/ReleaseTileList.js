@@ -31,7 +31,7 @@ const ReleaseTileList = (props) => {
           }
 
           return (
-            <Link href={`/${release.releasePubkey}`}>
+            <Link href={`/${release.releasePubkey}`} key={i}>
               <a>
                 <Tile key={i}>
                   <HoverCard>
