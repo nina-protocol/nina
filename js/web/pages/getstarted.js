@@ -4,8 +4,8 @@ import Onboard from '../components/Onboard'
 const GetStartedPage = () => {
   return (
     <>
-    <Head>
-          <title>Nina Protocol - Get Started</title>
+      <Head>
+        <title>Nina Protocol - Get Started</title>
         <meta
           name="description"
           content={'Nina Protocol is a digitally native music ecosystem'}
@@ -34,10 +34,10 @@ const GetStartedPage = () => {
           name="og:image"
           href="https://ninaprotocol.com/images/nina-blue.png"
         />
-    </Head>
-    <>
-    <Onboard />
-    </>
+      </Head>
+      <>
+        <Onboard />
+      </>
     </>
   )
 }
