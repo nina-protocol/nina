@@ -4,27 +4,18 @@ import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Image from 'next/image'
 import { isMobile } from 'react-device-detect'
-import { useRouter } from 'next/router'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Button from '@mui/material/Button'
-
+import Link from 'next/link'
 const { getImageFromCDN, loader } = imageManager
 const ReleaseTileList = (props) => {
   const { releases } = props
   const { updateTrack, addTrackToQueue, isPlaying, setIsPlaying, track } =
     useContext(Audio.Context)
-
-  const router = useRouter()
-
-  const handleClick = (releasePubkey) => {
-    router.push({
-      pathname: `/${releasePubkey}`,
-    })
-  }
 
   return (
     <Box>
@@ -40,77 +31,75 @@ const ReleaseTileList = (props) => {
           }
 
           return (
-            <Tile key={i}>
-              <HoverCard
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleClick(release.releasePubkey)
-                }}
-              >
-                <CardCta
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleClick(release.releasePubkey)
-                  }}
-                >
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      if (
-                        isPlaying &&
-                        track.releasePubkey === release.releasePubkey
-                      ) {
-                        setIsPlaying(false)
-                      } else {
-                        updateTrack(release.releasePubkey, true, true)
-                      }
-                    }}
-                  >
-                    {isPlaying &&
-                    track.releasePubkey === release.releasePubkey ? (
-                      <PauseCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
-                    ) : (
-                      <PlayCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
-                    )}
-                  </Button>
+            <Link href={`/${release.releasePubkey}`}>
+              <a>
+                <Tile key={i}>
+                  <HoverCard>
+                    <CardCta>
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (
+                            isPlaying &&
+                            track.releasePubkey === release.releasePubkey
+                          ) {
+                            setIsPlaying(false)
+                          } else {
+                            updateTrack(release.releasePubkey, true, true)
+                          }
+                        }}
+                      >
+                        {isPlaying &&
+                        track.releasePubkey === release.releasePubkey ? (
+                          <PauseCircleOutlineOutlinedIcon
+                            sx={{ color: 'white' }}
+                          />
+                        ) : (
+                          <PlayCircleOutlineOutlinedIcon
+                            sx={{ color: 'white' }}
+                          />
+                        )}
+                      </Button>
 
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      addTrackToQueue(release.releasePubkey)
-                    }}
-                  >
-                    <ControlPointIcon sx={{ color: 'white' }} />
-                  </Button>
-                </CardCta>
-                {release.metadata.image && (
-                  <Image
-                    width={100}
-                    height={100}
-                    layout="responsive"
-                    containerStyles={{
-                      position: 'absolute',
-                      left: '0',
-                      top: '0',
-                      zIndex: '1',
-                    }}
-                    src={getImageFromCDN(
-                      release.metadata.image,
-                      400,
-                      new Date(release.tokenData.releaseDatetime)
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          addTrackToQueue(release.releasePubkey)
+                        }}
+                      >
+                        <ControlPointIcon sx={{ color: 'white' }} />
+                      </Button>
+                    </CardCta>
+                    {release.metadata.image && (
+                      <Image
+                        width={100}
+                        height={100}
+                        layout="responsive"
+                        containerStyles={{
+                          position: 'absolute',
+                          left: '0',
+                          top: '0',
+                          zIndex: '1',
+                        }}
+                        src={getImageFromCDN(
+                          release.metadata.image,
+                          400,
+                          new Date(release.tokenData.releaseDatetime)
+                        )}
+                        priority={!isMobile}
+                        loader={loader}
+                      />
                     )}
-                    priority={!isMobile}
-                    loader={loader}
-                  />
-                )}
-              </HoverCard>
-              <Box sx={{ padding: '10px 0 0' }}>
-                <ReleaseName>
-                  {release.metadata.properties.artist} -{' '}
-                  {release.metadata.properties.title}
-                </ReleaseName>
-              </Box>
-            </Tile>
+                  </HoverCard>
+                  <Box sx={{ padding: '10px 0 0' }}>
+                    <ReleaseName>
+                      {release.metadata.properties.artist} -{' '}
+                      {release.metadata.properties.title}
+                    </ReleaseName>
+                  </Box>
+                </Tile>
+              </a>
+            </Link>
           )
         })}
       </TileGrid>
