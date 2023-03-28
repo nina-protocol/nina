@@ -18,7 +18,7 @@ const ReleaseTileList = (props) => {
     useContext(Audio.Context)
 
   return (
-    <Box>
+    <TileBox>
       <TileGrid>
         {releases.map((release, i) => {
           if (
@@ -31,10 +31,10 @@ const ReleaseTileList = (props) => {
           }
 
           return (
-            <Link href={`/${release.releasePubkey}`} key={i}>
-              <a>
-                <Tile key={i}>
-                  <HoverCard>
+            <Tile key={i}>
+              <HoverCard>
+                <Link href={`/${release.releasePubkey}`} key={i}>
+                  <a>
                     <CardCta>
                       <Button
                         onClick={(e) => {
@@ -90,20 +90,20 @@ const ReleaseTileList = (props) => {
                         loader={loader}
                       />
                     )}
-                  </HoverCard>
-                  <Box sx={{ padding: '10px 0 0' }}>
-                    <ReleaseName>
-                      {release.metadata.properties.artist} -{' '}
-                      {release.metadata.properties.title}
-                    </ReleaseName>
-                  </Box>
-                </Tile>
-              </a>
-            </Link>
+                  </a>
+                </Link>
+              </HoverCard>
+              <Box sx={{ padding: '10px 0 0' }}>
+                <ReleaseName>
+                  {release.metadata.properties.artist} -{' '}
+                  {release.metadata.properties.title}
+                </ReleaseName>
+              </Box>
+            </Tile>
           )
         })}
       </TileGrid>
-    </Box>
+    </TileBox>
   )
 }
 
@@ -160,6 +160,12 @@ const CardCta = styled(Box)(({ theme }) => ({
 const ReleaseName = styled(Typography)(() => ({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
+}))
+
+const TileBox = styled(Box)(({ theme }) => ({
+  '& a': {
+    color: theme.palette.black,
+  },
 }))
 
 export default ReleaseTileList
