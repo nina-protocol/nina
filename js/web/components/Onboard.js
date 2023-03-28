@@ -15,17 +15,31 @@ import {
 } from '@solana/wallet-adapter-material-ui'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
-const Onboard = () => {
-  const { query } = useRouter()
-  const [code, setCode] = useState(query.code)
+import dynamic from 'next/dynamic'
+const EmailCapture = dynamic(
+  () => import('@nina-protocol/nina-internal-sdk/esm/EmailCapture'),
+  { ssr: false }
+)
+const Onboard = (query) => {
+  const onboardingCodeString = query?.code?.toString()
+  const [code, setCode] = useState(onboardingCodeString)
   const [invalidCode, setInvalidCode] = useState(false)
   const wallet = useWallet()
   const [claimedStatus, setClaimedStatus] = useState(false)
-  const [claimedCode, setClaimedCode] = useState(false)
+  const [claimedCodeSuccess, setClaimedCodeSuccess] = useState(false)
   const [headerCopy, setHeaderCopy] = useState(
     'Your wallet is not connected, please connect your wallet to continue.'
   )
   const { enqueueSnackbar } = useSnackbar()
+
+  useEffect(() => {
+    console.log('query.code', query.code)
+    console.log('code', code)
+    if (code) {
+      fetchClaimCode(code)
+    }
+  }, [])
+
   useEffect(() => {
     if (wallet.connected) {
       setHeaderCopy(
@@ -35,12 +49,28 @@ const Onboard = () => {
   }, [wallet.connected])
 
   useEffect(() => {
-    if (wallet.connected && claimedCode) {
+    if (wallet.connected && claimedCodeSuccess) {
       setHeaderCopy(
         'Code has been redeemed. You know have access to the Nina ecosystem. For next steps, we recommend you create a Hub and start releasing music.'
       )
     }
-  }, [wallet.connected, claimedCode])
+  }, [wallet.connected, claimedCodeSuccess])
+
+  const fetchClaimCode = async (code) => {
+    try {
+      const response = await axios.get(
+        `${process.env.NINA_IDENTITY_ENDPOINT}/onboardingCodes/${code}`
+      )
+      if (response.data) {
+        console.log('valid code')
+      }
+      return
+    } catch {
+      console.log('invalid code')
+      setCode(undefined)
+      setInvalidCode(true)
+    }
+  }
 
   const handleGenerateCode = async () => {
     const message = new TextEncoder().encode(wallet.publicKey.toBase58())
@@ -80,7 +110,7 @@ const Onboard = () => {
     if (response.data.success) {
       enqueueSnackbar('Code has been redeemed', { info: 'success' })
       setClaimedStatus(true)
-      setClaimedCode(true)
+      setClaimedCodeSuccess(true)
     }
   }
 
@@ -92,12 +122,31 @@ const Onboard = () => {
     <ScrollablePageWrapper>
       <StyledGrid>
         <GetStartedPageWrapper>
-          <Box mb={2}>
-            <Typography variant="h1" mb={1}>
-              {headerCopy}
-            </Typography>
-          </Box>
-          {!wallet.connected && (
+          {/* if code is valid or not then intro to nina */}
+          {code ? (
+            <Box mb={2}>
+              <Typography variant="h1" mb={1}>
+                {headerCopy}
+              </Typography>
+            </Box>
+          ) : (
+            <Box mb={2}>
+              <Typography variant="h1" mb={1}>
+                Welcome to Nina. You need an onboarding code to continue.
+              </Typography>
+              <Typography variant="h3" mb={1}>
+                If you feel as though you should have an onboarding code, please
+                contact us at{' '}
+                <a href="mailto:contact@ninaprotocol.com">
+                  contact@ninaprotocol.com
+                </a>
+              </Typography>
+              <EmailCapture size="getStarted" />
+            </Box>
+          )}
+
+          {/* if no wallet but code is valid  */}
+          {!wallet.connected && code && (
             <>
               <Box>
                 <WalletDialogButton variant="contained" type={'button'}>
@@ -115,14 +164,16 @@ const Onboard = () => {
               </Box>
             </>
           )}
-          {wallet.connected && !claimedCode && (
+          {/* if wallet is connected, code is valid and not claimed */}
+          {wallet.connected && code && !claimedCodeSuccess && (
             <>
               <ClaimCodeButton onClick={() => handleClaimCode(code)}>
                 Claim Code
               </ClaimCodeButton>
             </>
           )}
-          {wallet.connected && claimedCode && (
+          {/* if wallet is connected, code is valid and claimed */}
+          {wallet.connected && code && claimedCodeSuccess && (
             <>
               <Button
                 fullWidth
@@ -181,8 +232,8 @@ const Onboard = () => {
               </Box>
             </>
           )}
-
-          {/* <button onClick={() => handleGenerateCode()}>Generate Code</button>
+          {/* 
+          <button onClick={() => handleGenerateCode()}>Generate Code</button>
           <label for="code">OnboardingCode</label>
           <input
             type="text"
@@ -191,7 +242,10 @@ const Onboard = () => {
             value={code}
             onChange={(event) => setCode(event.target.value)}
           />
+          
           <button onClick={() => handleClaimCode(code)}>Claim</button> */}
+
+          {/* if code has already been claimed */}
           {wallet.connected && claimedStatus && (
             <Typography mt={1} mb={1}>
               This code has already been claimed. If you believe this is an
@@ -206,6 +260,8 @@ const Onboard = () => {
               .
             </Typography>
           )}
+
+          {/* if code is invalid */}
         </GetStartedPageWrapper>
       </StyledGrid>
     </ScrollablePageWrapper>

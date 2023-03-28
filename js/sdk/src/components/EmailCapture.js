@@ -166,6 +166,16 @@ const EmailCapture = ({ size }) => {
         </BlueTypography>
       )}
       {size === 'small' && <SmallCta onClick={handleOpen}>Sign Up</SmallCta>}
+      {size === 'getStarted' && (
+        <Box sx={{display: 'flex', flexDirection: 'row'}}>
+          <Typography variant="h3">
+            If this is your first time using Nina, you can{' '}
+          </Typography>
+          <BlueTypography variant="h3" onClick={handleOpen} ml={.5}>
+            Sign Up here.
+          </BlueTypography>
+        </Box>
+      )}
       <Modal
         open={open}
         onClose={handleClose}
