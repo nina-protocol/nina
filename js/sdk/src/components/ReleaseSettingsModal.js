@@ -13,6 +13,8 @@ import CloseIcon from '@mui/icons-material/Close'
 import CloseRelease from './CloseRelease'
 import ReleaseSettingsWelcome from './ReleaseSettingsWelcome'
 import ShareToTwitter from './ShareToTwitter'
+import ReleaseCode from './ReleaseCode'
+
 const ReleaseSettingsModal = ({
   releasePubkey,
   metadata,
@@ -73,6 +75,7 @@ const ReleaseSettingsModal = ({
             />
             {isAuthority && (
               <>
+                <ReleaseCode release={releasePubkey} />
                 <Gates
                   release={release}
                   metadata={metadata}

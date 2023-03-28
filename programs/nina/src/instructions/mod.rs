@@ -8,6 +8,7 @@ pub mod release_revenue_share_transfer;
 pub mod release_airdrop;
 pub mod release_update_metadata;
 pub mod release_close_edition;
+pub mod release_claim;
 
 pub mod redeemable_init;
 pub mod redeemable_update_config;
@@ -50,6 +51,7 @@ pub use release_revenue_share_transfer::*;
 pub use release_airdrop::*;
 pub use release_update_metadata::*;
 pub use release_close_edition::*;
+pub use release_claim::*;
 
 pub use redeemable_init::*;
 pub use redeemable_update_config::*;

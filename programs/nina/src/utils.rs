@@ -27,3 +27,13 @@ pub mod pressing_plant_account {
     use solana_program::declare_id;
     declare_id!("BZx8SmoadJtLJD7CHpSBLftPUCbwFeDEoGFEL8xveBHU");
 }
+
+pub mod dispatcher_account {
+    use solana_program::declare_id;
+    declare_id!("BnhxwsrY5aaeMehsTRoJzX2X4w5sKMhMfBs2MCKUqMC");
+}
+
+pub mod dispatch_account_test {
+    use solana_program::declare_id;
+    declare_id!("ninAhDNqCPxwAza2ZYVgjQDTC1cgF1PWaydibbfqhcn");
+}

@@ -1,4 +1,4 @@
-const anchor = require('@project-serum/anchor');
+const anchor = require('@coral-xyz/anchor');
 const { Token, TOKEN_PROGRAM_ID } = require("@solana/spl-token");
 const assert = require("assert");
 const encrypt = require('./utils/encrypt');
@@ -391,7 +391,6 @@ describe('Release', async () => {
         );
       },
       (err) => {
-        console.log('err', err);
         assert.ok(err.toString().includes('0x1'))
         return true;
       }
@@ -505,7 +504,6 @@ describe('Release', async () => {
           }
         );
       }, (err) => {
-        console.log('err', err.error);
         assert.equal(err.error.errorCode.number, 2003);
         assert.equal(err.error.errorMessage, "A raw constraint was violated");
         return true;
@@ -684,7 +682,6 @@ describe('Release', async () => {
         );
       },
       (err) => {
-        console.log('err', err);
         assert.equal(err.error.errorCode.number, 2003);
         assert.equal(err.error.errorMessage, "A raw constraint was violated");
         return true;
@@ -1068,6 +1065,124 @@ describe('Release', async () => {
       }
     );
   });
+
+  it('Will claim a release', async () => {
+
+    const releaseBefore = await nina.account.release.fetch(release);
+
+    const newUser = await newAccount(provider);
+    let [recipientReleaseTokenAccount, recipientReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      newUser.publicKey,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      releaseMint.publicKey,
+    );
+    
+    await nina.rpc.releaseClaim({
+      accounts: {
+        release,
+        releaseSigner,
+        payer: provider.wallet.publicKey,
+        recipient: newUser.publicKey,
+        recipientReleaseTokenAccount,
+        releaseMint: releaseMint.publicKey,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      },
+      instructions:[recipientReleaseTokenAccountIx],
+    })
+
+    const releaseAfter = await nina.account.release.fetch(release);
+    assert.ok(releaseAfter.remainingSupply.toNumber() === releaseBefore.remainingSupply.toNumber() - 1);
+
+    const recipientReleaseTokenAccountAfter = await getTokenAccount(
+      provider,
+      recipientReleaseTokenAccount,
+    );
+    assert.ok(recipientReleaseTokenAccountAfter.amount.toNumber() === 1)
+  });
+
+  it('Fails to claim a release twice airdrop a release', async () => {
+
+    const newUser = await newAccount(provider);
+    let [recipientReleaseTokenAccount, recipientReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      newUser.publicKey,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      releaseMint.publicKey,
+    );
+    
+    await nina.rpc.releaseClaim({
+      accounts: {
+        release,
+        releaseSigner,
+        payer: provider.wallet.publicKey,
+        recipient: newUser.publicKey,
+        recipientReleaseTokenAccount,
+        releaseMint: releaseMint.publicKey,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      },
+      instructions:[recipientReleaseTokenAccountIx],
+    })
+
+    await assert.rejects(
+      async () => {
+        await nina.rpc.releaseClaim({
+          accounts: {
+            release,
+            releaseSigner,
+            payer: provider.wallet.publicKey,
+            recipient: newUser.publicKey,
+            recipientReleaseTokenAccount,
+            releaseMint: releaseMint.publicKey,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          },
+        })
+      },
+      (err) => {
+        assert.equal(err.error.errorCode.number, 6034);
+        assert.equal(err.error.errorMessage, "ReleaseAlreadyOwned Cannot Claim Release Already Owned");
+        return true;
+      }
+    );
+  });
+
+  it('Fails to claim a release with wrong payer', async () => {
+
+    const newUser = await newAccount(provider);
+    let [recipientReleaseTokenAccount, recipientReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      newUser.publicKey,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      releaseMint.publicKey,
+    );
+
+    await assert.rejects(
+      async () => {
+        await nina.rpc.releaseClaim({
+          accounts: {
+            release,
+            releaseSigner,
+            payer: newUser.publicKey,
+            recipient: newUser.publicKey,
+            recipientReleaseTokenAccount,
+            releaseMint: releaseMint.publicKey,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          },
+          signers:[newUser],
+          instructions:[recipientReleaseTokenAccountIx],
+        })
+      },
+      (err) => {
+        assert.equal(err.error.errorCode.number, 2012);
+        assert.equal(err.error.errorMessage, "An address constraint was violated");
+        return true;
+      }
+    );
+  });
+
 
   it('Will not sell a release if sold out', async () => {
     const paymentMint = usdcMint;
@@ -2073,7 +2188,6 @@ describe("Exchange", async () => {
        
       },
       (err) => {
-        console.log('err', err)
         assert.equal(err.error.errorMessage, "A raw constraint was violated");
         return true;
       }
