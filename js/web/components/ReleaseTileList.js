@@ -165,6 +165,9 @@ const ReleaseName = styled(Typography)(() => ({
 const TileBox = styled(Box)(({ theme }) => ({
   '& a': {
     color: theme.palette.black,
+    '&:hover': {
+      opacity: '100%',
+    },
   },
 }))
 
