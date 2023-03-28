@@ -20,11 +20,13 @@ const EmailCapture = dynamic(
   () => import('@nina-protocol/nina-internal-sdk/esm/EmailCapture'),
   { ssr: false }
 )
-const Onboard = (query) => {
-  const onboardingCodeString = query?.code?.toString()
-  const [code, setCode] = useState(onboardingCodeString)
+const Onboard = () => {
+  const router = useRouter()
+  const { query } = router
+  const [code, setCode] = useState()
   const [invalidCode, setInvalidCode] = useState(false)
   const wallet = useWallet()
+  const [claimedError, setClaimedError] = useState(false)
   const [claimedStatus, setClaimedStatus] = useState(false)
   const [claimedCodeSuccess, setClaimedCodeSuccess] = useState(false)
   const [headerCopy, setHeaderCopy] = useState(
@@ -33,12 +35,13 @@ const Onboard = (query) => {
   const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
-    console.log('query.code', query.code)
-    console.log('code', code)
-    if (code) {
-      fetchClaimCode(code)
+    if (!router.isReady) return
+
+    const onboardingCodeString = query.code.toString()
+    if (onboardingCodeString) {
+      setCode(onboardingCodeString)
     }
-  }, [])
+  }, [router.isReady])
 
   useEffect(() => {
     if (wallet.connected) {
@@ -55,22 +58,6 @@ const Onboard = (query) => {
       )
     }
   }, [wallet.connected, claimedCodeSuccess])
-
-  const fetchClaimCode = async (code) => {
-    try {
-      const response = await axios.get(
-        `${process.env.NINA_IDENTITY_ENDPOINT}/onboardingCodes/${code}`
-      )
-      if (response.data) {
-        console.log('valid code')
-      }
-      return
-    } catch {
-      console.log('invalid code')
-      setCode(undefined)
-      setInvalidCode(true)
-    }
-  }
 
   const handleGenerateCode = async () => {
     const message = new TextEncoder().encode(wallet.publicKey.toBase58())
@@ -93,60 +80,42 @@ const Onboard = (query) => {
   }
 
   const handleClaimCode = async (code) => {
+    console.log('claiming code', code)
     const message = new TextEncoder().encode(wallet.publicKey.toBase58())
     const messageBase64 = encodeBase64(message)
     const signature = await wallet.signMessage(message)
     const signatureBase64 = encodeBase64(signature)
 
-    const response = await axios.post(
-      `${process.env.NINA_IDENTITY_ENDPOINT}/onboardingCodes/${code}`,
-      {
-        message: messageBase64,
-        signature: signatureBase64,
-        publicKey: wallet.publicKey.toBase58(),
+    try {
+      const response = await axios.post(
+        `${process.env.NINA_IDENTITY_ENDPOINT}/onboardingCodes/${code}`,
+        {
+          message: messageBase64,
+          signature: signatureBase64,
+          publicKey: wallet.publicKey.toBase58(),
+        }
+      )
+      console.log('response', response.data)
+      if (response.data.success) {
+        enqueueSnackbar('Code has been successfully redeemed', {
+          info: 'success',
+        })
+        setClaimedCodeSuccess(true)
       }
-    )
-
-    if (response.data.success) {
-      enqueueSnackbar('Code has been redeemed', { info: 'success' })
-      setClaimedStatus(true)
-      setClaimedCodeSuccess(true)
+      return
+    } catch (error) {
+      enqueueSnackbar('Code has already been redeemed or is invalid', {
+        info: 'error',
+      })
+      console.error(error)
+      setClaimedError(true)
     }
   }
-
-  // const handleConnectWallet = async () => {
-  //   wallet.connect()
-  // }
-
   return (
     <ScrollablePageWrapper>
       <StyledGrid>
         <GetStartedPageWrapper>
-          {/* if code is valid or not then intro to nina */}
-          {code ? (
-            <Box mb={2}>
-              <Typography variant="h1" mb={1}>
-                {headerCopy}
-              </Typography>
-            </Box>
-          ) : (
-            <Box mb={2}>
-              <Typography variant="h1" mb={1}>
-                Welcome to Nina. You need an onboarding code to continue.
-              </Typography>
-              <Typography variant="h3" mb={1}>
-                If you feel as though you should have an onboarding code, please
-                contact us at{' '}
-                <a href="mailto:contact@ninaprotocol.com">
-                  contact@ninaprotocol.com
-                </a>
-              </Typography>
-              <EmailCapture size="getStarted" />
-            </Box>
-          )}
-
-          {/* if no wallet but code is valid  */}
-          {!wallet.connected && code && (
+          {!wallet.connected && (
             <>
               <Box>
                 <WalletDialogButton variant="contained" type={'button'}>
@@ -164,16 +133,22 @@ const Onboard = (query) => {
               </Box>
             </>
           )}
-          {/* if wallet is connected, code is valid and not claimed */}
-          {wallet.connected && code && !claimedCodeSuccess && (
+
+          {wallet.connected && (
             <>
+              <Box mb={2}>
+                <Typography variant="h1" mb={1}>
+                  {headerCopy}
+                </Typography>
+              </Box>
+
               <ClaimCodeButton onClick={() => handleClaimCode(code)}>
                 Claim Code
               </ClaimCodeButton>
             </>
           )}
-          {/* if wallet is connected, code is valid and claimed */}
-          {wallet.connected && code && claimedCodeSuccess && (
+
+          {wallet.connected && claimedCodeSuccess && (
             <>
               <Button
                 fullWidth
@@ -188,6 +163,7 @@ const Onboard = (query) => {
                   </a>
                 </Link>
               </Button>
+
               <Button
                 fullWidth
                 variant="outlined"
@@ -196,20 +172,7 @@ const Onboard = (query) => {
                 <Link href="/hubs/create" passHref>
                   <a>
                     <Typography variant="body2" align="left">
-                      Create a Hub
-                    </Typography>
-                  </a>
-                </Link>
-              </Button>
-              <Button
-                fullWidth
-                variant="outlined"
-                sx={{ height: '54px', mt: 1, '&:hover': { opacity: '50%' } }}
-              >
-                <Link href="/hubs/create" passHref>
-                  <a>
-                    <Typography variant="body2" align="left">
-                      Create a Hub
+                      Start Exploring
                     </Typography>
                   </a>
                 </Link>
@@ -232,7 +195,7 @@ const Onboard = (query) => {
               </Box>
             </>
           )}
-          {/* 
+
           <button onClick={() => handleGenerateCode()}>Generate Code</button>
           <label for="code">OnboardingCode</label>
           <input
@@ -242,26 +205,8 @@ const Onboard = (query) => {
             value={code}
             onChange={(event) => setCode(event.target.value)}
           />
-          
-          <button onClick={() => handleClaimCode(code)}>Claim</button> */}
 
-          {/* if code has already been claimed */}
-          {wallet.connected && claimedStatus && (
-            <Typography mt={1} mb={1}>
-              This code has already been claimed. If you believe this is an
-              error, please contact us at{' '}
-              <a
-                href="mailto:contact@ninaprotocol.com"
-                target="_blank"
-                rel="noreferrer"
-              >
-                contact@ninaprotocol.com
-              </a>
-              .
-            </Typography>
-          )}
-
-          {/* if code is invalid */}
+          <button onClick={() => handleClaimCode(code)}>Claim</button>
         </GetStartedPageWrapper>
       </StyledGrid>
     </ScrollablePageWrapper>

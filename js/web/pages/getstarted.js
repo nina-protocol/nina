@@ -3,7 +3,6 @@ import Head from 'next/head'
 import Onboard from '../components/Onboard'
 import { useRouter } from 'next/router'
 const GetStartedPage = () => {
-  const { query } = useRouter()
   return (
     <>
       <Head>
@@ -38,7 +37,7 @@ const GetStartedPage = () => {
         />
       </Head>
       <>
-        <Onboard query={query} />
+        <Onboard />
       </>
     </>
   )
