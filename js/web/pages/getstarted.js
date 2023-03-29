@@ -1,7 +1,6 @@
 import React from 'react'
 import Head from 'next/head'
 import Onboard from '../components/Onboard'
-import { useRouter } from 'next/router'
 const GetStartedPage = () => {
   return (
     <>

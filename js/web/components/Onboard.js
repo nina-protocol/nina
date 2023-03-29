@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useCallback } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import axios from 'axios'
 import { encodeBase64 } from 'tweetnacl-util'
@@ -9,19 +9,21 @@ import Box from '@mui/system/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
-import {
-  WalletDialogButton,
-  useWalletDialog,
-} from '@solana/wallet-adapter-material-ui'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import dynamic from 'next/dynamic'
+import {
+  WalletDialogButton,
+  WalletDialogProvider,
+} from '@solana/wallet-adapter-material-ui'
+
 const EmailCapture = dynamic(
   () => import('@nina-protocol/nina-internal-sdk/esm/EmailCapture'),
   { ssr: false }
 )
 const Onboard = () => {
   const router = useRouter()
+  // console.log(useWalletDialog())
   const { query } = router
   const [code, setCode] = useState()
   const [invalidCode, setInvalidCode] = useState(false)
@@ -36,10 +38,11 @@ const Onboard = () => {
 
   useEffect(() => {
     if (!router.isReady) return
-
-    const onboardingCodeString = query.code.toString()
-    if (onboardingCodeString) {
-      setCode(onboardingCodeString)
+    if (router.isReady && query.code) {
+      const onboardingCodeString = query.code.toString()
+      if (onboardingCodeString) {
+        setCode(onboardingCodeString)
+      }
     }
   }, [router.isReady])
 
@@ -54,7 +57,7 @@ const Onboard = () => {
   useEffect(() => {
     if (wallet.connected && claimedCodeSuccess) {
       setHeaderCopy(
-        'Code has been redeemed. You know have access to the Nina ecosystem. For next steps, we recommend you create a Hub and start releasing music.'
+        'Code has been redeemed. You now have access to the Nina ecosystem. For next steps, we recommend you create a Hub and start releasing music.'
       )
     }
   }, [wallet.connected, claimedCodeSuccess])
@@ -80,7 +83,6 @@ const Onboard = () => {
   }
 
   const handleClaimCode = async (code) => {
-    console.log('claiming code', code)
     const message = new TextEncoder().encode(wallet.publicKey.toBase58())
     const messageBase64 = encodeBase64(message)
     const signature = await wallet.signMessage(message)
@@ -100,53 +102,95 @@ const Onboard = () => {
         enqueueSnackbar('Code has been successfully redeemed', {
           info: 'success',
         })
+        setClaimedError(false)
         setClaimedCodeSuccess(true)
       }
       return
     } catch (error) {
       enqueueSnackbar('Code has already been redeemed or is invalid', {
-        info: 'error',
+        variant: 'error',
       })
       console.error(error)
       setClaimedError(true)
     }
   }
+
+  // const handleClaimCode = async (code) => {
+  //   const message = new TextEncoder().encode(wallet.publicKey.toBase58())
+  //   const messageBase64 = encodeBase64(message)
+  //   const signature = await wallet.signMessage(message)
+  //   const signatureBase64 = encodeBase64(signature)
+
+  //   const response = await axios.post(
+  //     `${process.env.NINA_IDENTITY_ENDPOINT}/onboardingCodes/${code}`,
+  //     {
+  //       message: messageBase64,
+  //       signature: signatureBase64,
+  //       publicKey: wallet.publicKey.toBase58(),
+  //     }
+  //   )
+
+  //   if (response.data.success) {
+  //     console.log('success')
+  //     setClaimedStatus(true)
+  //   }
+  // }
+
+  //  const handleClick: = useCallback(
+  //    (event) => {
+  //      if (onClick) onClick(event)
+  //      if (!event.defaultPrevented) setOpen(true)
+  //    },
+  //    [onClick, setOpen]
+  //  )
+
+  //  const handleWalletConnect = useCallback((e) => {
+  //   if (!e.defaultPrevented) setOpen(true)
+  //  }, [setOpen])
   return (
     <ScrollablePageWrapper>
       <StyledGrid>
         <GetStartedPageWrapper>
-          {!wallet.connected && (
-            <>
-              <Box>
-                <WalletDialogButton variant="contained" type={'button'}>
-                  Connect Wallet
-                </WalletDialogButton>
-
-                <Typography variant="h3" mb={1}>
-                  or
-                </Typography>
-                <Link href="https://phantom.app">
-                  <a target="_blank">
-                    <Typography variant="h3">Create a wallet</Typography>
-                  </a>
-                </Link>
-              </Box>
-            </>
-          )}
-
-          {wallet.connected && (
-            <>
-              <Box mb={2}>
-                <Typography variant="h1" mb={1}>
-                  {headerCopy}
-                </Typography>
-              </Box>
-
+          <>
+            <Box mb={2}>
+              <Typography variant="h1" mb={1}>
+                {headerCopy}
+              </Typography>
+              {!wallet.connected && (
+                <>
+                  <Box>
+                    <Typography
+                      variant="h3"
+                      sx={{ display: 'flex', flexDirection: 'row' }}
+                    >
+                      {/* <BlueTypography variant="h3" onClick={(e) => handleWalletConnect(e)}>Connect your wallet</BlueTypography> */}
+                      <StyledWalletDialogProvider>
+                        <WalletDialogButton>
+                          <BlueTypography variant="h3">
+                            Connect Your Wallet
+                          </BlueTypography>
+                        </WalletDialogButton>
+                      </StyledWalletDialogProvider>
+                      or
+                      <Link href="https://phantom.app">
+                        <a target="_blank">
+                          <Typography variant="h3" sx={{ margin: '0px 8px' }}>
+                            create a wallet
+                          </Typography>
+                        </a>
+                      </Link>
+                      to get started.
+                    </Typography>
+                  </Box>
+                </>
+              )}
+            </Box>
+            {wallet.connected && (
               <ClaimCodeButton onClick={() => handleClaimCode(code)}>
                 Claim Code
               </ClaimCodeButton>
-            </>
-          )}
+            )}
+          </>
 
           {wallet.connected && claimedCodeSuccess && (
             <>
@@ -207,6 +251,20 @@ const Onboard = () => {
           />
 
           <button onClick={() => handleClaimCode(code)}>Claim</button>
+          {wallet.connected && claimedError && (
+            <Typography mt={1} mb={1}>
+              This code has already been claimed or is invalid. If you believe
+              this is an error, please contact us at{' '}
+              <a
+                href="mailto:contact@ninaprotocol.com"
+                target="_blank"
+                rel="noreferrer"
+              >
+                contact@ninaprotocol.com
+              </a>
+              .
+            </Typography>
+          )}
         </GetStartedPageWrapper>
       </StyledGrid>
     </ScrollablePageWrapper>
@@ -248,5 +306,79 @@ const ClaimCodeButton = styled(Button)(({ theme }) => ({
   padding: '16px 20px',
   color: theme.palette.blue,
 }))
+
+const BlueTypography = styled(Typography)(({ theme }) => ({
+  color: `${theme.palette.blue} !important`,
+  marginRight: '8px',
+  cursor: 'pointer',
+  '&:hover': {
+    opacity: '85%',
+  },
+}))
+
+const StyledWalletDialogProvider = styled(WalletDialogProvider)(
+  ({ theme }) => ({
+    '& .MuiList-root': {
+      background: `${theme.palette.transparent} !important`,
+    },
+    '& .MuiButton-root': {
+      backgroundColor: `${theme.palette.white}`,
+    },
+    '& .MuiButton-startIcon': {
+      display: 'none',
+    },
+    '& .MuiPaper-root': {
+      width: '400px',
+      height: 'auto',
+      ...theme.helpers.gradient,
+      '& .MuiDialogTitle-root': {
+        color: `${theme.palette.white} !important`,
+        textAlign: 'center',
+        padding: '60px 0 0',
+        textTransform: 'uppercase',
+        margin: 'auto',
+        background: 'none !important',
+        fontSize: '16px !important',
+        fontWeight: '700 !important',
+        '& h2': {
+          backgroundColor: `${theme.palette.white} !important`,
+        },
+        '& .MuiButtonBase-root': {
+          display: 'none',
+        },
+      },
+      '& .MuiDialogContent-root': {
+        padding: '24px',
+      },
+      '& .MuiListItem-root': {
+        padding: `8px 24px`,
+        boxShadow: 'none',
+        width: '241px',
+        margin: 'auto',
+        '&:hover': {
+          boxShadow: 'none',
+        },
+        '& .MuiButton-root': {
+          textAlign: 'center',
+          borderRadius: '50px',
+          color: `${theme.palette.blue}`,
+          fontSize: '10px',
+          fontWeight: '700',
+          justifyContent: 'center',
+          textTransform: 'uppercase',
+          padding: '6px 0',
+          '&:hover': {
+            opacity: '1',
+            backgroundColor: `${theme.palette.blue} !important`,
+            color: `${theme.palette.white}`,
+          },
+          '& .MuiButton-endIcon': {
+            display: 'none',
+          },
+        },
+      },
+    },
+  })
+)
 
 export default Onboard

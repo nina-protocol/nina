@@ -80,8 +80,7 @@ const WalletButton = ({
         variant={variant}
         type={type}
         onClick={(event) => 
-        {  console.log('event.currentTarget: ', event.currentTarget)
-          setAnchor(event.currentTarget)}}
+        { setAnchor(event.currentTarget)}}
         aria-controls="wallet-menu"
         aria-haspopup="true"
         {...props}
