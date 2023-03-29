@@ -28,6 +28,7 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import { encodeBase64 } from 'tweetnacl-util'
 
 const ReleasePurchase = (props) => {
   const {
@@ -62,6 +63,7 @@ const ReleasePurchase = (props) => {
     getExchangesForRelease,
   } = useContext(Exchange.Context)
   const [release, setRelease] = useState(undefined)
+  const [code, setCode] = useState()
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
   const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
@@ -214,6 +216,33 @@ const ReleasePurchase = (props) => {
     pathString = '/collection'
   }
 
+  const handleCodeSubmit = async (e) => {
+    e.preventDefault()
+    if (wallet?.connected) {
+      const message = new TextEncoder().encode(releasePubkey)
+      const messageBase64 = encodeBase64(message)
+      const signature = await wallet.signMessage(message)
+      const signatureBase64 = encodeBase64(signature)
+
+      const result = await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes/${code}/claim`, {
+        publicKey: wallet?.publicKey?.toBase58(),
+        message: messageBase64,
+        signature: signatureBase64,
+        releasePublicKey: releasePubkey,
+      })
+
+      if (result.data.success) {
+        await getRelease(releasePubkey)
+        enqueueSnackbar('Code claimed successfully', {
+          variant: 'success',
+        })
+        setCode('')
+      }
+    }
+  }
+
+
+
   return (
     <Box sx={{ position: 'relative', height: '100%' }}>
       <Box>
@@ -310,6 +339,12 @@ const ReleasePurchase = (props) => {
         }}
       >
         <Box sx={{ mb: 1, mt: 1 }}>
+          <input type="text" name="code" value={code} onChange={(e) => setCode(e.target.value)} />
+          <Button variant="outlined" fullWidth onClick={(e) => handleCodeSubmit(e)}>
+            <Typography variant="body2">
+              Redeem Release Code
+            </Typography>
+          </Button>
           <form onSubmit={handleSubmit}>
             <Button
               variant="outlined"

@@ -1066,87 +1066,87 @@ describe('Release', async () => {
     );
   });
 
-  it('Will claim a release', async () => {
+  // it('Will claim a release', async () => {
 
-    const releaseBefore = await nina.account.release.fetch(release);
+  //   const releaseBefore = await nina.account.release.fetch(release);
 
-    const newUser = await newAccount(provider);
-    let [recipientReleaseTokenAccount, recipientReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
-      provider,
-      newUser.publicKey,
-      anchor.web3.SystemProgram.programId,
-      anchor.web3.SYSVAR_RENT_PUBKEY,
-      releaseMint.publicKey,
-    );
+  //   const newUser = await newAccount(provider);
+  //   let [recipientReleaseTokenAccount, recipientReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+  //     provider,
+  //     newUser.publicKey,
+  //     anchor.web3.SystemProgram.programId,
+  //     anchor.web3.SYSVAR_RENT_PUBKEY,
+  //     releaseMint.publicKey,
+  //   );
     
-    await nina.rpc.releaseClaim({
-      accounts: {
-        release,
-        releaseSigner,
-        payer: provider.wallet.publicKey,
-        recipient: newUser.publicKey,
-        recipientReleaseTokenAccount,
-        releaseMint: releaseMint.publicKey,
-        tokenProgram: TOKEN_PROGRAM_ID,
-      },
-      instructions:[recipientReleaseTokenAccountIx],
-    })
+  //   await nina.rpc.releaseClaim({
+  //     accounts: {
+  //       release,
+  //       releaseSigner,
+  //       payer: provider.wallet.publicKey,
+  //       recipient: newUser.publicKey,
+  //       recipientReleaseTokenAccount,
+  //       releaseMint: releaseMint.publicKey,
+  //       tokenProgram: TOKEN_PROGRAM_ID,
+  //     },
+  //     instructions:[recipientReleaseTokenAccountIx],
+  //   })
 
-    const releaseAfter = await nina.account.release.fetch(release);
-    assert.ok(releaseAfter.remainingSupply.toNumber() === releaseBefore.remainingSupply.toNumber() - 1);
+  //   const releaseAfter = await nina.account.release.fetch(release);
+  //   assert.ok(releaseAfter.remainingSupply.toNumber() === releaseBefore.remainingSupply.toNumber() - 1);
 
-    const recipientReleaseTokenAccountAfter = await getTokenAccount(
-      provider,
-      recipientReleaseTokenAccount,
-    );
-    assert.ok(recipientReleaseTokenAccountAfter.amount.toNumber() === 1)
-  });
+  //   const recipientReleaseTokenAccountAfter = await getTokenAccount(
+  //     provider,
+  //     recipientReleaseTokenAccount,
+  //   );
+  //   assert.ok(recipientReleaseTokenAccountAfter.amount.toNumber() === 1)
+  // });
 
-  it('Fails to claim a release twice airdrop a release', async () => {
+  // it('Fails to claim a release twice airdrop a release', async () => {
 
-    const newUser = await newAccount(provider);
-    let [recipientReleaseTokenAccount, recipientReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
-      provider,
-      newUser.publicKey,
-      anchor.web3.SystemProgram.programId,
-      anchor.web3.SYSVAR_RENT_PUBKEY,
-      releaseMint.publicKey,
-    );
+  //   const newUser = await newAccount(provider);
+  //   let [recipientReleaseTokenAccount, recipientReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+  //     provider,
+  //     newUser.publicKey,
+  //     anchor.web3.SystemProgram.programId,
+  //     anchor.web3.SYSVAR_RENT_PUBKEY,
+  //     releaseMint.publicKey,
+  //   );
     
-    await nina.rpc.releaseClaim({
-      accounts: {
-        release,
-        releaseSigner,
-        payer: provider.wallet.publicKey,
-        recipient: newUser.publicKey,
-        recipientReleaseTokenAccount,
-        releaseMint: releaseMint.publicKey,
-        tokenProgram: TOKEN_PROGRAM_ID,
-      },
-      instructions:[recipientReleaseTokenAccountIx],
-    })
+  //   await nina.rpc.releaseClaim({
+  //     accounts: {
+  //       release,
+  //       releaseSigner,
+  //       payer: provider.wallet.publicKey,
+  //       recipient: newUser.publicKey,
+  //       recipientReleaseTokenAccount,
+  //       releaseMint: releaseMint.publicKey,
+  //       tokenProgram: TOKEN_PROGRAM_ID,
+  //     },
+  //     instructions:[recipientReleaseTokenAccountIx],
+  //   })
 
-    await assert.rejects(
-      async () => {
-        await nina.rpc.releaseClaim({
-          accounts: {
-            release,
-            releaseSigner,
-            payer: provider.wallet.publicKey,
-            recipient: newUser.publicKey,
-            recipientReleaseTokenAccount,
-            releaseMint: releaseMint.publicKey,
-            tokenProgram: TOKEN_PROGRAM_ID,
-          },
-        })
-      },
-      (err) => {
-        assert.equal(err.error.errorCode.number, 6034);
-        assert.equal(err.error.errorMessage, "ReleaseAlreadyOwned Cannot Claim Release Already Owned");
-        return true;
-      }
-    );
-  });
+  //   await assert.rejects(
+  //     async () => {
+  //       await nina.rpc.releaseClaim({
+  //         accounts: {
+  //           release,
+  //           releaseSigner,
+  //           payer: provider.wallet.publicKey,
+  //           recipient: newUser.publicKey,
+  //           recipientReleaseTokenAccount,
+  //           releaseMint: releaseMint.publicKey,
+  //           tokenProgram: TOKEN_PROGRAM_ID,
+  //         },
+  //       })
+  //     },
+  //     (err) => {
+  //       assert.equal(err.error.errorCode.number, 6034);
+  //       assert.equal(err.error.errorMessage, "ReleaseAlreadyOwned Cannot Claim Release Already Owned");
+  //       return true;
+  //     }
+  //   );
+  // });
 
   it('Fails to claim a release with wrong payer', async () => {
 

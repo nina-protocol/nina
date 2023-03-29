@@ -3,20 +3,15 @@ use anchor_lang::solana_program::{
     program_option::{COption},
 };
 use anchor_spl::token::{self, TokenAccount, MintTo, Token, Mint};
-use crate::utils::{dispatcher_account, dispatch_account_test};
+use crate::utils::{dispatcher_account};
 
 use crate::state::*;
 use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
 pub struct ReleaseClaim<'info> {
-    #[cfg_attr(
-        not(feature = "test"),
-        account(address = dispatcher_account::ID),
-    )]
-    #[cfg_attr(
-        feature = "test",
-        account(address = dispatch_account_test::ID),
+    #[account(
+        address = dispatcher_account::ID,
     )]
     pub payer: Signer<'info>,
     #[account(
