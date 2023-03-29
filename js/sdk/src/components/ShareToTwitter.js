@@ -9,7 +9,7 @@ const ShareToTwitter = (props) => {
       variant="outlined"
       onClick={() =>
         window.open(
-          `https://twitter.com/intent/tweet?text=${`${artist} - "${title}" on Nina`}&url=ninaprotocol.com/${releasePubkey}`,
+          `https://twitter.com/intent/tweet?text=${`${artist} - "${title}" on @ninaprotocol`}&url=ninaprotocol.com/${releasePubkey}`,
           null,
           'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
         )
