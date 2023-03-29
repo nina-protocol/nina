@@ -241,7 +241,7 @@ const StyledModal = styled(Modal)(() => ({
 }))
 
 const GateWrapper = styled(Box)(() => ({
-  maxHeight: '400px',
+  maxHeight: '300px',
   overflowY: 'auto',
 }))
 
