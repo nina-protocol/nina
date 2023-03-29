@@ -205,9 +205,20 @@ const GateManageModal = ({
                         <ListItemButton disableGutters>
                           <ListItemText
                             primary={
-                              <StyledTypography>
-                                {gate.fileName} ({`${fileSize} mb`})
-                              </StyledTypography>
+                              <>
+                                <StyledTypography
+                                  sx={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                  }}
+                                >
+                                  {gate.fileName}
+                                </StyledTypography>
+                                <StyledTypography>
+                                  ({`${fileSize} mb`})
+                                </StyledTypography>
+                              </>
                             }
                           />
                         </ListItemButton>
@@ -241,7 +252,7 @@ const StyledModal = styled(Modal)(() => ({
 }))
 
 const GateWrapper = styled(Box)(() => ({
-  maxHeight: '400px',
+  maxHeight: '325px',
   overflowY: 'auto',
 }))
 
