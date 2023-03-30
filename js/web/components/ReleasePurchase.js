@@ -218,30 +218,31 @@ const ReleasePurchase = (props) => {
 
   const handleCodeSubmit = async (e) => {
     e.preventDefault()
-    if (wallet?.connected) {
-      const message = new TextEncoder().encode(releasePubkey)
-      const messageBase64 = encodeBase64(message)
-      const signature = await wallet.signMessage(message)
-      const signatureBase64 = encodeBase64(signature)
-
-      const result = await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes/${code}/claim`, {
-        publicKey: wallet?.publicKey?.toBase58(),
-        message: messageBase64,
-        signature: signatureBase64,
-        releasePublicKey: releasePubkey,
-      })
-
-      if (result.data.success) {
+    try {
+      if (wallet?.connected) {
+        const message = new TextEncoder().encode(releasePubkey)
+        const messageBase64 = encodeBase64(message)
+        const signature = await wallet.signMessage(message)
+        const signatureBase64 = encodeBase64(signature)
+  
+        await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes/${code}/claim`, {
+          publicKey: wallet?.publicKey?.toBase58(),
+          message: messageBase64,
+          signature: signatureBase64,
+          releasePublicKey: releasePubkey,
+        })
         await getRelease(releasePubkey)
         enqueueSnackbar('Code claimed successfully', {
           variant: 'success',
         })
         setCode('')
       }
+    } catch (error) {
+      enqueueSnackbar(error.response.data.error, {
+        variant: 'error',
+      })
     }
   }
-
-
 
   return (
     <Box sx={{ position: 'relative', height: '100%' }}>
