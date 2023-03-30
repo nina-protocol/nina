@@ -8,7 +8,7 @@ import GateCreateModal from './GateCreateModal'
 import GateUnlockModal from './GateUnlockModal'
 import GateManageModal from './GateManageModal'
 import { logEvent } from '../utils/event'
-
+import { truncateString } from '../utils/truncateAddress'
 import { useWallet } from '@solana/wallet-adapter-react'
 
 const Gates = ({
@@ -76,7 +76,7 @@ const Gates = ({
         a.href = url
         a.download = gate.fileName
         a.click()
-        enqueueSnackbar(`${gate.fileName} Downloaded`, {
+        enqueueSnackbar(`${truncateString(gate.fileName)} Downloaded`, {
           variant: 'info',
         })
       }
