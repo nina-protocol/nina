@@ -269,35 +269,9 @@ const ninaContextHelper = ({
         }
       )
 
-      const program = await ninaClient.useProgram()
-      subscribeToAccount = new anchor.web3.PublicKey(subscribeToAccount)
-      const [subscription] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-subscription')),
-          provider.wallet.publicKey.toBuffer(),
-          subscribeToAccount.toBuffer(),
-        ],
-        program.programId
-      )
-
-      const request = {
-        accounts: {
-          from: provider.wallet.publicKey,
-          subscription,
-          to: subscribeToAccount,
-          systemProgram: anchor.web3.SystemProgram.programId,
-        },
-      }
-
-      let txid
-      if (hubHandle) {
-        txid = await program.rpc.subscriptionSubscribeHub(hubHandle, request)
-      } else {
-        txid = await program.rpc.subscriptionSubscribeAccount(request)
-      }
-
-      await getConfirmTransaction(txid, provider.connection)
-      await getSubscription(subscription.toBase58())
+      const {subscription} = await NinaSdk.Subscription.subscriptionSubscribe(subscribeToAccount, hubHandle, provider.wallet, provider.connection)
+      await getSubscription(subscription.publicKey)
+     
       logEvent(
         `subscription_subscribe_${hubHandle ? 'hub' : 'account'}_success`,
         'engagement',
@@ -330,32 +304,14 @@ const ninaContextHelper = ({
 
   const subscriptionUnsubscribe = async (unsubscribeAccount, hubHandle) => {
     try {
-      const program = await ninaClient.useProgram()
-      unsubscribeAccount = new anchor.web3.PublicKey(unsubscribeAccount)
-      const [subscription] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-subscription')),
-          provider.wallet.publicKey.toBuffer(),
-          unsubscribeAccount.toBuffer(),
-        ],
-        program.programId
-      )
-      const txid = await program.rpc.subscriptionUnsubscribe({
-        accounts: {
-          from: provider.wallet.publicKey,
-          subscription,
-          to: unsubscribeAccount,
-          systemProgram: anchor.web3.SystemProgram.programId,
-        },
-      })
-      await getConfirmTransaction(txid, provider.connection)
-      await getSubscription(subscription.toBase58(), txid)
+      const {subscription} = await NinaSdk.Subscription.subscriptionUnsubscribe(unsubscribeAccount, provider.wallet, provider.connection)
+      
       if (hubHandle) {
         await getSubscriptionsForHub(hubHandle)
       } else {
         await getSubscriptionsForUser(provider.wallet.publicKey.toBase58())
       }
-      removeSubScriptionFromState(subscription.toBase58())
+      removeSubScriptionFromState(subscription.publicKey)
 
       return {
         success: true,

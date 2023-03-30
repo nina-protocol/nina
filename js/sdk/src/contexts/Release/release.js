@@ -313,178 +313,25 @@ const releaseContextHelper = ({
     isOpen,
   }) => {
     try {
-      const program = await ninaClient.useProgram()
-      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
-      const hub = await program.account.hub.fetch(hubPubkey)
-      const paymentMint = new anchor.web3.PublicKey(
-        isUsdc ? ids.mints.usdc : ids.mints.wsol
+     const newRelease = await NinaSdk.Release.releaseInitViaHub(
+        hubPubkey,
+        retailPrice,
+        amount,
+        resalePercentage,
+        isUsdc,
+        metadataUri,
+        artist,
+        title,
+        catalogNumber,
+        release,
+        releaseBump,
+        releaseMint,   
+        isOpen,
+        provider.wallet,
+        provider.connection
       )
-      const [releaseSigner, releaseSignerBump] =
-        await anchor.web3.PublicKey.findProgramAddress(
-          [release.toBuffer()],
-          program.programId
-        )
-      const releaseMintIx = await createMintInstructions(
-        provider,
-        provider.wallet.publicKey,
-        releaseMint.publicKey,
-        0
-      )
-      const [authorityTokenAccount, authorityTokenAccountIx] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          provider.wallet.publicKey,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          paymentMint
-        )
-
-      const [royaltyTokenAccount, royaltyTokenAccountIx] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          releaseSigner,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          paymentMint,
-          true
-        )
-
-      const [hubCollaborator] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-collaborator')),
-          hubPubkey.toBuffer(),
-          provider.wallet.publicKey.toBuffer(),
-        ],
-        program.programId
-      )
-
-      const [hubSigner] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-signer')),
-          hubPubkey.toBuffer(),
-        ],
-        program.programId
-      )
-
-      const [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
-          hubPubkey.toBuffer(),
-          release.toBuffer(),
-        ],
-        program.programId
-      )
-
-      const [hubContent] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-content')),
-          hubPubkey.toBuffer(),
-          release.toBuffer(),
-        ],
-        program.programId
-      )
-
-      let [hubWallet] = await findOrCreateAssociatedTokenAccount(
-        provider.connection,
-        provider.wallet.publicKey,
-        hubSigner,
-        anchor.web3.SystemProgram.programId,
-        anchor.web3.SYSVAR_RENT_PUBKEY,
-        paymentMint
-      )
-
-      let instructions = [...releaseMintIx, royaltyTokenAccountIx]
-
-      if (authorityTokenAccountIx) {
-        instructions.push(authorityTokenAccountIx)
-      }
-
-      const editionAmount = isOpen ? MAX_INT : amount
-      const config = {
-        amountTotalSupply: new anchor.BN(editionAmount),
-        amountToArtistTokenAccount: new anchor.BN(0),
-        amountToVaultTokenAccount: new anchor.BN(0),
-        resalePercentage: new anchor.BN(resalePercentage * 10000),
-        price: new anchor.BN(uiToNative(retailPrice, paymentMint)),
-        releaseDatetime: new anchor.BN(Date.now() / 1000),
-      }
-      const bumps = {
-        release: releaseBump,
-        signer: releaseSignerBump,
-      }
-
-      const metadataProgram = new anchor.web3.PublicKey(ids.programs.metaplex)
-      const [metadata] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from('metadata'),
-          metadataProgram.toBuffer(),
-          releaseMint.publicKey.toBuffer(),
-        ],
-        metadataProgram
-      )
-
-      const nameBuf = Buffer.from(`${artist} - ${title}`.substring(0, 32))
-      const nameBufString = nameBuf.slice(0, 32).toString()
-
-      const symbolBuf = Buffer.from(catalogNumber.substring(0, 10))
-      const symbolBufString = symbolBuf.slice(0, 10).toString()
-
-      const metadataData = {
-        name: nameBufString,
-        symbol: symbolBufString,
-        uri: metadataUri,
-        sellerFeeBasisPoints: resalePercentage * 100,
-      }
-      logEvent('release_init_via_hub_initiated', 'engagement', {
-        publicKey: release.toBase58(),
-        wallet: provider.wallet.publicKey.toBase58(),
-      })
-
-      const txid = await program.rpc.releaseInitViaHub(
-        config,
-        bumps,
-        metadataData,
-        decodeNonEncryptedByteArray(hub.handle),
-        {
-          accounts: {
-            authority: provider.wallet.publicKey,
-            release,
-            releaseSigner,
-            hubCollaborator,
-            hub: hubPubkey,
-            hubRelease,
-            hubContent,
-            hubSigner,
-            hubWallet,
-            releaseMint: releaseMint.publicKey,
-            authorityTokenAccount,
-            paymentMint,
-            royaltyTokenAccount,
-            tokenProgram: new anchor.web3.PublicKey(ids.programs.token),
-            metadata,
-            metadataProgram,
-            systemProgram: anchor.web3.SystemProgram.programId,
-            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-          },
-          signers: [releaseMint],
-          instructions,
-        }
-      )
-
-      await getConfirmTransaction(txid, provider.connection)
-      await NinaSdk.Hub.fetchHubRelease(
-        hubPubkey.toBase58(),
-        hubRelease.toBase58()
-      )
-
-      logEvent('release_init_via_hub_success', 'engagement', {
-        publicKey: release.toBase58(),
-        wallet: provider.wallet.publicKey.toBase58(),
-      })
-
-      return { success: true }
+    
+      return newRelease
     } catch (error) {
       if (error.toString().includes('unable_to_confirm_transaction')) {
         trackPendingRelease({

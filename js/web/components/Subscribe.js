@@ -43,6 +43,7 @@ const Subscribe = ({
 
     setPending(true)
     const result = await subscriptionSubscribe(accountAddress, hubHandle)
+    console.log('result :>> ', result);
     if (result.success) {
       enqueueSnackbar(result.msg, {
         variant: 'success',

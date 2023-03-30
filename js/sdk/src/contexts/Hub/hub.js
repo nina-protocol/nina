@@ -172,23 +172,20 @@ const hubContextHelper = ({
   const hubInitWithCredit = async (hubParams) => {
     try {
         logEvent('hub_init_with_credit_initiated', 'engagement', {
-        hub: hub.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
       })
       await initSdkIfNeeded()
-      const hubPubkey = await NinaSdk.Hub.hubInitWithCredit(hubParams, provider.wallet, provider.connection)
+      const {hub} = await NinaSdk.Hub.hubInitWithCredit(hubParams, provider.wallet, provider.connection)
  
       logEvent('hub_init_with_credit_success', 'engagement', {
-        hub: hub.toBase58(),
+        hub: hub.publicKey,
         wallet: provider.wallet.publicKey.toBase58(),
       })
 
-      if (hubPubkey) {
-        return {
-          success: true,
-          msg: 'Hub Created',
-          hubPubkey: hub,
-        }
+      return {
+        success: true,
+        msg: 'Hub Created',
+        hubPubkey: hub.publicKey,
       }
     } catch (error) {
       logEvent('hub_init_with_credit_failure', 'engagement', {
@@ -203,14 +200,12 @@ const hubContextHelper = ({
   const hubUpdateConfig = async (hubPubkey, uri, publishFee, referralFee) => {
     try {
       await initSdkIfNeeded()
-      const hubUpdateConfigTx = await NinaSdk.Hub.hubUpdateConfig(hubPubkey, uri, publishFee, referralFee, provider.wallet, provider.connection)
+      await NinaSdk.Hub.hubUpdateConfig(hubPubkey, uri, publishFee, referralFee, provider.wallet, provider.connection)
       await getHub(hubPubkey)
 
-      if  (hubUpdateConfigTx){
-        return {
-          success: true,
-          msg: 'Hub Updated',
-        }
+      return {
+        success: true,
+        msg: 'Hub Updated',
       }
     } catch (error) {
       return ninaErrorHandler(error)
@@ -225,7 +220,7 @@ const hubContextHelper = ({
     allowance = 1
   ) => {
     try {
-      const collaboratorAdded = await NinaSdk.Hub.hubAddCollaborator(
+      await NinaSdk.Hub.hubAddCollaborator(
         hubPubkey, 
         collaboratorPubkey, 
         canAddContent,
@@ -236,14 +231,12 @@ const hubContextHelper = ({
         )
      
         await getHub(hubPubkey)
-
-      if (collaboratorAdded) { 
+        //TODO: State needs to update in UI
         return {
           success: true,
           msg: 'Collaborator Added to hub',
         }
 
-      }
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -257,16 +250,14 @@ const hubContextHelper = ({
     allowance = 1
   ) => {
     try {
-      const confirmedTransaction =  await NinaSdk.Hub.hubUpdateCollaboratorPermission(
+        await NinaSdk.Hub.hubUpdateCollaboratorPermission(
         hubPubkey, collaboratorPubkey, canAddContent, canAddCollaborator, allowance, provider.wallet, provider.connection
       )
 
-      if (confirmedTransaction) {
-        await getHub(hubPubkey)
-        return {
-          success: true,
-          msg: 'Hub Collaborator Permissions Updated',
-        }
+      await getHub(hubPubkey)
+      return {
+        success: true,
+        msg: 'Hub Collaborator Permissions Updated',
       }
 
     } catch (error) {
@@ -286,25 +277,23 @@ const hubContextHelper = ({
       queue.add(releasePubkey)
       setAddToHubQueue(queue)
 
-      const addedReleaseConfirmation = await NinaSdk.Hub.hubAddRelease(
+      await NinaSdk.Hub.hubAddRelease(
         hubPubkey, releasePubkey, fromHub, provider.wallet, provider.connection
       )
 
-      if (addedReleaseConfirmation){
-        await getHubsForRelease(releasePubkey)
-        queue = new Set(addToHubQueue)
-        queue.delete(releasePubkey)
-        setAddToHubQueue(queue)
-        logEvent('hub_add_release_initiated', 'engagement', {
-          release: releasePubkey,
-          hub: hubPubkey,
-          wallet: provider.wallet.publicKey.toBase58(),
-        })
-  
-        return {
-          success: true,
-          msg: 'Release Added to Hub',
-        }
+      await getHubsForRelease(releasePubkey)
+      queue = new Set(addToHubQueue)
+      queue.delete(releasePubkey)
+      setAddToHubQueue(queue)
+      logEvent('hub_add_release_initiated', 'engagement', {
+        release: releasePubkey,
+        hub: hubPubkey,
+        wallet: provider.wallet.publicKey.toBase58(),
+      })
+
+      return {
+        success: true,
+        msg: 'Release Added to Hub',
       }
     } catch (error) {
       const queue = new Set(addToHubQueue)
@@ -326,17 +315,16 @@ const hubContextHelper = ({
         hubPubkey, collaboratorPubkey, provider.wallet, provider.connection
       )
 
-      if (removedCollaborator) {
-        await getHub(hubPubkey)
-        const hubCollaboratorsStateCopy = { ...hubCollaboratorsState }
-        delete hubCollaboratorsStateCopy[removedCollaborator.toBase58()]
-        setHubCollaboratorsState(hubCollaboratorsStateCopy)
-  
-        return {
-          success: true,
-          msg: 'Collaborator Removed From Hub',
-        } 
-      }
+      await getHub(hubPubkey)
+      const hubCollaboratorsStateCopy = { ...hubCollaboratorsState }
+      delete hubCollaboratorsStateCopy[removedCollaborator.toBase58()]
+      setHubCollaboratorsState(hubCollaboratorsStateCopy)
+
+      return {
+        success: true,
+        msg: 'Collaborator Removed From Hub',
+      } 
+
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -375,16 +363,14 @@ const hubContextHelper = ({
 
   const hubWithdraw = async (hubPubkey) => {
     try {
-      const hubWithdrawal = await NinaSdk.Hub.hubWithdraw(
+      await NinaSdk.Hub.hubWithdraw(
         hubPubkey, provider.wallet, provider.connection
       )
 
-      if (hubWithdrawal) {
-        await getHub(hubPubkey)
-        return {
-          success: true,
-          msg: 'Withdraw from Hub Successful.',
-        }
+      await getHub(hubPubkey)
+      return {
+        success: true,
+        msg: 'Withdraw from Hub Successful.',
       }
     } catch (error) {
       return ninaErrorHandler(error)
@@ -403,21 +389,19 @@ const hubContextHelper = ({
         hubPubkey, slug, uri, referenceRelease, fromHub, provider.wallet, provider.connection
       )
 
-      if (initializedPost.success) {
-        await NinaSdk.Hub.fetchHubPost(hubPubkey, initializedPost.hubPost.toBase58())
-        if (referenceRelease) {
-          await NinaSdk.Hub.fetchHubRelease(
-            hubPubkey,
-            initializedPost.referenceReleaseHubRelease.toBase58()
-          )
-          await getHubsForRelease(referenceRelease)
-        }
-        await getHub(hubPubkey)
-  
-        return {
-          success: true,
-          msg: 'Post created.',
-        }
+      await NinaSdk.Hub.fetchHubPost(hubPubkey, initializedPost.hubPost.toBase58())
+      if (referenceRelease) {
+        await NinaSdk.Hub.fetchHubRelease(
+          hubPubkey,
+          initializedPost.referenceReleaseHubRelease.toBase58()
+        )
+        await getHubsForRelease(referenceRelease)
+      }
+      await getHub(hubPubkey)
+
+      return {
+        success: true,
+        msg: 'Post created.',
       }
     } catch (error) {
       return ninaErrorHandler(error)
