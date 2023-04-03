@@ -96,7 +96,7 @@ const LearnMore = () => {
         'You need a Solana wallet (we recommend {phantom}) funded with SOL or USDC to purchase music on Nina. To fund a wallet, you can either purchase SOL with a credit card from inside the Phantom wallet, or you can buy SOL on an exchange like {coinbase} and send it to your Phantom wallet.',
     },
 
-    "ja": {
+    ja: {
       title: 'Learn More',
       header1:
         'Ninaは楽曲をリリースすることに対してアーティストに新しいモデルを提供するインディペンデント・ミュージック・エコシステムです。下記はどのように機能するかとFAQのリストになっています。',
