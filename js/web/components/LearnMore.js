@@ -152,8 +152,8 @@ const LearnMore = () => {
         'あなたはSOLかUSDCを供給されたSolanaウォレットが必要です（{phantom}を推奨します）。ウォレットを供給するには、あなたはPhantomウォレットの中からクレジットカードでSOLを購入するか、または{coinbase}のような為替でSOLを購入し、あなたのPhantomウォレットへ送ることができます。',
     },
   })
-
-  copyStrings.setLanguage('jp')
+  // to toggle between eng and jp uncomment the setLanguage function
+  // copyStrings.setLanguage('jp')
 
   return (
     <ScrollablePageWrapper>
