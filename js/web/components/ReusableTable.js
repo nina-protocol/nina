@@ -62,10 +62,10 @@ const descendingComparator = (a, b, orderBy) => {
       break
 
     case 'releaseDate':
-      if (new Date(b.releaseDate) < new Date(a.releaseDate)) {
+      if (new Date(b.date) < new Date(a.date)) {
         return -1
       }
-      if (new Date(b.releaseDate) > new Date(a.releaseDate)) {
+      if (new Date(b.date) > new Date(a.date)) {
         return 1
       }
 
