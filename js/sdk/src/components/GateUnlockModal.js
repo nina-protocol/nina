@@ -116,15 +116,17 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate, inHubs }) => {
                               primary={
                                 <StyledTypography
                                   sx={{
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
+                                    wordBreak: 'break-word',
                                   }}
                                 >
                                   {gate.fileName} {`(${fileSize} mb)`}
                                 </StyledTypography>
                               }
-                              secondary={gate.description}
+                              secondary={
+                                <Box sx={{ wordBreak: 'break-word' }}>
+                                  {gate.description}
+                                </Box>
+                              }
                             />
                           </ListItemButton>
                         </ListItem>
