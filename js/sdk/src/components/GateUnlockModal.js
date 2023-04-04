@@ -9,7 +9,6 @@ import Typography from '@mui/material/Typography'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import LockIcon from '@mui/icons-material/Lock'
 import CloseIcon from '@mui/icons-material/Close'
-
 import Dots from './Dots'
 import Box from '@mui/material/Box'
 import List from '@mui/material/List'
@@ -117,15 +116,17 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate, inHubs }) => {
                               primary={
                                 <StyledTypography
                                   sx={{
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
+                                    wordBreak: 'break-word',
                                   }}
                                 >
                                   {gate.fileName} {`(${fileSize} mb)`}
                                 </StyledTypography>
                               }
-                              secondary={gate.description}
+                              secondary={
+                                <Box sx={{ wordBreak: 'break-word' }}>
+                                  {gate.description}
+                                </Box>
+                              }
                             />
                           </ListItemButton>
                         </ListItem>
