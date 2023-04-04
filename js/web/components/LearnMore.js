@@ -127,8 +127,8 @@ const LearnMore = () => {
       exampleLink4:
         'https://ninaprotocol.com/2QfDZcQnT51mQTFrWfzKTPPDrB7G3rk5fSif1WTA7Dqd',
       exampleLinkText4: 'gantz, evoker',
-      exampleHeader5: 'Editorial',
-      exampleBody5: `Share additional context around your releases or make blog posts to share updates, stories, and musings with your community.`,
+      exampleHeader5: 'Editorial (エディトリアル)',
+      exampleBody5: `あなたのリリースに近い追加の文脈を共有してください、または、アップデートや、ストーリー、あなたのコミュニティとの思いなどを共有するためにブログのポストを作成してください。`,
       exampleImage5: '/images/Posts.png',
       exampleLink5: `https://hubs.ninaprotocol.com/ledisko/posts/8BEauXrASkugBm6gR4wkH3T5RU5JAuwLwybkfbF1Pg7W`,
       exampleLinkText5: `Gesloten Cirkel, Detoon`,
