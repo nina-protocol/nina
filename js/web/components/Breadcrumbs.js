@@ -7,7 +7,6 @@ import Box from '@mui/material/Box'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 
 const YourCollectionBreadcrumb = () => {
   const { releaseState, filterReleasesUserCollection } = useContext(
