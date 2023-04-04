@@ -141,7 +141,7 @@ const ReleaseSettings = (props) => {
             sx={{ margin: '15px 0!important' }}
             onClick={() =>
               window.open(
-                `https://twitter.com/intent/tweet?text=${`${displayValues.artist} - "${displayValues.title}" on Nina%0A`}&url=ninaprotocol.com/${releasePubkey}`,
+                `https://twitter.com/intent/tweet?text=${`${displayValues.artist} - "${displayValues.title}" on @ninaprotocol%0A`}&url=ninaprotocol.com/${releasePubkey}`,
                 null,
                 'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
               )
