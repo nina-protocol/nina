@@ -60,7 +60,7 @@ const LearnMore = () => {
     {
       question: 'Do I have to pay to start using Nina?',
       answer:
-        'No. We also cover costs for artists and label to get set up, helping you get storage space and bandwidth for your releases.',
+        'No. We also cover costs for artists and labels to get set up, helping you get storage space and bandwidth for your releases.',
     },
     {
       question: 'Can I make my releases free?',
