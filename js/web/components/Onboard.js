@@ -23,7 +23,7 @@ const EmailCapture = dynamic(
 )
 const Onboard = () => {
   const router = useRouter()
-  // console.log(useWalletDialog())
+
   const { query } = router
   const [code, setCode] = useState()
   const [invalidCode, setInvalidCode] = useState(false)
@@ -62,26 +62,6 @@ const Onboard = () => {
     }
   }, [wallet.connected, claimedCodeSuccess])
 
-  const handleGenerateCode = async () => {
-    const message = new TextEncoder().encode(wallet.publicKey.toBase58())
-    const messageBase64 = encodeBase64(message)
-    const signature = await wallet.signMessage(message)
-    const signatureBase64 = encodeBase64(signature)
-
-    const response = await axios.post(
-      `${process.env.NINA_IDENTITY_ENDPOINT}/onboardingCodes`,
-      {
-        message: messageBase64,
-        signature: signatureBase64,
-        publicKey: wallet.publicKey.toBase58(),
-      }
-    )
-
-    if (response.data) {
-      setCode(response.data.onboardingCode.code)
-    }
-  }
-
   const handleClaimCode = async (code) => {
     const message = new TextEncoder().encode(wallet.publicKey.toBase58())
     const messageBase64 = encodeBase64(message)
@@ -97,7 +77,6 @@ const Onboard = () => {
           publicKey: wallet.publicKey.toBase58(),
         }
       )
-      console.log('response', response.data)
       if (response.data.success) {
         enqueueSnackbar('Code has been successfully redeemed', {
           info: 'success',
@@ -165,30 +144,38 @@ const Onboard = () => {
                     >
                       {/* <BlueTypography variant="h3" onClick={(e) => handleWalletConnect(e)}>Connect your wallet</BlueTypography> */}
                       <StyledWalletDialogProvider>
-                        <WalletDialogButton>
+                        <StyledWalletDialogButton>
                           <BlueTypography variant="h3">
-                            Connect Your Wallet
+                            Connect your wallet
                           </BlueTypography>
-                        </WalletDialogButton>
+                        </StyledWalletDialogButton>
                       </StyledWalletDialogProvider>
-                      or
-                      <Link href="https://phantom.app">
-                        <a target="_blank">
-                          <Typography variant="h3" sx={{ margin: '0px 8px' }}>
-                            create a wallet
-                          </Typography>
-                        </a>
-                      </Link>
-                      to get started.
+                      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                        or
+                        <Link href="https://phantom.app/download">
+                          <a target="_blank">
+                            <Typography variant="h3" sx={{ margin: '0px 8px' }}>
+                              create a wallet
+                            </Typography>
+                          </a>
+                        </Link>
+                        to get started.
+                      </Box>
                     </Typography>
                   </Box>
                 </>
               )}
             </Box>
             {wallet.connected && (
-              <ClaimCodeButton onClick={() => handleClaimCode(code)}>
-                Claim Code
-              </ClaimCodeButton>
+              <>
+                <Typography
+                  variant="h4"
+                  mb={1}
+                >{`Onboarding code: ${code}`}</Typography>
+                <ClaimCodeButton onClick={() => handleClaimCode(code)}>
+                  Claim Code
+                </ClaimCodeButton>
+              </>
             )}
           </>
 
@@ -239,18 +226,6 @@ const Onboard = () => {
               </Box>
             </>
           )}
-
-          <button onClick={() => handleGenerateCode()}>Generate Code</button>
-          <label for="code">OnboardingCode</label>
-          <input
-            type="text"
-            id="code"
-            name="code"
-            value={code}
-            onChange={(event) => setCode(event.target.value)}
-          />
-
-          <button onClick={() => handleClaimCode(code)}>Claim</button>
           {wallet.connected && claimedError && (
             <Typography mt={1} mb={1}>
               This code has already been claimed or is invalid. If you believe
@@ -280,7 +255,7 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
     textDecoration: 'none',
     color: theme.palette.blue,
     '&:hover': {
-      opacity: '85%',
+      opacity: '50%',
     },
   },
 }))
@@ -311,9 +286,14 @@ const BlueTypography = styled(Typography)(({ theme }) => ({
   color: `${theme.palette.blue} !important`,
   marginRight: '8px',
   cursor: 'pointer',
+  textTransform: 'none',
   '&:hover': {
     opacity: '85%',
   },
+}))
+
+const StyledWalletDialogButton = styled(WalletDialogButton)(({ theme }) => ({
+  padding: '0px !important',
 }))
 
 const StyledWalletDialogProvider = styled(WalletDialogProvider)(
