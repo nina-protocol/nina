@@ -168,10 +168,12 @@ const Onboard = () => {
             </Box>
             {wallet.connected && (
               <>
-                <Typography
-                  variant="h4"
-                  mb={1}
-                >{`Onboarding code: ${code}`}</Typography>
+                {code !== undefined && (
+                  <Typography
+                    variant="h4"
+                    mb={1}
+                  >{`Onboarding code: ${code}`}</Typography>
+                )}
                 <ClaimCodeButton onClick={() => handleClaimCode(code)}>
                   Claim Code
                 </ClaimCodeButton>

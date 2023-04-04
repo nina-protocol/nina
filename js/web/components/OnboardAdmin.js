@@ -11,7 +11,7 @@ import onboardingCodeWhitelist from '@nina-protocol/nina-internal-sdk/src/utils/
 const OnboardAdmin = () => {
   const wallet = useWallet()
   const hasAccess = onboardingCodeWhitelist.includes(
-    wallet.publicKey.toBase58()
+    wallet?.publicKey?.toBase58()
   )
   const [code, setCode] = useState()
   const handleGenerateCode = async () => {
