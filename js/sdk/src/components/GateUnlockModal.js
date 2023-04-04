@@ -34,7 +34,6 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate, inHubs }) => {
     setActiveIndex(index)
     try {
       await unlockGate(gate)
-      setOpen(false)
     } catch (error) {
       console.warn(error)
     }
@@ -82,48 +81,58 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate, inHubs }) => {
                     ? 'You have access to: '
                     : 'Purchase this release to download: '}
                 </StyledTypography>
-                <List>
-                  {gates.map((gate, index) => {
-                    const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(2)
-                    return (
-                      <ListItem
-                        disableGutters
-                        key={index}
-                        secondaryAction={
-                          <Box>
-                            <IconButton
-                              aria-label="delete"
-                              disabled={
-                                amountHeld === 0 ||
-                                (inProgress && activeIndex === index)
+                <GateWrapper>
+                  <List>
+                    {gates.map((gate, index) => {
+                      const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(
+                        2
+                      )
+                      return (
+                        <ListItem
+                          disableGutters
+                          key={index}
+                          secondaryAction={
+                            <Box>
+                              <IconButton
+                                aria-label="delete"
+                                disabled={
+                                  amountHeld === 0 ||
+                                  (inProgress && activeIndex === index)
+                                }
+                                onClick={() => {
+                                  handleUnlockGate(gate, index)
+                                }}
+                              >
+                                {inProgress && activeIndex === index ? (
+                                  <Dots />
+                                ) : (
+                                  <DownloadIcon />
+                                )}
+                              </IconButton>
+                            </Box>
+                          }
+                        >
+                          <ListItemButton disableGutters>
+                            <ListItemText
+                              primary={
+                                <StyledTypography
+                                  sx={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                  }}
+                                >
+                                  {gate.fileName} {`(${fileSize} mb)`}
+                                </StyledTypography>
                               }
-                              onClick={() => {
-                                handleUnlockGate(gate, index)
-                              }}
-                            >
-                              {inProgress && activeIndex === index ? (
-                                <Dots />
-                              ) : (
-                                <DownloadIcon />
-                              )}
-                            </IconButton>
-                          </Box>
-                        }
-                      >
-                        <ListItemButton disableGutters>
-                          <ListItemText
-                            primary={
-                              <StyledTypography>
-                                {gate.fileName} {`(${fileSize} mb)`}
-                              </StyledTypography>
-                            }
-                            secondary={gate.description}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                    )
-                  })}
-                </List>
+                              secondary={gate.description}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      )
+                    })}
+                  </List>
+                </GateWrapper>
               </>
             </StyledPaper>
           </Fade>
@@ -190,6 +199,11 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   top: theme.spacing(1),
   color: theme.palette.black,
   cursor: 'pointer',
+}))
+
+const GateWrapper = styled(Box)(() => ({
+  maxHeight: '350px',
+  overflowY: 'auto',
 }))
 
 export default GateUnlockModal

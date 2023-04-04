@@ -175,7 +175,15 @@ const GateCreateModal = ({
                 },
               }}
             >
-              {!file ? 'Choose File' : file.name}
+              <Box
+                sx={{
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {!file ? 'Choose File' : file.name}
+              </Box>
               <input
                 type="file"
                 onChange={(e) => {

@@ -61,7 +61,7 @@ const NewProfileCtas = ({ activeViewIndex, profilePubkey }) => {
               }}
               onClick={() =>
                 window.open(
-                  `https://twitter.com/intent/tweet?text=${`Check out my profile on Nina%0A`}&url=ninaprotocol.com/${profilePubkey}`,
+                  `https://twitter.com/intent/tweet?text=${`Check out my profile on @ninaprotocol%0A`}&url=ninaprotocol.com/${profilePubkey}`,
                   null,
                   'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
                 )
