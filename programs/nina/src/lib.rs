@@ -179,6 +179,13 @@ pub mod nina {
         instructions::vault_withdraw::handler(ctx, amount)
     }
 
+    pub fn hub_init(
+        ctx: Context<HubInit>,
+        params: HubInitParams,
+    ) -> Result<()> {
+        instructions::hub_init::handler(ctx, params)
+    }
+
     #[deprecated(since="0.2.14", note="please use `hub_init` instead")]
     pub fn hub_init_with_credit(
         ctx: Context<HubInitWithCredit>,

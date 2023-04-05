@@ -3913,6 +3913,75 @@ describe('Hub', async () => {
     referralFee: new anchor.BN(50000),
   }
 
+  it('should init a Hub via hubInit', async () => {
+    let hubParams = {
+      handle: 'NinaHub2',
+      publishFee: new anchor.BN(50000),
+      uri: 'https://arweave.net/xxxxx',
+      referralFee: new anchor.BN(50000),
+    }
+  
+    const [_hub, hubBump] = await anchor.web3.PublicKey.findProgramAddress([
+      Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub")), 
+      Buffer.from(anchor.utils.bytes.utf8.encode(hubParams.handle))],
+      nina.programId
+    );
+    hub = _hub
+
+    const [_hubSigner, hubSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-signer")), hub.toBuffer()],
+      nina.programId
+    );
+    hubSigner = _hubSigner
+    hubParams.hubSignerBump = hubSignerBump
+
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress([
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
+        hub.toBuffer(),
+        provider.wallet.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+
+    let [_hubWallet, hubWalletIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      hubSigner,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      usdcMint,
+    );
+    hubWallet = _hubWallet
+
+    await nina.rpc.hubInit(
+      hubParams, {
+        accounts: {
+          authority: provider.wallet.publicKey,
+          hub,
+          hubSigner,
+          hubCollaborator,
+          usdcMint,
+          hubWallet,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        }, 
+        instructions:[
+          hubWalletIx,
+        ]
+      }
+    )
+
+    const hubAfter = await nina.account.hub.fetch(hub)
+    assert.equal(encrypt.decode(hubAfter.handle), hubParams.handle)
+    assert.equal(hubAfter.publishFee.toNumber(), hubParams.publishFee)
+    assert.equal(encrypt.decode(hubAfter.uri), hubParams.uri)
+    assert.equal(hubAfter.authority.toBase58(), provider.wallet.publicKey.toBase58())
+
+    const hubCollaboratorAfter = await nina.account.hubCollaborator.fetch(hubCollaborator)
+    assert.equal(hubCollaboratorAfter.collaborator.toBase58(), provider.wallet.publicKey.toBase58())
+    assert.equal(hubCollaboratorAfter.hub.toBase58(), hub.toBase58())
+  })
+
   it('should init a Hub', async () => {
     const [_hub, hubBump] = await anchor.web3.PublicKey.findProgramAddress([
       Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub")), 
