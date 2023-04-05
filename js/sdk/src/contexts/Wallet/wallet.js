@@ -1,57 +1,27 @@
-import React, { createContext, useEffect, useMemo, useState } from 'react'
+import React, { createContext, useMemo, useState } from 'react'
 import {
   useWallet as useWalletWalletAdapter,
   useConnection,
 } from '@solana/wallet-adapter-react'
-import Torus from '@toruslabs/customauth'
-import { getED25519Key } from '@toruslabs/openlogin-ed25519'
 import * as anchor from '@project-serum/anchor'
-import nacl from 'tweetnacl'
 import tweetnaclUtil from 'tweetnacl-util'
 
 const { decodeBase64 } = tweetnaclUtil
-
-const GOOGLE = 'google'
-const AUTH_DOMAIN = 'https://torus-test.auth0.com'
-
-const verifierMap = {
-  [GOOGLE]: {
-    name: 'Google',
-    typeOfLogin: 'google',
-    clientId:
-      '909687642844-3ejteujpuh416mu7lv12moufiis0ha19.apps.googleusercontent.com',
-    verifier: 'nina-google-testnet',
-  },
-}
 
 const WalletContext = createContext()
 const WalletContextProvider = ({ children }) => {
   const { connection } = useConnection()
   const walletExtension = useWalletWalletAdapter()
-  const [walletEmbed, setWalletEmbed] = useState(null)
-  const [torus, setTorus] = useState()
+  const [magicWallet, setMagicWallet] = useState(null)
 
-  useEffect(() => {
-    setupTorus()
-  }, [])
 
   const wallet = useMemo(() => {
-    return walletEmbed || walletExtension || {}
-  }, [walletExtension, walletEmbed])
+    return magicWallet || walletExtension || {}
+  }, [walletExtension, magicWallet])
 
-  const setupTorus = async () => {
-    const torusWallet = new Torus({
-      baseUrl: window.location.origin,
-      enableLogging: true,
-      network: 'testnet',
-    })
-    await torusWallet.init()
-    setTorus(torusWallet)
-  }
 
-  const { connectWalletEmbed } = walletContextHelper({
-    setWalletEmbed,
-    torus,
+  const { connectMagicWallet } = walletContextHelper({
+    setMagicWallet,
     connection,
   })
 
@@ -61,7 +31,7 @@ const WalletContextProvider = ({ children }) => {
         connection,
         wallet,
         walletExtension,
-        connectWalletEmbed,
+        connectMagicWallet,
       }}
     >
       {children}
@@ -69,59 +39,52 @@ const WalletContextProvider = ({ children }) => {
   )
 }
 
-const walletContextHelper = ({ setWalletEmbed, torus, connection }) => {
-  const connectWalletEmbed = async () => {
-    const { typeOfLogin, clientId, verifier } = verifierMap['google']
-    const loginDetails = await torus.triggerLogin({
-      typeOfLogin,
-      clientId,
-      verifier,
-      jwtParams: {
-        domain: AUTH_DOMAIN,
-      },
-    })
-    const { sk } = getED25519Key(loginDetails.privateKey)
-    const keypair = anchor.web3.Keypair.fromSecretKey(sk)
+const walletContextHelper = ({ setMagicWallet, connection }) => {
+  const connectMagicWallet = async (magic, email) => {
 
-    const wallet = {
-      connected: true,
-      connecting: false,
-      disconnecting: false,
-      disconnect: () => {
-        setWalletEmbed(null)
-      },
-      publicKey: keypair.publicKey,
-      signMessage: async (message) => {
-        const messageBytes = decodeBase64(message)
-        const signature = nacl.sign.detached(new Uint8Array(messageBytes), keypair.secretKey)
-        return signature
-      },
-      signTransaction: async (transaction) => {
-        const serializedTransaction = transaction.serializeMessage()
-        const signedTransaction = nacl.sign.detached(serializedTransaction)
-        return signedTransaction
-      },
-      sendTransaction: async (transaction) => {
-        const txid = await anchor.web3.sendAndConfirmTransaction(
-          connection,
-          transaction,
-          [keypair]
-        )
-        return txid
-      },
-      wallet: {
-        adapter: {
-          name: 'Nina',
-          url: 'https://ninaprotocol.com',
+    await magic.auth.loginWithMagicLink({ email });
+    const isLoggedIn = await magic.user.isLoggedIn();
+    if (isLoggedIn) {
+      const user = await magic.user.getMetadata();
+
+      const wallet = {
+        connected: true,
+        connecting: false,
+        disconnecting: false,
+        disconnect: async () => {
+          await magic.user.logout();
+          setMagicWallet(null)
         },
-      },
-      wallets: [],
+        publicKey: new anchor.web3.PublicKey(user.publicAddress),
+        signMessage: async (message) => {
+          const messageBytes = decodeBase64(message)
+          return await magic.solana.signMessage(messageBytes)
+        },
+        signTransaction: async (transaction) => {
+          const serializedTransaction = transaction.serializeMessage()
+          const signedTransaction = await magic.solana.signTransaction(serializedTransaction)
+          return signedTransaction
+        },
+        sendTransaction: async (transaction) => {
+          const serializedTransaction = transaction.serializeMessage()
+          const signedTransaction = await magic.solana.signTransaction(serializedTransaction)
+          const txid = await connection.sendRawTransaction(serializedTransaction)
+          return txid
+        },
+        wallet: {
+          adapter: {
+            name: 'Nina',
+            url: 'https://ninaprotocol.com',
+          },
+        },
+        wallets: [],
+      }
+      setMagicWallet(wallet)
     }
-    setWalletEmbed(wallet)
   }
 
   return {
-    connectWalletEmbed,
+    connectMagicWallet,
   }
 }
 

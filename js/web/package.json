@@ -15,8 +15,6 @@
     "@solana/wallet-adapter-react-ui": "^0.9.10",
     "@solana/wallet-adapter-wallets": "^0.16.8",
     "@solana/web3.js": "^1.34.0",
-    "@toruslabs/customauth": "^11.4.3",
-    "@toruslabs/openlogin-ed25519": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
     "@unicef/material-ui-currency-textfield": "^0.8.6",
