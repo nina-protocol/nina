@@ -6,9 +6,7 @@ import React, {
   createElement,
   Fragment,
 } from 'react'
-import axios from 'axios'
 import { styled } from '@mui/material/styles'
-import { useWallet } from '@solana/wallet-adapter-react'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
@@ -21,14 +19,18 @@ import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
 import Dots from './Dots'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
-import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
+// import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
-import { encodeBase64 } from 'tweetnacl-util'
+import dynamic from 'next/dynamic'
+
+const Gates = dynamic(() => import('@nina-protocol/nina-internal-sdk/esm/Gates'))
+const RedeemReleaseCode = dynamic(() => import('@nina-protocol/nina-internal-sdk/esm/RedeemReleaseCode'))
 
 const ReleasePurchase = (props) => {
   const {
@@ -63,7 +65,6 @@ const ReleasePurchase = (props) => {
     getExchangesForRelease,
   } = useContext(Exchange.Context)
   const [release, setRelease] = useState(undefined)
-  const [code, setCode] = useState()
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
   const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
@@ -221,33 +222,7 @@ const ReleasePurchase = (props) => {
     pathString = '/collection'
   }
 
-  const handleCodeSubmit = async (e) => {
-    e.preventDefault()
-    try {
-      if (wallet?.connected) {
-        const message = new TextEncoder().encode(releasePubkey)
-        const messageBase64 = encodeBase64(message)
-        const signature = await wallet.signMessage(message)
-        const signatureBase64 = encodeBase64(signature)
   
-        await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes/${code}/claim`, {
-          publicKey: wallet?.publicKey?.toBase58(),
-          message: messageBase64,
-          signature: signatureBase64,
-          releasePublicKey: releasePubkey,
-        })
-        await getRelease(releasePubkey)
-        enqueueSnackbar('Code claimed successfully', {
-          variant: 'success',
-        })
-        setCode('')
-      }
-    } catch (error) {
-      enqueueSnackbar(error.response.data.error, {
-        variant: 'error',
-      })
-    }
-  }
 
   return (
     <Box sx={{ position: 'relative', height: '100%' }}>
@@ -348,12 +323,7 @@ const ReleasePurchase = (props) => {
         }}
       >
         <Box sx={{ mb: 1, mt: 1 }}>
-          <input type="text" name="code" value={code} onChange={(e) => setCode(e.target.value)} />
-          <Button variant="outlined" fullWidth onClick={(e) => handleCodeSubmit(e)}>
-            <Typography variant="body2">
-              Redeem Release Code
-            </Typography>
-          </Button>
+          
           <form onSubmit={handleSubmit}>
             <Button
               variant="outlined"
@@ -381,6 +351,7 @@ const ReleasePurchase = (props) => {
           inSettings={false}
           releaseGates={releaseGates}
         />
+        <RedeemReleaseCode releasePubkey={releasePubkey}/>
       </Box>
     </Box>
   )

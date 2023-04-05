@@ -140,7 +140,7 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate, inHubs }) => {
         </StyledModal>
       </Root>
       {amountHeld === 0 && !inHubs && (
-        <Box sx={{ position: 'absolute', top: '110%' }}>
+        <Box sx={{}}>
           <StyledTypographyButtonSub>
             {`There ${gates.length > 1 ? 'are' : 'is'} ${gates.length} ${
               gates.length > 1 ? 'files' : 'file'
@@ -160,7 +160,7 @@ const Root = styled('div')(() => ({
 
 const StyledTypographyButtonSub = styled(Typography)(({ theme }) => ({
   color: theme.palette.grey[500],
-  textAlign: 'center',
+  textAlign: 'left',
   paddingTop: '8px',
   fontSize: '12px',
 }))

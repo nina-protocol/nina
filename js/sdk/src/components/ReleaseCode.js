@@ -12,7 +12,7 @@ import Backdrop from '@mui/material/Backdrop'
 import { styled } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
 
-const ReleaseCode = ({release}) => {
+const ReleaseCode = ({ release }) => {
   const [codes, setCodes] = useState()
   const [amount, setAmount] = useState(1)
   const wallet = useWallet()
@@ -26,13 +26,16 @@ const ReleaseCode = ({release}) => {
     const signature = await wallet.signMessage(message)
     const signatureBase64 = encodeBase64(signature)
 
-    const response = await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes`, {
-      message: messageBase64,
-      signature: signatureBase64,
-      publicKey: wallet.publicKey.toBase58(),
-      release,
-      amount,
-    })
+    const response = await axios.post(
+      `${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes`,
+      {
+        message: messageBase64,
+        signature: signatureBase64,
+        publicKey: wallet.publicKey.toBase58(),
+        release,
+        amount,
+      }
+    )
 
     if (response.data) {
       setCodes(response.data.codes)
@@ -45,13 +48,21 @@ const ReleaseCode = ({release}) => {
     const signature = await wallet.signMessage(message)
     const signatureBase64 = encodeBase64(signature)
 
-    const response = await axios.get(`${process.env.NINA_IDENTITY_ENDPOINT}/releases/${encodeURIComponent(release)}/releaseCodes?message=${encodeURIComponent(messageBase64)}&signature=${encodeURIComponent(signatureBase64)}&publicKey=${encodeURIComponent(wallet.publicKey.toBase58())}`)
+    const response = await axios.get(
+      `${process.env.NINA_IDENTITY_ENDPOINT}/releases/${encodeURIComponent(
+        release
+      )}/releaseCodes?message=${encodeURIComponent(
+        messageBase64
+      )}&signature=${encodeURIComponent(
+        signatureBase64
+      )}&publicKey=${encodeURIComponent(wallet.publicKey.toBase58())}`
+    )
 
     if (response.data) {
       setCodes(response.data.codes)
     }
   }
-  
+
   // const handleClaimCode = async (code) => {
   //   const message = new TextEncoder().encode(wallet.publicKey.toBase58())
   //   const messageBase64 = encodeBase64(message)
@@ -103,14 +114,20 @@ const ReleaseCode = ({release}) => {
           BackdropProps={{
             timeout: 500,
           }}
-          >
+        >
           <Fade in={open}>
             <StyledPaper>
               <StyledCloseIcon onClick={() => setOpen(false)} />
 
               <div>
                 <label for="releaseCode">OnboardingCode</label>
-                <input type="number" id="releaseCode" name="releaseCode" value={amount} onChange={(event) => setAmount(event.target.value)} />
+                <input
+                  type="number"
+                  id="releaseCode"
+                  name="releaseCode"
+                  value={amount}
+                  onChange={(event) => setAmount(event.target.value)}
+                />
                 <button onClick={() => handleGenerateCodes()}>
                   Generate Codes
                 </button>
@@ -118,11 +135,16 @@ const ReleaseCode = ({release}) => {
                   Get Existing Codes
                 </button>
                 <ul>
-                {codes && codes.map((code) => {
-                  return (
-                    <StyledListItem className={code.claimedBy ? 'claimed': ''}>{code.code}</StyledListItem>
-                    )
-                  })}
+                  {codes &&
+                    codes.map((code) => {
+                      return (
+                        <StyledListItem
+                          className={code.claimedBy ? 'claimed' : ''}
+                        >
+                          {code.code}
+                        </StyledListItem>
+                      )
+                    })}
                 </ul>
               </div>
             </StyledPaper>

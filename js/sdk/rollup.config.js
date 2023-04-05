@@ -51,6 +51,7 @@ export default [
       Gates: 'src/components/Gates.js',
       ReleaseSettingsModal: 'src/components/ReleaseSettingsModal.js',
       WalletButton: 'src/components/WalletButton.js',
+      RedeemReleaseCode: 'src/components/RedeemReleaseCode.js',
     },
     output: [
       {
