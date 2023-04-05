@@ -224,13 +224,16 @@ const ReleasePurchase = (props) => {
         const messageBase64 = encodeBase64(message)
         const signature = await wallet.signMessage(message)
         const signatureBase64 = encodeBase64(signature)
-  
-        await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes/${code}/claim`, {
-          publicKey: wallet?.publicKey?.toBase58(),
-          message: messageBase64,
-          signature: signatureBase64,
-          releasePublicKey: releasePubkey,
-        })
+
+        await axios.post(
+          `${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes/${code}/claim`,
+          {
+            publicKey: wallet?.publicKey?.toBase58(),
+            message: messageBase64,
+            signature: signatureBase64,
+            releasePublicKey: releasePubkey,
+          }
+        )
         await getRelease(releasePubkey)
         enqueueSnackbar('Code claimed successfully', {
           variant: 'success',
@@ -340,11 +343,18 @@ const ReleasePurchase = (props) => {
         }}
       >
         <Box sx={{ mb: 1, mt: 1 }}>
-          <input type="text" name="code" value={code} onChange={(e) => setCode(e.target.value)} />
-          <Button variant="outlined" fullWidth onClick={(e) => handleCodeSubmit(e)}>
-            <Typography variant="body2">
-              Redeem Release Code
-            </Typography>
+          <input
+            type="text"
+            name="code"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+          />
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={(e) => handleCodeSubmit(e)}
+          >
+            <Typography variant="body2">Redeem Release Code</Typography>
           </Button>
           <form onSubmit={handleSubmit}>
             <Button

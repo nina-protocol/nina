@@ -698,30 +698,25 @@ const releaseContextHelper = ({
         wallet: provider.wallet.publicKey.toBase58(),
       })
 
-      const txid = await program.rpc.releaseInit(
-        config,
-        bumps,
-        metadataData,
-        {
-          accounts: {
-            release,
-            releaseSigner,
-            releaseMint: releaseMint.publicKey,
-            payer: provider.wallet.publicKey,
-            authority: provider.wallet.publicKey,
-            authorityTokenAccount: authorityTokenAccount,
-            paymentMint,
-            royaltyTokenAccount,
-            metadata,
-            metadataProgram,
-            systemProgram: anchor.web3.SystemProgram.programId,
-            tokenProgram: TOKEN_PROGRAM_ID,
-            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-          },
-          signers: [releaseMint],
-          instructions,
-        }
-      )
+      const txid = await program.rpc.releaseInit(config, bumps, metadataData, {
+        accounts: {
+          release,
+          releaseSigner,
+          releaseMint: releaseMint.publicKey,
+          payer: provider.wallet.publicKey,
+          authority: provider.wallet.publicKey,
+          authorityTokenAccount: authorityTokenAccount,
+          paymentMint,
+          royaltyTokenAccount,
+          metadata,
+          metadataProgram,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        },
+        signers: [releaseMint],
+        instructions,
+      })
       await getConfirmTransaction(txid, provider.connection)
       await getRelease(release)
 
