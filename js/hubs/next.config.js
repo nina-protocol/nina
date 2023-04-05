@@ -1,4 +1,16 @@
 const path = require('path')
+const withTM = require('next-transpile-modules')([
+  '@project-serum/sol-wallet-adapter',
+  '@solana/wallet-adapter-base',
+  '@solana/wallet-adapter-react',
+  '@solana/wallet-adapter-wallets',
+  '@solana/wallet-adapter-material-ui',
+  '@solana/wallet-adapter-react-ui',
+  '@solana/wallet-adapter-phantom',
+  '@solana/wallet-adapter-solflare',
+  '@solana/wallet-adapter-sollet',
+]) // pass the modules you would like to see transpiled
+
 const { withSentryConfig } = require('@sentry/nextjs')
 const sentryWebpackPluginOptions = {
   // Additional config options for the Sentry Webpack plugin. Keep in mind that
@@ -18,7 +30,7 @@ const NEXT_PUBLIC_IMGIX_TOKEN =
     ? process.env.NEXT_PUBLIC_IMGIX_TOKEN_DEV
     : process.env.NEXT_PUBLIC_IMGIX_TOKEN
 /** @type {import('next').NextConfig} */
-const moduleExports = {
+const moduleExports = withTM({
   reactStrictMode: true,
   webpack5: true,
   webpack: (config) => {
@@ -78,6 +90,6 @@ const moduleExports = {
     path: `https://${IMGIX_URL}/`,
     domains: ['www.arweave.net', 'arweave.net', IMGIX_URL],
   },
-}
+})
 
 module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions)
