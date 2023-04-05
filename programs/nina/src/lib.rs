@@ -268,11 +268,24 @@ pub mod nina {
         instructions::subscription_subscribe_account::handler(ctx)
     }
 
+    pub fn subscription_subscribe_account_delegated(
+        ctx: Context<SubscriptionSubscribeAccountDelegated>
+    ) -> Result <()> {
+        instructions::subscription_subscribe_account_delegated::handler(ctx)
+    }
+
     pub fn subscription_subscribe_hub(
         ctx: Context<SubscriptionSubscribeHub>,
         hub_handle: String,
     ) -> Result <()> {
         instructions::subscription_subscribe_hub::handler(ctx, hub_handle)
+
+    }
+    pub fn subscription_subscribe_hub_delegated(
+        ctx: Context<SubscriptionSubscribeHubDelegated>,
+        hub_handle: String,
+    ) -> Result <()> {
+        instructions::subscription_subscribe_hub_delegated::handler(ctx, hub_handle)
     }
 
     pub fn subscription_unsubscribe(
