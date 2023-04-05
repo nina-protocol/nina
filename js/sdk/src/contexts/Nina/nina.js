@@ -112,6 +112,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     shouldRemainInCollectionAfterSale,
     getAmountHeld,
     getUserBalances,
+    getSolBalanceForPublicKey,
     getNpcAmountHeld,
     bundlrFund,
     bundlrWithdraw,
@@ -182,6 +183,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         shouldRemainInCollectionAfterSale,
         getAmountHeld,
         getUserBalances,
+        getSolBalanceForPublicKey,
         usdcBalance,
         getNpcAmountHeld,
         npcAmountHeld,
@@ -609,6 +611,13 @@ const ninaContextHelper = ({
       setLowSolBalance(true)
     }
     return solUsdcBalanceResult
+  }
+
+  const getSolBalanceForPublicKey = async (publicKey) => {
+    let solUsdcBalanceResult = await provider.connection.getBalance(
+      new anchor.web3.PublicKey(publicKey)
+    )
+    return ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol)
   }
 
   const getUserBalances = async () => {
@@ -1095,6 +1104,7 @@ const ninaContextHelper = ({
     shouldRemainInCollectionAfterSale,
     getAmountHeld,
     getUserBalances,
+    getSolBalanceForPublicKey,
     getNpcAmountHeld,
     bundlrFund,
     bundlrWithdraw,

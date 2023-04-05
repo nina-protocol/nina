@@ -35,9 +35,8 @@ const GetStartedPage = () => {
           href="https://ninaprotocol.com/images/nina-blue.png"
         />
       </Head>
-      <>
-        <Onboard />
-      </>
+
+      <Onboard />
     </>
   )
 }
