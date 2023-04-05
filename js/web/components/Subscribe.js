@@ -14,7 +14,7 @@ const Subscribe = ({
   inFeed = false,
   inHub = false,
 }) => {
-  const {wallet} = useContext(Wallet.Context)
+  const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
   const { subscriptionSubscribe, subscriptionUnsubscribe, userSubscriptions } =
     useContext(Nina.Context)
