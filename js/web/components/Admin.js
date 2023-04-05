@@ -114,15 +114,14 @@ const Admin = () => {
           <Typography for="code" mb={1}>
             If generated successfully, onboarding Code should print below
           </Typography>
-          {/* <Input
-          type="text"
-          id="code"
-          name="code"
-          value={code}
-          onChange={(event) => setCode(event.target.value)}
-          sx={{ width: '25vw' }}
-        /> */}
-          <Typography>{code}</Typography>
+          <Input
+            type="text"
+            id="code"
+            name="code"
+            value={code}
+            onChange={(event) => setCode(event.target.value)}
+            sx={{ width: '25vw' }}
+          />
         </Box>
       )}
     </ScrollablePageWrapper>
