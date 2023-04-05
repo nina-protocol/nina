@@ -26,6 +26,7 @@ import ReleaseCreateConfirm from './ReleaseCreateConfirm'
 import NinaBox from './NinaBox'
 import Dots from './Dots'
 import MediaDropzones from './MediaDropzones'
+import LowSolWarning from './LowSolWarning'
 import {
   createUpload,
   updateUpload,
@@ -33,12 +34,16 @@ import {
   UploadType,
   uploadHasItemForType,
 } from '../utils/uploadManager'
+import roundUp from '../utils/formatting'
 
 const UploadInfoModal = dynamic(() => import('./UploadInfoModal'), {
   ssr: false,
 })
 const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
+const ReleaseCreateSuccess = dynamic(() => import('./ReleaseCreateSuccess'), {
+  ssr: false,
+})
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist is required'),
@@ -75,13 +80,26 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     npcAmountHeld,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
+    NinaProgramActionCost,
+    solBalance,
+    ninaClient,
     getUserBalances,
+    solBalanceFetched,
   } = useContext(Nina.Context)
 
   const { getHubsForUser, fetchedHubsForUser, filterHubsForUser, hubState } =
     useContext(Hub.Context)
+
+  const releaseCreateFee = roundUp(
+    NinaProgramActionCost?.RELEASE_INIT_VIA_HUB,
+    3
+  )
+
+  const formattedSolBalance = ninaClient
+    .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
+    .toFixed(3)
   const [track, setTrack] = useState(undefined)
-  const [artwork, setArtwork] = useState()
+  const [artwork, setArtwork] = useState(undefined)
   const [uploadSize, setUploadSize] = useState()
   const [releasePubkey, setReleasePubkey] = useState(undefined)
   const [, setRelease] = useState(undefined)
@@ -108,10 +126,10 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const [selectedHub, setSelectedHub] = useState()
   const [processingProgress, setProcessingProgress] = useState()
   const [awaitingPendingReleases, setAwaitingPendingReleases] = useState(false)
-
+  const [showLowUploadModal, setShowLowUploadModal] = useState(false)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
-  const mbs = useMemo(
+  const availableStorage = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
   )
@@ -119,11 +137,19 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
   )
-
   useEffect(() => {
     refreshBundlr()
     getUserBalances()
   }, [])
+
+  useEffect(() => {
+    const checkBalance = setInterval(() => {
+      if (releaseCreateFee > solBalance) {
+        getUserBalances()
+      }
+    }, 5000)
+    return () => clearInterval(checkBalance)
+  }, [getUserBalances, releaseCreateFee, solBalance])
 
   useEffect(async () => {
     if (canAddContent && hubPubkey && hubData && hubData.authority) {
@@ -174,6 +200,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     let publicKey
+
     if (wallet.connected) {
       publicKey = wallet.publicKey.toBase58()
       getUserHubs(publicKey)
@@ -224,7 +251,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         setButtonText(
           'There may have been an error creating this release. Please check for the release in your profile and contact us before trying again.'
         )
-      } else if (mbs < uploadSize) {
+      } else if (availableStorage < uploadSize) {
         setButtonText(
           `Release requires more storage than available in your bundlr account, please top up`
         )
@@ -246,6 +273,12 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
       setAwaitingPendingReleases(false)
     }
   }, [pendingReleases])
+
+  useEffect(() => {
+    if (availableStorage < uploadSize && !showLowUploadModal) {
+      setShowLowUploadModal(true)
+    }
+  }, [availableStorage, uploadSize])
 
   const handleFormChange = useCallback(
     async (values) => {
@@ -336,7 +369,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
             const info = await initializeReleaseAndMint(
               hubPubkey ? hubPubkey : undefined
             )
-            // const info = await initializeReleaseAndMint()
 
             setReleaseInfo(info)
             setReleasePubkey(info.release)
@@ -468,6 +500,51 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     }
   }
 
+  const handleLowUploadModalClose = () => {
+    setShowLowUploadModal(false)
+    if (artwork) {
+      artwork.remove()
+    }
+    if (track) {
+      track.remove()
+    }
+  }
+
+  const handleReload = () => {
+    setTrack(undefined)
+    setArtwork(undefined)
+    setUploadSize(0)
+    setReleasePubkey(undefined)
+    setButtonText('Publish Release')
+    setFormIsValid(false)
+    setFormValues({ ...formValues, releaseForm: {} })
+    setImageProgress(0)
+    setAudioProgress(0)
+    setFormValuesConfirmed(false)
+    setReleaseInfo(undefined)
+    setArtworkTx(undefined)
+    setTrackTx(undefined)
+    setIsPublishing(false)
+    setMetadata(undefined)
+    setMetadataTx(undefined)
+    setReleaseCreated(false)
+    setUploadId(undefined)
+    setPublishingStepText(undefined)
+    setMd5Digest(undefined)
+    setProcessingProgress(0)
+    setTrack(undefined)
+    setMetadata(undefined)
+    setReleaseInfo(undefined)
+    setReleasePubkey(undefined)
+    setUploadId(undefined)
+    setAudioProgress(0)
+    router.push(
+      hubPubkey !== undefined
+        ? `${hubData.handle}/dashboard?action=publishRelease`
+        : '/upload'
+    )
+  }
+
   return (
     <Grid item md={12}>
       {!wallet.connected && (
@@ -475,7 +552,9 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
           Please connect your wallet to start publishing
         </ConnectMessage>
       )}
+
       {wallet?.connected &&
+        solBalanceFetched &&
         !hubPubkey &&
         npcAmountHeld === 0 &&
         (!profileHubs || profileHubs?.length === 0) && (
@@ -486,20 +565,45 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
               </Typography>
               <EmailCapture size="medium" />
               <Typography variant="h3" sx={{ mt: 1 }}>
-                Check our <Link href="/faq">FAQ</Link> or hit us at{' '}
+                Check our{' '}
+                <Link href="/faq">
+                  <a>FAQ</a>
+                </Link>{' '}
+                or hit us at{' '}
                 <Link
                   target="_blank"
                   rel="noreferrer"
                   href="href=mailto:artists@ninaprotocol.com"
                 >
-                  artists@ninaprotocol.com
+                  <a>artists@ninaprotocol.com</a>
                 </Link>{' '}
                 with any questions.
               </Typography>
             </NpcMessage>
           </Box>
         )}
+      {releaseCreated && (
+        <ReleaseCreateSuccess
+          releasePubkey={releasePubkey}
+          hubReleasePubkey={releaseInfo?.hubRelease?.toBase58()}
+          inHubs={hubPubkey !== undefined}
+          hubHandle={hubPubkey !== undefined ? hubData.handle : ''}
+          artist={formValues.releaseForm.artist}
+          title={formValues.releaseForm.title}
+          url={`${
+            hubPubkey !== undefined
+              ? `${hubData.handle}/releases/${releasePubkey}`
+              : releasePubkey
+          }`}
+          image={artworkTx}
+          handleReload={handleReload}
+        />
+      )}
+
+      {wallet?.connected && !solBalanceFetched && <Dots size={'50px'} />}
       {wallet?.connected &&
+        !releaseCreated &&
+        solBalanceFetched &&
         (npcAmountHeld >= 1 || profileHubs?.length > 0 || hubPubkey) && (
           <>
             <UploadInfoModal
@@ -507,38 +611,85 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                 'nina-upload-update-message'
               )}
             />
-            <NinaBox columns="350px 400px" gridColumnGap="10px">
-              <Box sx={{ width: '100%' }}>
-                <MediaDropzones
-                  setTrack={setTrack}
-                  setArtwork={setArtwork}
-                  values={formValues}
-                  releasePubkey={releasePubkey}
-                  track={track}
-                  artwork={artwork}
-                  disabled={
-                    isPublishing || releaseCreated || awaitingPendingReleases
-                  }
-                  handleProgress={handleProgress}
-                  processingProgress={processingProgress}
-                />
-              </Box>
-              <CreateFormWrapper disabled={awaitingPendingReleases}>
-                <ReleaseCreateForm
-                  onChange={handleFormChange}
-                  values={formValues.releaseForm}
-                  ReleaseCreateSchema={ReleaseCreateSchema}
-                  disabled={
-                    isPublishing || releaseCreated || awaitingPendingReleases
-                  }
-                />
-              </CreateFormWrapper>
-              <CreateCta>
-                {bundlrBalance === 0 ? (
-                  <BundlrModal inCreate={true} />
-                ) : (
-                  formValuesConfirmed &&
-                  bundlrBalance > 0 && (
+            {releaseCreateFee < formattedSolBalance ? (
+              <NinaBox columns="350px 400px" gridColumnGap="10px">
+                <Box sx={{ width: '100%' }}>
+                  <MediaDropzones
+                    setTrack={setTrack}
+                    setArtwork={setArtwork}
+                    values={formValues}
+                    releasePubkey={releasePubkey}
+                    track={track}
+                    artwork={artwork}
+                    disabled={
+                      isPublishing || releaseCreated || awaitingPendingReleases
+                    }
+                    handleProgress={handleProgress}
+                    processingProgress={processingProgress}
+                  />
+                </Box>
+                <CreateFormWrapper disabled={awaitingPendingReleases}>
+                  <ReleaseCreateForm
+                    onChange={handleFormChange}
+                    values={formValues.releaseForm}
+                    ReleaseCreateSchema={ReleaseCreateSchema}
+                    disabled={
+                      isPublishing || releaseCreated || awaitingPendingReleases
+                    }
+                  />
+                </CreateFormWrapper>
+                <CreateCta>
+                  {bundlrBalance === 0 &&
+                    releaseCreateFee < formattedSolBalance && (
+                      <BundlrModal inCreate={true} />
+                    )}
+
+                  {formValuesConfirmed &&
+                    bundlrBalance > 0 &&
+                    releaseCreateFee < formattedSolBalance && (
+                      <Button
+                        fullWidth
+                        variant="outlined"
+                        color="primary"
+                        onClick={(e) => handleSubmit(e)}
+                        disabled={
+                          isPublishing ||
+                          !formIsValid ||
+                          bundlrBalance === 0 ||
+                          availableStorage < uploadSize ||
+                          artwork?.meta.status === 'uploading' ||
+                          (track?.meta.status === 'uploading' &&
+                            !releaseCreated) ||
+                          (artworkTx &&
+                            trackTx &&
+                            metadataTx &&
+                            !releaseCreated)
+                        }
+                        href={
+                          releaseCreated &&
+                          hubPubkey &&
+                          releaseInfo?.hubRelease?.toBase58()
+                            ? `/${
+                                hubData.handle
+                              }/releases/${releaseInfo?.hubRelease?.toBase58()}`
+                            : `/${releasePubkey?.toBase58()}`
+                        }
+                        sx={{ height: '54px' }}
+                      >
+                        {isPublishing && !releaseCreated && (
+                          <Dots msg={publishingStepText} />
+                        )}
+                        {!isPublishing && buttonText}
+                      </Button>
+                    )}
+
+                  {releaseCreateFee > formattedSolBalance && (
+                    <Button fullWidth variant="outlined" color="primary">
+                      You do not have enough SOL to create a release.
+                    </Button>
+                  )}
+
+                  {!canAddContent && (
                     <Button
                       fullWidth
                       variant="outlined"
@@ -548,100 +699,87 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                         isPublishing ||
                         !formIsValid ||
                         bundlrBalance === 0 ||
-                        mbs < uploadSize ||
+                        availableStorage < uploadSize ||
                         artwork?.meta.status === 'uploading' ||
-                        (track?.meta.status === 'uploading' &&
-                          !releaseCreated) ||
-                        (artworkTx && trackTx && metadataTx && !releaseCreated)
-                      }
-                      href={
-                        releaseCreated &&
-                        hubPubkey &&
-                        releaseInfo?.hubRelease?.toBase58()
-                          ? `/${
-                              hubData.handle
-                            }/releases/${releaseInfo?.hubRelease?.toBase58()}`
-                          : `/${releasePubkey?.toBase58()}`
+                        (track?.meta.status === 'uploading' && !releaseCreated)
                       }
                       sx={{ height: '54px' }}
                     >
-                      {isPublishing && !releaseCreated && (
-                        <Dots msg={publishingStepText} />
-                      )}
-                      {!isPublishing && buttonText}
+                      You do not have allowance or permission to create
+                      releases.
                     </Button>
-                  )
-                )}
-                {!canAddContent && (
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    color="primary"
-                    onClick={(e) => handleSubmit(e)}
-                    disabled={
-                      isPublishing ||
-                      !formIsValid ||
-                      bundlrBalance === 0 ||
-                      mbs < uploadSize ||
-                      artwork?.meta.status === 'uploading' ||
-                      (track?.meta.status === 'uploading' && !releaseCreated)
-                    }
-                    sx={{ height: '54px' }}
-                  >
-                    You do not have allowance or permission to create releases.
-                  </Button>
-                )}
-                {bundlrBalance > 0 && !formValuesConfirmed && (
-                  <ReleaseCreateConfirm
-                    formValues={formValues}
-                    formIsValid={formIsValid && processingProgress === 1}
-                    handleSubmit={(e) => handleSubmit(e)}
-                    setFormValuesConfirmed={setFormValuesConfirmed}
-                    artwork={artwork}
-                    track={track}
-                    profileHubs={profileHubs}
-                    setSelectedHub={setSelectedHub}
-                    selectedHub={selectedHub}
-                    handleChange={(e) => handleHubSelect(e)}
-                    hubPubkey={hubPubkey}
-                    awaitingPendingReleases={awaitingPendingReleases}
-                  />
-                )}
+                  )}
+                  {bundlrBalance > 0 &&
+                    !formValuesConfirmed &&
+                    releaseCreateFee < formattedSolBalance && (
+                      <ReleaseCreateConfirm
+                        formValues={formValues}
+                        formIsValid={formIsValid && processingProgress === 1}
+                        handleSubmit={(e) => handleSubmit(e)}
+                        setFormValuesConfirmed={setFormValuesConfirmed}
+                        artwork={artwork}
+                        track={track}
+                        profileHubs={profileHubs}
+                        setSelectedHub={setSelectedHub}
+                        selectedHub={selectedHub}
+                        handleChange={(e) => handleHubSelect(e)}
+                        hubPubkey={hubPubkey}
+                        awaitingPendingReleases={awaitingPendingReleases}
+                      />
+                    )}
 
-                {pending && (
-                  <LinearProgress
-                    variant="determinate"
-                    value={audioProgress || imageProgress}
-                  />
-                )}
-                <Box display="flex" justifyContent="space-between">
-                  {bundlrBalance > 0 && (
-                    <BundlrBalanceInfo variant="subtitle1" align="left">
-                      Balance: {bundlrBalance?.toFixed(4)} SOL / $
-                      {bundlrUsdBalance.toFixed(2)} / {mbs?.toFixed(2)} MB ($
-                      {(bundlrUsdBalance / mbs)?.toFixed(4)}/MB)
-                    </BundlrBalanceInfo>
+                  {pending && (
+                    <LinearProgress
+                      variant="determinate"
+                      value={audioProgress || imageProgress}
+                    />
                   )}
-                  {bundlrBalance === 0 && (
-                    <BundlrBalanceInfo variant="subtitle1" align="left">
-                      Please fund your Upload Account to enable publishing
-                    </BundlrBalanceInfo>
-                  )}
-                  {uploadSize > 0 && (
-                    <Typography
-                      variant="subtitle1"
-                      align="right"
-                      sx={{ margin: '5px 0' }}
-                    >
-                      Upload Size: {uploadSize} MB | Cost: $
-                      {(uploadSize * (bundlrUsdBalance / mbs)).toFixed(2)}
-                    </Typography>
-                  )}
+                  <Box display="flex" justifyContent="space-between">
+                    {bundlrBalance > 0 && (
+                      <BundlrBalanceInfo variant="subtitle1" align="left">
+                        Balance: {bundlrBalance?.toFixed(4)} SOL / $
+                        {bundlrUsdBalance.toFixed(2)} /{' '}
+                        {availableStorage?.toFixed(2)} MB ($
+                        {(bundlrUsdBalance / availableStorage)?.toFixed(4)}/MB)
+                      </BundlrBalanceInfo>
+                    )}
+                    {bundlrBalance === 0 && (
+                      <BundlrBalanceInfo variant="subtitle1" align="left">
+                        Please fund your Upload Account to enable publishing
+                      </BundlrBalanceInfo>
+                    )}
+                    {uploadSize > 0 && (
+                      <Typography
+                        variant="subtitle1"
+                        align="right"
+                        sx={{ margin: '5px 0' }}
+                      >
+                        Upload Size: {uploadSize} MB | Cost: $
+                        {(
+                          uploadSize *
+                          (bundlrUsdBalance / availableStorage)
+                        ).toFixed(2)}
+                      </Typography>
+                    )}
 
-                  <BundlrModal inCreate={false} displaySmall={true} />
-                </Box>
-              </CreateCta>
-            </NinaBox>
+                    <BundlrModal
+                      showLowUploadModal={showLowUploadModal}
+                      uploadSize={uploadSize}
+                      inCreate={false}
+                      displaySmall={true}
+                      handleLowUploadModalClose={handleLowUploadModalClose}
+                    />
+                  </Box>
+                </CreateCta>
+              </NinaBox>
+            ) : (
+              <NinaBox columns="350px 400px" gridColumnGap="10px">
+                <LowSolWarning
+                  requiredSol={releaseCreateFee}
+                  formattedSolBalance={formattedSolBalance}
+                />
+              </NinaBox>
+            )}
           </>
         )}
     </Grid>

@@ -22,11 +22,11 @@ const MediaDropzone = ({
   inHubCreate,
   update,
   currentImageUrl,
+  closedBundlrModal,
 }) => {
   const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
     Nina.Context
   )
-
   const styles = inHubCreate
     ? {
         dropzone: {
@@ -96,17 +96,16 @@ const MediaDropzone = ({
         if (file.type.includes('audio')) {
           if (file.type !== 'audio/mpeg') {
             alert(`Your track is not an MP3. \nPlease upload an MP3.`)
-          } else {
+          } else if (size > MAX_AUDIO_FILE_UPLOAD_SIZE) {
             alert(
-              `Your track is ${size} mb... \nPlease upload a file smaller than ${MAX_AUDIO_FILE_UPLOAD_SIZE} MBs`
+              `Your track is ${size} mb... \nPlease upload a file smaller than ${MAX_AUDIO_FILE_UPLOAD_SIZE} mbs`
             )
           }
-        } else {
+        } else if (type === 'artwork') {
           alert(
-            `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} MBs`
+            `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} mbs`
           )
         }
-        remove()
       }
 
       if (type === 'artwork') {
@@ -133,6 +132,7 @@ const MediaDropzone = ({
           setUncroppedImage({
             file,
             meta,
+            remove,
           })
         }
       } else if (type === 'track') {
@@ -142,6 +142,7 @@ const MediaDropzone = ({
           setTrack({
             file,
             meta,
+            remove,
           })
         }
       }
@@ -263,7 +264,6 @@ const MediaDropzone = ({
       }}
     />
   )
-
   return (
     <>
       <Dropzone
@@ -272,7 +272,7 @@ const MediaDropzone = ({
         maxFiles={1}
         validate={
           type === 'track'
-            ? (fileWithMeta) => validateTrack(fileWithMeta)
+            ? (fileWithMeta) => validateTrack(fileWithMeta, closedBundlrModal)
             : (fileWithMeta) => validateImage(fileWithMeta)
         }
         SubmitButtonComponent={null}

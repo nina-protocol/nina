@@ -154,7 +154,7 @@ const Post = ({ postDataSsr, hub, postPubkey, hubPostPubkey, hubPubkey }) => {
               >
                 {displayNameForAccount(postData.publisher)}
               </a>{' '}
-              at{' '}
+              on{' '}
               <a
                 href={`https://explorer.solana.com/account/${postData.publicKey}`}
                 target="_blank"
@@ -174,12 +174,16 @@ const PostWrapper = styled(Box)(({ theme }) => ({
   paddingBottom: '40px',
   maxHeight: '86vh',
   overflowX: 'hidden',
+
   '&::-webkit-scrollbar': {
     display: 'none',
   },
   [theme.breakpoints.down('md')]: {
     maxHeight: 'unset',
     paddingBottom: '100px',
+  },
+  a: {
+    textDecoration: 'underline !important',
   },
 }))
 

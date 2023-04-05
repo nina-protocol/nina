@@ -37,7 +37,6 @@ const ReleasePurchase = (props) => {
     amountHeld,
     setAmountHeld,
     isAuthority,
-    releaseGates,
   } = props
   const { enqueueSnackbar } = useSnackbar()
   const { wallet } = useContext(Wallet.Context)
@@ -47,6 +46,7 @@ const ReleasePurchase = (props) => {
     releasePurchaseTransactionPending,
     releaseState,
     getRelease,
+    gatesState,
   } = useContext(Release.Context)
   const {
     getAmountHeld,
@@ -75,6 +75,11 @@ const ReleasePurchase = (props) => {
   const pending = useMemo(
     () => releasePurchasePending[releasePubkey],
     [releasePubkey, releasePurchasePending]
+  )
+
+  const releaseGates = useMemo(
+    () => gatesState[releasePubkey],
+    [gatesState, releasePubkey]
   )
 
   useEffect(() => {
@@ -193,12 +198,11 @@ const ReleasePurchase = (props) => {
       </>
     )
   }
-
   const buttonText =
     release.remainingSupply > 0 || release.remainingSupply === -1
       ? `${
           release.price > 0
-            ? `Buy $${ninaClient.nativeToUiString(
+            ? `Buy ${ninaClient.nativeToUiString(
                 release.price,
                 release.paymentMint
               )}`
@@ -216,107 +220,122 @@ const ReleasePurchase = (props) => {
   }
 
   return (
-    <Box>
-      <AmountRemaining variant="body2" align="left">
-        {release.editionType === 'open' ? (
-          <Typography
-            variant="body2"
-            align="left"
-            sx={{ color: '#black !important' }}
-          >
-            Open Edition:{' '}
-            {`${release?.saleCounter > 0 ? release?.saleCounter : 0} Sold`}
-          </Typography>
-        ) : (
-          <>
-            Remaining: <span>{release.remainingSupply} </span> /{' '}
-            {release.totalSupply}
-          </>
-        )}
-      </AmountRemaining>
-
-      <Typography variant="body2" align="left" paddingBottom="10px">
-        Artist Resale: {release.resalePercentage / 10000}%
-      </Typography>
-      <Typography variant="body2" align="left" paddingBottom="10px">
-        {' '}
-        <StyledLink href={`${pathString}/${releasePubkey}/market`} passHref>
-          {`View Secondary Market (${exchangeTotalBuys + exchangeTotalSells})`}
-        </StyledLink>
-      </Typography>
-      <CollectorModal releasePubkey={releasePubkey} metadata={metadata} />
-      <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
-      {wallet?.connected && (
-        <StyledUserAmount>
-          {metadata && (
+    <Box sx={{ position: 'relative', height: '100%' }}>
+      <Box>
+        <AmountRemaining variant="body2" align="left">
+          {release.editionType === 'open' ? (
+            <Typography
+              variant="body2"
+              align="left"
+              sx={{ color: '#black !important' }}
+            >
+              Open Edition:{' '}
+              {`${release?.saleCounter > 0 ? release?.saleCounter : 0} Sold`}
+            </Typography>
+          ) : (
             <>
-              <Typography
-                variant="body2"
-                align="left"
-                gutterBottom
-                paddingBottom={'5px'}
-                cursor="default"
-              >
-                {`Catalog no. ${metadata.symbol}`}
-              </Typography>
-              <Typography
-                variant="body2"
-                align="left"
-                gutterBottom
-                cursor="default"
-              >
-                {amountHeld > 0 &&
-                  `You own ${
-                    amountHeld > 1 ? `${amountHeld} editions of` : ''
-                  } this release`}
-              </Typography>
+              Remaining: <span>{release.remainingSupply} </span> /{' '}
+              {release.totalSupply}
             </>
           )}
-          {amountPendingSales > 0 ? (
-            <Typography variant="body2" align="left" gutterBottom>
-              {amountPendingSales} pending sale
-              {amountPendingSales > 1 ? 's' : ''}{' '}
-            </Typography>
-          ) : null}
-          {amountPendingBuys > 0 ? (
-            <Typography variant="body2" align="left" gutterBottom>
-              {amountPendingBuys} pending buy
-              {amountPendingBuys > 1 ? 's' : ''}{' '}
-            </Typography>
-          ) : null}
-        </StyledUserAmount>
-      )}
-      {publishedHub && (
+        </AmountRemaining>
+
         <Typography variant="body2" align="left" paddingBottom="10px">
-          <StyledLink
-            href={`/hubs/${publishedHub.publicKey}`}
-            target="_blank"
-            rel="noreferrer"
-            passHref
-          >
-            {`Published via ${publishedHub.data.displayName}`}
+          Artist Resale: {release.resalePercentage / 10000}%
+        </Typography>
+        <Typography variant="body2" align="left" paddingBottom="10px">
+          {' '}
+          <StyledLink href={`${pathString}/${releasePubkey}/market`} passHref>
+            {`View Secondary Market (${
+              exchangeTotalBuys + exchangeTotalSells
+            })`}
           </StyledLink>
         </Typography>
-      )}
-      <StyledDescription align="left">{description}</StyledDescription>
-      <Box sx={{ mb: 1, mt: 1 }}>
-        <form onSubmit={handleSubmit}>
-          <Button
-            variant="outlined"
-            type="submit"
-            fullWidth
-            disabled={release.remainingSupply === 0 ? true : false}
-          >
-            <Typography variant="body2">
-              {txPending && <Dots msg="preparing transaction" />}
-              {!txPending && pending && <Dots msg="awaiting wallet approval" />}
-              {!txPending && !pending && buttonText}
-            </Typography>
-          </Button>
-        </form>
+        <CollectorModal releasePubkey={releasePubkey} metadata={metadata} />
+        <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
+        {wallet?.connected && (
+          <StyledUserAmount>
+            {metadata && (
+              <>
+                <Typography
+                  variant="body2"
+                  align="left"
+                  gutterBottom
+                  paddingBottom={'5px'}
+                  cursor="default"
+                >
+                  {`Catalog no. ${metadata.symbol}`}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  align="left"
+                  gutterBottom
+                  cursor="default"
+                >
+                  {amountHeld > 0 &&
+                    `You own ${
+                      amountHeld > 1 ? `${amountHeld} editions of` : ''
+                    } this release`}
+                </Typography>
+              </>
+            )}
+            {amountPendingSales > 0 ? (
+              <Typography variant="body2" align="left" gutterBottom>
+                {amountPendingSales} pending sale
+                {amountPendingSales > 1 ? 's' : ''}{' '}
+              </Typography>
+            ) : null}
+            {amountPendingBuys > 0 ? (
+              <Typography variant="body2" align="left" gutterBottom>
+                {amountPendingBuys} pending buy
+                {amountPendingBuys > 1 ? 's' : ''}{' '}
+              </Typography>
+            ) : null}
+          </StyledUserAmount>
+        )}
+        {publishedHub && (
+          <Typography variant="body2" align="left" paddingBottom="10px">
+            <StyledLink
+              href={`/hubs/${publishedHub.publicKey}`}
+              target="_blank"
+              rel="noreferrer"
+              passHref
+            >
+              {`Published via ${publishedHub.data.displayName}`}
+            </StyledLink>
+          </Typography>
+        )}
+        <StyledDescription align="left" releaseGates={releaseGates}>
+          {description}
+        </StyledDescription>
       </Box>
+      <Box
+        sx={{
+          position: { xs: 'relative', md: 'absolute' },
+          bottom: '0',
+          width: '100%',
+          background: 'white',
+        }}
+      >
+        <Box sx={{ mb: 0, mt: 1 }}>
+          <form onSubmit={handleSubmit}>
+            <Button
+              variant="outlined"
+              type="submit"
+              fullWidth
+              disabled={release.remainingSupply === 0 ? true : false}
+            >
+              <Typography variant="body2">
+                {txPending && <Dots msg="preparing transaction" />}
+                {!txPending && pending && (
+                  <Dots msg="awaiting wallet approval" />
+                )}
+                {!txPending && !pending && buttonText}
+              </Typography>
+            </Button>
+          </form>
+        </Box>
 
-      <Box>
         <Gates
           release={release}
           metadata={metadata}
@@ -352,7 +371,7 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
 }))
 
-const StyledDescription = styled(Typography)(({ theme }) => ({
+const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({
   overflowWrap: 'anywhere',
   fontSize: '18px !important',
   lineHeight: '20.7px !important',
@@ -360,9 +379,8 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
     display: 'none',
   },
   [theme.breakpoints.up('md')]: {
-    maxHeight: '152px',
+    maxHeight: releaseGates ? '182px' : '256px',
     overflowY: 'scroll',
-    height: '152px',
   },
 }))
 

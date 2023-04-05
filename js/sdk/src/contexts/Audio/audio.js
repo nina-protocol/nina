@@ -18,6 +18,7 @@ const AudioPlayerContextProvider = ({ children }) => {
   const [playlist, setPlaylist] = useState([])
   const [isPlaying, setIsPlaying] = useState(false)
   const [initialized, setInitialized] = useState(false)
+  const [broadcastChannel, setBroadcastChannel] = useState(null)
   const audioPlayerRef = useRef()
   const activeIndexRef = useRef()
 
@@ -41,6 +42,16 @@ const AudioPlayerContextProvider = ({ children }) => {
     activeIndexRef.current = playlist.indexOf(track) || 0
   }, [track])
 
+  useEffect(() => {
+    var bc = new BroadcastChannel('nina_channel')
+    bc.onmessage = function (ev) {
+      if (ev.data.type === 'updateTabPlaying') {
+        setIsPlaying(false)
+      }
+    }
+    setBroadcastChannel(bc)
+  }, [])
+
   const {
     reorderPlaylist,
     removeTrackFromPlaylist,
@@ -61,6 +72,7 @@ const AudioPlayerContextProvider = ({ children }) => {
     activeIndexRef,
     track,
     setInitialized,
+    broadcastChannel,
   })
 
   const updateTrack = (
@@ -70,6 +82,11 @@ const AudioPlayerContextProvider = ({ children }) => {
     hubPublicKey = null
   ) => {
     setInitialized(true)
+
+    if (shouldPlay) {
+      broadcastChannel.postMessage({ type: 'updateTabPlaying' })
+    }
+
     const existingTrack = playlist.filter(
       (item) => item.releasePubkey === releasePubkey
     )[0]
@@ -85,7 +102,9 @@ const AudioPlayerContextProvider = ({ children }) => {
     } else {
       setTrack(existingTrack)
     }
+
     setIsPlaying(shouldPlay)
+
     if (shouldPlay) {
       const params = {
         publicKey: releasePubkey,
@@ -142,6 +161,7 @@ const audioPlayerContextHelper = ({
   track,
   ninaClient,
   setInitialized,
+  broadcastChannel,
 }) => {
   const reorderPlaylist = (updatedPlaylist) => {
     setPlaylist([...updatedPlaylist])
@@ -257,6 +277,8 @@ const audioPlayerContextHelper = ({
     })
     setTrack(newPlaylist[0])
     setPlaylist(newPlaylist)
+    broadcastChannel.postMessage({ type: 'updateTabPlaying' })
+
     setIsPlaying(true)
   }
 
@@ -272,6 +294,10 @@ const audioPlayerContextHelper = ({
         releasePubkey,
         cover: releaseMetadata.image,
         duration: releaseMetadata.properties.files[0].duration,
+        hubHandle: releaseMetadata.hubHandle,
+        contentType: releaseMetadata.contentType,
+        hubPostPubkey: releaseMetadata.hubPostPubkey,
+        hubReleaseId: releaseMetadata.hubReleaseId,
       }
     }
     return playlistEntry

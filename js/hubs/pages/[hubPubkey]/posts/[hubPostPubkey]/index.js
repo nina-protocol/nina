@@ -8,10 +8,10 @@ import Dots from '../../../../components/Dots'
 const Post = dynamic(() => import('../../../../components/Post'))
 
 const PostPage = (props) => {
-  const { post, hub, loading } = props
+  const { post, hub, loading, hubPubkey, hubPostPubkey } = props
 
   if (!post) {
-    return <NotFound hub={hub} />
+    return <NotFound path={`/${hubPubkey}/posts/${hubPostPubkey}`} />
   }
   return (
     <>
@@ -97,6 +97,8 @@ export const getStaticProps = async (context) => {
       props: {
         post,
         hub,
+        hubPubkey: context.params.hubPubkey,
+        hubPostPubkey: context.params.hubPostPubkey,
       },
       revalidate: 10,
     }

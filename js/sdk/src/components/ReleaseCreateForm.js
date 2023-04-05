@@ -13,7 +13,14 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormControl from '@mui/material/FormControl'
 import FormLabel from '@mui/material/FormLabel'
+import { useWallet } from '@solana/wallet-adapter-react'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
+
+const SOL_DENOMINATED_WALLETS = [
+  'HesfTj24Eatwy8vvra5UdhX1xJWLeqRM7QdDwjX1xmmk',
+  '3Z8cBM8XT5CBJwVJzpZo6ikkinYma1EEqN2o39ZFYApZ',
+  '7g2euzpRxm2A9kgk4UJ9J5ntUYvodTw4s4m7sL1C8JE',
+]
 
 const ReleaseCreateForm = ({
   field,
@@ -25,7 +32,9 @@ const ReleaseCreateForm = ({
   touched,
   disabled,
 }) => {
+  const wallet = useWallet()
   const [isOpen, setIsOpen] = useState(false)
+  const [isUsdc, setIsUsdc] = useState(true)
   const [inputValue, setInputValue] = useState(undefined)
   const editionRef = useRef(isOpen)
 
@@ -34,6 +43,12 @@ const ReleaseCreateForm = ({
       onChange(values)
     }
   }, [values])
+
+  useEffect(() => {
+    if (SOL_DENOMINATED_WALLETS.includes(wallet?.publicKey.toBase58())) {
+      setIsUsdc(false)
+    }
+  }, [wallet])
 
   useEffect(() => {
     if (isOpen) {
@@ -46,6 +61,14 @@ const ReleaseCreateForm = ({
       setFieldValue('isOpen', false)
     }
   }, [isOpen])
+
+  useEffect(() => {
+    if (isUsdc) {
+      setFieldValue('isUsdc', true)
+    } else {
+      setFieldValue('isUsdc', false)
+    }
+  }, [isUsdc])
 
   const valuetext = (value) => {
     return `${value}%`
@@ -208,14 +231,15 @@ const ReleaseCreateForm = ({
             </Box>
           )}
         </Field>
-
         <Field name="retailPrice">
           {({ field }) => (
             <Box className={classes.fieldInputWrapper}>
               <TextField
                 className={`${classes.formField}`}
                 variant="standard"
-                label={formatPlaceholder('Price')}
+                label={`${formatPlaceholder('Price')}${
+                  !isUsdc ? ' (SOL)' : ''
+                }`}
                 size="small"
                 InputLabelProps={touched.retailPrice ? { shrink: true } : ''}
                 placeholder={
@@ -382,6 +406,7 @@ export default withFormik({
       retailPrice: undefined,
       resalePercentage: 10,
       isOpen: false,
+      isUsdc: true,
     }
   },
 })(ReleaseCreateForm)

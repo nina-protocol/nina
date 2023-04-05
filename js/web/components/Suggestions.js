@@ -5,7 +5,6 @@ import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Link from 'next/link'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
-import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
 const { getImageFromCDN, loader } = imageManager
 import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/router'
@@ -53,7 +52,7 @@ const Suggestions = ({ items, itemsTotal, publicKey, toggleDrawer }) => {
           <CopyWrapper>
             <Typography my={1} align="left">
               <Link href={`/hubs/${hub?.handle}`} passHref>
-                {`${hub.data.displayName}`}
+                <a>{`${hub.data.displayName}`}</a>
               </Link>
             </Typography>
 

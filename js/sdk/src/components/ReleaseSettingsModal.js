@@ -12,8 +12,8 @@ import Gates from './Gates'
 import Wallet from '../contexts/Wallet'
 import CloseIcon from '@mui/icons-material/Close'
 import CloseRelease from './CloseRelease'
-import gateWhitelist from '../utils/gateWhitelist'
 import ReleaseSettingsWelcome from './ReleaseSettingsWelcome'
+import ShareToTwitter from './ShareToTwitter'
 const ReleaseSettingsModal = ({
   releasePubkey,
   metadata,
@@ -31,7 +31,6 @@ const ReleaseSettingsModal = ({
   const handleClose = () => {
     setOpen(false)
   }
-
   return (
     <Root>
       {isAuthority && <ReleaseSettingsWelcome />}
@@ -71,8 +70,12 @@ const ReleaseSettingsModal = ({
             {userIsRecipient && (
               <Royalty releasePubkey={releasePubkey} release={release} />
             )}
-
-            {isAuthority && gateWhitelist.includes(publicKey.toBase58()) && (
+            <ShareToTwitter
+              artist={metadata.properties.artist}
+              title={metadata.properties.title}
+              releasePubkey={releasePubkey}
+            />
+            {isAuthority && (
               <>
                 <Gates
                   release={release}
@@ -83,7 +86,6 @@ const ReleaseSettingsModal = ({
                   inSettings={true}
                   releaseGates={releaseGates}
                 />
-
                 <CloseRelease releasePubkey={releasePubkey} release={release} />
               </>
             )}

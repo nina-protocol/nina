@@ -8,7 +8,7 @@ import {
 } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
 import { logEvent } from '../../utils/event'
-import { truncateAddress } from '../../utils/truncateAddress'
+import { truncateAddress } from '../../utils/truncateManager'
 import Airtable from 'airtable'
 import { getConfirmTransaction } from '../../utils'
 
@@ -59,6 +59,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [subscriptionState, setSubscriptionState] = useState({})
   const [verificationState, setVerificationState] = useState({})
   const [usdcBalance, setUsdcBalance] = useState(0)
+  const [solBalanceFetched, setSolBalanceFetched] = useState(false)
   const [solBalance, setSolBalance] = useState(0)
   const [lowSolBalance, setLowSolBalance] = useState(false)
   const [solUsdcBalance, setSolUsdcBalance] = useState(0)
@@ -150,6 +151,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     setSolUsdcBalance,
     solBalance,
     setSolBalance,
+    setSolBalanceFetched,
     verificationState,
     setVerificationState,
     setLowSolBalance,
@@ -217,6 +219,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         filterSubscriptionsForHub,
         submitEmailRequest,
         lowSolBalance,
+        solBalanceFetched,
         getUsdcToSolSwapData,
         MAX_AUDIO_FILE_UPLOAD_SIZE,
         MAX_IMAGE_FILE_UPLOAD_SIZE,
@@ -246,6 +249,7 @@ const ninaContextHelper = ({
   setSolUsdcBalance,
   solBalance,
   setSolBalance,
+  setSolBalanceFetched,
   verificationState,
   setVerificationState,
   setLowSolBalance,
@@ -600,6 +604,7 @@ const ninaContextHelper = ({
     )
 
     setSolBalance(solUsdcBalanceResult)
+    setSolBalanceFetched(true)
     if (solUsdcBalanceResult < 10000000) {
       setLowSolBalance(true)
     }
@@ -818,6 +823,9 @@ const ninaContextHelper = ({
             ninaErrorHandler(error)
           }
           getBundlrBalance()
+          logEvent(`bundlr_upload_success`, 'engagement', {
+            wallet: provider.wallet.publicKey.toBase58(),
+          })
           resolve(txId)
         }
         reader.onerror = (error) => {
@@ -867,9 +875,6 @@ const ninaContextHelper = ({
       const error = new Error(
         `You do not have enough SOL to send the transaction: ${action}.  You need at least ${NinaProgramActionCost[action]} SOL.`
       )
-      logEvent(`bundlr_upload_init`, 'engagement', {
-        wallet: provider.wallet.publicKey.toBase58(),
-      })
       return ninaErrorHandler(error)
     }
     return undefined

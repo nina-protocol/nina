@@ -5,13 +5,36 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import axios from 'axios'
 
 const NotFound = (props) => {
-  let { hub } = props
+  let { hub, path } = props
   const [hubHandle, setHubHandle] = useState()
   let hubPubkey
   const { saveHubsToState, getHubContent, hubState } = useContext(Hub.Context)
   const router = useRouter()
+
+  const [revalidationAttempted, setRevalidationAttemped] = useState(false)
+  const revalidate = async (path) => {
+    await axios.post(
+      `${process.env.SERVERLESS_HOST}/api/revalidate?token=${process.env.REVALIDATE_TOKEN}`,
+      {
+        path,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+  }
+
+  useEffect(() => {
+    if (!revalidationAttempted) {
+      revalidate(path)
+      setRevalidationAttemped(true)
+    }
+  }, [revalidationAttempted, path])
 
   useEffect(() => {
     if (hub) {
@@ -43,11 +66,25 @@ const NotFound = (props) => {
   return (
     <StyledBox>
       <Typography variant="h2" align="left">
-        There&apos;s nothing here...
+        {path?.includes('releases') && (
+          <>There was a problem loading the Release.</>
+        )}
+        {path?.includes('posts') && <>There was a problem loading the Post.</>}
+        {!path && <>There was a problem loading the Hub.</>}
       </Typography>
-
+      {path && (
+        <Typography
+          variant="h2"
+          align="left"
+          sx={{ mt: '15px', color: `palette.blue` }}
+        >
+          <Link href={path}>Retry?</Link>
+        </Typography>
+      )}
       <Typography variant="h2" align="left" sx={{ mt: '15px' }}>
-        <Link href="/all">Explore all Hubs</Link>
+        <Link href="/all">
+          <a>Explore all Hubs</a>
+        </Link>
       </Typography>
 
       {(router.query.hubPostPubkey || router.query.hubReleasePubkey) &&
@@ -55,9 +92,11 @@ const NotFound = (props) => {
           <>
             <Typography variant="h2" align="left" sx={{ mt: '15px' }}>
               <Link href={`/${router.query.hubPubkey}`}>
-                {`Explore ${
-                  hub?.data.displayName || hubData?.data.displayName
-                }`}
+                <a>
+                  {`Explore ${
+                    hub?.data.displayName || hubData?.data.displayName
+                  }`}
+                </a>
               </Link>
             </Typography>
           </>

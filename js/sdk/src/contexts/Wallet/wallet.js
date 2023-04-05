@@ -67,8 +67,16 @@ const walletContextHelper = ({ setMagicWallet, connection }) => {
         },
         sendTransaction: async (transaction) => {
           const serializedTransaction = transaction.serializeMessage()
-          const signedTransaction = await magic.solana.signTransaction(serializedTransaction)
-          const txid = await connection.sendRawTransaction(serializedTransaction)
+          console.log('serializedTransaction', serializedTransaction)
+          console.log('magic', magic.solana)
+          const serializeConfig = {
+            requireAllSignatures: false,
+            verifySignatures: true
+          };
+      
+          const signedTransaction = await magic.solana.signTransaction(transaction, serializeConfig)
+          console.log('signedTransaction', signedTransaction)
+          const txid = await connection.sendRawTransaction(signedTransaction.rawTransaction)
           return txid
         },
         wallet: {

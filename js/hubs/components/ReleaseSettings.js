@@ -141,7 +141,7 @@ const ReleaseSettings = (props) => {
             sx={{ margin: '15px 0!important' }}
             onClick={() =>
               window.open(
-                `https://twitter.com/intent/tweet?text=${`${displayValues.artist} - "${displayValues.title}" on Nina%0A`}&url=ninaprotocol.com/${releasePubkey}`,
+                `https://twitter.com/intent/tweet?text=${`${displayValues.artist} - "${displayValues.title}" on @ninaprotocol%0A`}&url=ninaprotocol.com/${releasePubkey}`,
                 null,
                 'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
               )
@@ -157,11 +157,13 @@ const ReleaseSettings = (props) => {
               sx={{ marginTop: '10px !important' }}
             >
               <Link href={`/${releasePubkey}`} passHref>
-                <Typography variant="body2">
-                  {metadata
-                    ? 'View Release'
-                    : 'Your release is currently being finalized...'}
-                </Typography>
+                <a>
+                  <Typography variant="body2">
+                    {metadata
+                      ? 'View Release'
+                      : 'Your release is currently being finalized...'}
+                  </Typography>
+                </a>
               </Link>
             </Button>
           )}

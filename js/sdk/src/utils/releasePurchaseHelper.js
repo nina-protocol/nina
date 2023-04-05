@@ -10,9 +10,10 @@ import { Percentage } from '@orca-so/common-sdk'
 import axios from 'axios'
 import {
   findOrCreateAssociatedTokenAccount,
-  wrapSol,
   TOKEN_PROGRAM_ID,
+  wrapSol,
 } from './web3'
+
 import { decodeNonEncryptedByteArray } from './encrypt'
 import { encodeBase64 } from 'tweetnacl-util'
 
@@ -119,6 +120,7 @@ const releasePurchaseHelper = async (
   usdcBalance,
   hubPubkey = null
 ) => {
+  console.log('provider: ', provider.publicKey.toBase58())
   let hub
   releasePubkey = new anchor.web3.PublicKey(releasePubkey)
   const program = await ninaClient.useProgram()
@@ -130,7 +132,8 @@ const releasePurchaseHelper = async (
     console.log('wallet.publicKey.toBase58(): ', provider.wallet.publicKey.toBase58())
     const signature = await provider.wallet.signMessage(messageBase64)
     const signatureBase64 = encodeBase64(signature)
-
+    console.log('signatureBase64: ', signatureBase64)
+    console.log('signature: ', signature)
     const response = await axios.get(
       `${process.env.NINA_IDENTITY_ENDPOINT}/claim/${
         releasePubkey.toBase58()
@@ -246,17 +249,17 @@ const releasePurchaseHelper = async (
   if (hub && hub.referralFee.toNumber() > 0) {
     let releasePriceUi = ninaClient.nativeToUi(
       release.price.toNumber(),
-      ninaClient.ids.mints.usdc
+      release.paymentMint
     )
 
     let convertAmount =
       releasePriceUi + (releasePriceUi * hub.referralFee.toNumber()) / 1000000
     price = new anchor.BN(
-      ninaClient.uiToNative(convertAmount, ninaClient.ids.mints.usdc)
+      ninaClient.uiToNative(convertAmount, release.paymentMint)
     )
   }
-
-  if (requiresSwap(release, price, usdcBalance, ninaClient)) {
+  const isUsdc = ninaClient.isUsdc(release.paymentMint)
+  if (isUsdc && requiresSwap(release, price, usdcBalance, ninaClient)) {
     return releasePurchaseWithOrcaSwap(
       release,
       price,
@@ -275,17 +278,18 @@ const releasePurchaseHelper = async (
       request.instructions = formattedInstructions
     }
     if (ninaClient.isSol(release.paymentMint)) {
-      const { instructions, signers } = await wrapSol(
+      const [wrappedSolAccount, wrappedSolInstructions] = await wrapSol(
         provider,
-        new anchor.BN(release.price)
+        release.price,
+        release.paymentMint
       )
+
       if (!request.instructions) {
-        request.instructions = [...instructions]
+        request.instructions = [...wrappedSolInstructions]
       } else {
-        request.instructions.push(...instructions)
+        request.instructions.push(...wrappedSolInstructions)
       }
-      request.signers = signers
-      request.accounts.payerTokenAccount = signers[0].publicKey
+      request.accounts.payerTokenAccount = wrappedSolAccount
     }
 
     if (hub) {
@@ -295,7 +299,11 @@ const releasePurchaseHelper = async (
         request
       )
     } else {
-      return await program.rpc.releasePurchase(release.price, request)
+      const tx = await program.transaction.releasePurchase(release.price, request)
+      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      console.log('tx: ', tx)
+      return await provider.wallet.sendTransaction(tx)
     }
   }
 }

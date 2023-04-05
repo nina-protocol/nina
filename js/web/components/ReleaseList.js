@@ -93,7 +93,7 @@ const ReleaseList = () => {
                     rel="noreferrer"
                     passHref
                   >
-                    How do I withdraw my USDC?
+                    <a>How do I withdraw my USDC?</a>
                   </Link>
                 </ReleaseStats>
               )}
@@ -111,7 +111,9 @@ const ReleaseList = () => {
                 sx={{ paddingBottom: '10px' }}
               >{`You haven't published any music yet.`}</Typography>
               <Link href="/upload" passHref>
-                <Typography>Start Uploading</Typography>
+                <a>
+                  <Typography>Start Uploading</Typography>
+                </a>
               </Link>
             </Box>
           )}

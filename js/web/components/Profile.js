@@ -62,7 +62,7 @@ const Profile = ({ profilePubkey }) => {
   const [profileVerifications, setProfileVerifications] = useState([])
 
   const [inDashboard, setInDashboard] = useState(false)
-
+  const [inCollection, setInCollection] = useState(false)
   const [fetched, setFetched] = useState(false)
 
   const [views, setViews] = useState([
@@ -93,7 +93,10 @@ const Profile = ({ profilePubkey }) => {
   }, [profilePubkey])
 
   useEffect(() => {
-    setInDashboard(wallet.connected && profilePubkey === wallet.publicKey?.toBase58())
+    if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
+      setInDashboard(true)
+      setInCollection(true)
+    }
   }, [wallet, profilePubkey])
 
   useEffect(() => {
@@ -264,7 +267,7 @@ const Profile = ({ profilePubkey }) => {
     tableContainerRef.current.scrollTo(0, 0)
   }
 
-  const renderTables = (activeView, inDashboard, profilePublicKey) => {
+  const renderTables = (activeView, inDashboard) => {
     switch (activeView) {
       case 0:
         return (
@@ -300,6 +303,7 @@ const Profile = ({ profilePubkey }) => {
                 tableType={'profileCollectionReleases'}
                 items={profileCollectionReleases}
                 hasOverflow={true}
+                inCollection={inCollection}
               />
             )}
           </>
@@ -442,7 +446,7 @@ const Profile = ({ profilePubkey }) => {
             </ProfileDotWrapper>
           )}
           <ProfileTableContainer ref={tableContainerRef}>
-            {hasData && renderTables(activeView, inDashboard)}
+            {hasData && renderTables(activeView, inDashboard, inCollection)}
           </ProfileTableContainer>
         </>
       </ProfileContainer>

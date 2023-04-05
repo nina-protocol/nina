@@ -1,14 +1,11 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
-import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import Fade from '@mui/material/Fade'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
@@ -36,7 +33,9 @@ const ReleaseCard = (props) => {
     amountHeld,
     isAuthority,
     userIsRecipient,
+    hub,
   } = props
+  const { enqueueSnackbar } = useSnackbar()
   const {
     updateTrack,
     addTrackToQueue,
@@ -45,19 +44,7 @@ const ReleaseCard = (props) => {
     track,
     setInitialized,
   } = useContext(Audio.Context)
-  const { hubState } = useContext(Hub.Context)
   const { displayNameForAccount } = useContext(Nina.Context)
-  const { releaseState } = useContext(Release.Context)
-
-  const { enqueueSnackbar } = useSnackbar()
-  const hub = useMemo(() => {
-    const hubPublicKey =
-      releaseState.metadata[releasePubkey]?.publishedThroughHub
-      if (hubPublicKey) {
-        return hubState[hubPublicKey]
-      }
-      return null
-  }, [releaseState, hubState, releasePubkey])
 
   const image = useMemo(() => metadata?.image)
   const title = useMemo(() => {
@@ -84,6 +71,7 @@ const ReleaseCard = (props) => {
         },
         responseType: 'blob',
       })
+
       if (response?.data) {
         const a = document.createElement('a')
         const url = window.URL.createObjectURL(response.data)
@@ -176,35 +164,31 @@ const ReleaseCard = (props) => {
         )}
         {metadata && (
           <>
-            <Fade in={true}>
-              <Typography variant="subtitle" color="white" align="left">
-                <Link
-                  href={
-                    hub
-                      ? `/hubs/${hub.handle}`
-                      : `/profiles/${release?.authority}`
-                  }
-                >
-                  <a style={{ color: 'white' }}>
-                    {hub
-                      ? hub.data.displayName
-                      : displayNameForAccount(release?.authority)}
-                  </a>
-                </Link>
-              </Typography>
-            </Fade>
-            <Fade in={true}>
-              <Typography variant="h4" color="white" align="left">
-                {metadata?.properties?.artist.substring(0, 100) ||
-                  metadata?.artist.substring(0, 100)}{' '}
-                - <i>{title}</i>
-              </Typography>
-            </Fade>
+            <Typography variant="subtitle" color="white" align="left">
+              <Link
+                href={
+                  hub
+                    ? `/hubs/${hub.handle}`
+                    : `/profiles/${release?.authority}`
+                }
+              >
+                <a style={{ color: 'white' }}>
+                  {hub
+                    ? hub.data.displayName
+                    : displayNameForAccount(release?.authority)}
+                </a>
+              </Link>
+            </Typography>
+            <Typography variant="h4" color="white" align="left">
+              {metadata?.properties?.artist.substring(0, 100) ||
+                metadata?.artist.substring(0, 100)}{' '}
+              - <i>{title}</i>
+            </Typography>
           </>
         )}
       </StyledReleaseInfo>
 
-      <Box>
+      <Box sx={{ minHeight: { xs: '300px', md: '382.5px' } }}>
         {preview && (
           <Image
             src={

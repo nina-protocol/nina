@@ -20,6 +20,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 
 const linksConnected = [
+  'home',
   'dashboard',
   'all Releases',
   'hubs',
@@ -241,9 +242,11 @@ const NavDrawer = () => {
                   key={link}
                   passHref
                 >
-                  <ListItem button key={link}>
-                    <StyledListItemText primary={link} />
-                  </ListItem>
+                  <a>
+                    <ListItem button key={link}>
+                      <StyledListItemText primary={link} />
+                    </ListItem>
+                  </a>
                 </Link>
               )
           }

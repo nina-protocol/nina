@@ -53,6 +53,7 @@ export default [
       Gates: 'src/components/Gates.js',
       ReleaseSettingsModal: 'src/components/ReleaseSettingsModal.js',
       WalletConnectModal: 'src/components/WalletConnectModal.js',
+      WalletButton: 'src/components/WalletButton.js',
     },
     output: [
       {

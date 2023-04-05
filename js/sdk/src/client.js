@@ -87,10 +87,12 @@ const NinaClient = function (provider, network) {
     const isUsdc = obj.isUsdc(mint)
     let amountString = obj
       .nativeToUi(amount, mint)
-      .toFixed(isUsdc || decimalOverride ? 2 : 4)
+      .toFixed(isUsdc || decimalOverride ? 2 : 3)
 
     if (showCurrency) {
-      amountString = `${amountString} ${isUsdc ? 'USDC' : 'SOL'}`
+      amountString = `${isUsdc ? '$' : ''}${amountString} ${
+        isUsdc ? 'USDC' : 'SOL'
+      }`
     }
     return amountString
   }
