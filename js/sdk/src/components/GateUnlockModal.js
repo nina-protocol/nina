@@ -139,30 +139,13 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate, inHubs }) => {
           </Fade>
         </StyledModal>
       </Root>
-      {amountHeld === 0 && !inHubs && (
-        <Box sx={{}}>
-          <StyledTypographyButtonSub>
-            {`There ${gates.length > 1 ? 'are' : 'is'} ${gates.length} ${
-              gates.length > 1 ? 'files' : 'file'
-            } available for download exclusively to owners of this release.`}
-          </StyledTypographyButtonSub>
-        </Box>
-      )}
     </>
   )
 }
 
 const Root = styled('div')(() => ({
   display: 'flex',
-  alignItems: 'center',
   width: '100%',
-}))
-
-const StyledTypographyButtonSub = styled(Typography)(({ theme }) => ({
-  color: theme.palette.grey[500],
-  textAlign: 'left',
-  paddingTop: '8px',
-  fontSize: '12px',
 }))
 
 const StyledTypography = styled(Typography)(({ theme }) => ({

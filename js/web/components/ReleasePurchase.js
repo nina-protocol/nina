@@ -29,8 +29,12 @@ import rehypeExternalLinks from 'rehype-external-links'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
 
-const Gates = dynamic(() => import('@nina-protocol/nina-internal-sdk/esm/Gates'))
-const RedeemReleaseCode = dynamic(() => import('@nina-protocol/nina-internal-sdk/esm/RedeemReleaseCode'))
+const Gates = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/Gates')
+)
+const RedeemReleaseCode = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/RedeemReleaseCode')
+)
 
 const ReleasePurchase = (props) => {
   const {
@@ -222,8 +226,6 @@ const ReleasePurchase = (props) => {
     pathString = '/collection'
   }
 
-  
-
   return (
     <Box sx={{ position: 'relative', height: '100%' }}>
       <Box>
@@ -323,7 +325,6 @@ const ReleasePurchase = (props) => {
         }}
       >
         <Box sx={{ mb: 1, mt: 1 }}>
-          
           <form onSubmit={handleSubmit}>
             <Button
               variant="outlined"
@@ -351,7 +352,18 @@ const ReleasePurchase = (props) => {
           inSettings={false}
           releaseGates={releaseGates}
         />
-        <RedeemReleaseCode releasePubkey={releasePubkey}/>
+        <Box sx={{ position: 'absolute', top: '110%' }}>
+          {amountHeld === 0 && (
+            <StyledTypographyButtonSub>
+              {`There ${releaseGates.length > 1 ? 'are' : 'is'} ${
+                releaseGates.length
+              } ${
+                releaseGates.length > 1 ? 'files' : 'file'
+              } available for download exclusively to owners of this release.`}
+            </StyledTypographyButtonSub>
+          )}
+          <RedeemReleaseCode releasePubkey={releasePubkey} />
+        </Box>
       </Box>
     </Box>
   )
@@ -376,6 +388,12 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
   paddingBottom: '10px',
   display: 'flex',
   flexDirection: 'column',
+}))
+
+const StyledTypographyButtonSub = styled(Typography)(({ theme }) => ({
+  color: theme.palette.grey[500],
+  textAlign: 'center',
+  fontSize: '12px',
 }))
 
 const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({

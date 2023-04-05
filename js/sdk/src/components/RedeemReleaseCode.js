@@ -55,9 +55,11 @@ const RedeemReleaseCode = (props) => {
   }
   return (
     <Root>
-      <StyledButton onClick={() => setOpen(true)}>
-        Redeem Release Code
-      </StyledButton>
+      <Box>
+        <StyledButton onClick={() => setOpen(true)}>
+          Redeem Release Code
+        </StyledButton>
+      </Box>
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -104,7 +106,6 @@ const RedeemReleaseCode = (props) => {
 
 const Root = styled('div')(() => ({
   display: 'flex',
-  alignItems: 'center',
   width: '100%',
 }))
 
@@ -114,6 +115,9 @@ const StyledButton = styled(Button)(({ theme }) => ({
   textDecoration: 'underline',
   color: theme.palette.black,
   padding: '0px',
+  marginTop: '8px',
+  color: theme.palette.grey[500],
+  textTransform: 'capitalize',
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
