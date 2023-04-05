@@ -291,14 +291,22 @@ const ninaContextHelper = ({
 
       let tx
       if (hubHandle) {
-        tx = await program.transaction.subscriptionSubscribeHub(hubHandle, request)
+        tx = await program.transaction.subscriptionSubscribeHub(
+          hubHandle,
+          request
+        )
       } else {
         tx = await program.transaction.subscriptionSubscribeAccount(request)
       }
 
-      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
       tx.feePayer = provider.wallet.publicKey
-      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
 
       await getConfirmTransaction(txid, provider.connection)
       await getSubscription(subscription.toBase58())
@@ -352,9 +360,14 @@ const ninaContextHelper = ({
           systemProgram: anchor.web3.SystemProgram.programId,
         },
       })
-      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
       tx.feePayer = provider.wallet.publicKey
-      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
 
       await getConfirmTransaction(txid, provider.connection)
       await getSubscription(subscription.toBase58(), txid)

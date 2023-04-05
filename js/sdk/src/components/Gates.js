@@ -9,7 +9,6 @@ import GateCreateModal from './GateCreateModal'
 import GateUnlockModal from './GateUnlockModal'
 import GateManageModal from './GateManageModal'
 import { logEvent } from '../utils/event'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { truncateString } from '../utils/truncateManager'
 const Gates = ({
   isAuthority,
@@ -19,7 +18,7 @@ const Gates = ({
   inSettings,
   inHubs,
 }) => {
-  const {wallet} = useContext(Wallet.Context)
+  const { wallet } = useContext(Wallet.Context)
   const { enqueueSnackbar } = useSnackbar()
   const { fetchGatesForRelease, gatesState } = useContext(Release.Context)
   useEffect(() => {

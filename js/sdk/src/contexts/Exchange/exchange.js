@@ -194,14 +194,19 @@ const exchangeContextHelper = ({
         .preInstructions(request.instructions)
         .signers(request.signers)
         .transaction()
-      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
       tx.feePayer = provider.wallet.publicKey
 
       for await (let signer of request.signers) {
         tx.partialSign(signer)
       }
 
-      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
       await provider.connection.getParsedTransaction(txid, 'confirmed')
 
       if (exchange.isSelling) {
@@ -350,14 +355,19 @@ const exchangeContextHelper = ({
         .signers(request.signers)
         .transaction()
 
-      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
       tx.feePayer = provider.wallet.publicKey
 
       for await (let signer of request.signers) {
         tx.partialSign(signer)
       }
 
-      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
       await provider.connection.getParsedTransaction(txid, 'confirmed')
 
       setExchangeInitPending({
@@ -436,14 +446,19 @@ const exchangeContextHelper = ({
           .transaction()
       }
 
-      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
       tx.feePayer = provider.wallet.publicKey
 
       for await (let signer of request.signers) {
         tx.partialSign(signer)
       }
 
-      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
       await provider.connection.getParsedTransaction(txid, 'confirmed')
       if (exchange.isSelling) {
         addReleaseToCollection(releasePubkey)

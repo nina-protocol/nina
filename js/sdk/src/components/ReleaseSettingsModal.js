@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -9,7 +9,6 @@ import Typography from '@mui/material/Typography'
 import SettingsIcon from '@mui/icons-material/Settings'
 import Royalty from './Royalty'
 import Gates from './Gates'
-import Wallet from '../contexts/Wallet'
 import CloseIcon from '@mui/icons-material/Close'
 import CloseRelease from './CloseRelease'
 import ReleaseSettingsWelcome from './ReleaseSettingsWelcome'
@@ -23,9 +22,6 @@ const ReleaseSettingsModal = ({
   amountHeld,
   releaseGates,
 }) => {
-  const { wallet } = useContext(Wallet.Context)
-  const { publicKey } = wallet
-
   const [open, setOpen] = useState(false)
 
   const handleClose = () => {

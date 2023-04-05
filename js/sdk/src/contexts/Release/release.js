@@ -255,7 +255,6 @@ const releaseContextHelper = ({
   solBalance,
   setGatesState,
   gatesState,
-  wallet
 }) => {
   const {
     provider,
@@ -473,17 +472,22 @@ const releaseContextHelper = ({
         bumps,
         metadataData,
         decodeNonEncryptedByteArray(hub.handle),
-        request,
+        request
       )
 
-      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
       tx.feePayer = provider.wallet.publicKey
 
       for await (let signer of request.signers) {
         tx.partialSign(signer)
       }
 
-      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
 
       await getConfirmTransaction(txid, provider.connection)
       await NinaSdk.Hub.fetchHubRelease(
@@ -754,9 +758,14 @@ const releaseContextHelper = ({
           instructions,
         }
       )
-      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
       tx.feePayer = provider.wallet.publicKey
-      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
 
       await getConfirmTransaction(txid, provider.connection)
       await getRelease(release)
@@ -812,9 +821,14 @@ const releaseContextHelper = ({
           releaseMint: release.releaseMint,
         },
       })
-      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
       tx.feePayer = provider.wallet.publicKey
-      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
 
       await getConfirmTransaction(txid, provider.connection)
       await getRelease(releasePubkey)
@@ -853,9 +867,8 @@ const releaseContextHelper = ({
         releasePubkey,
         provider,
         ninaClient,
-        usdcBalance,
+        usdcBalance
       )
-      console.log('txid', txid)
       await getConfirmTransaction(txid, provider.connection)
 
       await getUserBalances()
@@ -947,9 +960,14 @@ const releaseContextHelper = ({
       }
 
       const tx = await program.transaction.releaseRevenueShareCollect(request)
-      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
       tx.feePayer = provider.wallet.publicKey
-      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
       await getConfirmTransaction(txid, provider.connection)
 
       await getRelease(releasePubkey)
@@ -1030,9 +1048,14 @@ const releaseContextHelper = ({
         new anchor.BN(updateAmount),
         request
       )
-      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
       tx.feePayer = provider.wallet.publicKey
-      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
 
       await getConfirmTransaction(txid, provider.connection)
 
