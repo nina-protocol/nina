@@ -239,7 +239,7 @@ const hubContextHelper = ({
         )
 
       //add IX for create
-      const txid = await program.methods
+      const tx = await program.methods
         .hubInitWithCredit(hubParams)
         .accounts({
           authority: provider.wallet.publicKey,
@@ -253,8 +253,15 @@ const hubContextHelper = ({
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         })
         .preInstructions([usdcVaultIx, wrappedSolVaultIx])
-        .rpc()
+        .transaction()
+      
+      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.feePayer = provider.wallet.publicKey
 
+      for await (let signer of request.signers) {
+        tx.partialSign(signer)
+      }
+      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
       await getConfirmTransaction(txid, provider.connection)
       await getHub(hub)
 
@@ -282,7 +289,7 @@ const hubContextHelper = ({
     const hub = hubState[hubPubkey]
     const program = await ninaClient.useProgram()
     try {
-      const txid = await program.rpc.hubUpdateConfig(
+      const tx = await program.transaction.hubUpdateConfig(
         uri,
         hub.handle,
         new anchor.BN(publishFee * 10000),
@@ -294,6 +301,9 @@ const hubContextHelper = ({
           },
         }
       )
+      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
 
       await getConfirmTransaction(txid, provider.connection)
       await axios.get(
@@ -343,7 +353,7 @@ const hubContextHelper = ({
           program.programId
         )
 
-      const txid = await program.rpc.hubAddCollaborator(
+      const txid = await program.transaction.hubAddCollaborator(
         canAddContent,
         canAddCollaborator,
         allowance,
@@ -361,6 +371,9 @@ const hubContextHelper = ({
         }
       )
 
+      const tx = await program.transaction.releasePurchase(release.price, request)
+      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.feePayer = provider.wallet.publicKey
       await getConfirmTransaction(txid, provider.connection)
       await axios.get(
         endpoints.api +
@@ -411,7 +424,7 @@ const hubContextHelper = ({
           program.programId
         )
 
-      const txid = await program.rpc.hubUpdateCollaboratorPermissions(
+      const tx = await program.transaction.hubUpdateCollaboratorPermissions(
         canAddContent,
         canAddCollaborator,
         allowance,
@@ -426,6 +439,11 @@ const hubContextHelper = ({
           },
         }
       )
+
+      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
+
       await getConfirmTransaction(txid, provider.connection)
       await getHub(hubPubkey)
 
@@ -503,7 +521,11 @@ const hubContextHelper = ({
         ]
       }
 
-      const txid = await program.rpc.hubAddRelease(hub.handle, request)
+      const tx = await program.transaction.hubAddRelease(hub.handle, request)
+      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
+
       await getConfirmTransaction(txid, provider.connection)
       await NinaSdk.Hub.fetchHubRelease(
         hubPubkey.toBase58(),
@@ -552,7 +574,7 @@ const hubContextHelper = ({
         program.programId
       )
 
-      const txid = await program.rpc.hubRemoveCollaborator(hub.handle, {
+      const tx = await program.transaction.hubRemoveCollaborator(hub.handle, {
         accounts: {
           authority: provider.wallet.publicKey,
           hub: hubPubkey,
@@ -561,6 +583,11 @@ const hubContextHelper = ({
           systemProgram: anchor.web3.SystemProgram.programId,
         },
       })
+      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.feePayer = provider.wallet.publicKey
+
+      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
+
       await getConfirmTransaction(txid, provider.connection)
       await axios.get(
         endpoints.api +
@@ -612,7 +639,7 @@ const hubContextHelper = ({
           program.programId
         )
 
-      const txid = await program.rpc.hubContentToggleVisibility(hub.handle, {
+      const tx = await program.transaction.hubContentToggleVisibility(hub.handle, {
         accounts: {
           authority: provider.wallet.publicKey,
           hub: hubPubkey,
@@ -621,6 +648,11 @@ const hubContextHelper = ({
           systemProgram: anchor.web3.SystemProgram.programId,
         },
       })
+
+      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.feePayer = provider.wallet.publicKey
+
+      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
       await provider.connection.getParsedTransaction(txid, 'finalized')
       const toggledContent = Object.values(hubContentState).filter(
         (c) => c.publicKey === hubChildPublicKey.toBase58()
@@ -681,7 +713,7 @@ const hubContextHelper = ({
       const withdrawAmount =
         tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount
 
-      const txid = await program.rpc.hubWithdraw(
+      const tx = await program.transaction.hubWithdraw(
         new anchor.BN(ninaClient.uiToNative(withdrawAmount, USDC_MINT)),
         hub.handle,
         {
@@ -696,6 +728,11 @@ const hubContextHelper = ({
           },
         }
       )
+
+      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
+
       await getConfirmTransaction(txid, provider.connection)
 
       await getHub(hubPubkey)
@@ -755,7 +792,7 @@ const hubContextHelper = ({
         ],
         program.programId
       )
-      let txid
+      let tx
       const handle = decodeNonEncryptedByteArray(hub.handle)
       const params = [handle, slugHash, uri]
       const request = {
@@ -805,13 +842,17 @@ const hubContextHelper = ({
             program.programId
           )
         request.accounts.referenceReleaseHubContent = referenceReleaseHubContent
-        txid = await program.rpc.postInitViaHubWithReferenceRelease(
+        tx = await program.transaction.postInitViaHubWithReferenceRelease(
           ...params,
           request
         )
       } else {
-        txid = await program.rpc.postInitViaHub(...params, request)
+        tx = await program.transaction.postInitViaHub(...params, request)
       }
+
+      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
 
       await getConfirmTransaction(txid, provider.connection)
 
@@ -867,7 +908,7 @@ const hubContextHelper = ({
         program.programId
       )
 
-      const txid = await program.rpc.postUpdateViaHubPost(
+      const tx = await program.transaction.postUpdateViaHubPost(
         hub.handle,
         slug,
         uri,
@@ -881,6 +922,9 @@ const hubContextHelper = ({
           },
         }
       )
+      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
 
       await getConfirmTransaction(txid, provider.connection)
       await getHub(hubPubkey)
@@ -939,10 +983,14 @@ const hubContextHelper = ({
         },
       }
 
-      const txid = await program.rpc.releaseRevenueShareCollectViaHub(
+      const tx = await program.transaction.releaseRevenueShareCollectViaHub(
         decodeNonEncryptedByteArray(hub.handle),
         request
       )
+      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      
+      const txid = await provider.wallet.sendTransaction(tx, provider.connection)
       await getConfirmTransaction(txid, provider.connection)
 
       getRelease(releasePubkey.toBase58())

@@ -293,17 +293,20 @@ const releasePurchaseHelper = async (
     }
 
     if (hub) {
-      return await program.rpc.releasePurchaseViaHub(
+
+      const tx = await program.transaction.releasePurchaseViaHub(
         release.price,
         decodeNonEncryptedByteArray(hub.handle),
         request
       )
+      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      return await provider.wallet.sendTransaction(tx, provider.connection)
     } else {
       const tx = await program.transaction.releasePurchase(release.price, request)
       tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
       tx.feePayer = provider.wallet.publicKey
-      console.log('tx: ', tx)
-      return await provider.wallet.sendTransaction(tx)
+      return await provider.wallet.sendTransaction(tx, provider.connection)
     }
   }
 }
