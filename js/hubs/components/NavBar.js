@@ -19,7 +19,7 @@ import {
   WalletDialogProvider,
   WalletMultiButton,
 } from '@solana/wallet-adapter-material-ui'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Link from 'next/link'
 import Image from 'next/image'
 import NinaSdk from '@nina-protocol/js-sdk'
@@ -60,7 +60,7 @@ const mobileNavData = [
 
 const NavBar = ({ hubPubkey }) => {
   const { toolbar, drawerContainer } = useStyles()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [hubData, setHubData] = useState(null)
   const [mobileView, setMobileView] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useContext } from "react";
 import {AnchorProvider} from '@project-serum/anchor'
 import Router from "next/router";
 import { SnackbarProvider } from "notistack";
@@ -12,7 +12,8 @@ import { NinaTheme } from "../../NinaTheme";
 import Layout from "../components/Layout";
 import Dots from '../components/Dots'
 import WalletWrapper from '@nina-protocol/nina-internal-sdk/esm/WalletWrapper'
-import { useWallet, useConnection } from '@solana/wallet-adapter-react'
+import { useConnection } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 
 const createEmotionCache = () => {
   return createCache({key: 'css'});
@@ -72,7 +73,7 @@ function Application({ Component, pageProps }) {
 }
 
 const NinaWrapper = ({children}) => {
-  const wallet = useWallet();
+  const { wallet } = useContext(Wallet.Context)
   const connection = useConnection();
   const provider = new AnchorProvider(
     connection,

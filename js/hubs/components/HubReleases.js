@@ -1,7 +1,7 @@
 import React, { useMemo, useContext, useState } from 'react'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import AddIcon from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
@@ -18,7 +18,7 @@ import {
 } from '../styles/theme/lightThemeOptions.js'
 
 const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const { hubContentToggleVisibility, hubState } = useContext(Hub.Context)
   const { releaseState } = useContext(Release.Context)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState])

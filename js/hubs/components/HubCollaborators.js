@@ -2,7 +2,7 @@ import React, { useState, useContext, useMemo, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import CloseIcon from '@mui/icons-material/Close'
 import Grid from '@mui/material/Grid'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
@@ -23,7 +23,7 @@ const HubCollaborators = ({
   canAddCollaborators,
 }) => {
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const { hubRemoveCollaborator, hubCollaboratorsState } = useContext(
     Hub.Context
   )

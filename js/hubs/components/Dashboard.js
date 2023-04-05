@@ -1,5 +1,5 @@
 import React, { useState, useContext, useMemo, useEffect } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Typography from '@mui/material/Typography'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import { styled } from '@mui/material/styles'
@@ -25,7 +25,7 @@ const toTitleCase = (text) => {
 }
 
 const Dashboard = ({ hubPubkey }) => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
   const { getHub, hubState, hubCollaboratorsState, hubContentState } =
     useContext(Hub.Context)

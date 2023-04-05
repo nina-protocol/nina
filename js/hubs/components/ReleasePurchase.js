@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
@@ -31,7 +31,7 @@ const ReleasePurchase = (props) => {
     amountHeld,
   } = props
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const {
     releasePurchaseViaHub,
     releasePurchasePending,
