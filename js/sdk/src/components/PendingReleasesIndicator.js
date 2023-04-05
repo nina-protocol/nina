@@ -32,8 +32,8 @@ const PendingReleasesIndicator = ({ inHubs }) => {
                     textDecoration: 'underline',
                     color: `${
                       status === 'success'
-                        ? theme.palette.darkGreen
-                        : theme.palette.red
+                        ? '#023020'
+                        : '#FF0000'
                     }`,
                   }}
                 >
