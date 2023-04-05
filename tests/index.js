@@ -397,6 +397,97 @@ describe('Release', async () => {
     );
   });
 
+
+  it('Creates a Release with no publishing credits via releaseInit', async () => {
+
+    const paymentMint = usdcMint;
+    releaseMint = anchor.web3.Keypair.generate();
+    const releaseMintIx = await createMintInstructions(
+      provider,
+      provider.wallet.publicKey,
+      releaseMint.publicKey,
+      0,
+    );
+
+    const [_release, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
+        releaseMint.publicKey.toBuffer(),
+      ],
+      nina.programId,
+    );
+    release = _release;
+
+    const [_releaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [release.toBuffer()],
+      nina.programId,
+    );
+    releaseSigner = _releaseSigner;
+
+    let [_royaltyTokenAccount, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      releaseSigner,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      paymentMint,
+    );
+    royaltyTokenAccount = _royaltyTokenAccount;
+
+    const config = {
+      amountTotalSupply: new anchor.BN(1000),
+      amountToArtistTokenAccount: new anchor.BN(0),
+      amountToVaultTokenAccount: new anchor.BN(0),
+      resalePercentage: new anchor.BN(200000),
+      price: new anchor.BN(releasePrice),
+      releaseDatetime: new anchor.BN((Date.now() / 1000) - 5),
+    };
+
+    const metadataProgram = new anchor.web3.PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
+    const [metadata] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from('metadata'), metadataProgram.toBuffer(), releaseMint.publicKey.toBuffer()],
+      metadataProgram,
+    );
+
+    const metadataData = {
+      name: `Nina with the Nina`,
+      symbol: `NINA`,
+      uri: `https://arweave.net`,
+      sellerFeeBasisPoints: 2000,
+    }
+
+    const bumps = {
+      release: releaseBump,
+      signer: releaseSignerBump,
+    }
+
+    await nina.rpc.releaseInit(
+      config,
+      bumps,
+      metadataData, {
+        accounts: {
+          release,
+          releaseSigner,
+          releaseMint: releaseMint.publicKey,
+          payer: provider.wallet.publicKey,
+          authority: provider.wallet.publicKey,
+          authorityTokenAccount: usdcTokenAccount,
+          paymentMint,
+          royaltyTokenAccount,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+          metadata,
+          metadataProgram,
+        },
+        signers: [releaseMint],
+        instructions: [
+          ...releaseMintIx,
+          royaltyTokenAccountIx,
+        ],
+      }
+    );
+  });
+
   let bumps
   let metadata
   it('Should Not Initialize Release For Sale in USDC with Publishing Credit if authority payer mismatch', async () => {

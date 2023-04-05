@@ -14,6 +14,16 @@ use instructions::*;
 pub mod nina {
     use super::*;
 
+    pub fn release_init(
+        ctx: Context<ReleaseInitialize>,
+        config: ReleaseConfig,
+        bumps: ReleaseBumps,
+        metadata_data: ReleaseMetadataData
+    ) -> Result<()> {
+        instructions::release_init::handler(ctx, config, bumps, metadata_data)
+    }
+
+    #[deprecated(since="0.2.14", note="please use `release_init` instead")]
     pub fn release_init_with_credit(
         ctx: Context<ReleaseInitializeWithCredit>,
         config: ReleaseConfig,
@@ -169,6 +179,7 @@ pub mod nina {
         instructions::vault_withdraw::handler(ctx, amount)
     }
 
+    #[deprecated(since="0.2.14", note="please use `hub_init` instead")]
     pub fn hub_init_with_credit(
         ctx: Context<HubInitWithCredit>,
         params: HubInitParams,

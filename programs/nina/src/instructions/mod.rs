@@ -1,3 +1,4 @@
+pub mod release_init;
 pub mod release_init_with_credit;
 pub mod release_init_via_hub;
 pub mod release_purchase;
@@ -42,7 +43,7 @@ pub mod subscription_subscribe_hub;
 pub mod subscription_subscribe_hub_delegated;
 pub mod subscription_unsubscribe;
 
-
+pub use release_init::*;
 pub use release_init_with_credit::*;
 pub use release_init_via_hub::*;
 pub use release_purchase::*;
