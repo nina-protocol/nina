@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { encodeBase64 } from 'tweetnacl-util'
 import axios from 'axios'
@@ -7,13 +7,15 @@ import ScrollablePageWrapper from './ScrollablePageWrapper'
 import Button from '@mui/material/Button'
 import Input from '@mui/material/Input'
 import Box from '@mui/material/Box'
+import { useRouter } from 'next/router'
 import onboardingCodeWhitelist from '@nina-protocol/nina-internal-sdk/src/utils/onboardingCodeWhitelist'
 const OnboardAdmin = () => {
   const wallet = useWallet()
-  const hasAccess = onboardingCodeWhitelist.includes(
-    wallet?.publicKey?.toBase58()
-  )
+  const router = useRouter()
+  const walletPubkey = wallet.publicKey?.toBase58()
+  const hasAccess = onboardingCodeWhitelist.includes(walletPubkey)
   const [code, setCode] = useState()
+  //   const [adminPrivileges, setAdminPrivileges] = useState(hasAccess)
   const handleGenerateCode = async () => {
     const message = new TextEncoder().encode(wallet.publicKey.toBase58())
 
@@ -69,6 +71,14 @@ const OnboardAdmin = () => {
     <ScrollablePageWrapper>
       {hasAccess && (
         <Box>
+          <Box>
+            <Typography variant="h4" mb={2}>
+              Verification Wallet Balance:
+            </Typography>
+            <Typography variant="h4" mb={2}>
+              Dispatcher Wallet Balance:
+            </Typography>
+          </Box>
           <Box mb={2}>
             <Button variant="outlined" onClick={() => handleGenerateCode()}>
               Click Here to Generate an Onboarding Code
