@@ -45,7 +45,7 @@ const HubContextProvider = ({ children }) => {
     getHubsForUser,
     getHubsForRelease,
     filterHubsForRelease,
-    hubInitWithCredit,
+    hubInit,
     hubUpdateConfig,
     hubAddCollaborator,
     hubUpdateCollaboratorPermission,
@@ -105,7 +105,7 @@ const HubContextProvider = ({ children }) => {
         getHubsForUser,
         getHubsForRelease,
         filterHubsForRelease,
-        hubInitWithCredit,
+        hubInit,
         hubUpdateConfig,
         hubAddCollaborator,
         hubUpdateCollaboratorPermission,
@@ -169,7 +169,7 @@ const hubContextHelper = ({
 }) => {
   const { ids, provider, endpoints } = ninaClient
 
-  const hubInitWithCredit = async (hubParams) => {
+  const hubInit = async (hubParams) => {
     try {
       const program = await ninaClient.useProgram()
       const USDC_MINT = new anchor.web3.PublicKey(ids.mints.usdc)
@@ -228,25 +228,14 @@ const hubContextHelper = ({
         WRAPPED_SOL_MINT
       )
 
-      let [authorityHubCreditTokenAccount] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          provider.wallet.publicKey,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          HUB_CREDIT_MINT
-        )
-
       //add IX for create
       const txid = await program.methods
-        .hubInitWithCredit(hubParams)
+        .hubInit(hubParams)
         .accounts({
           authority: provider.wallet.publicKey,
           hub,
           hubSigner,
           hubCollaborator,
-          authorityHubCreditTokenAccount,
           hubCreditMint: HUB_CREDIT_MINT,
           systemProgram: anchor.web3.SystemProgram.programId,
           tokenProgram: ids.programs.token,
@@ -1258,7 +1247,7 @@ const hubContextHelper = ({
     getHubsForUser,
     getHubsForRelease,
     filterHubsForRelease,
-    hubInitWithCredit,
+    hubInit,
     hubUpdateConfig,
     hubAddCollaborator,
     hubUpdateCollaboratorPermission,
