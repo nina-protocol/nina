@@ -20,7 +20,7 @@ const WalletConnectModal = ({ children }) => {
   const [email, setEmail] = useState('')
 
   const handleLogin = async () => {
-    const magic = new Magic('pk_live_F3E5D7E205547DB2', {
+    const magic = new Magic(process.env.MAGIC_KEY, {
       extensions: {
         solana: new SolanaExtension({
           rpcUrl: process.env.SOLANA_CLUSTER_URL,
