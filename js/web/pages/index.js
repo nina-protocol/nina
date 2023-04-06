@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Homepage from '../components/HomePage'
 import Head from 'next/head'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { useRouter } from 'next/router'
 
 export default function Home() {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
 
   useEffect(() => {

@@ -15,6 +15,7 @@ import Link from 'next/link'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
@@ -45,7 +46,7 @@ const ReleasePurchase = (props) => {
     isAuthority,
   } = props
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const {
     releasePurchase,
     releasePurchasePending,
@@ -160,7 +161,7 @@ const ReleasePurchase = (props) => {
       return
     }
     let result
-    if (!amountHeld || amountHeld === 0) {
+    if ((!amountHeld || amountHeld === 0) && release.price > 0) {
       const error = await checkIfHasBalanceToCompleteAction(
         NinaProgramAction.RELEASE_PURCHASE
       )

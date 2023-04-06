@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect, useMemo } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
@@ -16,7 +16,7 @@ const ReleaseComponent = ({ metadataSsr, hub }) => {
   const router = useRouter()
   const releasePubkey = router.query.releasePubkey
   const [amountHeld, setAmountHeld] = useState()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const { releaseState, getRelease, fetchGatesForRelease, gatesState } =
     useContext(Release.Context)
   const { exchangeState } = useContext(Exchange.Context)

@@ -8,6 +8,7 @@ import React, {
 import * as Yup from 'yup'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { useSnackbar } from 'notistack'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
@@ -18,7 +19,6 @@ import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
-import { useWallet } from '@solana/wallet-adapter-react'
 import HubPostCreateForm from './HubPostCreateForm'
 
 import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
@@ -48,7 +48,7 @@ const HubPostCreate = ({
   userHasHubs,
 }) => {
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const { postInitViaHub, hubState, getHub, getHubsForRelease } = useContext(
     Hub.Context
   )

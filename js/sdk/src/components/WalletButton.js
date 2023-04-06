@@ -1,11 +1,8 @@
 import { Button, Collapse, Fade, Menu, MenuItem, styled } from '@mui/material'
-import { useWallet } from '@solana/wallet-adapter-react'
-import React, { useMemo, useState } from 'react'
-import {
-  WalletDialogButton,
-  useWalletDialog,
-} from '@solana/wallet-adapter-material-ui'
-
+import React, { useMemo, useState, useContext } from 'react'
+import WalletConnectModal from './WalletConnectModal'
+import Wallet from '../contexts/Wallet'
+import Typography from '@mui/material/Typography'
 const StyledMenu = styled(Menu)(({ theme }) => ({
   '& .MuiList-root': {
     padding: 0,
@@ -49,28 +46,22 @@ const WalletButton = ({
   children,
   ...props
 }) => {
-  const { publicKey, wallet, disconnect } = useWallet()
-  const { setOpen } = useWalletDialog()
+  const { wallet } = useContext(Wallet.Context)
   const [anchor, setAnchor] = useState()
 
-  const base58 = useMemo(() => publicKey?.toBase58(), [publicKey])
+  const base58 = useMemo(() => wallet.publicKey?.toBase58(), [wallet.publicKey])
   const content = useMemo(() => {
     if (children) return children
     if (!wallet || !base58) return null
     return base58.slice(0, 4) + '..' + base58.slice(-4)
   }, [children, wallet, base58])
-
-  if (!wallet) {
+  console.log('wallet', wallet)
+  if (!wallet.wallet) {
     return (
-      <WalletDialogButton
-        color={color}
-        variant={variant}
-        type={type}
-        {...props}
-      >
+      <WalletConnectModal>
         {children}
-      </WalletDialogButton>
-    )
+    </WalletConnectModal>
+  )
   }
   return (
     <>
@@ -108,7 +99,7 @@ const WalletButton = ({
             fullWidth
             {...props}
           >
-            {wallet.adapter.name}
+            {wallet.wallet.adapter.name}
           </Button>
         </WalletMenuItem>
         <Collapse in={!!anchor}>
@@ -140,7 +131,7 @@ const WalletButton = ({
             onClick={() => {
               setAnchor(undefined)
               // eslint-disable-next-line @typescript-eslint/no-empty-function
-              disconnect().catch(() => {
+              wallet.disconnect().catch(() => {
                 // Silently catch because any errors are caught by the context `onError` handler
               })
             }}

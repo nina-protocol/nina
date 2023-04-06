@@ -1,6 +1,5 @@
 import { useEffect, useContext, useState, useMemo, useRef } from 'react'
 import dynamic from 'next/dynamic'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { Box, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
@@ -8,10 +7,14 @@ import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import {
+  imageManager,
+  timeSince,
+} from '@nina-protocol/nina-internal-sdk/src/utils'
 import IdentityVerification from './IdentityVerification'
 import CreateHub from './CreateHub'
-
+import Balance from './Balance'
 const { getImageFromCDN, loader } = imageManager
 
 const Dots = dynamic(() => import('./Dots'))
@@ -21,7 +24,7 @@ const Subscribe = dynamic(() => import('./Subscribe'))
 const NewProfileCtas = dynamic(() => import('./NewProfileCtas'))
 
 const Profile = ({ profilePubkey }) => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
   const tableContainerRef = useRef(null)
   const {
@@ -56,7 +59,7 @@ const Profile = ({ profilePubkey }) => {
   const [profileSubscriptions, setProfileSubscriptions] = useState()
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
   const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
-  const [profileVerifications, setProfileVerifications] = useState()
+  const [profileVerifications, setProfileVerifications] = useState([])
 
   const [inDashboard, setInDashboard] = useState(false)
   const [inCollection, setInCollection] = useState(false)
@@ -84,18 +87,6 @@ const Profile = ({ profilePubkey }) => {
       return true
     }
   }, [fetchedProfiles, fetched, profilePubkey])
-
-  const artistNames = useMemo(() => {
-    if (profilePublishedReleases?.length > 0) {
-      return [
-        ...new Set(
-          profilePublishedReleases?.map(
-            (release) => release.metadata.properties.artist
-          )
-        ),
-      ]
-    }
-  }, [profilePublishedReleases])
 
   useEffect(() => {
     getUserData(profilePubkey)
@@ -414,17 +405,18 @@ const Profile = ({ profilePubkey }) => {
                     {wallet.connected && (
                       <Subscribe accountAddress={profilePubkey} />
                     )}
-                    {profileVerifications && (
-                      <IdentityVerification
-                        verifications={profileVerifications}
-                        profilePublicKey={profilePubkey}
-                      />
-                    )}
+                    <IdentityVerification
+                      verifications={profileVerifications}
+                      profilePublicKey={profilePubkey}
+                    />
                     {inDashboard && <CreateHub />}
                   </Box>
                 </>
               )}
             </Box>
+            {inDashboard && (
+              <Balance profilePublishedReleases={profilePublishedReleases} />
+            )}
           </ProfileHeaderContainer>
         </ProfileHeaderWrapper>
         {hasData && (
