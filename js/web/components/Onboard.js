@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import axios from 'axios'
 import { encodeBase64 } from 'tweetnacl-util'
@@ -11,25 +11,18 @@ import Button from '@mui/material/Button'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
-import dynamic from 'next/dynamic'
 import {
   WalletDialogButton,
   WalletDialogProvider,
 } from '@solana/wallet-adapter-material-ui'
 
-const EmailCapture = dynamic(
-  () => import('@nina-protocol/nina-internal-sdk/esm/EmailCapture'),
-  { ssr: false }
-)
 const Onboard = () => {
   const router = useRouter()
 
   const { query } = router
   const [code, setCode] = useState()
-  const [invalidCode, setInvalidCode] = useState(false)
   const wallet = useWallet()
   const [claimedError, setClaimedError] = useState(false)
-  const [claimedStatus, setClaimedStatus] = useState(false)
   const [claimedCodeSuccess, setClaimedCodeSuccess] = useState(false)
   const [headerCopy, setHeaderCopy] = useState(
     'Your wallet is not connected, please connect your wallet to continue.'
@@ -94,38 +87,6 @@ const Onboard = () => {
     }
   }
 
-  // const handleClaimCode = async (code) => {
-  //   const message = new TextEncoder().encode(wallet.publicKey.toBase58())
-  //   const messageBase64 = encodeBase64(message)
-  //   const signature = await wallet.signMessage(message)
-  //   const signatureBase64 = encodeBase64(signature)
-
-  //   const response = await axios.post(
-  //     `${process.env.NINA_IDENTITY_ENDPOINT}/onboardingCodes/${code}`,
-  //     {
-  //       message: messageBase64,
-  //       signature: signatureBase64,
-  //       publicKey: wallet.publicKey.toBase58(),
-  //     }
-  //   )
-
-  //   if (response.data.success) {
-  //     console.log('success')
-  //     setClaimedStatus(true)
-  //   }
-  // }
-
-  //  const handleClick: = useCallback(
-  //    (event) => {
-  //      if (onClick) onClick(event)
-  //      if (!event.defaultPrevented) setOpen(true)
-  //    },
-  //    [onClick, setOpen]
-  //  )
-
-  //  const handleWalletConnect = useCallback((e) => {
-  //   if (!e.defaultPrevented) setOpen(true)
-  //  }, [setOpen])
   return (
     <ScrollablePageWrapper>
       <StyledGrid>
@@ -142,7 +103,6 @@ const Onboard = () => {
                       variant="h3"
                       sx={{ display: 'flex', flexDirection: 'row' }}
                     >
-                      {/* <BlueTypography variant="h3" onClick={(e) => handleWalletConnect(e)}>Connect your wallet</BlueTypography> */}
                       <StyledWalletDialogProvider>
                         <StyledWalletDialogButton>
                           <BlueTypography variant="h3">

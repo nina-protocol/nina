@@ -30,8 +30,6 @@ const Admin = () => {
       'BnhxwsrY5aaeMehsTRoJzX2X4w5sKMhMfBs2MCKUqMC',
       setDispatcherBalance
     )
-    console.log('verificationBalance', verificationBalance)
-    console.log('dispatcherBalance', dispatcherBalance)
   }, [verificationBalance, dispatcherBalance])
 
   const fetchWalletBalance = async (publicKey, setBalance) => {
@@ -61,36 +59,11 @@ const Admin = () => {
     }
   }
 
-  // const handleClaimCode = async (code) => {
-  //   const message = new TextEncoder().encode(wallet.publicKey.toBase58())
-  //   const messageBase64 = encodeBase64(message)
-  //   const signature = await wallet.signMessage(message)
-  //   const signatureBase64 = encodeBase64(signature)
-  //   try {
-  //     const response = await axios.post(
-  //       `${process.env.NINA_IDENTITY_ENDPOINT}/onboardingCodes/${code}`,
-  //       {
-  //         message: messageBase64,
-  //         signature: signatureBase64,
-  //         publicKey: wallet.publicKey.toBase58(),
-  //       }
-  //     )
-  //     if (response.data.success) {
-  //       enqueueSnackbar('Code has been successfully redeemed', {
-  //         info: 'success',
-  //       })
-  //       setClaimedError(false)
-  //       setClaimedCodeSuccess(true)
-  //     }
-  //     return
-  //   } catch (error) {
-  //     enqueueSnackbar('Code has already been redeemed or is invalid', {
-  //       variant: 'error',
-  //     })
-  //     console.error(error)
-  //     setClaimedError(true)
-  //   }
-  // }
+  // placeholder for blacklist handler
+  const handleBlacklist = async (release) => {
+    setReleaseId(release)
+  }
+
   return (
     <ScrollablePageWrapper>
       {hasAccess && (
@@ -141,7 +114,7 @@ const Admin = () => {
             <Button
               variant="outlined"
               onClick={() => {
-                console.log('releaseId', releaseId)
+                handleBlacklist(releaseId)
               }}
             >
               Blacklist Release
