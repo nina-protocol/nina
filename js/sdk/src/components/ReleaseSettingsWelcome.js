@@ -9,7 +9,6 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { Divider } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
-
 const RELEASE_SETTINGS_WELCOME_PHASE_KEY = 'release-settings-welcome-phase-3'
 
 function ReleaseSettingsWelcome() {

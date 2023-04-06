@@ -15,6 +15,9 @@ import Dots from './Dots'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 
+const RedeemReleaseCode = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/RedeemReleaseCode')
+)
 const HubsModal = dynamic(() => import('./HubsModal'))
 
 import dynamic from 'next/dynamic'
@@ -37,6 +40,7 @@ const ReleasePurchase = (props) => {
     releasePurchasePending,
     releasePurchaseTransactionPending,
     releaseState,
+    gatesState,
   } = useContext(Release.Context)
   const { hubState } = useContext(Hub.Context)
   const {
@@ -64,6 +68,11 @@ const ReleasePurchase = (props) => {
       return release?.authority === wallet?.publicKey.toBase58()
     }
   }, [release, wallet.connected])
+
+  const releaseGates = useMemo(
+    () => gatesState[releasePubkey],
+    [gatesState, releasePubkey]
+  )
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
@@ -202,11 +211,10 @@ const ReleasePurchase = (props) => {
         </Typography>
       )}
       <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
-      <Box display="flex" flexDirection="row" justifyContent="space-between">
+      <Box display="flex" flexDirection="column" justifyContent="space-between">
         <Box
           sx={{
             width: '50%',
-            paddingRight: '4px',
           }}
         >
           <BuyButton
@@ -230,7 +238,7 @@ const ReleasePurchase = (props) => {
         <Box
           sx={{
             width: '50%',
-            paddingLeft: '4px',
+            marginTop: '10px',
           }}
         >
           <Gates
@@ -242,6 +250,19 @@ const ReleasePurchase = (props) => {
             inSettings={false}
             inHubs={true}
           />
+          <Box sx={{ paddingTop: '8px' }}>
+            {amountHeld === 0 && (
+              <StyledTypographyButtonSub>
+                {`There ${releaseGates?.length > 1 ? 'are' : 'is'} ${
+                  releaseGates?.length
+                } ${
+                  releaseGates?.length > 1 ? 'files' : 'file'
+                } available for download exclusively to owners of this release.`}
+              </StyledTypographyButtonSub>
+            )}
+
+            <RedeemReleaseCode releasePubkey={releasePubkey} />
+          </Box>
         </Box>
       </Box>
     </ReleasePurchaseWrapper>
@@ -274,6 +295,11 @@ const AmountRemaining = styled(Typography)(({ theme }) => ({
   '& span': {
     color: theme.palette.text.primary,
   },
+}))
+const StyledTypographyButtonSub = styled(Typography)(({ theme }) => ({
+  color: theme.palette.grey[500],
+  textAlign: 'center',
+  fontSize: '12px',
 }))
 
 const StyledUserAmount = styled(Box)(({ theme }) => ({

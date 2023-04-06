@@ -6,7 +6,6 @@ import React, {
   createElement,
   Fragment,
 } from 'react'
-import axios from 'axios'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
@@ -21,13 +20,21 @@ import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
 import Dots from './Dots'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
-import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import dynamic from 'next/dynamic'
+
+const Gates = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/Gates')
+)
+const RedeemReleaseCode = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/RedeemReleaseCode')
+)
 
 const ReleasePurchase = (props) => {
   const {
@@ -317,7 +324,7 @@ const ReleasePurchase = (props) => {
           background: 'white',
         }}
       >
-        <Box sx={{ mb: 0, mt: 1 }}>
+        <Box sx={{ mb: 1, mt: 1 }}>
           <form onSubmit={handleSubmit}>
             <Button
               variant="outlined"
@@ -345,6 +352,19 @@ const ReleasePurchase = (props) => {
           inSettings={false}
           releaseGates={releaseGates}
         />
+        <Box sx={{ position: 'absolute', top: '110%' }} align="center">
+          {amountHeld === 0 && (
+            <StyledTypographyButtonSub>
+              {`There ${releaseGates?.length > 1 ? 'are' : 'is'} ${
+                releaseGates?.length
+              } ${
+                releaseGates?.length > 1 ? 'files' : 'file'
+              } available for download exclusively to owners of this release.`}
+            </StyledTypographyButtonSub>
+          )}
+
+          <RedeemReleaseCode releasePubkey={releasePubkey} />
+        </Box>
       </Box>
     </Box>
   )
@@ -369,6 +389,12 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
   paddingBottom: '10px',
   display: 'flex',
   flexDirection: 'column',
+}))
+
+const StyledTypographyButtonSub = styled(Typography)(({ theme }) => ({
+  color: theme.palette.grey[500],
+  textAlign: 'center',
+  fontSize: '12px',
 }))
 
 const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({
