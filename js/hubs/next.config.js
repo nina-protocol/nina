@@ -83,6 +83,7 @@ const moduleExports = withTM({
     NINA_API_KEY: process.env.NINA_API_KEY,
     SOLANA_CLUSTER_URL_BUNDLR: process.env.SOLANA_CLUSTER_URL_BUNDLR,
     NINA_GATE_URL: process.env.NINA_GATE_URL,
+    MAGIC_KEY: process.env.MAGIC_KEY,
   },
   images: {
     deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1920, 2048],
