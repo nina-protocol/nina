@@ -25,7 +25,6 @@ import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
-// import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
 
@@ -352,16 +351,17 @@ const ReleasePurchase = (props) => {
           inSettings={false}
           releaseGates={releaseGates}
         />
-        <Box sx={{ position: 'absolute', top: '110%' }}>
+        <Box sx={{ position: 'absolute', top: '110%' }} align="center">
           {amountHeld === 0 && (
             <StyledTypographyButtonSub>
-              {`There ${releaseGates.length > 1 ? 'are' : 'is'} ${
-                releaseGates.length
+              {`There ${releaseGates?.length > 1 ? 'are' : 'is'} ${
+                releaseGates?.length
               } ${
-                releaseGates.length > 1 ? 'files' : 'file'
+                releaseGates?.length > 1 ? 'files' : 'file'
               } available for download exclusively to owners of this release.`}
             </StyledTypographyButtonSub>
           )}
+
           <RedeemReleaseCode releasePubkey={releasePubkey} />
         </Box>
       </Box>

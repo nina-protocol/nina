@@ -44,7 +44,6 @@ const Onboard = () => {
     )
 
     if (response.data.success) {
-      console.log('success')
       setClaimedStatus(true)
     }
   }
