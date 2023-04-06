@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper'
 import Backdrop from '@mui/material/Backdrop'
 import { styled } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
-import Input from '@mui/material/input'
+import Input from '@mui/material/Input'
 const ReleaseCode = ({ release }) => {
   const [codes, setCodes] = useState()
   const [amount, setAmount] = useState(1)

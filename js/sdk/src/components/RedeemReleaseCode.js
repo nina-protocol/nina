@@ -8,7 +8,7 @@ import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 import CloseIcon from '@mui/icons-material/Close'
 import { styled } from '@mui/material/styles'
-import Input from '@mui/material/input'
+import Input from '@mui/material/Input'
 import { encodeBase64 } from 'tweetnacl-util'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
@@ -73,12 +73,8 @@ const RedeemReleaseCode = (props) => {
         <Fade in={open}>
           <StyledPaper>
             <StyledCloseIcon onClick={() => setOpen(false)} />
-            <StyledTypography variant="h5" mb={1}>
-              Redeem Release Code
-            </StyledTypography>
             <StyledTypography variant="body1" mb={1}>
-              Enter your code below to redeem your copy of this release. If
-              successful, you will receive a download of this Release.
+              Enter your code below:
             </StyledTypography>
 
             <Input
@@ -94,7 +90,7 @@ const RedeemReleaseCode = (props) => {
               fullWidth
               onClick={(e) => handleCodeSubmit(e)}
             >
-              <Typography variant="body2">Redeem Release Code</Typography>
+              <Typography variant="body2">Redeem</Typography>
             </Button>
           </StyledPaper>
         </Fade>
