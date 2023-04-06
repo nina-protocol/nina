@@ -120,7 +120,6 @@ const releasePurchaseHelper = async (
   usdcBalance,
   hubPubkey = null
 ) => {
-  console.log('provider: ', provider.publicKey.toBase58())
   let hub
   releasePubkey = new anchor.web3.PublicKey(releasePubkey)
   const program = await ninaClient.useProgram()
@@ -129,24 +128,18 @@ const releasePurchaseHelper = async (
   if (release.price.toNumber() === 0) {
     const message = new TextEncoder().encode(releasePubkey.toBase58())
     const messageBase64 = encodeBase64(message)
-    console.log('wallet.publicKey.toBase58(): ', provider.wallet.publicKey.toBase58())
     const signature = await provider.wallet.signMessage(messageBase64)
     const signatureBase64 = encodeBase64(signature)
-    console.log('signatureBase64: ', signatureBase64)
-    console.log('signature: ', signature)
     const response = await axios.get(
-      `${process.env.NINA_IDENTITY_ENDPOINT}/claim/${
-        releasePubkey.toBase58()
-      }?message=${encodeURIComponent(
+      `${
+        process.env.NINA_IDENTITY_ENDPOINT
+      }/claim/${releasePubkey.toBase58()}?message=${encodeURIComponent(
         messageBase64
       )}&signature=${encodeURIComponent(
         signatureBase64
-      )}&publicKey=${encodeURIComponent(
-        provider.wallet.publicKey.toBase58()
-      )}`,
+      )}&publicKey=${encodeURIComponent(provider.wallet.publicKey.toBase58())}`
     )
-    
-    console.log('claim request response: ', response.data)
+
     return response.data.txid
   }
 
@@ -293,17 +286,26 @@ const releasePurchaseHelper = async (
     }
 
     if (hub) {
-      return await program.rpc.releasePurchaseViaHub(
+      const tx = await program.transaction.releasePurchaseViaHub(
         release.price,
         decodeNonEncryptedByteArray(hub.handle),
         request
       )
-    } else {
-      const tx = await program.transaction.releasePurchase(release.price, request)
-      tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
       tx.feePayer = provider.wallet.publicKey
-      console.log('tx: ', tx)
-      return await provider.wallet.sendTransaction(tx)
+      return await provider.wallet.sendTransaction(tx, provider.connection)
+    } else {
+      const tx = await program.transaction.releasePurchase(
+        release.price,
+        request
+      )
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      return await provider.wallet.sendTransaction(tx, provider.connection)
     }
   }
 }

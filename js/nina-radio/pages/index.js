@@ -134,7 +134,7 @@ export default function Home() {
     setTracks({})
     activeIndexRef.current = undefined
 
-    const limit = isRecent ? 25 : 2000
+    const limit = isRecent ? 25 : 50
     let { releases } = await Nina.Release.fetchAll({ limit })
     const metadataDict = {}
     releases.forEach((release) => {

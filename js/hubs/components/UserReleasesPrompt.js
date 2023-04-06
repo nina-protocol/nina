@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography'
 
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 
 const UserReleasesPrompt = ({
   userHubs,
@@ -26,7 +26,7 @@ const UserReleasesPrompt = ({
 }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
 
   const {
     releaseState,

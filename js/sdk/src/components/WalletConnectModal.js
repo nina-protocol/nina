@@ -8,8 +8,8 @@ import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { WalletReadyState } from '@solana/wallet-adapter-base'
-import { Magic } from "magic-sdk";
-import { SolanaExtension } from "@magic-ext/solana";
+import { Magic } from 'magic-sdk'
+import { SolanaExtension } from '@magic-ext/solana'
 
 const WalletConnectModal = ({ children }) => {
   const { wallet, walletExtension, connectMagicWallet } = useContext(
@@ -20,13 +20,13 @@ const WalletConnectModal = ({ children }) => {
   const [email, setEmail] = useState('')
 
   const handleLogin = async () => {
-    const magic = new Magic("pk_live_F3E5D7E205547DB2", {
+    const magic = new Magic(process.env.MAGIC_KEY, {
       extensions: {
         solana: new SolanaExtension({
-          rpcUrl: process.env.SOLANA_CLUSTER_URL
-        })
-      }
-    });
+          rpcUrl: process.env.SOLANA_CLUSTER_URL,
+        }),
+      },
+    })
     await connectMagicWallet(magic, email)
   }
 
@@ -79,7 +79,11 @@ const WalletConnectModal = ({ children }) => {
       >
         <Fade in={open}>
           <StyledPaper>
-            <input id="email" type="email" onChange={(e) => setEmail(e.target.value)} />
+            <input
+              id="email"
+              type="email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
             <Button
               style={{ marginTop: '15px' }}
               color="primary"

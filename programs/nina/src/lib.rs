@@ -88,6 +88,12 @@ pub mod nina {
         instructions::release_close_edition::handler(ctx)
     }
 
+    pub fn release_claim(
+        ctx:Context<ReleaseClaim>,
+    ) -> Result<()> {
+        instructions::release_claim::handler(ctx)
+    }
+
     pub fn redeemable_init(
         ctx: Context<RedeemableInitialize>,
         config: RedeemableConfig,

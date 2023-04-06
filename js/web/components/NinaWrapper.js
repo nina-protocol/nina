@@ -10,7 +10,7 @@ import { AnchorProvider } from '@project-serum/anchor'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 
 const NinaWrapper = ({ children, network }) => {
-  const {wallet, connection} = useContext(Wallet.Context)
+  const { wallet, connection } = useContext(Wallet.Context)
   const provider = new AnchorProvider(connection, wallet, {
     commitment: 'confirmed',
     preflightCommitment: 'processed',

@@ -17,7 +17,7 @@ import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { useRouter } from 'next/router'
 import Dots from './Dots'
 
@@ -29,7 +29,7 @@ import rehypeExternalLinks from 'rehype-external-links'
 const ContentTileView = dynamic(() => import('./ContentTileView'))
 
 const HubComponent = ({ hubPubkey }) => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
   const {
     hubState,
@@ -199,28 +199,31 @@ const HubComponent = ({ hubPubkey }) => {
               hubHandle={hubData.handle}
             />
           )}
-        {hubContentFetched.has(hubPubkey) && contentData.content?.length === 0 && (
-          <>
-            <Typography>Nothing has been published to this Hub yet</Typography>
-            {hubCollaborators
-              .map((collaborator) => collaborator.collaborator)
-              .includes(wallet?.publicKey?.toBase58()) && (
-              <Button
-                fullWidth
-                variant="outlined"
-                color="primary"
-                onClick={() =>
-                  router.push(
-                    `/${hubData.handle}/dashboard?action=publishRelease`
-                  )
-                }
-                sx={{ height: '56px', width: '25%', marginTop: '20px' }}
-              >
-                {`Publish a release`}
-              </Button>
-            )}
-          </>
-        )}
+        {hubContentFetched.has(hubPubkey) &&
+          contentData.content?.length === 0 && (
+            <>
+              <Typography>
+                Nothing has been published to this Hub yet
+              </Typography>
+              {hubCollaborators
+                .map((collaborator) => collaborator.collaborator)
+                .includes(wallet?.publicKey?.toBase58()) && (
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  color="primary"
+                  onClick={() =>
+                    router.push(
+                      `/${hubData.handle}/dashboard?action=publishRelease`
+                    )
+                  }
+                  sx={{ height: '56px', width: '25%', marginTop: '20px' }}
+                >
+                  {`Publish a release`}
+                </Button>
+              )}
+            </>
+          )}
       </ContentViewWrapper>
     </>
   )

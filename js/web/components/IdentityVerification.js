@@ -113,8 +113,6 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
 
   const buttonTypes = useMemo(() => {
     const buttonArray = []
-    console.log('publicKey?.toBase58()', publicKey?.toBase58())
-    console.log('profilePublicKey', profilePublicKey)
     if (publicKey?.toBase58() === profilePublicKey) {
       buttonArray.push('twitter', 'soundcloud', 'ethereum')
     } else {

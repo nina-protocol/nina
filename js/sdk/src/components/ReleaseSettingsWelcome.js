@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -9,7 +9,6 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { Divider } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
-
 const RELEASE_SETTINGS_WELCOME_PHASE_KEY = 'release-settings-welcome-phase-3'
 
 function ReleaseSettingsWelcome() {
