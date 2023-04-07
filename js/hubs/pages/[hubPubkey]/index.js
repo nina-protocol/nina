@@ -59,8 +59,6 @@ const HubPage = (props) => {
   )
 }
 
-export default HubPage
-
 export const getStaticPaths = async () => {
   await initSdkIfNeeded(true)
   const paths = []
@@ -102,3 +100,4 @@ export const getStaticProps = async (context) => {
     },
   }
 }
+export default HubPage

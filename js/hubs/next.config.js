@@ -1,4 +1,16 @@
 const path = require('path')
+const withTM = require('next-transpile-modules')([
+  '@project-serum/sol-wallet-adapter',
+  '@solana/wallet-adapter-base',
+  '@solana/wallet-adapter-react',
+  '@solana/wallet-adapter-wallets',
+  '@solana/wallet-adapter-material-ui',
+  '@solana/wallet-adapter-react-ui',
+  '@solana/wallet-adapter-phantom',
+  '@solana/wallet-adapter-solflare',
+  '@solana/wallet-adapter-sollet',
+]) // pass the modules you would like to see transpiled
+
 const { withSentryConfig } = require('@sentry/nextjs')
 const sentryWebpackPluginOptions = {
   // Additional config options for the Sentry Webpack plugin. Keep in mind that
@@ -18,7 +30,7 @@ const NEXT_PUBLIC_IMGIX_TOKEN =
     ? process.env.NEXT_PUBLIC_IMGIX_TOKEN_DEV
     : process.env.NEXT_PUBLIC_IMGIX_TOKEN
 /** @type {import('next').NextConfig} */
-const moduleExports = {
+const moduleExports = withTM({
   reactStrictMode: true,
   webpack5: true,
   webpack: (config) => {
@@ -36,6 +48,8 @@ const moduleExports = {
       '@nina-protocol/nina-internal-sdk': path.resolve(
         '../node_modules/@nina-protocol/nina-internal-sdk'
       ),
+      https: path.resolve('../node_modules/https-browserify'),
+      http: path.resolve('../node_modules/http-browserify'),
       path: require.resolve('path-browserify'),
       react: path.resolve('../node_modules/react'),
       crypto: require.resolve('crypto-browserify'),
@@ -69,6 +83,7 @@ const moduleExports = {
     NINA_API_KEY: process.env.NINA_API_KEY,
     SOLANA_CLUSTER_URL_BUNDLR: process.env.SOLANA_CLUSTER_URL_BUNDLR,
     NINA_GATE_URL: process.env.NINA_GATE_URL,
+    MAGIC_KEY: process.env.MAGIC_KEY,
   },
   images: {
     deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1920, 2048],
@@ -76,6 +91,6 @@ const moduleExports = {
     path: `https://${IMGIX_URL}/`,
     domains: ['www.arweave.net', 'arweave.net', IMGIX_URL],
   },
-}
+})
 
 module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions)

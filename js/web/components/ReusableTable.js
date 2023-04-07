@@ -26,13 +26,13 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/router'
 import { orderBy } from 'lodash'
 import dynamic from 'next/dynamic'
-import { useWallet } from '@solana/wallet-adapter-react'
 import TablePagination from '@mui/material/TablePagination'
 import axios from 'axios'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
@@ -232,7 +232,7 @@ const HubDescription = ({ description }) => {
 }
 
 const ReusableTableBody = (props) => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const {
     items,
     tableType,
@@ -689,9 +689,7 @@ const ReusableTableBody = (props) => {
                             sx={{ textDecoration: 'underline' }}
                             noWrap
                           >
-                            <Link href={row?.link}>
-                              <a>{cellData}</a>
-                            </Link>
+                            <a>{cellData}</a>
                           </Typography>
                         </OverflowContainer>
                       </StyledProfileTableCell>
@@ -840,11 +838,7 @@ const ReusableTableBody = (props) => {
                       <StyledTableCell key={cellName}>
                         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                           <OverflowContainer>
-                            <Typography noWrap>
-                              <Link href={row.link} passHref>
-                                <a>{row?.hub}</a>
-                              </Link>
-                            </Typography>
+                            <Typography noWrap>{row?.hub}</Typography>
                           </OverflowContainer>
                           {row?.hub && <HubTag>HUB</HubTag>}
                         </Box>
@@ -854,11 +848,7 @@ const ReusableTableBody = (props) => {
                     return (
                       <StyledTableCell key={cellName}>
                         <OverflowContainer>
-                          <Typography noWrap>
-                            <Link href={row.link} passHref>
-                              <a>{cellData}</a>
-                            </Link>
-                          </Typography>
+                          <Typography noWrap>{cellData}</Typography>
                         </OverflowContainer>
                       </StyledTableCell>
                     )
@@ -1103,6 +1093,7 @@ const SearchResultOverflowContainer = styled(Box)(({ theme }) => ({
   width: '70vw',
   textAlign: 'left',
   textOverflow: 'ellipsis',
+  border: '2px solid red',
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
     width: '80vw',

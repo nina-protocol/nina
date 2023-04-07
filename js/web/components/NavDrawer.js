@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
-import { useWallet } from '@solana/wallet-adapter-react'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
@@ -17,8 +16,8 @@ import {
   faInstagramSquare,
   faDiscord,
 } from '@fortawesome/free-brands-svg-icons'
-
 import CloseIcon from '@mui/icons-material/Close'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 
 const linksConnected = [
   'home',
@@ -46,7 +45,7 @@ const linksNotConnected = [
 ]
 
 const NavDrawer = () => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [links, setLinks] = useState(linksNotConnected)
 

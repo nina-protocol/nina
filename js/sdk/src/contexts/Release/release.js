@@ -2,9 +2,9 @@ import React, { createContext, useEffect, useState, useContext } from 'react'
 import * as anchor from '@project-serum/anchor'
 import NinaSdk from '@nina-protocol/js-sdk'
 import promiseRetry from 'promise-retry'
-import { useWallet } from '@solana/wallet-adapter-react'
 
 import Nina from '../Nina'
+import Wallet from '../Wallet'
 import {
   createMintInstructions,
   findOrCreateAssociatedTokenAccount,
@@ -39,7 +39,7 @@ const ReleaseContextProvider = ({ children }) => {
     releasePurchaseTransactionPending,
     setReleasePurchaseTransactionPending,
   ] = useState({})
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [pressingState, setPressingState] = useState(defaultPressingState)
   const [redeemableState, setRedeemableState] = useState({})
   const [searchResults, setSearchResults] = useState(searchResultsInitialState)
@@ -139,6 +139,7 @@ const ReleaseContextProvider = ({ children }) => {
     solBalance,
     setGatesState,
     gatesState,
+    wallet,
   })
 
   useEffect(() => {
@@ -441,36 +442,51 @@ const releaseContextHelper = ({
         publicKey: release.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
       })
+      const request = {
+        accounts: {
+          authority: provider.wallet.publicKey,
+          release,
+          releaseSigner,
+          hubCollaborator,
+          hub: hubPubkey,
+          hubRelease,
+          hubContent,
+          hubSigner,
+          hubWallet,
+          releaseMint: releaseMint.publicKey,
+          authorityTokenAccount,
+          paymentMint,
+          royaltyTokenAccount,
+          tokenProgram: new anchor.web3.PublicKey(ids.programs.token),
+          metadata,
+          metadataProgram,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        },
+        signers: [releaseMint],
+        instructions,
+      }
 
-      const txid = await program.rpc.releaseInitViaHub(
+      const tx = await program.transaction.releaseInitViaHub(
         config,
         bumps,
         metadataData,
         decodeNonEncryptedByteArray(hub.handle),
-        {
-          accounts: {
-            authority: provider.wallet.publicKey,
-            release,
-            releaseSigner,
-            hubCollaborator,
-            hub: hubPubkey,
-            hubRelease,
-            hubContent,
-            hubSigner,
-            hubWallet,
-            releaseMint: releaseMint.publicKey,
-            authorityTokenAccount,
-            paymentMint,
-            royaltyTokenAccount,
-            tokenProgram: new anchor.web3.PublicKey(ids.programs.token),
-            metadata,
-            metadataProgram,
-            systemProgram: anchor.web3.SystemProgram.programId,
-            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-          },
-          signers: [releaseMint],
-          instructions,
-        }
+        request
+      )
+
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+
+      for await (let signer of request.signers) {
+        tx.partialSign(signer)
+      }
+
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
       )
 
       await getConfirmTransaction(txid, provider.connection)
@@ -698,25 +714,41 @@ const releaseContextHelper = ({
         wallet: provider.wallet.publicKey.toBase58(),
       })
 
-      const txid = await program.rpc.releaseInit(config, bumps, metadataData, {
-        accounts: {
-          release,
-          releaseSigner,
-          releaseMint: releaseMint.publicKey,
-          payer: provider.wallet.publicKey,
-          authority: provider.wallet.publicKey,
-          authorityTokenAccount: authorityTokenAccount,
-          paymentMint,
-          royaltyTokenAccount,
-          metadata,
-          metadataProgram,
-          systemProgram: anchor.web3.SystemProgram.programId,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        },
-        signers: [releaseMint],
-        instructions,
-      })
+      const tx = await program.rpc.releaseInit(
+        config,
+        bumps,
+        metadataData,
+        {
+          accounts: {
+            release,
+            releaseSigner,
+            releaseMint: releaseMint.publicKey,
+            payer: provider.wallet.publicKey,
+            authority: provider.wallet.publicKey,
+            authorityTokenAccount: authorityTokenAccount,
+            authorityPublishingCreditTokenAccount,
+            publishingCreditMint,
+            paymentMint,
+            royaltyTokenAccount,
+            metadata,
+            metadataProgram,
+            systemProgram: anchor.web3.SystemProgram.programId,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+          },
+          signers: [releaseMint],
+          instructions,
+        }
+      )
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
+
       await getConfirmTransaction(txid, provider.connection)
       await getRelease(release)
 
@@ -763,7 +795,7 @@ const releaseContextHelper = ({
       new anchor.web3.PublicKey(releasePubkey)
     )
     try {
-      const txid = await program.rpc.releaseCloseEdition({
+      const tx = await program.transaction.releaseCloseEdition({
         accounts: {
           authority: provider.wallet.publicKey,
           release: new anchor.web3.PublicKey(releasePubkey),
@@ -771,6 +803,15 @@ const releaseContextHelper = ({
           releaseMint: release.releaseMint,
         },
       })
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
+
       await getConfirmTransaction(txid, provider.connection)
       await getRelease(releasePubkey)
 
@@ -810,7 +851,6 @@ const releaseContextHelper = ({
         ninaClient,
         usdcBalance
       )
-
       await getConfirmTransaction(txid, provider.connection)
 
       await getUserBalances()
@@ -901,7 +941,15 @@ const releaseContextHelper = ({
         request.instructions = [authorityTokenAccountIx]
       }
 
-      const txid = await program.rpc.releaseRevenueShareCollect(request)
+      const tx = await program.transaction.releaseRevenueShareCollect(request)
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
       await getConfirmTransaction(txid, provider.connection)
 
       await getRelease(releasePubkey)
@@ -978,10 +1026,19 @@ const releaseContextHelper = ({
         request.instructions = [authorityTokenAccountIx]
       }
 
-      const txid = await program.rpc.releaseRevenueShareTransfer(
+      const tx = await program.transaction.releaseRevenueShareTransfer(
         new anchor.BN(updateAmount),
         request
       )
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
+
       await getConfirmTransaction(txid, provider.connection)
 
       getRelease(releasePubkey)

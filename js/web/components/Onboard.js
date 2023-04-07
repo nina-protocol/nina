@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import axios from 'axios'
 import { encodeBase64 } from 'tweetnacl-util'
 
 const Onboard = () => {
   const [code, setCode] = useState()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [claimedStatus, setClaimedStatus] = useState(false)
 
   const handleGenerateCode = async () => {

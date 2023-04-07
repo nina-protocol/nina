@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
+import React, { useContext, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 
 export default function Profiles() {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
 
   useEffect(() => {

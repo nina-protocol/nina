@@ -7,10 +7,10 @@ import Tooltip from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import Link from 'next/link'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useRouter } from 'next/router'
 import {
   WalletDialogProvider,
@@ -22,16 +22,17 @@ import SearchIcon from '@mui/icons-material/Search'
 import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 import DevnetIndicator from '@nina-protocol/nina-internal-sdk/esm/DevnetIndicator'
 import PendingReleasesIndicator from '@nina-protocol/nina-internal-sdk/esm/PendingReleasesIndicator'
+import WalletConnectModal from '@nina-protocol/nina-internal-sdk/esm/WalletConnectModal'
 import FeedDrawer from './FeedDrawer'
 import WalletButton from '@nina-protocol/nina-internal-sdk/esm/WalletButton'
 
 const NavBar = () => {
   const router = useRouter()
+  const { wallet, connectWalletEmbed } = useContext(Wallet.Context)
   const { pendingReleases } = useContext(Release.Context)
   const { healthOk, getSubscriptionsForUser, getUserBalances } = useContext(
     Nina.Context
   )
-  const wallet = useWallet()
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
     [wallet?.publicKey]
@@ -40,13 +41,14 @@ const NavBar = () => {
     if (!wallet || !base58) return null
     return base58.slice(0, 4) + '..' + base58.slice(-4)
   }, [wallet, base58])
+
   const [connectedString, setConnectedString] = useState()
   useEffect(() => {
     setConnectedString(healthOk ? 'connected-healthy' : 'connected-unhealthy')
   }, [healthOk])
 
   useEffect(() => {
-    if (wallet.connected) {
+    if (wallet?.connected) {
       getSubscriptionsForUser(wallet.publicKey.toBase58())
       getUserBalances()
 
@@ -54,7 +56,7 @@ const NavBar = () => {
         scope.setTag('wallet', wallet.publicKey.toBase58())
       })
     }
-  }, [wallet.connected])
+  }, [wallet?.connected])
 
   return (
     <Root>
@@ -85,9 +87,7 @@ const NavBar = () => {
               <NavSearch />
             </SearchBarWrapper>
             <UploadWrapper>
-              {!wallet.connected ? (
-                <EmailCapture size="small" />
-              ) : (
+              {wallet?.connected && (
                 <BlueTypography
                   sx={{
                     padding: { md: '2px', xs: '0px 0px' },
@@ -102,32 +102,18 @@ const NavBar = () => {
                 </BlueTypography>
               )}
             </UploadWrapper>
-            {wallet.wallets && (
+            {wallet?.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
                 <StyledWalletButton router={router}>
                   <Typography
                     variant="subtitle1"
                     sx={{ textTransform: 'none' }}
                   >
-                    {wallet?.connected
-                      ? `${wallet.wallet.adapter.name} – ${walletDisplay}`
-                      : 'Connect Wallet'}
+                    {wallet?.connected &&
+                      `${wallet.wallet.adapter.name} – ${walletDisplay}`}
+                    {!wallet?.connected && 'Connect Wallet'}
                   </Typography>
                 </StyledWalletButton>
-                <Tooltip
-                  title={
-                    healthOk
-                      ? 'Network Status: Good'
-                      : 'Network Status: Degraded - Transactions may fail.'
-                  }
-                  placement="bottom-end"
-                >
-                  <ConnectionDot
-                    className={`${classes.connectionDot} ${
-                      wallet?.connected ? connectedString : ''
-                    }`}
-                  ></ConnectionDot>
-                </Tooltip>
                 <DevnetIndicator />
               </StyledWalletDialogProvider>
             )}
@@ -225,70 +211,68 @@ const Logo = styled('div')(({ theme }) => ({
 const DesktopWalletWrapper = styled(Box)(() => ({
   display: 'flex',
 }))
-const StyledWalletDialogProvider = styled(WalletDialogProvider)(
-  ({ theme }) => ({
-    '& .MuiList-root': {
-      background: `${theme.palette.transparent} !important`,
+const StyledWalletDialogProvider = styled(Box)(({ theme }) => ({
+  '& .MuiList-root': {
+    background: `${theme.palette.transparent} !important`,
+  },
+  '& .MuiButton-root': {
+    backgroundColor: `${theme.palette.white}`,
+  },
+  '& .MuiButton-startIcon': {
+    display: 'none',
+  },
+  '& .MuiPaper-root': {
+    width: '400px',
+    height: 'auto',
+    ...theme.helpers.gradient,
+    '& .MuiDialogTitle-root': {
+      color: `${theme.palette.white} !important`,
+      textAlign: 'center',
+      padding: '60px 0 0',
+      textTransform: 'uppercase',
+      margin: 'auto',
+      background: 'none !important',
+      fontSize: '16px !important',
+      fontWeight: '700 !important',
+      '& h2': {
+        backgroundColor: `${theme.palette.white} !important`,
+      },
+      '& .MuiButtonBase-root': {
+        display: 'none',
+      },
     },
-    '& .MuiButton-root': {
-      backgroundColor: `${theme.palette.white}`,
+    '& .MuiDialogContent-root': {
+      padding: '24px',
     },
-    '& .MuiButton-startIcon': {
-      display: 'none',
-    },
-    '& .MuiPaper-root': {
-      width: '400px',
-      height: 'auto',
-      ...theme.helpers.gradient,
-      '& .MuiDialogTitle-root': {
-        color: `${theme.palette.white} !important`,
+    '& .MuiListItem-root': {
+      padding: `8px 24px`,
+      boxShadow: 'none',
+      width: '241px',
+      margin: 'auto',
+      '&:hover': {
+        boxShadow: 'none',
+      },
+      '& .MuiButton-root': {
         textAlign: 'center',
-        padding: '60px 0 0',
+        borderRadius: '50px',
+        color: `${theme.palette.blue}`,
+        fontSize: '10px',
+        fontWeight: '700',
+        justifyContent: 'center',
         textTransform: 'uppercase',
-        margin: 'auto',
-        background: 'none !important',
-        fontSize: '16px !important',
-        fontWeight: '700 !important',
-        '& h2': {
-          backgroundColor: `${theme.palette.white} !important`,
+        padding: '6px 0',
+        '&:hover': {
+          opacity: '1',
+          backgroundColor: `${theme.palette.blue} !important`,
+          color: `${theme.palette.white}`,
         },
-        '& .MuiButtonBase-root': {
+        '& .MuiButton-endIcon': {
           display: 'none',
         },
       },
-      '& .MuiDialogContent-root': {
-        padding: '24px',
-      },
-      '& .MuiListItem-root': {
-        padding: `8px 24px`,
-        boxShadow: 'none',
-        width: '241px',
-        margin: 'auto',
-        '&:hover': {
-          boxShadow: 'none',
-        },
-        '& .MuiButton-root': {
-          textAlign: 'center',
-          borderRadius: '50px',
-          color: `${theme.palette.blue}`,
-          fontSize: '10px',
-          fontWeight: '700',
-          justifyContent: 'center',
-          textTransform: 'uppercase',
-          padding: '6px 0',
-          '&:hover': {
-            opacity: '1',
-            backgroundColor: `${theme.palette.blue} !important`,
-            color: `${theme.palette.white}`,
-          },
-          '& .MuiButton-endIcon': {
-            display: 'none',
-          },
-        },
-      },
     },
-  })
-)
+  },
+}))
 
 const StyledWalletButton = styled(WalletButton)(({ theme }) => ({
   textTransform: 'capitalize',

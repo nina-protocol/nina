@@ -6,9 +6,7 @@ import React, {
   createElement,
   Fragment,
 } from 'react'
-import axios from 'axios'
 import { styled } from '@mui/material/styles'
-import { useWallet } from '@solana/wallet-adapter-react'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
@@ -17,18 +15,26 @@ import Link from 'next/link'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
 import Dots from './Dots'
+import { useWallet } from '@solana/wallet-adapter-react'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
-import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
-import { encodeBase64 } from 'tweetnacl-util'
+import dynamic from 'next/dynamic'
+
+const Gates = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/Gates')
+)
+const RedeemReleaseCode = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/RedeemReleaseCode')
+)
 
 const ReleasePurchase = (props) => {
   const {
@@ -38,16 +44,16 @@ const ReleasePurchase = (props) => {
     amountHeld,
     setAmountHeld,
     isAuthority,
-    releaseGates,
   } = props
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const {
     releasePurchase,
     releasePurchasePending,
     releasePurchaseTransactionPending,
     releaseState,
     getRelease,
+    gatesState,
   } = useContext(Release.Context)
   const {
     getAmountHeld,
@@ -77,6 +83,11 @@ const ReleasePurchase = (props) => {
   const pending = useMemo(
     () => releasePurchasePending[releasePubkey],
     [releasePubkey, releasePurchasePending]
+  )
+
+  const releaseGates = useMemo(
+    () => gatesState[releasePubkey],
+    [gatesState, releasePubkey]
   )
 
   useEffect(() => {
@@ -151,7 +162,7 @@ const ReleasePurchase = (props) => {
       return
     }
     let result
-    if (!amountHeld || amountHeld === 0) {
+    if ((!amountHeld || amountHeld === 0) && release.price > 0) {
       const error = await checkIfHasBalanceToCompleteAction(
         NinaProgramAction.RELEASE_PURCHASE
       )
@@ -214,37 +225,6 @@ const ReleasePurchase = (props) => {
     pathString = '/releases'
   } else if (router.pathname.includes('collection')) {
     pathString = '/collection'
-  }
-
-  const handleCodeSubmit = async (e) => {
-    e.preventDefault()
-    try {
-      if (wallet?.connected) {
-        const message = new TextEncoder().encode(releasePubkey)
-        const messageBase64 = encodeBase64(message)
-        const signature = await wallet.signMessage(message)
-        const signatureBase64 = encodeBase64(signature)
-
-        await axios.post(
-          `${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes/${code}/claim`,
-          {
-            publicKey: wallet?.publicKey?.toBase58(),
-            message: messageBase64,
-            signature: signatureBase64,
-            releasePublicKey: releasePubkey,
-          }
-        )
-        await getRelease(releasePubkey)
-        enqueueSnackbar('Code claimed successfully', {
-          variant: 'success',
-        })
-        setCode('')
-      }
-    } catch (error) {
-      enqueueSnackbar(error.response.data.error, {
-        variant: 'error',
-      })
-    }
   }
 
   return (
@@ -333,29 +313,19 @@ const ReleasePurchase = (props) => {
             </StyledLink>
           </Typography>
         )}
+        <StyledDescription align="left" releaseGates={releaseGates}>
+          {description}
+        </StyledDescription>
       </Box>
-      <StyledDescription align="left">{description}</StyledDescription>
       <Box
         sx={{
           position: { xs: 'relative', md: 'absolute' },
           bottom: '0',
           width: '100%',
+          background: 'white',
         }}
       >
         <Box sx={{ mb: 1, mt: 1 }}>
-          <input
-            type="text"
-            name="code"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-          />
-          <Button
-            variant="outlined"
-            fullWidth
-            onClick={(e) => handleCodeSubmit(e)}
-          >
-            <Typography variant="body2">Redeem Release Code</Typography>
-          </Button>
           <form onSubmit={handleSubmit}>
             <Button
               variant="outlined"
@@ -383,6 +353,19 @@ const ReleasePurchase = (props) => {
           inSettings={false}
           releaseGates={releaseGates}
         />
+        <Box sx={{ position: 'absolute', top: '110%' }} align="center">
+          {amountHeld === 0 && (
+            <StyledTypographyButtonSub>
+              {`There ${releaseGates?.length > 1 ? 'are' : 'is'} ${
+                releaseGates?.length
+              } ${
+                releaseGates?.length > 1 ? 'files' : 'file'
+              } available for download exclusively to owners of this release.`}
+            </StyledTypographyButtonSub>
+          )}
+
+          <RedeemReleaseCode releasePubkey={releasePubkey} />
+        </Box>
       </Box>
     </Box>
   )
@@ -409,7 +392,13 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
 }))
 
-const StyledDescription = styled(Typography)(({ theme }) => ({
+const StyledTypographyButtonSub = styled(Typography)(({ theme }) => ({
+  color: theme.palette.grey[500],
+  textAlign: 'center',
+  fontSize: '12px',
+}))
+
+const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({
   overflowWrap: 'anywhere',
   fontSize: '18px !important',
   lineHeight: '20.7px !important',
@@ -417,9 +406,8 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
     display: 'none',
   },
   [theme.breakpoints.up('md')]: {
-    maxHeight: '152px',
+    maxHeight: releaseGates ? '182px' : '256px',
     overflowY: 'scroll',
-    height: '152px',
   },
 }))
 

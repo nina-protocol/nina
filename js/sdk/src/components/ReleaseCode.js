@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper'
 import Backdrop from '@mui/material/Backdrop'
 import { styled } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
-
+import Input from '@mui/material/Input'
 const ReleaseCode = ({ release }) => {
   const [codes, setCodes] = useState()
   const [amount, setAmount] = useState(1)
@@ -119,35 +119,53 @@ const ReleaseCode = ({ release }) => {
             <StyledPaper>
               <StyledCloseIcon onClick={() => setOpen(false)} />
 
-              <div>
-                <label htmlFor="releaseCode">OnboardingCode</label>
-                <input
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: '16px 0px',
+                }}
+              >
+                <Input
+                  label="ReleaseCode"
                   type="number"
                   id="releaseCode"
                   name="releaseCode"
                   value={amount}
                   onChange={(event) => setAmount(event.target.value)}
                 />
-                <button onClick={() => handleGenerateCodes()}>
+                <Box></Box>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => handleGenerateCodes()}
+                  sx={{ marginTop: '8px' }}
+                >
                   Generate Codes
-                </button>
-                <button onClick={() => handleGetExistingCodes()}>
+                </Button>
+                <Box></Box>
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => handleGetExistingCodes()}
+                  sx={{ marginTop: '8px' }}
+                >
                   Get Existing Codes
-                </button>
+                </Button>
                 <ul>
                   {codes &&
                     codes.map((code) => {
                       return (
                         <StyledListItem
+                          key={code.code}
                           className={code.claimedBy ? 'claimed' : ''}
-                          id={code.code}
                         >
                           {code.code}
                         </StyledListItem>
                       )
                     })}
                 </ul>
-              </div>
+              </Box>
             </StyledPaper>
           </Fade>
         </StyledModal>

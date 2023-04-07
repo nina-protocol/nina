@@ -8,7 +8,7 @@ import {
 } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
 import { logEvent } from '../../utils/event'
-import { truncateAddress } from '../../utils/truncateAddress'
+import { truncateAddress } from '../../utils/truncateManager'
 import Airtable from 'airtable'
 import { getConfirmTransaction } from '../../utils'
 
@@ -289,12 +289,24 @@ const ninaContextHelper = ({
         },
       }
 
-      let txid
+      let tx
       if (hubHandle) {
-        txid = await program.rpc.subscriptionSubscribeHub(hubHandle, request)
+        tx = await program.transaction.subscriptionSubscribeHub(
+          hubHandle,
+          request
+        )
       } else {
-        txid = await program.rpc.subscriptionSubscribeAccount(request)
+        tx = await program.transaction.subscriptionSubscribeAccount(request)
       }
+
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
 
       await getConfirmTransaction(txid, provider.connection)
       await getSubscription(subscription.toBase58())
@@ -340,7 +352,7 @@ const ninaContextHelper = ({
         ],
         program.programId
       )
-      const txid = await program.rpc.subscriptionUnsubscribe({
+      const tx = await program.transaction.subscriptionUnsubscribe({
         accounts: {
           from: provider.wallet.publicKey,
           subscription,
@@ -348,6 +360,15 @@ const ninaContextHelper = ({
           systemProgram: anchor.web3.SystemProgram.programId,
         },
       })
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
+
       await getConfirmTransaction(txid, provider.connection)
       await getSubscription(subscription.toBase58(), txid)
       if (hubHandle) {

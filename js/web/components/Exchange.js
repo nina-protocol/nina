@@ -9,11 +9,11 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import RefreshIcon from '@mui/icons-material/Refresh'
-import { useWallet } from '@solana/wallet-adapter-react'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import Image from 'next/image'
 import BuySell from './BuySell'
@@ -26,7 +26,7 @@ const { getImageFromCDN, loader } = imageManager
 const ExchangeComponent = (props) => {
   const { releasePubkey, metadata } = props
 
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const { enqueueSnackbar } = useSnackbar()
   const { ninaClient, checkIfHasBalanceToCompleteAction, NinaProgramAction } =
     useContext(Nina.Context)
