@@ -11,6 +11,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import WalletConnectModal  from '@nina-protocol/nina-internal-sdk/esm/WalletConnectModal'
 
 const Onboard = () => {
   const router = useRouter()
@@ -99,13 +100,11 @@ const Onboard = () => {
                       variant="h3"
                       sx={{ display: 'flex', flexDirection: 'row' }}
                     >
-                      <StyledWalletDialogProvider>
-                        <StyledWalletDialogButton>
+                        <WalletConnectModal>
                           <BlueTypography variant="h3">
                             Connect your wallet
                           </BlueTypography>
-                        </StyledWalletDialogButton>
-                      </StyledWalletDialogProvider>
+                        </WalletConnectModal>
                       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                         or
                         <Link href="https://phantom.app/download">
@@ -249,74 +248,5 @@ const BlueTypography = styled(Typography)(({ theme }) => ({
     opacity: '85%',
   },
 }))
-
-const StyledWalletDialogButton = styled(WalletDialogButton)(({ theme }) => ({
-  padding: '0px !important',
-}))
-
-const StyledWalletDialogProvider = styled(WalletDialogProvider)(
-  ({ theme }) => ({
-    '& .MuiList-root': {
-      background: `${theme.palette.transparent} !important`,
-    },
-    '& .MuiButton-root': {
-      backgroundColor: `${theme.palette.white}`,
-    },
-    '& .MuiButton-startIcon': {
-      display: 'none',
-    },
-    '& .MuiPaper-root': {
-      width: '400px',
-      height: 'auto',
-      ...theme.helpers.gradient,
-      '& .MuiDialogTitle-root': {
-        color: `${theme.palette.white} !important`,
-        textAlign: 'center',
-        padding: '60px 0 0',
-        textTransform: 'uppercase',
-        margin: 'auto',
-        background: 'none !important',
-        fontSize: '16px !important',
-        fontWeight: '700 !important',
-        '& h2': {
-          backgroundColor: `${theme.palette.white} !important`,
-        },
-        '& .MuiButtonBase-root': {
-          display: 'none',
-        },
-      },
-      '& .MuiDialogContent-root': {
-        padding: '24px',
-      },
-      '& .MuiListItem-root': {
-        padding: `8px 24px`,
-        boxShadow: 'none',
-        width: '241px',
-        margin: 'auto',
-        '&:hover': {
-          boxShadow: 'none',
-        },
-        '& .MuiButton-root': {
-          textAlign: 'center',
-          borderRadius: '50px',
-          color: `${theme.palette.blue}`,
-          fontSize: '10px',
-          fontWeight: '700',
-          justifyContent: 'center',
-          textTransform: 'uppercase',
-          padding: '6px 0',
-          '&:hover': {
-            opacity: '1',
-            backgroundColor: `${theme.palette.blue} !important`,
-            color: `${theme.palette.white}`,
-          },
-          '& .MuiButton-endIcon': {
-            display: 'none',
-          },
-        },
-      },
-    },
-  })
-)
 
 export default Onboard
