@@ -491,13 +491,13 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   }
 
   const handleLowUploadModalClose = () => {
-    setShowLowUploadModal(false)
-    if (artwork) {
-      artwork.remove()
-    }
-    if (track) {
-      track.remove()
-    }
+    // setShowLowUploadModal(false)
+    // if (artwork) {
+    //   artwork.remove()
+    // }
+    // if (track) {
+    //   track.remove()
+    // }
   }
 
   const handleReload = () => {

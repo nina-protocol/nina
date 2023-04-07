@@ -23,7 +23,9 @@ const BundlrModal = ({
 
   const handleClose = () => {
     setOpen(false)
-    handleLowUploadModalClose()
+    if (handleLowUploadModalClose) {
+      handleLowUploadModalClose()
+    }
   }
 
   const renderCtas = () => {

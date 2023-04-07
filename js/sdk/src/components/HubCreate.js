@@ -388,14 +388,16 @@ const HubCreate = ({ update, hubData, inHubs }) => {
       />
     )
   }
+
+  if (!wallet.connected) {
+    return (
+      <ConnectMessage variant="body" gutterBottom>
+        Please connect your wallet to create a hub
+      </ConnectMessage>
+    )
+  }
   return (
     <StyledGrid item md={12}>
-      {!wallet.connected && (
-        <ConnectMessage variant="body" gutterBottom>
-          Please connect your wallet to create a hub
-        </ConnectMessage>
-      )}
-
       {update && (
         <Typography gutterBottom>
           Updating {hubData.data.displayName}

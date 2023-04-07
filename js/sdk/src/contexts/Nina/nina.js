@@ -869,7 +869,7 @@ const ninaContextHelper = ({
         const bundlrInstance = new module.WebBundlr(
           bundlrHttpAddress,
           'solana',
-          provider.wallet.wallet.adapter,
+          provider.wallet.adapter,
           {
             providerUrl: process.env.SOLANA_CLUSTER_URL_BUNDLR,
             timeout: 1000000000000000,
