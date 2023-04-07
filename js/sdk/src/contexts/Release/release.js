@@ -714,32 +714,25 @@ const releaseContextHelper = ({
         wallet: provider.wallet.publicKey.toBase58(),
       })
 
-      const tx = await program.rpc.releaseInit(
-        config,
-        bumps,
-        metadataData,
-        {
-          accounts: {
-            release,
-            releaseSigner,
-            releaseMint: releaseMint.publicKey,
-            payer: provider.wallet.publicKey,
-            authority: provider.wallet.publicKey,
-            authorityTokenAccount: authorityTokenAccount,
-            authorityPublishingCreditTokenAccount,
-            publishingCreditMint,
-            paymentMint,
-            royaltyTokenAccount,
-            metadata,
-            metadataProgram,
-            systemProgram: anchor.web3.SystemProgram.programId,
-            tokenProgram: TOKEN_PROGRAM_ID,
-            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-          },
-          signers: [releaseMint],
-          instructions,
-        }
-      )
+      const tx = await program.rpc.releaseInit(config, bumps, metadataData, {
+        accounts: {
+          release,
+          releaseSigner,
+          releaseMint: releaseMint.publicKey,
+          payer: provider.wallet.publicKey,
+          authority: provider.wallet.publicKey,
+          authorityTokenAccount: authorityTokenAccount,
+          paymentMint,
+          royaltyTokenAccount,
+          metadata,
+          metadataProgram,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        },
+        signers: [releaseMint],
+        instructions,
+      })
       tx.recentBlockhash = (
         await provider.connection.getRecentBlockhash()
       ).blockhash
