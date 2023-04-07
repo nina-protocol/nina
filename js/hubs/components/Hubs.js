@@ -44,14 +44,14 @@ const Hubs = () => {
             padding: { md: '0px 40px 40px 40px !important', xs: '0px' },
           }}
         >
-          {!wallet?.connected && (
+          {userHubs.length === 0 && (
             <>
               <BlueTypography
                 variant="h1"
                 align="left"
                 sx={{ padding: { md: '40px 165px', xs: '0px 0px 10px' } }}
               >
-                <Link href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612#c7abd525851545a199e06ecd14a16a15">
+                <Link href="/all">
                   <a target="_blank">Hubs</a>
                 </Link>{' '}
                 are a new way to publish, share, and discuss music.{' '}
@@ -71,10 +71,6 @@ const Hubs = () => {
                 </Typography>
               </Box>
               <HubSlider />
-            </>
-          )}
-          <>
-            {userHubs?.length === 0 && (
               <DashboardContent item mt={4} md={12}>
                 <StyledLink href="/create">
                   <Button
@@ -98,7 +94,10 @@ const Hubs = () => {
                   </Button>
                 </StyledLink>
               </DashboardContent>
-            )}
+
+            </>
+          )}
+          <>
             {userHubs?.length > 0 && (
               <DashboardWrapper
                 md={9}
