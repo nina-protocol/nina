@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
+import React, { useEffect, useState, useContext } from 'react'
 import axios from 'axios'
 import { encodeBase64 } from 'tweetnacl-util'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
@@ -11,17 +10,14 @@ import Button from '@mui/material/Button'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useSnackbar } from 'notistack'
-import {
-  WalletDialogButton,
-  WalletDialogProvider,
-} from '@solana/wallet-adapter-material-ui'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 
 const Onboard = () => {
   const router = useRouter()
 
   const { query } = router
   const [code, setCode] = useState()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [claimedError, setClaimedError] = useState(false)
   const [claimedCodeSuccess, setClaimedCodeSuccess] = useState(false)
   const [headerCopy, setHeaderCopy] = useState(

@@ -13,12 +13,12 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Button from '@mui/material/Button'
 import Dots from './Dots'
 import { useRouter } from 'next/router'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { timeSince } from '@nina-protocol/nina-internal-sdk/src/utils'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { isMobile } from 'react-device-detect'
 
 const Feed = ({
@@ -38,7 +38,7 @@ const Feed = ({
     Nina.Context
   )
   const router = useRouter()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [pendingFetch, setPendingFetch] = useState(false)
   const scrollRef = useRef()
 

@@ -2,8 +2,8 @@ import React, { useEffect, useState, useContext } from 'react'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { styled } from '@mui/material/styles'
-import { useWallet } from '@solana/wallet-adapter-react'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutlineOutlined'
@@ -25,7 +25,7 @@ const ReleaseList = ({ userId }) => {
   } = useContext(Release.Context)
   const [listView, setListView] = useState(false)
 
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const { collection, createCollection } = useContext(Nina.Context)
   const [userCollectionReleases, setUserCollectionReleases] =
     useState(undefined)

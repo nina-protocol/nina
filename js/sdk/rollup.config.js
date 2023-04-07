@@ -26,6 +26,8 @@ export default [
       Hub: 'src/contexts/Hub/index.js',
       Nina: 'src/contexts/Nina/index.js',
       Release: 'src/contexts/Release/index.js',
+      Wallet: 'src/contexts/Wallet/index.js',
+      WalletWrapper: 'src/contexts/WalletWrapper/index.js',
       client: 'src/client.js',
       utils: 'src/utils/index.js',
       AudioPlayer: 'src/components/AudioPlayer.js',
@@ -50,6 +52,8 @@ export default [
       CloseRelease: 'src/components/CloseRelease.js',
       Gates: 'src/components/Gates.js',
       ReleaseSettingsModal: 'src/components/ReleaseSettingsModal.js',
+      RedeemReleaseCode: 'src/components/RedeemReleaseCode.js',
+      WalletConnectModal: 'src/components/WalletConnectModal.js',
       WalletButton: 'src/components/WalletButton.js',
     },
     output: [

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -11,10 +11,10 @@ import CloseIcon from '@mui/icons-material/Close'
 import { encodeBase64 } from 'tweetnacl-util'
 import axios from 'axios'
 import TextField from '@mui/material/TextField'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
-import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
+import { logEvent } from '../utils/event'
 import Dots from './Dots'
+import Wallet from '../contexts/Wallet'
 
 const GateCreateModal = ({
   fetchGatesForRelease,
@@ -24,7 +24,7 @@ const GateCreateModal = ({
 }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [inProgress, setInProgress] = useState(false)
   const [file, setFile] = useState(undefined)
   const [description, setDescription] = useState(undefined)

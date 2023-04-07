@@ -7,7 +7,7 @@ import Button from '@mui/material/Button'
 import Head from 'next/head'
 import Link from 'next/link'
 import { styled } from '@mui/material/styles'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 
 import HubSlider from './HubSlider'
@@ -22,7 +22,7 @@ const Hubs = () => {
   const { getHubsForUser, hubState, filterHubsForUser, hubCollaboratorsState } =
     useContext(Hub.Context)
   const { npcAmountHeld } = useContext(Nina.Context)
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
 
   useEffect(() => {
     if (wallet.connected) {

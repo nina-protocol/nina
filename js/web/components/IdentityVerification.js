@@ -1,11 +1,11 @@
 import { useEffect, useContext, useState, useMemo } from 'react'
 import { useRouter } from 'next/router'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import axios from 'axios'
 import Web3 from 'web3'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateManager'
@@ -32,7 +32,8 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const web3 = new Web3(process.env.ETH_CLUSTER_URL)
   const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
-  const { publicKey, signTransaction, sendTransaction } = useWallet()
+  const { wallet } = useContext(Wallet.Context)
+  const { publicKey, signTransaction, sendTransaction } = wallet
   const {
     ninaClient,
     getVerificationsForUser,

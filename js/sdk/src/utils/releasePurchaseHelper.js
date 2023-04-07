@@ -7,6 +7,7 @@ import {
   swapQuoteByOutputToken,
 } from '@orca-so/whirlpools-sdk'
 import { Percentage } from '@orca-so/common-sdk'
+import axios from 'axios'
 import {
   findOrCreateAssociatedTokenAccount,
   TOKEN_PROGRAM_ID,
@@ -14,6 +15,7 @@ import {
 } from './web3'
 
 import { decodeNonEncryptedByteArray } from './encrypt'
+import { encodeBase64 } from 'tweetnacl-util'
 
 const PRIORITY_SWAP_FEE = 7500
 const WHIRLPOOL_PROGRAM_ID = new anchor.web3.PublicKey(
@@ -122,6 +124,24 @@ const releasePurchaseHelper = async (
   releasePubkey = new anchor.web3.PublicKey(releasePubkey)
   const program = await ninaClient.useProgram()
   const release = await program.account.release.fetch(releasePubkey)
+
+  if (release.price.toNumber() === 0) {
+    const message = new TextEncoder().encode(releasePubkey.toBase58())
+    const messageBase64 = encodeBase64(message)
+    const signature = await provider.wallet.signMessage(messageBase64)
+    const signatureBase64 = encodeBase64(signature)
+    const response = await axios.get(
+      `${
+        process.env.NINA_IDENTITY_ENDPOINT
+      }/claim/${releasePubkey.toBase58()}?message=${encodeURIComponent(
+        messageBase64
+      )}&signature=${encodeURIComponent(
+        signatureBase64
+      )}&publicKey=${encodeURIComponent(provider.wallet.publicKey.toBase58())}`
+    )
+
+    return response.data.txid
+  }
 
   let [payerTokenAccount, payerTokenAccountIx] =
     await findOrCreateAssociatedTokenAccount(
@@ -266,13 +286,26 @@ const releasePurchaseHelper = async (
     }
 
     if (hub) {
-      return await program.rpc.releasePurchaseViaHub(
+      const tx = await program.transaction.releasePurchaseViaHub(
         release.price,
         decodeNonEncryptedByteArray(hub.handle),
         request
       )
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      return await provider.wallet.sendTransaction(tx, provider.connection)
     } else {
-      return await program.rpc.releasePurchase(release.price, request)
+      const tx = await program.transaction.releasePurchase(
+        release.price,
+        request
+      )
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      return await provider.wallet.sendTransaction(tx, provider.connection)
     }
   }
 }

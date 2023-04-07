@@ -21,7 +21,7 @@ import Typography from '@mui/material/Typography'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline'
 import DownloadIcon from '@mui/icons-material/Download'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
@@ -38,7 +38,7 @@ const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
 const AddToHubModal = dynamic(() => import('./AddToHubModal'))
 
 const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const { enqueueSnackbar } = useSnackbar()
   const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } =
     useContext(Audio.Context)

@@ -6,8 +6,8 @@ import { styled } from '@mui/material/styles'
 import * as Yup from 'yup'
 import EmailCaptureForm from './EmailCaptureForm'
 import { Box } from '@mui/material'
-import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '../contexts/Nina'
+import Wallet from '../contexts/Wallet'
 import CloseIcon from '@mui/icons-material/Close'
 import { logEvent } from '../utils/event'
 
@@ -58,7 +58,8 @@ const EmailCaptureSchema = Yup.object().shape(
 )
 
 const EmailCapture = ({ size }) => {
-  const { publicKey, connected } = useWallet()
+  const { wallet } = useContext(Wallet.Context)
+  const { publicKey, connected } = wallet
   const { submitEmailRequest } = useContext(Nina.Context)
   const [open, setOpen] = useState(false)
   const [showSuccessInfo, setShowSuccessInfo] = useState(false)
