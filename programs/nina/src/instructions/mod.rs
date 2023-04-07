@@ -1,3 +1,4 @@
+pub mod release_init;
 pub mod release_init_with_credit;
 pub mod release_init_via_hub;
 pub mod release_purchase;
@@ -23,6 +24,7 @@ pub mod exchange_accept;
 pub mod vault_init;
 pub mod vault_withdraw;
 
+pub mod hub_init;
 pub mod hub_init_with_credit;
 pub mod hub_add_collaborator;
 pub mod hub_add_release;
@@ -37,10 +39,12 @@ pub mod post_init_via_hub_with_reference_release;
 pub mod post_update_via_hub_post;
 
 pub mod subscription_subscribe_account;
+pub mod subscription_subscribe_account_delegated;
 pub mod subscription_subscribe_hub;
+pub mod subscription_subscribe_hub_delegated;
 pub mod subscription_unsubscribe;
 
-
+pub use release_init::*;
 pub use release_init_with_credit::*;
 pub use release_init_via_hub::*;
 pub use release_purchase::*;
@@ -66,6 +70,7 @@ pub use exchange_accept::*;
 pub use vault_init::*;
 pub use vault_withdraw::*;
 
+pub use hub_init::*;
 pub use hub_init_with_credit::*;
 pub use hub_add_collaborator::*;
 pub use hub_add_release::*;
@@ -80,5 +85,7 @@ pub use post_init_via_hub_with_reference_release::*;
 pub use post_update_via_hub_post::*;
 
 pub use subscription_subscribe_account::*;
+pub use subscription_subscribe_account_delegated::*;
 pub use subscription_subscribe_hub::*;
+pub use subscription_subscribe_hub_delegated::*;
 pub use subscription_unsubscribe::*;

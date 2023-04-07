@@ -69,6 +69,7 @@ const ReleasePurchase = (props) => {
     getExchangesForRelease,
   } = useContext(Exchange.Context)
   const [release, setRelease] = useState(undefined)
+  const [code, setCode] = useState()
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
   const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
