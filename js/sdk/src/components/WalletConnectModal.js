@@ -11,7 +11,8 @@ import { WalletReadyState } from '@solana/wallet-adapter-base'
 import { Magic } from 'magic-sdk'
 import { SolanaExtension } from '@magic-ext/solana'
 
-const WalletConnectModal = ({ children }) => {
+const WalletConnectModal = (props) => {
+  const { children, inOnboardingFlow } = props
   const { wallet, walletExtension, connectMagicWallet } = useContext(
     Wallet.Context
   )
@@ -49,23 +50,43 @@ const WalletConnectModal = ({ children }) => {
   }
 
   return (
-    <Root>
-      <Button
-        onClick={() => {
-          if (wallet?.connected) {
-            wallet.disconnect()
-          } else {
-            setOpen(true)
-          }
-        }}
-        sx={{
-          '&:hover': {
-            opacity: '50%',
-          },
-        }}
-      >
-        {children}
-      </Button>
+    <>
+      {inOnboardingFlow ? (
+        <StyledButton
+          onClick={() => {
+            if (wallet?.connected) {
+              wallet.disconnect()
+            } else {
+              setOpen(true)
+            }
+          }}
+          variant="outlined"
+          sx={{ mt: 1 }}
+        >
+          {children}
+        </StyledButton>
+      ) : (
+        <Button
+          onClick={() => {
+            if (wallet?.connected) {
+              wallet.disconnect()
+            } else {
+              setOpen(true)
+            }
+          }}
+          sx={{
+            padding: '0px',
+            textTransform: 'none',
+            '&:hover': {
+              opacity: '50%',
+            },
+          }}
+        >
+          <Typography variant="h3" sx={{ textAlign: 'center' }}>
+            {children}
+          </Typography>
+        </Button>
+      )}
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -111,15 +132,9 @@ const WalletConnectModal = ({ children }) => {
           </StyledPaper>
         </Fade>
       </StyledModal>
-    </Root>
+    </>
   )
 }
-
-const Root = styled('div')(() => ({
-  display: 'flex',
-  alignItems: 'center',
-  width: '100%',
-}))
 
 const StyledModal = styled(Modal)(() => ({
   display: 'flex',
@@ -138,6 +153,15 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   zIndex: '10',
   display: 'flex',
   flexDirection: 'column',
+}))
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  border: `1px solid ${theme.palette.black}`,
+  borderRadius: '0px',
+  padding: '16px 20px',
+  color: theme.palette.black,
+  width: '100%',
+  fontSize: '12px',
 }))
 
 export default WalletConnectModal
