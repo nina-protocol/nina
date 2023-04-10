@@ -72,6 +72,7 @@ const ReleaseTileList = (props) => {
                         <ControlPointIcon sx={{ color: 'white' }} />
                       </Button>
                     </CardCta>
+
                     {release.metadata.image && (
                       <Image
                         width={100}
