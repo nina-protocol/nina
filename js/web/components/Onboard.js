@@ -26,11 +26,9 @@ const IdentityVerification = dynamic(() => import('./IdentityVerification'))
 const Onboard = () => {
   const router = useRouter()
   const {
-    bundlrUpload,
     bundlrBalance,
     getBundlrBalance,
     getBundlrPricePerMb,
-    bundlrPricePerMb,
     solPrice,
     getSolPrice,
     getUserBalances,
@@ -41,7 +39,7 @@ const Onboard = () => {
   const { wallet } = useContext(Wallet.Context)
   const [claimedError, setClaimedError] = useState(false)
   const [claimedCodeSuccess, setClaimedCodeSuccess] = useState(false)
-  const [activeStep, setActiveStep] = useState(0)
+  const [activeStep, setActiveStep] = useState(2)
   const { enqueueSnackbar } = useSnackbar()
   const profilePubkey = wallet?.publicKey?.toBase58()
   const [profileVerifications, setProfileVerifications] = useState([])
@@ -53,7 +51,6 @@ const Onboard = () => {
     refreshBundlr()
     getUserBalances()
   }, [])
-
   useEffect(() => {
     if (!router.isReady) return
     if (router.isReady && query.code) {
@@ -86,7 +83,7 @@ const Onboard = () => {
     }
   }, [claimedCodeSuccess])
   useEffect(() => {
-    if (bundlrUsdBalance > 0) {
+    if (bundlrUsdBalance > 0.05) {
       setActiveStep(3)
     }
   }, [bundlrUsdBalance])
@@ -100,7 +97,6 @@ const Onboard = () => {
           Login / Sign Up
         </WalletConnectModal>
       ),
-      disabled: !wallet.connected,
     },
     {
       title: 'Claim your onboarding code',
@@ -128,7 +124,6 @@ const Onboard = () => {
           )}
         </>
       ),
-      disabled: !claimedCodeSuccess,
     },
     {
       title: 'Fund your Upload Account',
@@ -136,7 +131,6 @@ const Onboard = () => {
           Account. This account is used to pay for storage and transaction fees
           on Nina.`,
       cta: <BundlrModal inOnboardFlow={true} />,
-      disabled: !bundlrBalance,
     },
     {
       title: 'Verify your Account (optional)',
@@ -158,7 +152,6 @@ const Onboard = () => {
           </ClaimCodeButton>
         </>
       ),
-      disabled: false,
     },
   ]
 
@@ -278,7 +271,7 @@ const Onboard = () => {
                         </Link>
                         <Link href="/upload">
                           <ClaimCodeButton sx={{ marginTop: '10px' }}>
-                            Upload Music
+                            Publish a Track
                           </ClaimCodeButton>
                         </Link>
                       </Box>
