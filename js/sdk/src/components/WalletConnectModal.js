@@ -13,6 +13,9 @@ import { SolanaExtension } from '@magic-ext/solana'
 import EmailLoginForm from './EmailLoginForm'
 import EmailOTPForm from './EmailOTPForm'
 
+import dynamic from 'next/dynamic'
+const WelcomeModal = dynamic(() => import('@nina-protocol/nina-internal-sdk/esm/WelcomeModal'), { ssr: false })
+
 const WalletConnectModal = ({ children }) => {
   const { wallet, walletExtension, connectMagicWallet } = useContext(
     Wallet.Context
@@ -21,6 +24,12 @@ const WalletConnectModal = ({ children }) => {
   const [open, setOpen] = useState(false)
   const [showOtpUI, setShowOtpUI] = useState(false);
   const [otpLogin, setOtpLogin] = useState();
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false)
+  // const enterWelcomeFlow = useMemo(() => {
+  //   if (typeof window !== 'undefined') {
+  //     return !localStorage.getItem('nina_welcomeModal_seen')
+  //   } 
+  // }, [typeof window])
 
   const handleLogin = async (email) => {
     const magic = new Magic(process.env.MAGIC_KEY, {
@@ -57,6 +66,7 @@ const WalletConnectModal = ({ children }) => {
         .on("settled", () => {
           setOtpLogin();
           setShowOtpUI(false);
+          setShowWelcomeModal(true);
         })
         .catch((err) => {
           console.log("%cError caught during login:\n", "color: orange");
@@ -68,7 +78,6 @@ const WalletConnectModal = ({ children }) => {
       console.error(err);
     }
   }
-
   const supportedWallets = useMemo(() => {
     if (walletExtension) {
       return walletExtension.wallets.filter(
@@ -81,6 +90,7 @@ const WalletConnectModal = ({ children }) => {
     event.preventDefault()
     wallet.select(walletName)
     setOpen(false)
+    setShowWelcomeModal(true)
     // show the newb a welcome message
   }
 
@@ -136,6 +146,11 @@ const WalletConnectModal = ({ children }) => {
           </StyledPaper>
         </Fade>
       </StyledModal>
+
+      {/* {wallet?.connected && showWelcomeModal &&  ( */}
+      {wallet?.connected &&  (
+        <WelcomeModal profilePubkey={wallet.publicKey.toBase58()} showWelcomeModal={showWelcomeModal} />
+      )}
     </Root>
   )
 }

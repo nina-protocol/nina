@@ -16,7 +16,6 @@ const WalletContextProvider = ({ children }) => {
 
   const wallet = useMemo(() => {
     //local storage set here
-    console.log("WALLET USEEFFECT");
     if (typeof window !== 'undefined') {
       console.log('setting local storage');
       if (magicWallet) {

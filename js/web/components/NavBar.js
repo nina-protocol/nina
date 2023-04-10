@@ -123,10 +123,6 @@ const NavBar = () => {
         </DesktopWalletWrapper>
       </NavRight>
       <PendingReleasesIndicator />
-
-      {wallet?.connected && (
-        <WelcomeModal profilePubkey={wallet.publicKey.toBase58()} />
-      )}
       <FeedDrawer override={true} />
     </Root>
   )

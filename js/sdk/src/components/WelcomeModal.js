@@ -13,12 +13,17 @@ import IdentityVerification from './IdentityVerification'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 
 
-const WelcomeModal = ({profilePubkey}) => {
+const WelcomeModal = ({profilePubkey, showWelcomeModal}) => {
   const {verificationState} = useContext(Nina.Context)
 
-
+  // const [open, setOpen] = useState(showWelcomeModal)
   const [open, setOpen] = useState(true)
   const [profileVerifications, setProfileVerifications] = useState([])
+
+
+ useEffect(() => {
+  localStorage.setItem('nina_welcomeModal_seen', 'true')
+ }, [])
 
 
   useEffect(() => {
@@ -28,7 +33,6 @@ const WelcomeModal = ({profilePubkey}) => {
   }, [verificationState])
 
   const handleCancel = () => {
-    colorReset()
     setOpen(false)
   }
 
@@ -96,31 +100,7 @@ const WelcomeModal = ({profilePubkey}) => {
                   It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
                 </Typography>
               </StyledWelcomeSection>
-              <StyledWelcomeSection>
-                <Typography gutterBottom>
-                  - Verify:
-                </Typography>
-                <Typography gutterBottom>
-                  It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
-                </Typography>
-              </StyledWelcomeSection>
-              <StyledWelcomeSection>
-                <Typography gutterBottom>
-                  - Verify:
-                </Typography>
-                <Typography gutterBottom>
-                  It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
-                </Typography>
-              </StyledWelcomeSection>
-              <StyledWelcomeSection>
-                <Typography gutterBottom>
-                  - Verify:
-                </Typography>
-                <Typography gutterBottom>
-                  It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
-                </Typography>
-              </StyledWelcomeSection>
-
+   
               <Divider />
 
             </Box>
