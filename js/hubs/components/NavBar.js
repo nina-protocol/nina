@@ -14,15 +14,12 @@ import IconButton from '@mui/material/IconButton'
 import Drawer from '@mui/material/Drawer'
 import MenuIcon from '@mui/icons-material/Menu'
 import PendingReleasesIndicator from '@nina-protocol/nina-internal-sdk/esm/PendingReleasesIndicator'
-
-import {
-  WalletDialogProvider,
-  WalletMultiButton,
-} from '@solana/wallet-adapter-material-ui'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Link from 'next/link'
 import Image from 'next/image'
 import NinaSdk from '@nina-protocol/js-sdk'
+import WalletButton from '@nina-protocol/nina-internal-sdk/esm/WalletButton'
+
 const { getImageFromCDN, loader } = imageManager
 
 const navData = [
@@ -60,7 +57,7 @@ const mobileNavData = [
 
 const NavBar = ({ hubPubkey }) => {
   const { toolbar, drawerContainer } = useStyles()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [hubData, setHubData] = useState(null)
   const [mobileView, setMobileView] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -181,18 +178,16 @@ const NavBar = ({ hubPubkey }) => {
           <WalletWrapper id="wallet-wrapper">
             <NavCtas>
               {wallet.wallets && (
-                <StyledWalletDialogProvider featuredWallets={4}>
-                  <StyledWalletButton>
-                    <StyledWalletButtonTypography
-                      variant="body1"
-                      sx={{ textTransform: 'none' }}
-                    >
-                      {wallet?.connected
-                        ? `${wallet.wallet.adapter.name} – ${walletDisplay}`
-                        : 'Connect Wallet'}
-                    </StyledWalletButtonTypography>
-                  </StyledWalletButton>
-                </StyledWalletDialogProvider>
+                <StyledWalletButton>
+                  <StyledWalletButtonTypography
+                    variant="body1"
+                    sx={{ textTransform: 'none' }}
+                  >
+                    {wallet?.connected
+                      ? `${wallet.wallet.adapter.name} – ${walletDisplay}`
+                      : 'Connect Wallet'}
+                  </StyledWalletButtonTypography>
+                </StyledWalletButton>
               )}
               <DevnetIndicator />
             </NavCtas>
@@ -323,69 +318,6 @@ const NavCtas = styled('div')(() => ({
   display: 'flex',
 }))
 
-const StyledWalletDialogProvider = styled(WalletDialogProvider)(
-  ({ theme }) => ({
-    '& .MuiList-root': {
-      background: `${theme.palette.transparent} !important`,
-    },
-    '& .MuiButton-root': {
-      backgroundColor: `${theme.palette.white}`,
-    },
-    '& .MuiButton-startIcon': {
-      display: 'none',
-    },
-    '& .MuiPaper-root': {
-      width: '400px',
-      height: 'auto',
-      ...theme.helpers.gradient,
-      '& .MuiDialogTitle-root': {
-        color: `${theme.palette.white} !important`,
-        textAlign: 'center',
-        padding: '90px 0 0',
-        textTransform: 'uppercase',
-        margin: 'auto',
-        background: 'none !important',
-        '& h2': {
-          fontSize: '16px !important',
-          fontWeight: '700',
-          backgroundColor: `${theme.palette.transparent} !important`,
-        },
-        '& .MuiButtonBase-root': {
-          display: 'none',
-        },
-      },
-      '& .MuiDialogContent-root': {
-        padding: '24px',
-      },
-      '& .MuiListItem-root': {
-        padding: `8px 24px`,
-        boxShadow: 'none',
-        '&:hover': {
-          boxShadow: 'none',
-        },
-        '& .MuiButton-root': {
-          width: '241px',
-          margin: 'auto',
-          textAlign: 'center',
-          borderRadius: '50px',
-          color: `${theme.palette.blue}`,
-          fontSize: '10px',
-          fontWeight: '700',
-          justifyContent: 'center',
-          textTransform: 'uppercase',
-          '&:hover': {
-            backgroundColor: `${theme.palette.blue}`,
-            color: `${theme.palette.white}`,
-          },
-          '& .MuiButton-endIcon': {
-            display: 'none',
-          },
-        },
-      },
-    },
-  })
-)
-
 const StyledWalletButtonTypography = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.primary,
   '&:hover': {
@@ -393,7 +325,7 @@ const StyledWalletButtonTypography = styled(Typography)(({ theme }) => ({
   },
 }))
 
-const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
+const StyledWalletButton = styled(WalletButton)(({ theme }) => ({
   textTransform: 'capitalize',
   paddingRight: '20px',
   paddingLeft: '20px',

@@ -1,4 +1,4 @@
-const anchor = require('@project-serum/anchor');
+const anchor = require('@coral-xyz/anchor');
 const { Token, TOKEN_PROGRAM_ID } = require("@solana/spl-token");
 const assert = require("assert");
 const encrypt = require('./utils/encrypt');
@@ -391,9 +391,99 @@ describe('Release', async () => {
         );
       },
       (err) => {
-        console.log('err', err);
         assert.ok(err.toString().includes('0x1'))
         return true;
+      }
+    );
+  });
+
+
+  it('Creates a Release with no publishing credits via releaseInit', async () => {
+
+    const paymentMint = usdcMint;
+    releaseMint = anchor.web3.Keypair.generate();
+    const releaseMintIx = await createMintInstructions(
+      provider,
+      provider.wallet.publicKey,
+      releaseMint.publicKey,
+      0,
+    );
+
+    const [_release, releaseBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-release")),
+        releaseMint.publicKey.toBuffer(),
+      ],
+      nina.programId,
+    );
+    release = _release;
+
+    const [_releaseSigner, releaseSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [release.toBuffer()],
+      nina.programId,
+    );
+    releaseSigner = _releaseSigner;
+
+    let [_royaltyTokenAccount, royaltyTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      releaseSigner,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      paymentMint,
+    );
+    royaltyTokenAccount = _royaltyTokenAccount;
+
+    const config = {
+      amountTotalSupply: new anchor.BN(1000),
+      amountToArtistTokenAccount: new anchor.BN(0),
+      amountToVaultTokenAccount: new anchor.BN(0),
+      resalePercentage: new anchor.BN(200000),
+      price: new anchor.BN(releasePrice),
+      releaseDatetime: new anchor.BN((Date.now() / 1000) - 5),
+    };
+
+    const metadataProgram = new anchor.web3.PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
+    const [metadata] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from('metadata'), metadataProgram.toBuffer(), releaseMint.publicKey.toBuffer()],
+      metadataProgram,
+    );
+
+    const metadataData = {
+      name: `Nina with the Nina`,
+      symbol: `NINA`,
+      uri: `https://arweave.net`,
+      sellerFeeBasisPoints: 2000,
+    }
+
+    const bumps = {
+      release: releaseBump,
+      signer: releaseSignerBump,
+    }
+
+    await nina.rpc.releaseInit(
+      config,
+      bumps,
+      metadataData, {
+        accounts: {
+          release,
+          releaseSigner,
+          releaseMint: releaseMint.publicKey,
+          payer: provider.wallet.publicKey,
+          authority: provider.wallet.publicKey,
+          authorityTokenAccount: usdcTokenAccount,
+          paymentMint,
+          royaltyTokenAccount,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+          metadata,
+          metadataProgram,
+        },
+        signers: [releaseMint],
+        instructions: [
+          ...releaseMintIx,
+          royaltyTokenAccountIx,
+        ],
       }
     );
   });
@@ -505,7 +595,6 @@ describe('Release', async () => {
           }
         );
       }, (err) => {
-        console.log('err', err.error);
         assert.equal(err.error.errorCode.number, 2003);
         assert.equal(err.error.errorMessage, "A raw constraint was violated");
         return true;
@@ -684,7 +773,6 @@ describe('Release', async () => {
         );
       },
       (err) => {
-        console.log('err', err);
         assert.equal(err.error.errorCode.number, 2003);
         assert.equal(err.error.errorMessage, "A raw constraint was violated");
         return true;
@@ -1068,6 +1156,124 @@ describe('Release', async () => {
       }
     );
   });
+
+  // it('Will claim a release', async () => {
+
+  //   const releaseBefore = await nina.account.release.fetch(release);
+
+  //   const newUser = await newAccount(provider);
+  //   let [recipientReleaseTokenAccount, recipientReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+  //     provider,
+  //     newUser.publicKey,
+  //     anchor.web3.SystemProgram.programId,
+  //     anchor.web3.SYSVAR_RENT_PUBKEY,
+  //     releaseMint.publicKey,
+  //   );
+    
+  //   await nina.rpc.releaseClaim({
+  //     accounts: {
+  //       release,
+  //       releaseSigner,
+  //       payer: provider.wallet.publicKey,
+  //       recipient: newUser.publicKey,
+  //       recipientReleaseTokenAccount,
+  //       releaseMint: releaseMint.publicKey,
+  //       tokenProgram: TOKEN_PROGRAM_ID,
+  //     },
+  //     instructions:[recipientReleaseTokenAccountIx],
+  //   })
+
+  //   const releaseAfter = await nina.account.release.fetch(release);
+  //   assert.ok(releaseAfter.remainingSupply.toNumber() === releaseBefore.remainingSupply.toNumber() - 1);
+
+  //   const recipientReleaseTokenAccountAfter = await getTokenAccount(
+  //     provider,
+  //     recipientReleaseTokenAccount,
+  //   );
+  //   assert.ok(recipientReleaseTokenAccountAfter.amount.toNumber() === 1)
+  // });
+
+  // it('Fails to claim a release twice airdrop a release', async () => {
+
+  //   const newUser = await newAccount(provider);
+  //   let [recipientReleaseTokenAccount, recipientReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+  //     provider,
+  //     newUser.publicKey,
+  //     anchor.web3.SystemProgram.programId,
+  //     anchor.web3.SYSVAR_RENT_PUBKEY,
+  //     releaseMint.publicKey,
+  //   );
+    
+  //   await nina.rpc.releaseClaim({
+  //     accounts: {
+  //       release,
+  //       releaseSigner,
+  //       payer: provider.wallet.publicKey,
+  //       recipient: newUser.publicKey,
+  //       recipientReleaseTokenAccount,
+  //       releaseMint: releaseMint.publicKey,
+  //       tokenProgram: TOKEN_PROGRAM_ID,
+  //     },
+  //     instructions:[recipientReleaseTokenAccountIx],
+  //   })
+
+  //   await assert.rejects(
+  //     async () => {
+  //       await nina.rpc.releaseClaim({
+  //         accounts: {
+  //           release,
+  //           releaseSigner,
+  //           payer: provider.wallet.publicKey,
+  //           recipient: newUser.publicKey,
+  //           recipientReleaseTokenAccount,
+  //           releaseMint: releaseMint.publicKey,
+  //           tokenProgram: TOKEN_PROGRAM_ID,
+  //         },
+  //       })
+  //     },
+  //     (err) => {
+  //       assert.equal(err.error.errorCode.number, 6034);
+  //       assert.equal(err.error.errorMessage, "ReleaseAlreadyOwned Cannot Claim Release Already Owned");
+  //       return true;
+  //     }
+  //   );
+  // });
+
+  it('Fails to claim a release with wrong payer', async () => {
+
+    const newUser = await newAccount(provider);
+    let [recipientReleaseTokenAccount, recipientReleaseTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      newUser.publicKey,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      releaseMint.publicKey,
+    );
+
+    await assert.rejects(
+      async () => {
+        await nina.rpc.releaseClaim({
+          accounts: {
+            release,
+            releaseSigner,
+            payer: newUser.publicKey,
+            recipient: newUser.publicKey,
+            recipientReleaseTokenAccount,
+            releaseMint: releaseMint.publicKey,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          },
+          signers:[newUser],
+          instructions:[recipientReleaseTokenAccountIx],
+        })
+      },
+      (err) => {
+        assert.equal(err.error.errorCode.number, 2012);
+        assert.equal(err.error.errorMessage, "An address constraint was violated");
+        return true;
+      }
+    );
+  });
+
 
   it('Will not sell a release if sold out', async () => {
     const paymentMint = usdcMint;
@@ -2073,7 +2279,6 @@ describe("Exchange", async () => {
        
       },
       (err) => {
-        console.log('err', err)
         assert.equal(err.error.errorMessage, "A raw constraint was violated");
         return true;
       }
@@ -3707,6 +3912,75 @@ describe('Hub', async () => {
     uri: 'https://arweave.net/xxxxx',
     referralFee: new anchor.BN(50000),
   }
+
+  it('should init a Hub via hubInit', async () => {
+    let hubParams = {
+      handle: 'NinaHub2',
+      publishFee: new anchor.BN(50000),
+      uri: 'https://arweave.net/xxxxx',
+      referralFee: new anchor.BN(50000),
+    }
+  
+    const [_hub, hubBump] = await anchor.web3.PublicKey.findProgramAddress([
+      Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub")), 
+      Buffer.from(anchor.utils.bytes.utf8.encode(hubParams.handle))],
+      nina.programId
+    );
+    hub = _hub
+
+    const [_hubSigner, hubSignerBump] = await anchor.web3.PublicKey.findProgramAddress(
+      [Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-signer")), hub.toBuffer()],
+      nina.programId
+    );
+    hubSigner = _hubSigner
+    hubParams.hubSignerBump = hubSignerBump
+
+    const [hubCollaborator, bump] = await anchor.web3.PublicKey.findProgramAddress([
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
+        hub.toBuffer(),
+        provider.wallet.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+
+    let [_hubWallet, hubWalletIx] = await findOrCreateAssociatedTokenAccount(
+      provider,
+      hubSigner,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      usdcMint,
+    );
+    hubWallet = _hubWallet
+
+    await nina.rpc.hubInit(
+      hubParams, {
+        accounts: {
+          authority: provider.wallet.publicKey,
+          hub,
+          hubSigner,
+          hubCollaborator,
+          usdcMint,
+          hubWallet,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        }, 
+        instructions:[
+          hubWalletIx,
+        ]
+      }
+    )
+
+    const hubAfter = await nina.account.hub.fetch(hub)
+    assert.equal(encrypt.decode(hubAfter.handle), hubParams.handle)
+    assert.equal(hubAfter.publishFee.toNumber(), hubParams.publishFee)
+    assert.equal(encrypt.decode(hubAfter.uri), hubParams.uri)
+    assert.equal(hubAfter.authority.toBase58(), provider.wallet.publicKey.toBase58())
+
+    const hubCollaboratorAfter = await nina.account.hubCollaborator.fetch(hubCollaborator)
+    assert.equal(hubCollaboratorAfter.collaborator.toBase58(), provider.wallet.publicKey.toBase58())
+    assert.equal(hubCollaboratorAfter.hub.toBase58(), hub.toBase58())
+  })
 
   it('should init a Hub', async () => {
     const [_hub, hubBump] = await anchor.web3.PublicKey.findProgramAddress([

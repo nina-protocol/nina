@@ -8,8 +8,10 @@ import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { WalletReadyState } from '@solana/wallet-adapter-base'
-import { Magic } from "magic-sdk";
-import { SolanaExtension } from "@magic-ext/solana";
+import { Magic } from 'magic-sdk'
+import { SolanaExtension } from '@magic-ext/solana'
+import EmailLoginForm from './EmailLoginForm'
+import EmailOTPForm from './EmailOTPForm'
 
 const WalletConnectModal = ({ children }) => {
   const { wallet, walletExtension, connectMagicWallet } = useContext(
@@ -17,28 +19,54 @@ const WalletConnectModal = ({ children }) => {
   )
 
   const [open, setOpen] = useState(false)
-  const [email, setEmail] = useState('')
-  const [prefersEmail, setPrefersEmail] = useState(false)
+  const [showOtpUI, setShowOtpUI] = useState(false);
+  const [otpLogin, setOtpLogin] = useState();
 
-
-  useEffect(() => {
-    const walletPreference = localStorage.getItem('nina_magic_wallet')
-    console.log('walletPreference :>> ', walletPreference);
-    
-    //lookup
-  }, [])
-
-  const handleLogin = async () => {
-    const magic = new Magic("pk_live_F3E5D7E205547DB2", {
+  const handleLogin = async (email) => {
+    const magic = new Magic(process.env.MAGIC_KEY, {
       extensions: {
         solana: new SolanaExtension({
-          rpcUrl: process.env.SOLANA_CLUSTER_URL
+          rpcUrl: process.env.SOLANA_CLUSTER_URL,
+        }),
+      },
+    })
+  
+    console.log('bruh email', email, magic)
+    try {
+      setOtpLogin();
+      const otpLogin = magic.auth.loginWithEmailOTP({ email, showUI: false });
+      console.log('otpLogin', otpLogin)
+      otpLogin
+        .on('invalid-email-otp', () => {
+          console.log('invalid email OTP');
         })
-      }
-    });
-    await connectMagicWallet(magic, email)
-    setOpen(false)
-    // show the newb a welcome message
+        .on('verify-email-otp', (otp) => {
+          console.log('verify email OTP', otp);
+        })
+        .on("email-otp-sent", () => {
+          console.log("on email OTP sent!");
+
+          setOtpLogin(otpLogin);
+          setShowOtpUI(true);
+        })
+        .on("done", (result) => {
+          connectMagicWallet(magic);
+
+          console.log(`DID Token: %c${result}`, "color: orange");
+        })
+        .on("settled", () => {
+          setOtpLogin();
+          setShowOtpUI(false);
+        })
+        .catch((err) => {
+          console.log("%cError caught during login:\n", "color: orange");
+
+          console.log(err);
+        });
+      console.log('beep')
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   const supportedWallets = useMemo(() => {
@@ -87,17 +115,11 @@ const WalletConnectModal = ({ children }) => {
       >
         <Fade in={open}>
           <StyledPaper>
-            <input id="email" type="email" onChange={(e) => setEmail(e.target.value)} />
-            <Button
-              style={{ marginTop: '15px' }}
-              color="primary"
-              variant="outlined"
-              onClick={async () => {
-                await handleLogin()
-              }}
-            >
-              <Typography>Log in with Email</Typography>
-            </Button>
+            {showOtpUI ? (
+              <EmailOTPForm login={otpLogin} />
+            ) : (
+              <EmailLoginForm handleEmailLoginCustom={handleLogin} />
+            )}
             {supportedWallets?.map((wallet) => (
               <Button
                 key={wallet.adapter.name}

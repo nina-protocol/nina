@@ -2,7 +2,7 @@ import { Button, Collapse, Fade, Menu, MenuItem, styled } from '@mui/material'
 import React, { useMemo, useState, useContext } from 'react'
 import WalletConnectModal from './WalletConnectModal'
 import Wallet from '../contexts/Wallet'
-import Typography from '@mui/material/Typography'
+
 const StyledMenu = styled(Menu)(({ theme }) => ({
   '& .MuiList-root': {
     padding: 0,
@@ -55,13 +55,9 @@ const WalletButton = ({
     if (!wallet || !base58) return null
     return base58.slice(0, 4) + '..' + base58.slice(-4)
   }, [children, wallet, base58])
-  console.log('wallet', wallet)
+
   if (!wallet.wallet) {
-    return (
-      <WalletConnectModal>
-        {children}
-    </WalletConnectModal>
-  )
+    return <WalletConnectModal>{children}</WalletConnectModal>
   }
   return (
     <>
@@ -122,7 +118,6 @@ const WalletButton = ({
           <WalletActionMenuItem
             onClick={() => {
               setAnchor(undefined)
-              // setOpen(true)
             }}
           >
             Change wallet

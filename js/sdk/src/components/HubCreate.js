@@ -47,7 +47,7 @@ const HubCreateSchema = Yup.object().shape({
 const HubCreate = ({ update, hubData, inHubs }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { wallet } = useContext(Wallet.Context)
-  const { hubInitWithCredit, hubUpdateConfig, validateHubHandle } = useContext(
+  const { hubInit, hubUpdateConfig, validateHubHandle } = useContext(
     Hub.Context
   )
   const {
@@ -358,7 +358,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
                 uri: `https://arweave.net/${metadataResult}`,
               }
 
-              const result = await hubInitWithCredit(hubParams)
+              const result = await hubInit(hubParams)
               if (result?.success) {
                 enqueueSnackbar('Hub Created!', {
                   variant: 'success',
