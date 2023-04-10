@@ -31,3 +31,4 @@ export { default as PendingReleasesIndicator } from './components/PendingRelease
 export { default as CloseRelease } from './components/CloseRelease'
 export { default as WalletConnectModal } from './components/WalletConnectModal'
 export { default as WalletButton } from './components/WalletButton'
+export { default as IndentityVerification } from './components/IndentityVerification'

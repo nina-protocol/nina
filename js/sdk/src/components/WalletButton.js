@@ -122,7 +122,7 @@ const WalletButton = ({
           <WalletActionMenuItem
             onClick={() => {
               setAnchor(undefined)
-              setOpen(true)
+              // setOpen(true)
             }}
           >
             Change wallet

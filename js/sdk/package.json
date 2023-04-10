@@ -9,6 +9,7 @@
   "module": "esm/index.js",
   "default": "esm/index.js",
   "dependencies": {
+    "@bonfida/spl-name-service": "^0.1.67",
     "@bundlr-network/client": "^0.8.9",
     "@metaplex-foundation/mpl-token-metadata": "^1.2.4",
     "@orca-so/whirlpools-sdk": "^0.8.0",

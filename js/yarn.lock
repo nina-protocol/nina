@@ -1040,7 +1040,7 @@
     borsh "^0.6.0"
     bs58 "4.0.1"
 
-"@bonfida/spl-name-service@^0.1.54":
+"@bonfida/spl-name-service@^0.1.54", "@bonfida/spl-name-service@^0.1.67":
   version "0.1.67"
   resolved "https://registry.yarnpkg.com/@bonfida/spl-name-service/-/spl-name-service-0.1.67.tgz#f78ef31150b0f1843be8d1a22c4c6c3b01182918"
   integrity sha512-B2etln1wGty1bGh/cnGF9uxQBGy2tmcXZMYfgjFJheWMheIMbivpLr2FC3AjV2qyReUbnLlCwAqXW6oXcZgi5Q==

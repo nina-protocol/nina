@@ -16,6 +16,16 @@ const WalletContextProvider = ({ children }) => {
 
 
   const wallet = useMemo(() => {
+    //local storage set here
+    console.log("WALLET USEEFFECT");
+    if (typeof window !== 'undefined') {
+      console.log('setting local storage');
+      if (magicWallet) {
+        localStorage.setItem('nina_magic_wallet', 'true')
+      } else if (walletExtension) {
+        localStorage.setItem('nina_magic_wallet', 'false')
+      } 
+    }
     return magicWallet || walletExtension || {}
   }, [walletExtension, magicWallet])
 

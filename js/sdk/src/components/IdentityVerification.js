@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState, useMemo } from 'react'
+import React, { useEffect, useContext, useState, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
@@ -28,7 +28,9 @@ import {
   faEthereum,
 } from '@fortawesome/free-brands-svg-icons'
 
-const IdentityVerification = ({ verifications, profilePublicKey }) => {
+const IdentityVerification = ({ verifications, profilePubkey }) => {
+
+  console.log('verifications :>> ', verifications);
   const web3 = new Web3(process.env.ETH_CLUSTER_URL)
   const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
@@ -54,6 +56,8 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const [action, setAction] = useState(undefined)
   const [activeType, setActiveType] = useState(undefined)
   const [activeValue, setActiveValue] = useState(undefined)
+
+  console.log('wallet !!@!!!:>> ', wallet);
 
   const logos = {
     soundcloud: (
@@ -114,8 +118,8 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const buttonTypes = useMemo(() => {
     const buttonArray = []
     console.log('publicKey?.toBase58()', publicKey?.toBase58())
-    console.log('profilePublicKey', profilePublicKey)
-    if (publicKey?.toBase58() === profilePublicKey) {
+    console.log('profilePubkey', profilePubkey)
+    if (publicKey?.toBase58() === profilePubkey) {
       buttonArray.push('twitter', 'soundcloud', 'ethereum')
     } else {
       verifications.forEach((verification) => {
@@ -135,6 +139,8 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
     }
     return buttonArray
   }, [publicKey, verifications])
+
+  console.log('buttonTypes :>> ', buttonTypes);
 
   useEffect(() => {
     const codeSource = localStorage.getItem('codeSource')
@@ -236,7 +242,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           signTransaction,
           soundcloudToken
         )
-        await getVerificationsForUser(profilePublicKey)
+        await getVerificationsForUser(profilePubkey)
         break
       case 'twitter':
         await verifyTwitter(
@@ -246,7 +252,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           publicKey,
           signTransaction
         )
-        await getVerificationsForUser(profilePublicKey)
+        await getVerificationsForUser(profilePubkey)
         break
       case 'instagram':
         await verifyInstagram(
@@ -257,11 +263,11 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           signTransaction,
           instagramToken
         )
-        await getVerificationsForUser(profilePublicKey)
+        await getVerificationsForUser(profilePubkey)
         break
       case 'ethereum':
         await verifyEthereum(provider, ethAddress, publicKey, signTransaction)
-        await getVerificationsForUser(profilePublicKey)
+        await getVerificationsForUser(profilePubkey)
         break
     }
   }

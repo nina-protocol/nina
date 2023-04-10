@@ -54,6 +54,8 @@ export default [
       ReleaseSettingsModal: 'src/components/ReleaseSettingsModal.js',
       WalletConnectModal: 'src/components/WalletConnectModal.js',
       WalletButton: 'src/components/WalletButton.js',
+      WelcomeModal: 'src/components/WelcomeModal.js',
+      IdentityVerification: 'src/components/IdentityVerification.js',
     },
     output: [
       {

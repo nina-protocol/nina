@@ -8,6 +8,7 @@ import Button from '@mui/material/Button'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import WelcomeModal from '@nina-protocol/nina-internal-sdk/esm/WelcomeModal'
 import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import Link from 'next/link'
@@ -33,6 +34,7 @@ const NavBar = () => {
   const { healthOk, getSubscriptionsForUser, getUserBalances } = useContext(
     Nina.Context
   )
+
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
     [wallet?.publicKey]
@@ -121,6 +123,10 @@ const NavBar = () => {
         </DesktopWalletWrapper>
       </NavRight>
       <PendingReleasesIndicator />
+
+      {wallet?.connected && (
+        <WelcomeModal profilePubkey={wallet.publicKey.toBase58()} />
+      )}
       <FeedDrawer override={true} />
     </Root>
   )

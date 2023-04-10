@@ -1,4 +1,4 @@
-import React, { useState, useContext, useMemo } from 'react'
+import React, { useState, useContext, useMemo, useEffect } from 'react'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
@@ -18,6 +18,15 @@ const WalletConnectModal = ({ children }) => {
 
   const [open, setOpen] = useState(false)
   const [email, setEmail] = useState('')
+  const [prefersEmail, setPrefersEmail] = useState(false)
+
+
+  useEffect(() => {
+    const walletPreference = localStorage.getItem('nina_magic_wallet')
+    console.log('walletPreference :>> ', walletPreference);
+    
+    //lookup
+  }, [])
 
   const handleLogin = async () => {
     const magic = new Magic("pk_live_F3E5D7E205547DB2", {
@@ -28,6 +37,8 @@ const WalletConnectModal = ({ children }) => {
       }
     });
     await connectMagicWallet(magic, email)
+    setOpen(false)
+    // show the newb a welcome message
   }
 
   const supportedWallets = useMemo(() => {
@@ -38,14 +49,11 @@ const WalletConnectModal = ({ children }) => {
     }
   }, [walletExtension])
 
-  const handleClose = () => {
-    setOpen(false)
-  }
-
   const handleWalletClickEvent = (event, walletName) => {
     event.preventDefault()
     wallet.select(walletName)
     setOpen(false)
+    // show the newb a welcome message
   }
 
   return (
@@ -70,7 +78,7 @@ const WalletConnectModal = ({ children }) => {
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={open}
-        onClose={() => handleClose()}
+        onClose={() => setOpen(false)}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
@@ -86,7 +94,6 @@ const WalletConnectModal = ({ children }) => {
               variant="outlined"
               onClick={async () => {
                 await handleLogin()
-                handleClose()
               }}
             >
               <Typography>Log in with Email</Typography>
