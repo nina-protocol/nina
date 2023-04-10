@@ -21,6 +21,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close'
 
 const linksConnected = [
+  'home',
   'dashboard',
   'all Releases',
   'hubs',

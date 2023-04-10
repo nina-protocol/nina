@@ -24,59 +24,61 @@ const HubsModal = (props) => {
 
   return (
     <>
-      {hubs.length > 0 && (
-        <Box>
-          <Cta
-            onClick={() => setOpen(true)}
-            variant="body2"
-            align="left"
-            paddingBottom="10px"
-          >
-            {`View Hubs ${hubs ? `(${hubs.length})` : ''}`}
-          </Cta>
-          <StyledModal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            className={classes.modal}
-            open={open}
-            onClose={() => setOpen(false)}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-              timeout: 500,
-            }}
-          >
-            <StyledPaper>
-              <Header>
-                <Typography fontWeight="700">{`Hubs featuring: ${metadata.properties.artist.substring(
-                  0,
-                  100
-                )} - "${metadata.properties.title.substring(
-                  0,
-                  100
-                )}"`}</Typography>
-              </Header>
-              <CollectorTable>
-                <TableBody>
-                  {hubs &&
-                    hubs.length > 0 &&
-                    hubs.map((entry, i) => {
-                      return (
-                        <tr key={i}>
-                          <td>
-                            <Link href={`/hubs/${entry?.handle}`}>
-                              <a>{entry?.data.displayName}</a>
-                            </Link>
-                          </td>
-                        </tr>
-                      )
-                    })}
-                </TableBody>
-              </CollectorTable>
-            </StyledPaper>
-          </StyledModal>
-        </Box>
-      )}
+      <Box sx={{ paddingBottom: '10px' }}>
+        <Cta
+          onClick={() => {
+            if (hubs?.length > 0) {
+              setOpen(true)
+            }
+          }}
+          variant="body2"
+          align="left"
+          hubs={hubs}
+        >
+          {`View Hubs ${hubs ? `(${hubs.length})` : '(0)'}`}
+        </Cta>
+        <StyledModal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={classes.modal}
+          open={open}
+          onClose={() => setOpen(false)}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <StyledPaper>
+            <Header>
+              <Typography fontWeight="700">{`Hubs featuring: ${metadata.properties.artist.substring(
+                0,
+                100
+              )} - "${metadata.properties.title.substring(
+                0,
+                100
+              )}"`}</Typography>
+            </Header>
+            <CollectorTable>
+              <TableBody>
+                {hubs &&
+                  hubs.length > 0 &&
+                  hubs.map((entry, i) => {
+                    return (
+                      <tr key={i}>
+                        <td>
+                          <Link href={`/hubs/${entry?.handle}`}>
+                            <a>{entry?.data.displayName}</a>
+                          </Link>
+                        </td>
+                      </tr>
+                    )
+                  })}
+              </TableBody>
+            </CollectorTable>
+          </StyledPaper>
+        </StyledModal>
+      </Box>
     </>
   )
 }
@@ -92,13 +94,14 @@ const classes = {
   historyTableBody: `${PREFIX}-historyTableBody`,
 }
 
-const Cta = styled(Typography)(({ theme }) => ({
-  cursor: 'pointer',
+const Cta = styled(Typography)(({ theme, hubs }) => ({
+  cursor: hubs?.length > 0 ? 'pointer' : '',
+  width: 'max-content',
   '& span': {
     color: `${theme.palette.blue}`,
   },
   ':hover': {
-    opacity: 0.5,
+    opacity: hubs?.length > 0 ? 0.5 : 1,
   },
 }))
 
@@ -130,7 +133,7 @@ const Header = styled(Typography)(({ theme }) => ({
 }))
 
 const CollectorTable = styled('table')(({ theme }) => ({
-  padding: `${theme.spacing(1, 1)}`,
+  padding: `${theme.spacing(1, 0)}`,
   display: 'block',
   maxHeight: '50vh',
   overflowY: 'scroll',
@@ -146,7 +149,7 @@ const CollectorTable = styled('table')(({ theme }) => ({
 const TableBody = styled('tbody')(({ theme }) => ({
   '& td': {
     '& ': {
-      padding: `${theme.spacing(0, 2)}`,
+      padding: `15px 0px`,
     },
     '& a': {
       color: `${theme.palette.white}`,

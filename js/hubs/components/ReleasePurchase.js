@@ -37,7 +37,6 @@ const ReleasePurchase = (props) => {
     releasePurchasePending,
     releasePurchaseTransactionPending,
     releaseState,
-    fetchGatesForRelease,
   } = useContext(Release.Context)
   const { hubState } = useContext(Hub.Context)
   const {
@@ -50,7 +49,6 @@ const ReleasePurchase = (props) => {
   const [release, setRelease] = useState(undefined)
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [publishedHub, setPublishedHub] = useState()
-  const [gate, setGate] = useState(undefined)
 
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
@@ -158,13 +156,13 @@ const ReleasePurchase = (props) => {
     release.remainingSupply > 0 || release.remainingSupply === -1
       ? `${
           release.price > 0
-            ? `Buy $${ninaClient.nativeToUiString(
+            ? `Buy ${ninaClient.nativeToUiString(
                 release.price,
                 release.paymentMint
               )}`
             : 'Collect For Free'
         }`
-      : `Sold Out ($${ninaClient
+      : `Sold Out (${ninaClient
           .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`
 
@@ -204,45 +202,47 @@ const ReleasePurchase = (props) => {
         </Typography>
       )}
       <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          textAlign: 'left',
-          marginBottom: '8px',
-          marginTop: { md: '0px', lg: '8px' },
-        }}
-      >
-        <BuyButton
-          variant="outlined"
-          type="submit"
-          soldOut={release.remainingSupply === 0}
-          disabled={release.remainingSupply === 0 ? true : false}
+      <Box display="flex" flexDirection="row" justifyContent="space-between">
+        <Box
+          sx={{
+            width: '50%',
+            paddingRight: '4px',
+          }}
         >
-          <BuyButtonTypography
+          <BuyButton
+            fullWidth
+            variant="outlined"
             soldOut={release.remainingSupply === 0}
-            variant="body2"
-            align="left"
+            disabled={release.remainingSupply === 0}
+            onClick={(e) => handleSubmit(e)}
           >
-            {txPending && <Dots msg="Preparing transaction" />}
-            {!txPending && pending && <Dots msg="Awaiting wallet approval" />}
-            {!txPending && !pending && buttonText}
-          </BuyButtonTypography>
-        </BuyButton>
-      </form>
-
-      <Box
-        sx={{
-          maxWidth: BUTTON_WIDTH,
-        }}
-      >
-        <Gates
-          release={release}
-          metadata={metadata}
-          releasePubkey={releasePubkey}
-          isAuthority={isAuthority}
-          amountHeld={amountHeld}
-          inSettings={false}
-        />
+            <BuyButtonTypography
+              soldOut={release.remainingSupply === 0}
+              variant="body2"
+              align="left"
+            >
+              {txPending && <Dots msg="Preparing transaction" />}
+              {!txPending && pending && <Dots msg="Awaiting wallet approval" />}
+              {!txPending && !pending && buttonText}
+            </BuyButtonTypography>
+          </BuyButton>
+        </Box>
+        <Box
+          sx={{
+            width: '50%',
+            paddingLeft: '4px',
+          }}
+        >
+          <Gates
+            release={release}
+            metadata={metadata}
+            releasePubkey={releasePubkey}
+            isAuthority={isAuthority}
+            amountHeld={amountHeld}
+            inSettings={false}
+            inHubs={true}
+          />
+        </Box>
       </Box>
     </ReleasePurchaseWrapper>
   )
@@ -253,7 +253,7 @@ const BuyButton = styled(Button)(({ theme, soldOut }) => ({
     ? `1px solid ${theme.palette.grey.primary}`
     : `1px solid ${theme.palette.text.primary}`,
   height: '55px',
-  width: BUTTON_WIDTH,
+  width: '100%',
   '& p': {
     padding: '10px',
     '&:hover': {

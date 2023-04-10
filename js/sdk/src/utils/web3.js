@@ -1,10 +1,6 @@
 import * as anchor from '@project-serum/anchor'
 const BufferLayout = require('buffer-layout')
 
-const WRAPPED_SOL_MINT_ID = new anchor.web3.PublicKey(
-  'So11111111111111111111111111111111111111112'
-)
-
 export const TOKEN_PROGRAM_ID = new anchor.web3.PublicKey(
   anchor.utils.token.TOKEN_PROGRAM_ID.toString()
 )
@@ -12,6 +8,8 @@ export const TOKEN_PROGRAM_ID = new anchor.web3.PublicKey(
 const ASSOCIATED_TOKEN_PROGRAM_ID = new anchor.web3.PublicKey(
   anchor.utils.token.ASSOCIATED_PROGRAM_ID.toString()
 )
+
+import { createSyncNativeInstruction } from '@solana/spl-token'
 
 export async function createMintInstructions(
   provider,
@@ -236,32 +234,27 @@ export const apiPost = async (url, body, headers) => {
   }
 }
 
-export const wrapSol = async (provider, amount) => {
-  const wrappedSolAccount = anchor.web3.Keypair.generate()
-  const signers = [wrappedSolAccount]
-  const instructions = []
-  // Create new, rent exempt account.
-  instructions.push(
-    anchor.Spl.token(provider)
-      .methods.initializeAccount()
-      .accounts({
-        account: wrappedSolAccount.publicKey,
-        mint: WRAPPED_SOL_MINT_ID,
-        authority: provider.wallet.publicKey,
-        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-      })
-      .instruction()
+export const wrapSol = async (provider, amount, mint) => {
+  const wrappedSolInstructions = []
+
+  let [wrappedSolAccount] = await findOrCreateAssociatedTokenAccount(
+    provider.connection,
+    provider.wallet.publicKey,
+    provider.wallet.publicKey,
+    anchor.web3.SystemProgram.programId,
+    anchor.web3.SYSVAR_RENT_PUBKEY,
+    mint
   )
-  // Transfer lamports. These will be converted to an SPL balance by the
-  // token program.
-  instructions.push(
-    anchor.web3.SystemProgram.transfer({
-      fromPubkey: provider.wallet.publicKey,
-      toPubkey: wrappedSolAccount.publicKey,
-      lamports: amount.toNumber(),
-    })
-  )
-  return { instructions, signers }
+
+  const wrappedSolTransferIx = anchor.web3.SystemProgram.transfer({
+    fromPubkey: provider.wallet.publicKey,
+    toPubkey: wrappedSolAccount,
+    lamports: new anchor.BN(amount),
+  })
+  // sync wrapped SOL balance
+  const syncNativeIx = createSyncNativeInstruction(wrappedSolAccount)
+  wrappedSolInstructions.push(wrappedSolTransferIx, syncNativeIx)
+  return [wrappedSolAccount, wrappedSolInstructions]
 }
 
 export const getFilteredAnchorAccounts = async (

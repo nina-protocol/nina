@@ -404,8 +404,6 @@ const StyledWalletButton = styled(WalletMultiButton)(({ theme }) => ({
     display: 'none',
   },
   '& .MuiButton-label': {
-    border: '2px solid red',
-
     color: theme.palette.black,
   },
 }))

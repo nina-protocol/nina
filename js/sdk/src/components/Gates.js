@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useEffect, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import { encodeBase64 } from 'tweetnacl-util'
 import axios from 'axios'
@@ -7,27 +7,39 @@ import { useSnackbar } from 'notistack'
 import GateCreateModal from './GateCreateModal'
 import GateUnlockModal from './GateUnlockModal'
 import GateManageModal from './GateManageModal'
-
+import { logEvent } from '../utils/event'
 import { useWallet } from '@solana/wallet-adapter-react'
-
+import { truncateString } from '../utils/truncateManager'
 const Gates = ({
   isAuthority,
   releasePubkey,
   amountHeld,
   metadata,
   inSettings,
+  inHubs,
 }) => {
   const wallet = useWallet()
   const { enqueueSnackbar } = useSnackbar()
   const { fetchGatesForRelease, gatesState } = useContext(Release.Context)
+  useEffect(() => {
+    fetchGatesForRelease(releasePubkey)
+  }, [releasePubkey])
+
   const releaseGates = useMemo(
     () => gatesState[releasePubkey],
     [gatesState, releasePubkey]
   )
+
   const unlockGate = async (gate) => {
     const releasePubkey = gate.releasePublicKey
 
     try {
+      logEvent('unlock_gate_init', 'engagement', {
+        gateId: gate.id,
+        publicKey: releasePubkey,
+        wallet: wallet?.publicKey?.toBase58() || 'unknown',
+      })
+
       const message = new TextEncoder().encode(releasePubkey)
       const messageBase64 = encodeBase64(message)
       const signature = await wallet.signMessage(message)
@@ -52,17 +64,29 @@ const Gates = ({
       })
 
       if (response?.data) {
+        logEvent('unlock_gate_success', 'engagement', {
+          gateId: gate.id,
+          publicKey: releasePubkey,
+          wallet: wallet?.publicKey?.toBase58() || 'unknown',
+        })
+
         const a = document.createElement('a')
         const url = window.URL.createObjectURL(response.data)
         a.href = url
         a.download = gate.fileName
         a.click()
-        enqueueSnackbar(`${gate.fileName} Downloaded`, {
+        enqueueSnackbar(`${truncateString(gate.fileName)} Downloaded`, {
           variant: 'info',
         })
       }
     } catch (error) {
       console.warn('error: ', error)
+      logEvent('unlock_gate_failure', 'engagement', {
+        gateId: gate.id,
+        publicKey: releasePubkey,
+        wallet: wallet?.publicKey?.toBase58() || 'unknown',
+      })
+
       enqueueSnackbar(`Error Accessing File:: ${error.response.data.error}`, {
         variant: 'failure',
       })
@@ -79,6 +103,7 @@ const Gates = ({
             amountHeld={amountHeld}
             unlockGate={unlockGate}
             isAuthority={isAuthority}
+            inHubs={inHubs}
           />
         </>
       )}
@@ -87,7 +112,7 @@ const Gates = ({
           <GateCreateModal
             releasePubkey={releasePubkey}
             fetchGatesForRelease={fetchGatesForRelease}
-            metadata={metadata}
+            name={metadata?.name}
             gates={releaseGates}
           />
         </>
@@ -113,6 +138,7 @@ const Root = styled('div')(() => ({
   flexDirection: 'column',
   alignItems: 'center',
   width: '100%',
+  position: 'relative',
 }))
 
 export default Gates

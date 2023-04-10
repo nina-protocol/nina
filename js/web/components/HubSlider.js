@@ -172,9 +172,6 @@ const HubSlideWrapper = styled(Box)(() => ({
   textAlign: 'center',
   display: 'flex',
   justifyContent: 'center',
-  '& .MuiSvgIcon-root': {
-    border: '2px solid red !important',
-  },
 }))
 
 const HubSlide = styled(Box)(({ theme }) => ({

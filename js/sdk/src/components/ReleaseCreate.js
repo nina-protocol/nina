@@ -41,6 +41,9 @@ const UploadInfoModal = dynamic(() => import('./UploadInfoModal'), {
 })
 const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
+const ReleaseCreateSuccess = dynamic(() => import('./ReleaseCreateSuccess'), {
+  ssr: false,
+})
 
 const ReleaseCreateSchema = Yup.object().shape({
   artist: Yup.string().required('Artist is required'),
@@ -134,7 +137,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
   )
-
   useEffect(() => {
     refreshBundlr()
     getUserBalances()
@@ -198,6 +200,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     let publicKey
+
     if (wallet.connected) {
       publicKey = wallet.publicKey.toBase58()
       getUserHubs(publicKey)
@@ -366,7 +369,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
             const info = await initializeReleaseAndMint(
               hubPubkey ? hubPubkey : undefined
             )
-            // const info = await initializeReleaseAndMint()
 
             setReleaseInfo(info)
             setReleasePubkey(info.release)
@@ -508,6 +510,41 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     }
   }
 
+  const handleReload = () => {
+    setTrack(undefined)
+    setArtwork(undefined)
+    setUploadSize(0)
+    setReleasePubkey(undefined)
+    setButtonText('Publish Release')
+    setFormIsValid(false)
+    setFormValues({ ...formValues, releaseForm: {} })
+    setImageProgress(0)
+    setAudioProgress(0)
+    setFormValuesConfirmed(false)
+    setReleaseInfo(undefined)
+    setArtworkTx(undefined)
+    setTrackTx(undefined)
+    setIsPublishing(false)
+    setMetadata(undefined)
+    setMetadataTx(undefined)
+    setReleaseCreated(false)
+    setUploadId(undefined)
+    setPublishingStepText(undefined)
+    setMd5Digest(undefined)
+    setProcessingProgress(0)
+    setTrack(undefined)
+    setMetadata(undefined)
+    setReleaseInfo(undefined)
+    setReleasePubkey(undefined)
+    setUploadId(undefined)
+    setAudioProgress(0)
+    router.push(
+      hubPubkey !== undefined
+        ? `${hubData.handle}/dashboard?action=publishRelease`
+        : '/upload'
+    )
+  }
+
   return (
     <Grid item md={12}>
       {!wallet.connected && (
@@ -545,10 +582,27 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
             </NpcMessage>
           </Box>
         )}
+      {releaseCreated && (
+        <ReleaseCreateSuccess
+          releasePubkey={releasePubkey}
+          hubReleasePubkey={releaseInfo?.hubRelease?.toBase58()}
+          inHubs={hubPubkey !== undefined}
+          hubHandle={hubPubkey !== undefined ? hubData.handle : ''}
+          artist={formValues.releaseForm.artist}
+          title={formValues.releaseForm.title}
+          url={`${
+            hubPubkey !== undefined
+              ? `${hubData.handle}/releases/${releasePubkey}`
+              : releasePubkey
+          }`}
+          image={artworkTx}
+          handleReload={handleReload}
+        />
+      )}
 
       {wallet?.connected && !solBalanceFetched && <Dots size={'50px'} />}
-
       {wallet?.connected &&
+        !releaseCreated &&
         solBalanceFetched &&
         (npcAmountHeld >= 1 || profileHubs?.length > 0 || hubPubkey) && (
           <>
