@@ -28,6 +28,8 @@ const WalletConnectModal = ({ children }) => {
   const [otpLogin, setOtpLogin] = useState();
   const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const [showWallets, setShowWallets] = useState(false)
+  const [pending, setPending] = useState(false)
+
   // const enterWelcomeFlow = useMemo(() => {
   //   if (typeof window !== 'undefined') {
   //     return !localStorage.getItem('nina_welcomeModal_seen')
@@ -39,6 +41,7 @@ const WalletConnectModal = ({ children }) => {
   }
 
   const handleLogin = async (email) => {
+    console.log('top');
     const magic = new Magic(process.env.MAGIC_KEY, {
       extensions: {
         solana: new SolanaExtension({
@@ -49,6 +52,7 @@ const WalletConnectModal = ({ children }) => {
   
     console.log('bruh email', email, magic)
     try {
+      setPending(true)
       setOtpLogin();
       const otpLogin = magic.auth.loginWithEmailOTP({ email, showUI: false });
       console.log('otpLogin', otpLogin)
@@ -134,7 +138,7 @@ const WalletConnectModal = ({ children }) => {
             {showOtpUI ? (
               <EmailOTPForm login={otpLogin} />
             ) : (
-              <EmailLoginForm handleEmailLoginCustom={handleLogin} />
+              <EmailLoginForm handleEmailLoginCustom={handleLogin} pending={pending} />
             )}
 
 

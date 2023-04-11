@@ -3,9 +3,10 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import {styled} from '@mui/material/styles'
+import Dots from "./Dots";
 
 
-export default function EmailForm({ handleEmailLoginCustom }) {
+export default function EmailForm({ handleEmailLoginCustom, pending }) {
   const [email, setEmail] = useState();
   const [placeholder, setPlaceholder] = useState('Enter your email');
 
@@ -31,7 +32,9 @@ export default function EmailForm({ handleEmailLoginCustom }) {
               variant="standard"
               onChange={(e) => setEmail(e.target.value)}
             />
-            <Button variant='outlined' type="submit" >Login</Button>
+            <Button variant='outlined' type="submit" >
+              {pending? <Dots size="30px"/> : 'Login'}
+            </Button>
         </form>
       </LoginWrapper>
   );
