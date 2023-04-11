@@ -147,7 +147,7 @@ const WalletConnectModal = ({ children }) => {
 
 
               <Collapse in={showWallets} timeout="auto" unmountOnExit>
-                <WalletButtons sx={{border: '2px solid red'}}>
+                <WalletButtons>
                   {supportedWallets?.map((wallet) => (
                     <Button
                       key={wallet.adapter.name}
