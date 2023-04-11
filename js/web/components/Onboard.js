@@ -161,9 +161,9 @@ const Onboard = () => {
       content: `To get started, please sign up below.`,
       cta: (
         <>
-          <ClaimCodeButton>Sign up with email</ClaimCodeButton>
-          <Box mb={1}/>
-          <ClaimCodeButton>Sign up with wallet</ClaimCodeButton>
+          <WalletConnectModal inOnboardingFlow={true}>
+            Sign Up
+          </WalletConnectModal>
         </>
       ),
     },
@@ -229,7 +229,6 @@ const Onboard = () => {
   }
 
   const OnboardSteps = (steps) => {
-
     return (
       <Box sx={{ width: '75%' }}>
         <Stepper activeStep={activeStep} orientation="vertical">
@@ -260,7 +259,7 @@ const Onboard = () => {
   }
 
   const SignUpSteps = () => {
-    return(
+    return (
       <Box sx={{ width: '75%' }}>
         <Stepper activeStep={activeStep} orientation="vertical">
           {signUpSteps.map((step, index) => {
@@ -283,9 +282,45 @@ const Onboard = () => {
                 </StepContent>
               </Step>
             )
-          }
-          )}
+          })}
         </Stepper>
+      </Box>
+    )
+  }
+
+  const SuccessfulOnboarding = () => {
+    return (
+      <Box>
+        <Typography variant="h1" mb={1}>
+          {`You're all set.`}
+        </Typography>
+        <Typography variant="h3" mb={1}>
+          You can now start uploading your music to Nina.
+        </Typography>
+        <Box
+          mt={2}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '50%',
+          }}
+        >
+          <Link href="/dashboard">
+            <ClaimCodeButton sx={{ marginTop: '10px' }}>
+              Go to Dashboard
+            </ClaimCodeButton>
+          </Link>
+          <Link href="/hubs/create">
+            <ClaimCodeButton sx={{ marginTop: '10px' }}>
+              Create a Hub
+            </ClaimCodeButton>
+          </Link>
+          <Link href="/upload">
+            <ClaimCodeButton sx={{ marginTop: '10px' }}>
+              Publish a Track
+            </ClaimCodeButton>
+          </Link>
+        </Box>
       </Box>
     )
   }
@@ -299,7 +334,7 @@ const Onboard = () => {
               <Typography variant="h1" mb={1}>
                 Welcome to Nina.
               </Typography>
-              {code !== undefined ? (
+              {code !== undefined && (
                 <>
                   {activeStep < onboardingSteps.length ? (
                     <>
@@ -311,46 +346,23 @@ const Onboard = () => {
                       {OnboardSteps(onboardingSteps)}
                     </>
                   ) : (
-                    <Box>
-                      <Typography variant="h1" mb={1}>
-                        {`You're all set.`}
-                      </Typography>
-                      <Typography variant="h3" mb={1}>
-                        You can now start uploading your music to Nina.
-                      </Typography>
-                      <Box
-                        mt={2}
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          width: '50%',
-                        }}
-                      >
-                        <Link href="/dashboard">
-                          <ClaimCodeButton sx={{ marginTop: '10px' }}>
-                            Go to Dashboard
-                          </ClaimCodeButton>
-                        </Link>
-                        <Link href="/hubs/create">
-                          <ClaimCodeButton sx={{ marginTop: '10px' }}>
-                            Create a Hub
-                          </ClaimCodeButton>
-                        </Link>
-                        <Link href="/upload">
-                          <ClaimCodeButton sx={{ marginTop: '10px' }}>
-                            Publish a Track
-                          </ClaimCodeButton>
-                        </Link>
-                      </Box>
-                    </Box>
+                    <>{SuccessfulOnboarding()}</>
                   )}
                 </>
-              ) : (
+              )}
+
+              {code === undefined && (
                 <>
-                  <Typography variant="h3" mb={1}>
-                    Follow the steps below to get started.
-                  </Typography>
-                  {OnboardSteps(signUpSteps)}
+                  {activeStep < signUpSteps.length ? (
+                    <>
+                      <Typography variant="h3" mb={1}>
+                        Follow the steps below to get started.
+                      </Typography>
+                      {OnboardSteps(signUpSteps)}
+                    </>
+                  ) : (
+                    <>{SuccessfulOnboarding()}</>
+                  )}
                 </>
               )}
             </Box>

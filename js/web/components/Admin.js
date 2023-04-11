@@ -55,7 +55,9 @@ const Admin = () => {
     )
 
     if (response.data) {
-      setCode(response.data.onboardingCode.code)
+      setCode(
+        `https://ninaprotocol.com/getStarted?code=${response.data.onboardingCode.code}/`
+      )
     }
   }
 
@@ -95,7 +97,7 @@ const Admin = () => {
             name="code"
             value={code}
             onChange={(event) => setCode(event.target.value)}
-            sx={{ width: '25vw' }}
+            sx={{ width: '40vw' }}
           />
 
           <Typography for="code" mt={4} mb={1}>
