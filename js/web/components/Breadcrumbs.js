@@ -156,7 +156,7 @@ const Breadcrumbs = () => {
             }
           })
           break
-        
+
         case '/getStarted':
           pathArray = linkPath.map((path, i) => {
             return {

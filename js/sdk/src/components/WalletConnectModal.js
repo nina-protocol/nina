@@ -10,16 +10,20 @@ import Typography from '@mui/material/Typography'
 import { WalletReadyState } from '@solana/wallet-adapter-base'
 import { Magic } from 'magic-sdk'
 import { SolanaExtension } from '@magic-ext/solana'
+import EmailLoginForm from './EmailLoginForm'
+import EmailOTPForm from './EmailOTPForm'
 
-const WalletConnectModal = ({ children }) => {
+const WalletConnectModal = (props) => {
+  const { children, inOnboardingFlow } = props
   const { wallet, walletExtension, connectMagicWallet } = useContext(
     Wallet.Context
   )
 
   const [open, setOpen] = useState(false)
-  const [email, setEmail] = useState('')
+  const [showOtpUI, setShowOtpUI] = useState(false);
+  const [otpLogin, setOtpLogin] = useState();
 
-  const handleLogin = async () => {
+  const handleLogin = async (email) => {
     const magic = new Magic(process.env.MAGIC_KEY, {
       extensions: {
         solana: new SolanaExtension({
@@ -27,7 +31,43 @@ const WalletConnectModal = ({ children }) => {
         }),
       },
     })
-    await connectMagicWallet(magic, email)
+  
+    console.log('bruh email', email, magic)
+    try {
+      setOtpLogin();
+      const otpLogin = magic.auth.loginWithEmailOTP({ email, showUI: false });
+      console.log('otpLogin', otpLogin)
+      otpLogin
+        .on('invalid-email-otp', () => {
+          console.log('invalid email OTP');
+        })
+        .on('verify-email-otp', (otp) => {
+          console.log('verify email OTP', otp);
+        })
+        .on("email-otp-sent", () => {
+          console.log("on email OTP sent!");
+
+          setOtpLogin(otpLogin);
+          setShowOtpUI(true);
+        })
+        .on("done", (result) => {
+          connectMagicWallet(magic);
+
+          console.log(`DID Token: %c${result}`, "color: orange");
+        })
+        .on("settled", () => {
+          setOtpLogin();
+          setShowOtpUI(false);
+        })
+        .catch((err) => {
+          console.log("%cError caught during login:\n", "color: orange");
+
+          console.log(err);
+        });
+      console.log('beep')
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   const supportedWallets = useMemo(() => {
@@ -49,23 +89,43 @@ const WalletConnectModal = ({ children }) => {
   }
 
   return (
-    <Root>
-      <Button
-        onClick={() => {
-          if (wallet?.connected) {
-            wallet.disconnect()
-          } else {
-            setOpen(true)
-          }
-        }}
-        sx={{
-          '&:hover': {
-            opacity: '50%',
-          },
-        }}
-      >
-        {children}
-      </Button>
+    <>
+      {inOnboardingFlow ? (
+        <StyledButton
+          onClick={() => {
+            if (wallet?.connected) {
+              wallet.disconnect()
+            } else {
+              setOpen(true)
+            }
+          }}
+          variant="outlined"
+          sx={{ mt: 1 }}
+        >
+          {children}
+        </StyledButton>
+      ) : (
+        <Button
+          onClick={() => {
+            if (wallet?.connected) {
+              wallet.disconnect()
+            } else {
+              setOpen(true)
+            }
+          }}
+          sx={{
+            padding: '0px',
+            textTransform: 'none',
+            '&:hover': {
+              opacity: '50%',
+            },
+          }}
+        >
+          <Typography variant="h3" sx={{ textAlign: 'center' }}>
+            {children}
+          </Typography>
+        </Button>
+      )}
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -79,22 +139,11 @@ const WalletConnectModal = ({ children }) => {
       >
         <Fade in={open}>
           <StyledPaper>
-            <input
-              id="email"
-              type="email"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Button
-              style={{ marginTop: '15px' }}
-              color="primary"
-              variant="outlined"
-              onClick={async () => {
-                await handleLogin()
-                handleClose()
-              }}
-            >
-              <Typography>Log in with Email</Typography>
-            </Button>
+            {showOtpUI ? (
+              <EmailOTPForm login={otpLogin} />
+            ) : (
+              <EmailLoginForm handleEmailLoginCustom={handleLogin} />
+            )}
             {supportedWallets?.map((wallet) => (
               <Button
                 key={wallet.adapter.name}
@@ -111,15 +160,9 @@ const WalletConnectModal = ({ children }) => {
           </StyledPaper>
         </Fade>
       </StyledModal>
-    </Root>
+    </>
   )
 }
-
-const Root = styled('div')(() => ({
-  display: 'flex',
-  alignItems: 'center',
-  width: '100%',
-}))
 
 const StyledModal = styled(Modal)(() => ({
   display: 'flex',
@@ -138,6 +181,15 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   zIndex: '10',
   display: 'flex',
   flexDirection: 'column',
+}))
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  border: `1px solid ${theme.palette.black}`,
+  borderRadius: '0px',
+  padding: '16px 20px',
+  color: theme.palette.black,
+  width: '100%',
+  fontSize: '12px',
 }))
 
 export default WalletConnectModal
