@@ -142,7 +142,7 @@ const WalletConnectModal = ({ children }) => {
             )}
 
 
-            <Box sx={{my: 1 }}>
+            <Box sx={{mt: 1 }}>
               <Typography onClick={handleWalletCollapse} >
                 <a style={{textDecoration: 'underline'}}>
                   {showWallets ? 'Hide Wallets' : 'I want to login via wallet'}       

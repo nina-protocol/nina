@@ -3,6 +3,8 @@ import {MuiOtpInput} from 'mui-one-time-password-input'
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import {styled} from '@mui/material/styles'
+import {Typography} from "@mui/material";
+import Dots from "./Dots";
 
 
 export default function EmailOTP({ login }) {
@@ -10,18 +12,19 @@ export default function EmailOTP({ login }) {
   const [retries, setRetries] = useState(2);
   const [message, setMessage] = useState();
   const [disabled, setDisabled] = useState(false);
+  const [pending, setPending] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    await autoSubmit(passcode);
+    setPending(true)
+    // await autoSubmit(passcode);
 
     setDisabled(true);
     setRetries((r) => r - 1);
     // setPasscode("");
 
     // Send OTP for verification
-    login.emit("verify-email-otp", passcode);
+    await login.emit("verify-email-otp", passcode);
 
     login.on("invalid-email-otp", () => {
       // User entered invalid OTP
@@ -41,6 +44,7 @@ export default function EmailOTP({ login }) {
         );
       }
     });
+    setPending(false)
   };
 
   // const autoSubmit = async (value) => {
@@ -73,7 +77,10 @@ export default function EmailOTP({ login }) {
 
   const handleChange = (value) => {
     console.log('value :>> ', value);
-    setPasscode(value);
+    const trimmedValue = value.replace(/\s/g, '');
+    console.log('trimmedValue :>> ', trimmedValue);
+
+    setPasscode(trimmedValue);
     console.log('passcode :>> ', passcode);
   }
  
@@ -84,34 +91,47 @@ export default function EmailOTP({ login }) {
   };
 
   return (
-    <div id="otp-component">
-      <h3>enter one-time passcode</h3>
-      {message && <div id="otp-message">{message}</div>}
+    <Root id="otp-component">
+      <Typography variant="h3" style={{marginBottom: '15px'}} >Enter one-time passcode</Typography>
+      <Typography variant="body1" style={{marginBottom: '15px'}} >(the code was sent to your email)</Typography>
+      {message && (
+        <div id="otp-message">
+          <Typography variant="h6" gutterBottom>
+            {message}
+          </Typography>
+          </div>
+      )}
 
 
       <form onSubmit={handleSubmit}>
       <MuiOtpInput 
         value={passcode} 
-        length={6} 
+        length={7} 
         onChange={(e) => handleChange(e)} 
         TextFieldsProps={{type: 'number'}}
         type="number"
         />
         <Ctas sx={{my: 1}}>
           <Button id="submit-otp" type="submit" variant='outlined' disabled={disabled} style={{marginBottom: '15px'}} >
-            Submit
+            {pending ? <Dots msg="Logging In" size="40px"/> : 'Submit'}
           </Button>
           <Button id="cancel-otp" onClick={handleCancel} variant='outlined' disabled={disabled}>
             Cancel
           </Button>
         </Ctas>
       </form>
-    </div>
+    </Root>
   );
 }
 
-const Ctas = styled(Box)(({theme}) => ({
+const Ctas = styled(Box)(() => ({
   width: '100%',
   display: 'flex',
   flexDirection: 'column',
 })) 
+
+const Root = styled(Box)(() => ({
+  '.MuiOtpInput-TextField:last-of-type':{
+    display: 'none'
+  }
+}))
