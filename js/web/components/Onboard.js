@@ -39,7 +39,7 @@ const Onboard = () => {
   const { wallet } = useContext(Wallet.Context)
   const [claimedError, setClaimedError] = useState(false)
   const [claimedCodeSuccess, setClaimedCodeSuccess] = useState(false)
-  const [activeStep, setActiveStep] = useState(2)
+  const [activeStep, setActiveStep] = useState(0)
   const { enqueueSnackbar } = useSnackbar()
   const profilePubkey = wallet?.publicKey?.toBase58()
   const [profileVerifications, setProfileVerifications] = useState([])
@@ -155,6 +155,41 @@ const Onboard = () => {
     },
   ]
 
+  const signUpSteps = [
+    {
+      title: 'Sign Up',
+      content: `To get started, please sign up below.`,
+      cta: (
+        <>
+          <ClaimCodeButton>Sign up with email</ClaimCodeButton>
+          <Box mb={1}/>
+          <ClaimCodeButton>Sign up with wallet</ClaimCodeButton>
+        </>
+      ),
+    },
+    {
+      title: 'Verify your Account (optional)',
+      content: `        Now that you have set up your account, you can
+            verify it via your Soundcloud or Twitter profile.`,
+      cta: (
+        <>
+          <IdentityVerification
+            verifications={profileVerifications}
+            profilePublicKey={profilePubkey}
+            inOnboardingFlow={true}
+          />
+          <Box />
+          <ClaimCodeButton
+            onClick={() => setActiveStep(4)}
+            sx={{ marginTop: '10px' }}
+          >
+            Do this Later
+          </ClaimCodeButton>
+        </>
+      ),
+    },
+  ]
+
   const handleClaimCode = async (code) => {
     const message = new TextEncoder().encode(wallet.publicKey.toBase58())
     const messageBase64 = encodeBase64(message)
@@ -193,11 +228,12 @@ const Onboard = () => {
     getSolPrice()
   }
 
-  const OnboardSteps = () => {
+  const OnboardSteps = (steps) => {
+
     return (
       <Box sx={{ width: '75%' }}>
         <Stepper activeStep={activeStep} orientation="vertical">
-          {onboardingSteps.map((step, index) => {
+          {steps.map((step, index) => {
             return (
               <Step key={index}>
                 <StepLabel>{step.title}</StepLabel>
@@ -223,25 +259,56 @@ const Onboard = () => {
     )
   }
 
+  const SignUpSteps = () => {
+    return(
+      <Box sx={{ width: '75%' }}>
+        <Stepper activeStep={activeStep} orientation="vertical">
+          {signUpSteps.map((step, index) => {
+            return (
+              <Step key={index}>
+                <StepLabel>{step.title}</StepLabel>
+                <StepContent>
+                  <Typography variant="body1" mb={1}>
+                    {step.content}
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      width: '75%',
+                    }}
+                  >
+                    {step.cta}
+                  </Box>
+                </StepContent>
+              </Step>
+            )
+          }
+          )}
+        </Stepper>
+      </Box>
+    )
+  }
+
   return (
     <ScrollablePageWrapper>
       <StyledGrid>
         <GetStartedPageWrapper>
           <>
             <Box mb={2}>
-              {code !== undefined && (
+              <Typography variant="h1" mb={1}>
+                Welcome to Nina.
+              </Typography>
+              {code !== undefined ? (
                 <>
                   {activeStep < onboardingSteps.length ? (
                     <>
-                      <Typography variant="h1" mb={1}>
-                        Welcome to Nina.
-                      </Typography>
                       <Typography variant="h3" mb={1}>
                         You are receiving complimentary SOL to create your Hub
                         and start uploading your music. Please follow the steps
                         below to get started.
                       </Typography>
-                      {OnboardSteps()}
+                      {OnboardSteps(onboardingSteps)}
                     </>
                   ) : (
                     <Box>
@@ -277,6 +344,13 @@ const Onboard = () => {
                       </Box>
                     </Box>
                   )}
+                </>
+              ) : (
+                <>
+                  <Typography variant="h3" mb={1}>
+                    Follow the steps below to get started.
+                  </Typography>
+                  {OnboardSteps(signUpSteps)}
                 </>
               )}
             </Box>
