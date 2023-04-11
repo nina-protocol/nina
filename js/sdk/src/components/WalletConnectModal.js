@@ -24,11 +24,13 @@ const WalletConnectModal = ({ children }) => {
   )
 
   const [open, setOpen] = useState(true)
-  const [showOtpUI, setShowOtpUI] = useState(false);
+  const [showOtpUI, setShowOtpUI] = useState(true);
   const [otpLogin, setOtpLogin] = useState();
   const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const [showWallets, setShowWallets] = useState(false)
   const [pending, setPending] = useState(false)
+  const [email, setEmail] = useState('eric@email.com');
+
 
   // const enterWelcomeFlow = useMemo(() => {
   //   if (typeof window !== 'undefined') {
@@ -136,9 +138,9 @@ const WalletConnectModal = ({ children }) => {
         <Fade in={open}>
           <StyledPaper>
             {showOtpUI ? (
-              <EmailOTPForm login={otpLogin} />
+              <EmailOTPForm login={otpLogin} email={email} />
             ) : (
-              <EmailLoginForm handleEmailLoginCustom={handleLogin} pending={pending} />
+              <EmailLoginForm handleEmailLoginCustom={handleLogin} pending={pending} email={email} setEmail={setEmail} />
             )}
 
 

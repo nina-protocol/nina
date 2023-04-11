@@ -6,8 +6,8 @@ import {styled} from '@mui/material/styles'
 import Dots from "./Dots";
 
 
-export default function EmailForm({ handleEmailLoginCustom, pending }) {
-  const [email, setEmail] = useState();
+export default function EmailForm({ handleEmailLoginCustom, pending, email, setEmail }) {
+  // const [email, setEmail] = useState();
   const [placeholder, setPlaceholder] = useState('Enter your email');
 
   function handleSubmit(e) {

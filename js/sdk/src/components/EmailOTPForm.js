@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import {MuiOtpInput} from 'mui-one-time-password-input'
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -7,7 +7,7 @@ import {Typography} from "@mui/material";
 import Dots from "./Dots";
 
 
-export default function EmailOTP({ login }) {
+export default function EmailOTP({ login, email }) {
   const [passcode, setPasscode] = useState("");
   const [retries, setRetries] = useState(2);
   const [message, setMessage] = useState();
@@ -93,7 +93,11 @@ export default function EmailOTP({ login }) {
   return (
     <Root id="otp-component">
       <Typography variant="h3" style={{marginBottom: '15px'}} >Enter one-time passcode</Typography>
-      <Typography variant="body1" style={{marginBottom: '15px'}} >(the code was sent to your email)</Typography>
+      <Typography variant="body1" style={{marginBottom: '15px'}}> 
+      <>
+        ({`the code was sent to:`} <i>{email}</i>)
+      </>
+      </Typography>
       {message && (
         <div id="otp-message">
           <Typography variant="h6" gutterBottom>
