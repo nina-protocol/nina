@@ -45,6 +45,7 @@ const ImageCropperModal = ({
         croppedAreaPixels,
         rotation
       )
+      console.log('croppedImageResult.size :>> ', croppedImageResult.size);
 
       setCroppedImage(croppedImageResult)
       setUncroppedImage(undefined)

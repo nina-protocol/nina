@@ -90,7 +90,7 @@ export default async function getCroppedImg(
         resolve(new File([blob], 'fileName.png', { type: 'image/png' }))
       },
       'image/png',
-      1
+      // 1
     )
   })
 }
