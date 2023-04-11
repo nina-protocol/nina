@@ -7,6 +7,8 @@ import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
+import Collapse from '@mui/material/Collapse';
 import { WalletReadyState } from '@solana/wallet-adapter-base'
 import { Magic } from 'magic-sdk'
 import { SolanaExtension } from '@magic-ext/solana'
@@ -21,15 +23,20 @@ const WalletConnectModal = ({ children }) => {
     Wallet.Context
   )
 
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const [showOtpUI, setShowOtpUI] = useState(false);
   const [otpLogin, setOtpLogin] = useState();
   const [showWelcomeModal, setShowWelcomeModal] = useState(false)
+  const [showWallets, setShowWallets] = useState(false)
   // const enterWelcomeFlow = useMemo(() => {
   //   if (typeof window !== 'undefined') {
   //     return !localStorage.getItem('nina_welcomeModal_seen')
   //   } 
   // }, [typeof window])
+
+  const handleWalletCollapse = () => {
+    setShowWallets(!showWallets)
+  }
 
   const handleLogin = async (email) => {
     const magic = new Magic(process.env.MAGIC_KEY, {
@@ -73,7 +80,6 @@ const WalletConnectModal = ({ children }) => {
 
           console.log(err);
         });
-      console.log('beep')
     } catch (err) {
       console.error(err);
     }
@@ -130,19 +136,35 @@ const WalletConnectModal = ({ children }) => {
             ) : (
               <EmailLoginForm handleEmailLoginCustom={handleLogin} />
             )}
-            {supportedWallets?.map((wallet) => (
-              <Button
-                key={wallet.adapter.name}
-                style={{ marginTop: '15px' }}
-                color="primary"
-                variant="outlined"
-                onClick={(event) =>
-                  handleWalletClickEvent(event, wallet.adapter.name)
-                }
-              >
-                <Typography>Connect Wallet: {wallet.adapter.name}</Typography>
-              </Button>
-            ))}
+
+
+            <Box sx={{my: 1 }}>
+              <Typography onClick={handleWalletCollapse} >
+                <a style={{textDecoration: 'underline'}}>
+                  {showWallets ? 'Hide Wallets' : 'I want to login via wallet'}       
+                </a>
+              </Typography>
+
+
+              <Collapse in={showWallets} timeout="auto" unmountOnExit>
+                <WalletButtons sx={{border: '2px solid red'}}>
+                  {supportedWallets?.map((wallet) => (
+                    <Button
+                      key={wallet.adapter.name}
+                      style={{ marginTop: '15px' }}
+                      color="primary"
+                      variant="outlined"
+                      onClick={(event) =>
+                        handleWalletClickEvent(event, wallet.adapter.name)
+                      }
+                    >
+                      <Typography>Connect Wallet: {wallet.adapter.name}</Typography>
+                    </Button>
+                  ))}
+                </WalletButtons>
+              </Collapse>
+
+            </Box>
           </StyledPaper>
         </Fade>
       </StyledModal>
@@ -178,6 +200,11 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   zIndex: '10',
   display: 'flex',
   flexDirection: 'column',
+}))
+
+const WalletButtons = styled(Box)(() => ({
+  display: 'flex',
+  flexDirection: 'column', 
 }))
 
 export default WalletConnectModal
