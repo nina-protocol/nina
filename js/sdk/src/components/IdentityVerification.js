@@ -29,8 +29,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 
 const IdentityVerification = ({ verifications, profilePubkey }) => {
-
-  console.log('verifications :>> ', verifications);
+  console.log('verifications :>> ', verifications)
   const web3 = new Web3(process.env.ETH_CLUSTER_URL)
   const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
@@ -57,7 +56,7 @@ const IdentityVerification = ({ verifications, profilePubkey }) => {
   const [activeType, setActiveType] = useState(undefined)
   const [activeValue, setActiveValue] = useState(undefined)
 
-  console.log('wallet !!@!!!:>> ', wallet);
+  console.log('wallet !!@!!!:>> ', wallet)
 
   const logos = {
     soundcloud: (
@@ -140,7 +139,7 @@ const IdentityVerification = ({ verifications, profilePubkey }) => {
     return buttonArray
   }, [publicKey, verifications])
 
-  console.log('buttonTypes :>> ', buttonTypes);
+  console.log('buttonTypes :>> ', buttonTypes)
 
   useEffect(() => {
     const codeSource = localStorage.getItem('codeSource')
