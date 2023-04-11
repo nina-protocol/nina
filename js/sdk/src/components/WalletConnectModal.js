@@ -24,26 +24,19 @@ const WalletConnectModal = ({ children }) => {
   )
 
   const [open, setOpen] = useState(true)
-  const [showOtpUI, setShowOtpUI] = useState(true);
+  const [showOtpUI, setShowOtpUI] = useState(false);
   const [otpLogin, setOtpLogin] = useState();
   const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const [showWallets, setShowWallets] = useState(false)
   const [pending, setPending] = useState(false)
-  const [email, setEmail] = useState('eric@email.com');
-
-
-  // const enterWelcomeFlow = useMemo(() => {
-  //   if (typeof window !== 'undefined') {
-  //     return !localStorage.getItem('nina_welcomeModal_seen')
-  //   } 
-  // }, [typeof window])
+  const [email, setEmail] = useState();
 
   const handleWalletCollapse = () => {
     setShowWallets(!showWallets)
   }
 
   const handleLogin = async (email) => {
-    console.log('top');
+    setPending(true)
     const magic = new Magic(process.env.MAGIC_KEY, {
       extensions: {
         solana: new SolanaExtension({
@@ -52,12 +45,9 @@ const WalletConnectModal = ({ children }) => {
       },
     })
   
-    console.log('bruh email', email, magic)
     try {
-      setPending(true)
       setOtpLogin();
       const otpLogin = magic.auth.loginWithEmailOTP({ email, showUI: false });
-      console.log('otpLogin', otpLogin)
       otpLogin
         .on('invalid-email-otp', () => {
           console.log('invalid email OTP');
@@ -86,6 +76,7 @@ const WalletConnectModal = ({ children }) => {
 
           console.log(err);
         });
+        setPending(false)
     } catch (err) {
       console.error(err);
     }
@@ -140,7 +131,7 @@ const WalletConnectModal = ({ children }) => {
             {showOtpUI ? (
               <EmailOTPForm login={otpLogin} email={email} />
             ) : (
-              <EmailLoginForm handleEmailLoginCustom={handleLogin} pending={pending} email={email} setEmail={setEmail} />
+              <EmailLoginForm handleEmailLoginCustom={handleLogin} email={email} setEmail={setEmail} pending={pending} />
             )}
 
 

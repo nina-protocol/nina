@@ -47,32 +47,35 @@ export default function EmailOTP({ login, email }) {
     setPending(false)
   };
 
-  // const autoSubmit = async (value) => {
-  //   setDisabled(true);
-  //   setRetries((r) => r - 1);
-  //   // setPasscode("");
+  const autoSubmit = async (value, login) => {
+    console.log('value !:>> ', value);
+    console.log('login !:>> ', login);
+    setDisabled(true);
+    setRetries((r) => r - 1);
+    // setPasscode("");
+    const trimmedPasscode = value.replaceAll(/\s/g, '');
+    console.log('trimmedPasscode :>> ', trimmedPasscode);
+    // Send OTP for verification
+    await login.emit("verify-email-otp", trimmedPasscode);
 
-  //   // Send OTP for verification
-  //   login.emit("verify-email-otp", passcode);
+    login.on("invalid-email-otp", () => {
+      // User entered invalid OTP
+      setDisabled(false);
 
-  //   login.on("invalid-email-otp", () => {
-  //     // User entered invalid OTP
-  //     setDisabled(false);
+      if (!retries) {
+        setMessage("No more retries. Please try again later.");
 
-  //     if (!retries) {
-  //       setMessage("No more retries. Please try again later.");
-
-  //       // Cancel the login
-  //       login.emit("cancel");
-  //     } else {
-  //       // Prompt the user again for the OTP
-  //       setMessage(
-  //         `Incorrect code. Please enter OTP again. ${retries} ${retries === 1 ? "retry" : "retries"
-  //         } left.`
-  //       );
-  //     }
-  //   });
-  // };
+        // Cancel the login
+        login.emit("cancel");
+      } else {
+        // Prompt the user again for the OTP
+        setMessage(
+          `Incorrect code. Please enter OTP again. ${retries} ${retries === 1 ? "retry" : "retries"
+          } left.`
+        );
+      }
+    });
+  };
 
 
   const handleChange = (value) => {
@@ -87,6 +90,7 @@ export default function EmailOTP({ login, email }) {
   const handleCancel = () => {
     login.emit("cancel");
     setDisabled(false);
+    setPending(false)
     console.log("%cUser canceled login.", "color: orange");
   };
 
@@ -114,6 +118,7 @@ export default function EmailOTP({ login, email }) {
         onChange={(e) => handleChange(e)} 
         TextFieldsProps={{type: 'number'}}
         type="number"
+        onComplete={(value) => {autoSubmit(value, login)}}
         />
         <Ctas sx={{my: 1}}>
           <Button id="submit-otp" type="submit" variant='outlined' disabled={disabled} style={{marginBottom: '15px'}} >

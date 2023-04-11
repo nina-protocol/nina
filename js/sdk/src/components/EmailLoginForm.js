@@ -7,16 +7,15 @@ import Dots from "./Dots";
 
 
 export default function EmailForm({ handleEmailLoginCustom, pending, email, setEmail }) {
-  // const [email, setEmail] = useState();
   const [placeholder, setPlaceholder] = useState('Enter your email');
-
-  function handleSubmit(e) {
+  console.log('pending !!!!:>> ', pending);
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email) {
       setPlaceholder('Please enter valid email');
       return;
     }
-    handleEmailLoginCustom(email);
+    await handleEmailLoginCustom(email);
   }
 
   return (
