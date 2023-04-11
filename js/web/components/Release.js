@@ -99,7 +99,7 @@ const ReleaseComponent = ({ metadataSsr, hub }) => {
 
   const handleFetchGates = async () => {
     const gates = await fetchGatesForRelease(releasePubkey)
-    if (gates.length > 0) {
+    if (gates?.length > 0) {
       setReleaseGates(gates)
     } else {
       setReleaseGates(undefined)

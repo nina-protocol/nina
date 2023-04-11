@@ -10,13 +10,15 @@ import Box from '@mui/material/Box'
 import { useRouter } from 'next/router'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import onboardingCodeWhitelist from '@nina-protocol/nina-internal-sdk/src/utils/onboardingCodeWhitelist'
+import { useSnackbar } from 'notistack'
 const Admin = () => {
   const wallet = useWallet()
-  const router = useRouter()
+  const { enqueueSnackbar } = useSnackbar()
   const walletPubkey = wallet.publicKey?.toBase58()
   const hasAccess = onboardingCodeWhitelist.includes(walletPubkey)
   const [code, setCode] = useState()
-  const [releaseId, setReleaseId] = useState()
+  const [restrictedRelease, setRestrictedRelease] = useState()
+  const [restrictedAccount, setRestrictedAccount] = useState()
   const { getSolBalanceForPublicKey } = useContext(Nina.Context)
   const [verificationBalance, setVerificationBalance] = useState(0)
   const [dispatcherBalance, setDispatcherBalance] = useState(0)
@@ -59,9 +61,35 @@ const Admin = () => {
     }
   }
 
-  // placeholder for blacklist handler
-  const handleBlacklist = async (release) => {
-    setReleaseId(release)
+  // placeholder for restricted handler
+  const handleRestricted = async (value, type) => {
+
+    const message = new TextEncoder().encode(wallet.publicKey.toBase58())
+
+    const messageBase64 = encodeBase64(message)
+    const signature = await wallet.signMessage(message)
+    const signatureBase64 = encodeBase64(signature)
+
+    const response = await axios.post(
+      `${process.env.NINA_IDENTITY_ENDPOINT}/restricted`,
+      {
+        message: messageBase64,
+        signature: signatureBase64,
+        publicKey: wallet.publicKey.toBase58(),
+        value,
+        type,
+      }
+    )
+
+    if (response.data.status === 'success') {
+      enqueueSnackbar(`Successfully restricted ${type}`, {
+        variant: 'success',
+      })
+    } else {
+      enqueueSnackbar(`Failed to restrict ${type}`, {
+        variant: 'error',
+      })
+    }
   }
 
   return (
@@ -99,25 +127,47 @@ const Admin = () => {
           />
 
           <Typography for="code" mt={4} mb={1}>
-            If you have a release that needs to be blacklisted, please enter its
+            If you have a release that needs to be restricted, please enter its
             ID below.
           </Typography>
           <Input
             type="text"
             id="code"
             name="code"
-            value={releaseId}
-            onChange={(event) => setReleaseId(event.target.value)}
+            value={restrictedRelease}
+            onChange={(event) => setRestrictedRelease(event.target.value)}
             sx={{ width: '25vw' }}
           />
           <Box mt={1}>
             <Button
               variant="outlined"
               onClick={() => {
-                handleBlacklist(releaseId)
+                handleRestricted(restrictedRelease, 'release')
               }}
             >
-              Blacklist Release
+              Restrict Release
+            </Button>
+          </Box>
+          <Typography for="code" mt={4} mb={1}>
+            If you have an account that needs to be restricted, please enter its
+            ID below.
+          </Typography>
+          <Input
+            type="text"
+            id="code"
+            name="code"
+            value={restrictedAccount}
+            onChange={(event) => setRestrictedAccount(event.target.value)}
+            sx={{ width: '25vw' }}
+          />
+          <Box mt={1}>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                handleRestricted(restrictedAccount, 'account')
+              }}
+            >
+              Restrict Account
             </Button>
           </Box>
         </Box>
