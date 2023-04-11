@@ -60,7 +60,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     releaseState,
     initializeReleaseAndMint,
     releaseCreateMetadataJson,
-    releaseCreate,
+    releaseInit,
     validateUniqueMd5Digest,
     releaseInitViaHub,
     pendingReleases,
@@ -425,7 +425,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                   metadataUri: `https://arweave.net/${metadataResult}`,
                 })
               } else {
-                result = await releaseCreate({
+                result = await releaseInit({
                   ...formValues.releaseForm,
                   release: info.release,
                   releaseBump: info.releaseBump,

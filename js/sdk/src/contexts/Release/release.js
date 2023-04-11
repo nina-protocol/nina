@@ -71,7 +71,7 @@ const ReleaseContextProvider = ({ children }) => {
   }
 
   const {
-    releaseCreate,
+    releaseInit,
     releasePurchase,
     closeRelease,
     collectRoyaltyForRelease,
@@ -176,7 +176,7 @@ const ReleaseContextProvider = ({ children }) => {
       value={{
         pressingState,
         resetPressingState,
-        releaseCreate,
+        releaseInit,
         closeRelease,
         releasePurchase,
         releasePurchasePending,
@@ -599,7 +599,7 @@ const releaseContextHelper = ({
     }
   }
 
-  const releaseCreate = async ({
+  const releaseInit = async ({
     retailPrice,
     amount,
     resalePercentage,
@@ -623,9 +623,6 @@ const releaseContextHelper = ({
 
       const paymentMint = new anchor.web3.PublicKey(
         isUsdc ? ids.mints.usdc : ids.mints.wsol
-      )
-      const publishingCreditMint = new anchor.web3.PublicKey(
-        ids.mints.publishingCredit
       )
 
       const [releaseSigner, releaseSignerBump] =
@@ -667,27 +664,12 @@ const releaseContextHelper = ({
           true
         )
 
-      const [
-        authorityPublishingCreditTokenAccount,
-        authorityPublishingCreditTokenAccountIx,
-      ] = await findOrCreateAssociatedTokenAccount(
-        provider.connection,
-        provider.wallet.publicKey,
-        provider.wallet.publicKey,
-        anchor.web3.SystemProgram.programId,
-        anchor.web3.SYSVAR_RENT_PUBKEY,
-        publishingCreditMint
-      )
-
       let instructions = [...releaseMintIx, royaltyTokenAccountIx]
 
       if (authorityTokenAccountIx) {
         instructions.push(authorityTokenAccountIx)
       }
 
-      if (authorityPublishingCreditTokenAccountIx) {
-        instructions.push(authorityPublishingCreditTokenAccountIx)
-      }
       let now = new Date()
       const editionAmount = isOpen ? MAX_INT : amount
       const config = {
@@ -732,32 +714,25 @@ const releaseContextHelper = ({
         wallet: provider.wallet.publicKey.toBase58(),
       })
 
-      const tx = await program.rpc.releaseInitWithCredit(
-        config,
-        bumps,
-        metadataData,
-        {
-          accounts: {
-            release,
-            releaseSigner,
-            releaseMint: releaseMint.publicKey,
-            payer: provider.wallet.publicKey,
-            authority: provider.wallet.publicKey,
-            authorityTokenAccount: authorityTokenAccount,
-            authorityPublishingCreditTokenAccount,
-            publishingCreditMint,
-            paymentMint,
-            royaltyTokenAccount,
-            metadata,
-            metadataProgram,
-            systemProgram: anchor.web3.SystemProgram.programId,
-            tokenProgram: TOKEN_PROGRAM_ID,
-            rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-          },
-          signers: [releaseMint],
-          instructions,
-        }
-      )
+      const tx = await program.rpc.releaseInit(config, bumps, metadataData, {
+        accounts: {
+          release,
+          releaseSigner,
+          releaseMint: releaseMint.publicKey,
+          payer: provider.wallet.publicKey,
+          authority: provider.wallet.publicKey,
+          authorityTokenAccount: authorityTokenAccount,
+          paymentMint,
+          royaltyTokenAccount,
+          metadata,
+          metadataProgram,
+          systemProgram: anchor.web3.SystemProgram.programId,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        },
+        signers: [releaseMint],
+        instructions,
+      })
       tx.recentBlockhash = (
         await provider.connection.getRecentBlockhash()
       ).blockhash
@@ -1885,7 +1860,7 @@ const releaseContextHelper = ({
     releaseInitViaHub,
     releasePurchaseViaHub,
     addRoyaltyRecipient,
-    releaseCreate,
+    releaseInit,
     closeRelease,
     releasePurchase,
     collectRoyaltyForRelease,

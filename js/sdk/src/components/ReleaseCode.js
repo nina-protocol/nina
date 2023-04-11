@@ -127,7 +127,7 @@ const ReleaseCode = ({ release }) => {
                 }}
               >
                 <Input
-                  label="OnboardingCode"
+                  label="ReleaseCode"
                   type="number"
                   id="releaseCode"
                   name="releaseCode"
