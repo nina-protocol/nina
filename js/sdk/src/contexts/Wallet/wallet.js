@@ -38,8 +38,7 @@ const WalletContextProvider = ({ children }) => {
 }
 
 const walletContextHelper = ({ setMagicWallet, connection }) => {
-  const connectMagicWallet = async (magic, email) => {
-    await magic.auth.loginWithMagicLink({ email })
+  const connectMagicWallet = async (magic) => {
     const isLoggedIn = await magic.user.isLoggedIn()
     if (isLoggedIn) {
       const user = await magic.user.getMetadata()
