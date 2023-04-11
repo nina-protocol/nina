@@ -205,9 +205,10 @@ const Onboard = () => {
           publicKey: wallet.publicKey.toBase58(),
         }
       )
-      if (response.data.success) {
+      if (response.data.status === 'success') {
         enqueueSnackbar('Code has been successfully redeemed', {
           info: 'success',
+          variant: 'success',
         })
         setClaimedError(false)
         setClaimedCodeSuccess(true)

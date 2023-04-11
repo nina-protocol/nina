@@ -65,7 +65,6 @@ const Admin = () => {
 
   // placeholder for restricted handler
   const handleRestricted = async (value, type) => {
-
     const message = new TextEncoder().encode(wallet.publicKey.toBase58())
 
     const messageBase64 = encodeBase64(message)
@@ -138,7 +137,7 @@ const Admin = () => {
             name="code"
             value={restrictedRelease}
             onChange={(event) => setRestrictedRelease(event.target.value)}
-            sx={{ width: '25vw' }}
+            sx={{ width: '40vw' }}
           />
           <Box mt={1}>
             <Button
@@ -160,7 +159,7 @@ const Admin = () => {
             name="code"
             value={restrictedAccount}
             onChange={(event) => setRestrictedAccount(event.target.value)}
-            sx={{ width: '25vw' }}
+            sx={{ width: '40vw' }}
           />
           <Box mt={1}>
             <Button
