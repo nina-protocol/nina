@@ -36,7 +36,7 @@ const ReleaseCreateSuccess = (props) => {
           </ReleaseTypography>
           <Typography
             variant="h4"
-            sx={{ maxWidth: '100%', overflow: 'visible', margin: '0 6px' }}
+            sx={{ maxWidth: '100%', overflow: 'visible', margin: '0 6px', whiteSpace: 'nowrap' }}
           >{`has been created.`}</Typography>
         </DescriptionOverflowContainer>
         <ReleaseSuccessBox>
@@ -98,6 +98,7 @@ const ReleaseCreateSuccess = (props) => {
 }
 const ReleaseSuccessContainer = styled(Box)(() => ({
   height: '100%',
+  margin: 'auto',
 }))
 
 const ReleaseSuccessBox = styled(Box)(() => ({
@@ -132,6 +133,9 @@ const ReleaseTypography = styled(Typography)(() => ({
 }))
 
 const DescriptionOverflowContainer = styled(Box)(() => ({
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  maxWidth: '600px',
   display: 'flex',
   ['-webkit-flex-direction']: 'row',
   alignItems: 'center',

@@ -200,8 +200,8 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                   align="left"
                   sx={{ color: 'text.primary', mr: 1 }}
                 >
-                  {truncateForUi(metadata.properties.artist, 30)} -{' '}
-                  {truncateForUi(metadata.properties.title, 30)}
+                  {truncateForUi(metadata.properties.artist, 50, 20, 250)} -{' '}
+                  {truncateForUi(metadata.properties.title, 50, 20, 250)}
                 </Typography>
               </OverflowContainer>
 
@@ -345,6 +345,7 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
   fontSize: '18px !important',
   lineHeight: '20.7px !important',
   marginTop: '15px',
+  overflowWrap: 'break-word',
   '&::-webkit-scrollbar': {
     display: 'none',
   },
