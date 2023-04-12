@@ -194,13 +194,16 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
             </MobileImageWrapper>
 
             <CtaWrapper>
+              <OverflowContainer>
+
               <Typography
                 variant="h3"
                 align="left"
                 sx={{ color: 'text.primary', mr: 1 }}
-              >
+                >
                 {metadata.properties.artist} - {metadata.properties.title}
               </Typography>
+                </OverflowContainer>
 
               <Box
                 display="flex"
@@ -381,6 +384,14 @@ const CtaWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     marginTop: '15px',
   },
+}))
+
+const OverflowContainer = styled(Box)(({ theme }) => ({
+  overflow: 'hidden',
+  display: ['-webkit-box'],
+  ['-webkit-line-clamp']: '3',
+  ['-webkit-box-orient']: 'vertical',
+  textOverflow: 'ellipsis',
 }))
 
 export default ReleaseComponent
