@@ -103,16 +103,11 @@ const NavBar = () => {
             {wallet?.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
                 <StyledWalletButton router={router}>
-                  <Typography
-                    variant="subtitle1"
-                    sx={{ textTransform: 'none' }}
-                  >
                     {wallet?.connected &&
                       `${wallet.wallet.adapter.name} – ${walletDisplay}`}
                     {!wallet?.connected && 'Connect Wallet'}
-                  </Typography>
                 </StyledWalletButton>
-                <DevnetIndicator />
+                {/* <DevnetIndicator /> */}
               </StyledWalletDialogProvider>
             )}
           </NavCtas>

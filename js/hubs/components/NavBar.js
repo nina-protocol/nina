@@ -189,7 +189,7 @@ const NavBar = ({ hubPubkey }) => {
                   </StyledWalletButtonTypography>
                 </StyledWalletButton>
               )}
-              <DevnetIndicator />
+              {/* <DevnetIndicator /> */}
             </NavCtas>
           </WalletWrapper>
         </CtaWrapper>

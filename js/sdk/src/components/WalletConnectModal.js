@@ -116,7 +116,7 @@ const WalletConnectModal = (props) => {
           {children}
         </StyledButton>
       ) : (
-        <>
+        <Box display="flex">
           <Button
             onClick={() => {
               if (wallet?.connected) {
@@ -133,22 +133,30 @@ const WalletConnectModal = (props) => {
               },
             }}
           >
-            <Typography variant="h3" sx={{ textAlign: 'center' }}>
               {children}
-            </Typography>
           </Button>
         {!wallet?.connected && (
-          <>
-            {' / '}
+          
+          <>{' '}
+            <Typography variant="subtitle1" >
+              {' / '}
+            </Typography>
+            {' '}
             <Link
             href="/getStarted"
       
-              style={{textTransform: 'none'}}
-            >Sign Up
+            style={{textTransform: 'none'}}
+            >
+              <Typography variant="subtitle1" component={'a'}
+                style={{fontSize: '10px !important'}}
+              >
+                Sign Up
+              </Typography>
             </Link>
-          </>)}
+          </>
+          )}
     
-        </>
+        </Box>
 
         
       )}
@@ -170,7 +178,6 @@ const WalletConnectModal = (props) => {
           <StyledPaper>
             {signingUp && (
               <Box sx={{mb:1}}>
-                {/* <Typography variant='h3' gutterBottom>Booyakasha</Typography> */}
                 <Typography variant='body1'>To get create an account, all you need is an email.</Typography>
               </Box>
             )}
@@ -181,7 +188,6 @@ const WalletConnectModal = (props) => {
                 handleEmailLoginCustom={handleLogin}
                 email={email}
                 setEmail={setEmail}
-                // pending={pending}
                 signingUp={signingUp}
               />
             )}
