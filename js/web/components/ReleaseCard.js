@@ -14,7 +14,6 @@ import DownloadIcon from '@mui/icons-material/Download'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import axios from 'axios'
 import AddToHubModal from './AddToHubModal.js'
-// import ReleaseSettingsModal from './ReleaseSettingsModal.js'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
 
 import Link from 'next/link'
@@ -180,9 +179,15 @@ const ReleaseCard = (props) => {
               </Link>
             </Typography>
             <Typography variant="h4" color="white" align="left">
-              {metadata?.properties?.artist.substring(0, 100) ||
-                metadata?.artist.substring(0, 100)}{' '}
-              - <i>{title}</i>
+              {metadata?.properties?.artist.length > 100
+                ? `${metadata?.properties?.artist.substring(0, 50)}...`
+                : metadata?.properties?.artist || metadata?.artist.length > 100
+                ? `${metadata?.artist.substring(0, 50)}...`
+                : metadata?.artist}{' '}
+              -{' '}
+              <i>
+                {title.length > 100 ? `${title.substring(0, 50)}...` : title}
+              </i>
             </Typography>
           </>
         )}

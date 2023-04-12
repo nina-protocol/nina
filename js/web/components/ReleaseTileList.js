@@ -27,7 +27,16 @@ const ReleaseTileList = (props) => {
             release.metadata.properties.title.length > 250
           ) {
             release.metadata.properties.title =
-              release.metadata.properties.title.substring(0, 20) + '...'
+              release.metadata.properties.title.substring(0, 30) + '...'
+          }
+
+          if (
+            (release.metadata.properties.artist.length > 20 &&
+              release.metadata.properties.artist.indexOf(' ') === -1) ||
+            release.metadata.properties.artist.length > 250
+          ) {
+            release.metadata.properties.artist =
+              release.metadata.properties.artist.substring(0, 30) + '...'
           }
 
           return (

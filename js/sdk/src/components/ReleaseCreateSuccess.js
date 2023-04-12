@@ -28,16 +28,12 @@ const ReleaseCreateSuccess = (props) => {
   return (
     <>
       <ReleaseSuccessContainer>
-        <Typography
-          variant="h4"
-          align="left"
-          marginLeft={'auto'}
-          marginRight={'auto'}
-          marginBottom={'16px'}
-          width={'680px'}
-        >
-          {`${artist} -`} <i>{`${title}`}</i> {`has been created.`}
-        </Typography>
+        <DescriptionOverflowContainer sx={{display: 'flex', flexDirection: 'row'}}>
+        <ReleaseTypography variant="h4" align="left">
+          {`${artist} -`} <i>{`${title}`}</i>
+        </ReleaseTypography>
+        <Typography variant="h4" sx={{maxWidth: '100%', overflow: 'visible', margin: '0 6px'}}>{`has been created.`}</Typography>
+        </DescriptionOverflowContainer>
         <ReleaseSuccessBox>
           <ImageBox>
             <Image
@@ -120,6 +116,21 @@ const CtaBox = styled(Box)(() => ({
   paddingLeft: '50px',
   display: 'flex',
   flexDirection: 'column',
+}))
+
+const ReleaseTypography = styled(Typography)(() => ({
+  margin: 0,
+  maxWidth: '600px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+}))
+
+const DescriptionOverflowContainer = styled(Box)(() => ({
+  display: 'flex',
+  ['-webkit-flex-direction']: 'row',
+  alignItems: 'center',
+  marginBottom: '16px'
 }))
 
 export default ReleaseCreateSuccess
