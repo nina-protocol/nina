@@ -15,13 +15,8 @@ import { SolanaExtension } from '@magic-ext/solana'
 import EmailLoginForm from './EmailLoginForm'
 import EmailOTPForm from './EmailOTPForm'
 
-import dynamic from 'next/dynamic'
-const WelcomeModal = dynamic(
-  () => import('@nina-protocol/nina-internal-sdk/esm/WelcomeModal'),
-  { ssr: false }
-)
-
-const WalletConnectModal = ({ children }) => {
+const WalletConnectModal = (props) => {
+  const { children, inOnboardingFlow } = props
   const { wallet, walletExtension, connectMagicWallet } = useContext(
     Wallet.Context
   )
@@ -102,34 +97,58 @@ const WalletConnectModal = ({ children }) => {
   }
 
   return (
-    <Root>
-      <Button
-        onClick={() => {
-          if (wallet?.connected) {
-            wallet.disconnect()
-          } else {
-            setOpen(true)
-          }
-        }}
-        sx={{
-          '&:hover': {
-            opacity: '50%',
-          },
-        }}
-      >
-        {children}
-      </Button>
-      {!wallet?.connected && (
+    <>
+      {inOnboardingFlow ? (
+        <StyledButton
+          onClick={() => {
+            if (wallet?.connected) {
+              wallet.disconnect()
+            } else {
+              setOpen(true)
+            }
+          }}
+          variant="outlined"
+          sx={{ mt: 1 }}
+        >
+          {children}
+        </StyledButton>
+      ) : (
         <>
-          {' / '}
           <Button
             onClick={() => {
-              setOpen(true)
-              setSigningUp(true)
+              if (wallet?.connected) {
+                wallet.disconnect()
+              } else {
+                setOpen(true)
+              }
             }}
-            style={{textTransform: 'none'}}
-          >Sign Up</Button>
+            sx={{
+              padding: '0px',
+              textTransform: 'none',
+              '&:hover': {
+                opacity: '50%',
+              },
+            }}
+          >
+            <Typography variant="h3" sx={{ textAlign: 'center' }}>
+              {children}
+            </Typography>
+          </Button>
+        {!wallet?.connected && (
+          <>
+            {' / '}
+            <Button
+              onClick={() => {
+                setOpen(true)
+                setSigningUp(true)
+              }}
+              style={{textTransform: 'none'}}
+            >Sign Up</Button>
+          </>)}
+    
         </>
+
+        
       )}
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -194,22 +213,9 @@ const WalletConnectModal = ({ children }) => {
           </StyledPaper>
         </Fade>
       </StyledModal>
-
-      {wallet?.connected && (
-        <WelcomeModal
-          profilePubkey={wallet.publicKey.toBase58()}
-          showWelcomeModal={showWelcomeModal}
-        />
-      )}
-    </Root>
+    </>
   )
 }
-
-const Root = styled('div')(() => ({
-  display: 'flex',
-  alignItems: 'center',
-  width: '100%',
-}))
 
 const StyledModal = styled(Modal)(() => ({
   display: 'flex',
@@ -233,6 +239,15 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const WalletButtons = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
+}))
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  border: `1px solid ${theme.palette.black}`,
+  borderRadius: '0px',
+  padding: '16px 20px',
+  color: theme.palette.black,
+  width: '100%',
+  fontSize: '12px',
 }))
 
 export default WalletConnectModal

@@ -62,8 +62,8 @@ const walletContextHelper = ({ setMagicWallet, connection }) => {
         },
         publicKey: new anchor.web3.PublicKey(user.publicAddress),
         signMessage: async (message) => {
-          const messageBytes = decodeBase64(message)
-          return await magic.solana.signMessage(messageBytes)
+          // const messageBytes = decodeBase64(message)
+          return await magic.solana.signMessage(message)
         },
         signTransaction: async (transaction) => {
           const serializedTransaction = transaction.serializeMessage()

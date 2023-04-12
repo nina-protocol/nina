@@ -112,6 +112,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     shouldRemainInCollectionAfterSale,
     getAmountHeld,
     getUserBalances,
+    getSolBalanceForPublicKey,
     getNpcAmountHeld,
     bundlrFund,
     bundlrWithdraw,
@@ -182,6 +183,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         shouldRemainInCollectionAfterSale,
         getAmountHeld,
         getUserBalances,
+        getSolBalanceForPublicKey,
         usdcBalance,
         getNpcAmountHeld,
         npcAmountHeld,
@@ -632,6 +634,13 @@ const ninaContextHelper = ({
     return solUsdcBalanceResult
   }
 
+  const getSolBalanceForPublicKey = async (publicKey) => {
+    let solUsdcBalanceResult = await provider.connection.getBalance(
+      new anchor.web3.PublicKey(publicKey)
+    )
+    return ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol)
+  }
+
   const getUserBalances = async () => {
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
@@ -869,7 +878,7 @@ const ninaContextHelper = ({
         const bundlrInstance = new module.WebBundlr(
           bundlrHttpAddress,
           'solana',
-          provider.wallet.wallet.adapter,
+          provider.wallet,
           {
             providerUrl: process.env.SOLANA_CLUSTER_URL_BUNDLR,
             timeout: 1000000000000000,
@@ -1118,6 +1127,7 @@ const ninaContextHelper = ({
     shouldRemainInCollectionAfterSale,
     getAmountHeld,
     getUserBalances,
+    getSolBalanceForPublicKey,
     getNpcAmountHeld,
     bundlrFund,
     bundlrWithdraw,
