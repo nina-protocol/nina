@@ -5716,6 +5716,64 @@ describe('Subscription', async () => {
     assert.equal(Object.keys(subscriptionAfter.subscriptionType)[0], 'account')
   })
 
+  it('should not subscribe to an account using wrong delegate', async () => {
+  
+    
+    const [subscriptionDelegated] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-subscription")), 
+        provider.wallet.publicKey.toBuffer(),
+        user2.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+
+    await assert.rejects(
+      async () => {
+        await nina.rpc.subscriptionSubscribeAccountDelegated(
+          {
+            accounts: {
+              payer: provider.wallet.publicKey,
+              from: provider.wallet.publicKey,
+              subscription: subscriptionDelegated,
+              to: user2.publicKey,
+              systemProgram: anchor.web3.SystemProgram.programId,
+            }
+          }
+        )
+    },
+      (err) => {
+        assert.equal(err.error.errorCode.number, 2012);
+        assert.equal(err.error.errorMessage, "An address constraint was violated");
+        return true;
+      }
+    );
+  })
+
+
+  it('should not unsubscribe from an account with wrong delegate', async () => {
+    await assert.rejects(
+      async () => {
+        await nina.rpc.subscriptionUnsubscribeDelegated(
+          {
+            accounts: {
+              payer: provider.wallet.publicKey,
+              from: provider.wallet.publicKey,
+              subscription,
+              to: user1.publicKey,
+            }
+          }
+        )
+    
+    },
+      (err) => {
+        assert.equal(err.error.errorCode.number, 2012);
+        assert.equal(err.error.errorMessage, "An address constraint was violated");
+        return true;
+      }
+    );
+  })
+
   it('should unsubscribe from an account', async () => {
     await nina.rpc.subscriptionUnsubscribe(
       {

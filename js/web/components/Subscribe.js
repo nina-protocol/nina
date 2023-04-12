@@ -16,7 +16,7 @@ const Subscribe = ({
 }) => {
   const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
-  const { subscriptionSubscribe, subscriptionUnsubscribe, userSubscriptions } =
+  const { userSubscriptions, subscriptionSubscribeDelegated, subscriptionUnsubscribeDelegated } =
     useContext(Nina.Context)
   const [pending, setPending] = useState(false)
   const [followsYou, setFollowsYou] = useState(false)
@@ -42,7 +42,7 @@ const Subscribe = ({
     e.stopPropagation()
 
     setPending(true)
-    const result = await subscriptionSubscribe(accountAddress, hubHandle)
+    const result = await subscriptionSubscribeDelegated(accountAddress, hubHandle ? 'hub' : 'account' ,hubHandle)
     if (result.success) {
       enqueueSnackbar(result.msg, {
         variant: 'success',
@@ -61,7 +61,7 @@ const Subscribe = ({
 
     setPending(true)
 
-    const result = await subscriptionUnsubscribe(accountAddress, hubHandle)
+    const result = await subscriptionUnsubscribeDelegated(accountAddress, hubHandle)
     if (result.success) {
       enqueueSnackbar(result.msg, {
         variant: 'success',
