@@ -14,13 +14,8 @@ import DownloadIcon from '@mui/icons-material/Download'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import axios from 'axios'
 import AddToHubModal from './AddToHubModal.js'
-// import ReleaseSettingsModal from './ReleaseSettingsModal.js'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
-import {
-  truncateStringToLength,
-  truncateForUi,
-} from '@nina-protocol/nina-internal-sdk/src/utils/truncateManager'
-// import { truncateForUi } from '@nina-protocol/nina-internal-sdk/src/utils/truncateManager'
+import { truncateForUi } from '@nina-protocol/nina-internal-sdk/src/utils/truncateManager'
 import Link from 'next/link'
 import { useSnackbar } from 'notistack'
 
@@ -52,7 +47,7 @@ const ReleaseCard = (props) => {
 
   const image = useMemo(() => metadata?.image)
   const title = useMemo(() => {
-    return truncateForUi(metadata.properties.title, 30, 20, 250)
+    return truncateForUi(metadata.properties.title, 50, 20, 250)
   }, [metadata.properties.title])
 
   const downloadAs = async (url, name) => {
@@ -178,8 +173,8 @@ const ReleaseCard = (props) => {
               </Link>
             </Typography>
             <Typography variant="h4" color="white" align="left">
-              {truncateStringToLength(metadata?.properties?.artist, 100) ||
-                truncateStringToLength(metadata?.artist, 100)}{' '}
+              {truncateForUi(metadata?.properties?.artist, 50, 20, 250) ||
+                truncateForUi(metadata?.artist, 50, 20, 250)}{' '}
               - <i>{title}</i>
             </Typography>
           </>

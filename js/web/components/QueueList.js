@@ -47,7 +47,7 @@ const QueueList = (props) => {
 
   useEffect(() => {
     const playlistEntry = playlist.find(
-      (entry) => entry.releasePubkey === track.releasePubkey
+      (entry) => entry.releasePubkey === track?.releasePubkey
     )
 
     if (playlistEntry) {

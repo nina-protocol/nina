@@ -9,12 +9,7 @@ export const truncateStringToLength = (string, index) => {
   return `${string.substring(0, index)}...`
 }
 
-export const truncateForUi = (
-  string,
-  index,
-  stringLength = 20,
-  maxLength = 250
-) => {
+export const truncateForUi = (string, index, stringLength, maxLength) => {
   if (
     (string.length > stringLength && string.indexOf(' ') === -1) ||
     string.length > maxLength

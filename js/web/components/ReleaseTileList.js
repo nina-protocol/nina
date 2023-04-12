@@ -11,10 +11,7 @@ import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutli
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
-import {
-  truncateStringToLength,
-  truncateForUi,
-} from '@nina-protocol/nina-internal-sdk/src/utils/truncateManager'
+import { truncateForUi } from '@nina-protocol/nina-internal-sdk/src/utils/truncateManager'
 
 const { getImageFromCDN, loader } = imageManager
 const ReleaseTileList = (props) => {
@@ -28,22 +25,16 @@ const ReleaseTileList = (props) => {
         {releases.map((release, i) => {
           release.metadata.properties.title = truncateForUi(
             release.metadata.properties.title,
-            30
+            50,
+            20,
+            undefined
           )
           release.metadata.properties.artist = truncateForUi(
             release.metadata.properties.artist,
-            30
+            50,
+            20,
+            undefined
           )
-
-          // if (
-          //   (release.metadata.properties.artist.length > 20 &&
-          //     release.metadata.properties.artist.indexOf(' ') === -1) ||
-          //   release.metadata.properties.artist.length > 250
-          // ) {
-          //   release.metadata.properties.artist =
-          //     truncateString(release.metadata.properties.artist,30)
-          // }
-
           return (
             <Tile key={i}>
               <HoverCard>
@@ -177,6 +168,9 @@ const CardCta = styled(Box)(({ theme }) => ({
 const ReleaseName = styled(Typography)(() => ({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
+  display: ['-webkit-box'],
+  ['-webkit-line-clamp']: '4',
+  ['-webkit-box-orient']: 'vertical',
 }))
 
 const TileBox = styled(Box)(({ theme }) => ({
