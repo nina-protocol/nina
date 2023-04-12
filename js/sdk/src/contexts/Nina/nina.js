@@ -11,6 +11,7 @@ import { logEvent } from '../../utils/event'
 import { truncateAddress } from '../../utils/truncateManager'
 import Airtable from 'airtable'
 import { getConfirmTransaction } from '../../utils'
+import { encodeBase64 } from 'tweetnacl-util'
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -130,6 +131,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     filterSubscriptionsForHub,
     submitEmailRequest,
     getUsdcToSolSwapData,
+    subscriptionSubscribeDelegated,
+    subscriptionUnsubscribeDelegated,
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -223,6 +226,8 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         getUsdcToSolSwapData,
         MAX_AUDIO_FILE_UPLOAD_SIZE,
         MAX_IMAGE_FILE_UPLOAD_SIZE,
+        subscriptionSubscribeDelegated,
+        subscriptionUnsubscribeDelegated,    
       }}
     >
       {children}
@@ -378,6 +383,70 @@ const ninaContextHelper = ({
       }
       removeSubScriptionFromState(subscription.toBase58())
 
+      return {
+        success: true,
+        msg: 'Successfully Unfollowed',
+      }
+    } catch (error) {
+      console.warn(error)
+      return ninaErrorHandler(error)
+    }
+  }
+
+  const subscriptionSubscribeDelegated = async (to, type, hubHandle) => {
+    try {
+      const message = new TextEncoder().encode(provider.wallet.publicKey.toBase58())
+      const messageBase64 = encodeBase64(message)
+      const signature = await provider.wallet.signMessage(message)
+      const signatureBase64 = encodeBase64(signature)
+
+      const params = {
+        to,
+        signature: signatureBase64,
+        message: messageBase64,
+        publicKey: provider.wallet.publicKey.toBase58(),
+        type
+      }
+      if (hubHandle) {
+        params.hubHandle = hubHandle
+      }
+      const request = await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/follow`, params)
+      if (request.data.status === 'success') {
+        await getConfirmTransaction(request.data.txid, provider.connection)
+        await getSubscription(request.data.subscription)
+      }
+      return {
+        success: true,
+        msg: 'Now Following',
+      }
+    } catch (error) {
+      console.warn(error)
+      return ninaErrorHandler(error)
+    }
+  }
+
+  const subscriptionUnsubscribeDelegated = async (to, hubHandle) => {
+    try {
+      const message = new TextEncoder().encode(provider.wallet.publicKey.toBase58())
+      const messageBase64 = encodeBase64(message)
+      const signature = await provider.wallet.signMessage(message)
+      const signatureBase64 = encodeBase64(signature)
+
+      const request = await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/unfollow`, {
+        to,
+        signature: signatureBase64,
+        message: messageBase64,
+        publicKey: provider.wallet.publicKey.toBase58(),
+      })
+
+      if (request.data.status === 'success') {
+        if (hubHandle) {
+          await getSubscriptionsForHub(hubHandle)
+        } else {
+          await getSubscriptionsForUser(provider.wallet.publicKey.toBase58())
+        }
+        removeSubScriptionFromState(request.data.subscription)  
+      }
       return {
         success: true,
         msg: 'Successfully Unfollowed',
@@ -1135,6 +1204,8 @@ const ninaContextHelper = ({
     filterSubscriptionsForHub,
     submitEmailRequest,
     getUsdcToSolSwapData,
+    subscriptionSubscribeDelegated,
+    subscriptionUnsubscribeDelegated,
   }
 }
 
