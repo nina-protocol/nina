@@ -43,9 +43,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } =
     useContext(Audio.Context)
   const { releaseState, getRelease } = useContext(Release.Context)
-  const { getHub, hubState, getHubsForUser, filterHubsForUser } = useContext(
-    Hub.Context
-  )
+  const { getHub, hubState, getHubsForUser } = useContext(Hub.Context)
   const { getAmountHeld } = useContext(Nina.Context)
 
   const [metadata, setMetadata] = useState(metadataSsr || null)
