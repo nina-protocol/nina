@@ -36,7 +36,12 @@ const ReleaseCreateSuccess = (props) => {
           </ReleaseTypography>
           <Typography
             variant="h4"
-            sx={{ maxWidth: '100%', overflow: 'visible', margin: '0 6px', whiteSpace: 'nowrap' }}
+            sx={{
+              maxWidth: '100%',
+              overflow: 'visible',
+              margin: '0 6px',
+              whiteSpace: 'nowrap',
+            }}
           >{`has been created.`}</Typography>
         </DescriptionOverflowContainer>
         <ReleaseSuccessBox>
