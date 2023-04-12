@@ -320,36 +320,6 @@ const Onboard = () => {
     )
   }
 
-  // const SignUpSteps = () => {
-  //   return (
-  //     <Box sx={{ width: '75%' }}>
-  //       <Stepper activeStep={activeStep} orientation="vertical">
-  //         {signUpSteps.map((step, index) => {
-  //           return (
-  //             <Step key={index}>
-  //               <StepLabel>{step.title}</StepLabel>
-  //               <StepContent>
-  //                 <Typography variant="body1" mb={1}>
-  //                   {step.content}
-  //                 </Typography>
-  //                 <Box
-  //                   sx={{
-  //                     display: 'flex',
-  //                     flexDirection: 'column',
-  //                     width: '75%',
-  //                   }}
-  //                 >
-  //                   {step.cta}
-  //                 </Box>
-  //               </StepContent>
-  //             </Step>
-  //           )
-  //         })}
-  //       </Stepper>
-  //     </Box>
-  //   )
-  // }
-
   return (
     <ScrollablePageWrapper>
       <StyledGrid>
