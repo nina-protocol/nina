@@ -372,11 +372,14 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
 }))
 
 const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({
-  overflowWrap: 'anywhere',
+  maxWidth: '330px',
   fontSize: '18px !important',
   lineHeight: '20.7px !important',
   '&::-webkit-scrollbar': {
     display: 'none',
+  },
+  '& pre': {
+    whiteSpace: 'pre-wrap'
   },
   [theme.breakpoints.up('md')]: {
     maxHeight: releaseGates ? '182px' : '256px',
