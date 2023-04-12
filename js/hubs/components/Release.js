@@ -32,7 +32,7 @@ import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { useSnackbar } from 'notistack'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
-
+import { truncateForUi } from '@nina-protocol/nina-internal-sdk/src/utils/truncateManager'
 const Button = dynamic(() => import('@mui/material/Button'))
 const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
 const AddToHubModal = dynamic(() => import('./AddToHubModal'))
@@ -195,15 +195,15 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
 
             <CtaWrapper>
               <OverflowContainer>
-
-              <Typography
-                variant="h3"
-                align="left"
-                sx={{ color: 'text.primary', mr: 1 }}
+                <Typography
+                  variant="h3"
+                  align="left"
+                  sx={{ color: 'text.primary', mr: 1 }}
                 >
-                {metadata.properties.artist} - {metadata.properties.title}
-              </Typography>
-                </OverflowContainer>
+                  {truncateForUi(metadata.properties.artist, 30)} -{' '}
+                  {truncateForUi(metadata.properties.title, 30)}
+                </Typography>
+              </OverflowContainer>
 
               <Box
                 display="flex"

@@ -28,11 +28,16 @@ const ReleaseCreateSuccess = (props) => {
   return (
     <>
       <ReleaseSuccessContainer>
-        <DescriptionOverflowContainer sx={{display: 'flex', flexDirection: 'row'}}>
-        <ReleaseTypography variant="h4" align="left">
-          {`${artist} -`} <i>{`${title}`}</i>
-        </ReleaseTypography>
-        <Typography variant="h4" sx={{maxWidth: '100%', overflow: 'visible', margin: '0 6px'}}>{`has been created.`}</Typography>
+        <DescriptionOverflowContainer
+          sx={{ display: 'flex', flexDirection: 'row' }}
+        >
+          <ReleaseTypography variant="h4" align="left">
+            {`${artist} -`} <i>{`${title}`}</i>
+          </ReleaseTypography>
+          <Typography
+            variant="h4"
+            sx={{ maxWidth: '100%', overflow: 'visible', margin: '0 6px' }}
+          >{`has been created.`}</Typography>
         </DescriptionOverflowContainer>
         <ReleaseSuccessBox>
           <ImageBox>
@@ -130,7 +135,7 @@ const DescriptionOverflowContainer = styled(Box)(() => ({
   display: 'flex',
   ['-webkit-flex-direction']: 'row',
   alignItems: 'center',
-  marginBottom: '16px'
+  marginBottom: '16px',
 }))
 
 export default ReleaseCreateSuccess

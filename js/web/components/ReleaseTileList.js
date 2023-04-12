@@ -11,6 +11,11 @@ import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutli
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
+import {
+  truncateStringToLength,
+  truncateForUi,
+} from '@nina-protocol/nina-internal-sdk/src/utils/truncateManager'
+
 const { getImageFromCDN, loader } = imageManager
 const ReleaseTileList = (props) => {
   const { releases } = props
@@ -21,23 +26,23 @@ const ReleaseTileList = (props) => {
     <TileBox>
       <TileGrid>
         {releases.map((release, i) => {
-          if (
-            (release.metadata.properties.title.length > 20 &&
-              release.metadata.properties.title.indexOf(' ') === -1) ||
-            release.metadata.properties.title.length > 250
-          ) {
-            release.metadata.properties.title =
-              release.metadata.properties.title.substring(0, 30) + '...'
-          }
+          release.metadata.properties.title = truncateForUi(
+            release.metadata.properties.title,
+            30
+          )
+          release.metadata.properties.artist = truncateForUi(
+            release.metadata.properties.artist,
+            30
+          )
 
-          if (
-            (release.metadata.properties.artist.length > 20 &&
-              release.metadata.properties.artist.indexOf(' ') === -1) ||
-            release.metadata.properties.artist.length > 250
-          ) {
-            release.metadata.properties.artist =
-              release.metadata.properties.artist.substring(0, 30) + '...'
-          }
+          // if (
+          //   (release.metadata.properties.artist.length > 20 &&
+          //     release.metadata.properties.artist.indexOf(' ') === -1) ||
+          //   release.metadata.properties.artist.length > 250
+          // ) {
+          //   release.metadata.properties.artist =
+          //     truncateString(release.metadata.properties.artist,30)
+          // }
 
           return (
             <Tile key={i}>

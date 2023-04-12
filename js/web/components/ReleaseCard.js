@@ -14,8 +14,13 @@ import DownloadIcon from '@mui/icons-material/Download'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import axios from 'axios'
 import AddToHubModal from './AddToHubModal.js'
+// import ReleaseSettingsModal from './ReleaseSettingsModal.js'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
-
+import {
+  truncateStringToLength,
+  truncateForUi,
+} from '@nina-protocol/nina-internal-sdk/src/utils/truncateManager'
+// import { truncateForUi } from '@nina-protocol/nina-internal-sdk/src/utils/truncateManager'
 import Link from 'next/link'
 import { useSnackbar } from 'notistack'
 
@@ -47,13 +52,7 @@ const ReleaseCard = (props) => {
 
   const image = useMemo(() => metadata?.image)
   const title = useMemo(() => {
-    if (
-      metadata.properties.title.length > 20 &&
-      metadata.properties.title.indexOf(' ') === -1
-    ) {
-      return metadata.properties.title.substring(0, 20) + '...'
-    }
-    return metadata.properties.title
+    return truncateForUi(metadata.properties.title, 30, 20, 250)
   }, [metadata.properties.title])
 
   const downloadAs = async (url, name) => {
@@ -179,15 +178,9 @@ const ReleaseCard = (props) => {
               </Link>
             </Typography>
             <Typography variant="h4" color="white" align="left">
-              {metadata?.properties?.artist.length > 100
-                ? `${metadata?.properties?.artist.substring(0, 60)}...`
-                : metadata?.properties?.artist || metadata?.artist.length > 100
-                ? `${metadata?.artist.substring(0, 60)}...`
-                : metadata?.artist}{' '}
-              -{' '}
-              <i>
-                {title.length > 100 ? `${title.substring(0, 60)}...` : title}
-              </i>
+              {truncateStringToLength(metadata?.properties?.artist, 100) ||
+                truncateStringToLength(metadata?.artist, 100)}{' '}
+              - <i>{title}</i>
             </Typography>
           </>
         )}
