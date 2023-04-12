@@ -159,11 +159,10 @@ const Onboard = () => {
       content: `You're all set. You can now start uploading your music to Nina.`,
       cta: (
         <Box
-          mt={2}
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            width: '50%',
+            width: '100%',
           }}
         >
           <Link href="/dashboard">
@@ -211,7 +210,7 @@ const Onboard = () => {
           />
           <Box />
           <ClaimCodeButton
-            onClick={() => setActiveStep(4)}
+            onClick={() => setActiveStep(2)}
             sx={{ marginTop: '10px' }}
           >
             Do this Later
@@ -223,30 +222,31 @@ const Onboard = () => {
       title: `Success`,
       content: `You're all set. You can now start uploading your music to Nina.`,
       cta: (
-        <Box
-          mt={2}
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: '50%',
-          }}
-        >
-          <Link href="/dashboard">
-            <ClaimCodeButton sx={{ marginTop: '10px' }}>
-              Go to Dashboard
-            </ClaimCodeButton>
-          </Link>
-          <Link href="/hubs/create">
-            <ClaimCodeButton sx={{ marginTop: '10px' }}>
-              Create a Hub
-            </ClaimCodeButton>
-          </Link>
-          <Link href="/upload">
-            <ClaimCodeButton sx={{ marginTop: '10px' }}>
-              Publish a Track
-            </ClaimCodeButton>
-          </Link>
-        </Box>
+        <>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+            }}
+          >
+            <Link href="/dashboard">
+              <ClaimCodeButton sx={{ marginTop: '10px' }}>
+                Go to Dashboard
+              </ClaimCodeButton>
+            </Link>
+            <Link href="/hubs/create">
+              <ClaimCodeButton sx={{ marginTop: '10px' }}>
+                Create a Hub
+              </ClaimCodeButton>
+            </Link>
+            <Link href="/upload">
+              <ClaimCodeButton sx={{ marginTop: '10px' }}>
+                Publish a Track
+              </ClaimCodeButton>
+            </Link>
+          </Box>
+        </>
       ),
     },
   ]
@@ -320,46 +320,32 @@ const Onboard = () => {
     )
   }
 
-  const SignUpSteps = () => {
-    return (
-      <Box sx={{ width: '75%' }}>
-        <Stepper activeStep={activeStep} orientation="vertical">
-          {signUpSteps.map((step, index) => {
-            return (
-              <Step key={index}>
-                <StepLabel>{step.title}</StepLabel>
-                <StepContent>
-                  <Typography variant="body1" mb={1}>
-                    {step.content}
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      width: '75%',
-                    }}
-                  >
-                    {step.cta}
-                  </Box>
-                </StepContent>
-              </Step>
-            )
-          })}
-        </Stepper>
-      </Box>
-    )
-  }
-
-  // const SuccessfulOnboarding = () => {
+  // const SignUpSteps = () => {
   //   return (
-  //     <Box>
-  //       <Typography variant="h1" mb={1}>
-  //         {`You're all set.`}
-  //       </Typography>
-  //       <Typography variant="h3" mb={1}>
-  //         You can now start uploading your music to Nina.
-  //       </Typography>
-
+  //     <Box sx={{ width: '75%' }}>
+  //       <Stepper activeStep={activeStep} orientation="vertical">
+  //         {signUpSteps.map((step, index) => {
+  //           return (
+  //             <Step key={index}>
+  //               <StepLabel>{step.title}</StepLabel>
+  //               <StepContent>
+  //                 <Typography variant="body1" mb={1}>
+  //                   {step.content}
+  //                 </Typography>
+  //                 <Box
+  //                   sx={{
+  //                     display: 'flex',
+  //                     flexDirection: 'column',
+  //                     width: '75%',
+  //                   }}
+  //                 >
+  //                   {step.cta}
+  //                 </Box>
+  //               </StepContent>
+  //             </Step>
+  //           )
+  //         })}
+  //       </Stepper>
   //     </Box>
   //   )
   // }
@@ -375,18 +361,12 @@ const Onboard = () => {
               </Typography>
               {code !== undefined && (
                 <>
-                  {activeStep < onboardingSteps.length ? (
-                    <>
-                      <Typography variant="h3" mb={1}>
-                        You are receiving complimentary SOL to create your Hub
-                        and start uploading your music. Please follow the steps
-                        below to get started.
-                      </Typography>
-                      {OnboardSteps(onboardingSteps)}
-                    </>
-                  ) : (
-                    <>{SuccessfulOnboarding()}</>
-                  )}
+                  <Typography variant="h3" mb={1}>
+                    You are receiving complimentary SOL to create your Hub and
+                    start uploading your music. Please follow the steps below to
+                    get started.
+                  </Typography>
+                  {OnboardSteps(onboardingSteps)}
                 </>
               )}
 
