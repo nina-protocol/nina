@@ -46,7 +46,6 @@ const WalletButton = ({
   children,
   ...props
 }) => {
-  console.log('children :>> ', children);
   const { wallet } = useContext(Wallet.Context)
   const [anchor, setAnchor] = useState()
 

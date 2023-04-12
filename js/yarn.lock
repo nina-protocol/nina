@@ -12206,7 +12206,7 @@ rehype-parse@^8.0.4:
     parse5 "^6.0.0"
     unified "^10.0.0"
 
-rehype-react@^7.1.1:
+rehype-react@^7.1.1, rehype-react@^7.1.2:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/rehype-react/-/rehype-react-7.1.2.tgz#dc21498f40fafcad1484b28fbeaae2dbe43ddc62"
   integrity sha512-IWsFMS2M4NTbvWzumBBKhdb39ElV+r5YQHA2HafDDRrH84bEryJA2YPPNbF9he4QzAFOssaMJ9buSC6cDcJTLw==

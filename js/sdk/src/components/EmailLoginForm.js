@@ -1,29 +1,38 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import Dots from './Dots'
+import {Typography} from '@mui/material'
 
 export default function EmailForm({
   handleEmailLoginCustom,
-  pending,
   email,
   setEmail,
+  signingUp,
 }) {
   const [placeholder, setPlaceholder] = useState('Enter your email')
+  const [pending, setPending] = useState(false)
+  const buttonText = useMemo(() => {
+    return signingUp ? 'Create' : 'Login'}
+    , [signingUp] ) 
   const handleSubmit = async (e) => {
+    setPending(true)
     e.preventDefault()
     if (!email) {
       setPlaceholder('Please enter valid email')
       return
     }
     await handleEmailLoginCustom(email)
+    setPending(false)
   }
+
+  console.log('pending !!!!!:>> ', pending);
 
   return (
     <LoginWrapper>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={async (e) => await handleSubmit(e)}>
         <TextField
           error={placeholder !== 'Enter your email'}
           type="email"
@@ -34,8 +43,9 @@ export default function EmailForm({
           variant="standard"
           onChange={(e) => setEmail(e.target.value)}
         />
+
         <Button variant="outlined" type="submit">
-          {pending ? <Dots size="30px" /> : 'Login'}
+          {pending ? <Dots size="30px" /> : buttonText}
         </Button>
       </form>
     </LoginWrapper>

@@ -14,6 +14,8 @@ import { Magic } from 'magic-sdk'
 import { SolanaExtension } from '@magic-ext/solana'
 import EmailLoginForm from './EmailLoginForm'
 import EmailOTPForm from './EmailOTPForm'
+import Link from 'next/link'
+
 
 const WalletConnectModal = (props) => {
   const { children, inOnboardingFlow } = props
@@ -24,10 +26,12 @@ const WalletConnectModal = (props) => {
   const [open, setOpen] = useState(false)
   const [signingUp, setSigningUp] = useState(false)
   const [showOtpUI, setShowOtpUI] = useState(false)
-  const [otpLogin, setOtpLogin] = useState()
-  const [showWelcomeModal, setShowWelcomeModal] = useState(false)
+  const [otpLogin, setOtpLogin] = useState(false)
   const [showWallets, setShowWallets] = useState(false)
-  const [pending, setPending] = useState(false)
+  const walletText = useMemo(() => {
+   return signingUp ? 'I want to sign up with a wallet' : 'I want to Login with a wallet'
+  }, [signingUp])
+  // const [pending, setPending] = useState(false)
   const [email, setEmail] = useState()
 
   const handleWalletCollapse = () => {
@@ -35,7 +39,7 @@ const WalletConnectModal = (props) => {
   }
 
   const handleLogin = async (email) => {
-    setPending(true)
+    // setPending(true)
     const magic = new Magic(process.env.MAGIC_KEY, {
       extensions: {
         solana: new SolanaExtension({
@@ -68,14 +72,13 @@ const WalletConnectModal = (props) => {
         .on('settled', () => {
           setOtpLogin()
           setShowOtpUI(false)
-          setShowWelcomeModal(true)
         })
         .catch((err) => {
           console.log('%cError caught during login:\n', 'color: orange')
 
           console.log(err)
         })
-      setPending(false)
+      // setPending(false)
     } catch (err) {
       console.error(err)
     }
@@ -92,7 +95,6 @@ const WalletConnectModal = (props) => {
     event.preventDefault()
     wallet.select(walletName)
     setOpen(false)
-    setShowWelcomeModal(true)
     // show the newb a welcome message
   }
 
@@ -105,6 +107,7 @@ const WalletConnectModal = (props) => {
               wallet.disconnect()
             } else {
               setOpen(true)
+              setSigningUp(true)
             }
           }}
           variant="outlined"
@@ -137,13 +140,12 @@ const WalletConnectModal = (props) => {
         {!wallet?.connected && (
           <>
             {' / '}
-            <Button
-              onClick={() => {
-                setOpen(true)
-                setSigningUp(true)
-              }}
+            <Link
+            href="/getStarted"
+      
               style={{textTransform: 'none'}}
-            >Sign Up</Button>
+            >Sign Up
+            </Link>
           </>)}
     
         </>
@@ -168,7 +170,7 @@ const WalletConnectModal = (props) => {
           <StyledPaper>
             {signingUp && (
               <Box sx={{mb:1}}>
-                <Typography variant='h3' gutterBottom>Welcome to Nina</Typography>
+                {/* <Typography variant='h3' gutterBottom>Booyakasha</Typography> */}
                 <Typography variant='body1'>To get create an account, all you need is an email.</Typography>
               </Box>
             )}
@@ -179,14 +181,15 @@ const WalletConnectModal = (props) => {
                 handleEmailLoginCustom={handleLogin}
                 email={email}
                 setEmail={setEmail}
-                pending={pending}
+                // pending={pending}
+                signingUp={signingUp}
               />
             )}
 
             <Box sx={{ mt: 1 }}>
               <Typography onClick={handleWalletCollapse}>
                 <a style={{ textDecoration: 'underline' }}>
-                  {showWallets ? 'Hide Wallets' : 'I want to login via wallet'}
+                  {showWallets ? 'Hide Wallets' : walletText}
                 </a>
               </Typography>
 

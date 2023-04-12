@@ -17,12 +17,13 @@ import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import StepContent from '@mui/material/StepContent'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import IdentityVerification from '@nina-protocol/nina-internal-sdk/esm/IdentityVerification'
+
 import dynamic from 'next/dynamic'
 
 const BundlrModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/BundlrModal')
 )
-const IdentityVerification = dynamic(() => import('./IdentityVerification'))
 const Onboard = () => {
   const router = useRouter()
   const {
@@ -140,7 +141,7 @@ const Onboard = () => {
         <>
           <IdentityVerification
             verifications={profileVerifications}
-            profilePublicKey={profilePubkey}
+            profilePubkey={profilePubkey}
             inOnboardingFlow={true}
           />
           <Box />
@@ -157,12 +158,12 @@ const Onboard = () => {
 
   const signUpSteps = [
     {
-      title: 'Sign Up',
+      title: 'Create Account',
       content: `To get started, please sign up below.`,
       cta: (
         <>
           <WalletConnectModal inOnboardingFlow={true}>
-            Sign Up
+            Create an Account
           </WalletConnectModal>
         </>
       ),
@@ -175,7 +176,7 @@ const Onboard = () => {
         <>
           <IdentityVerification
             verifications={profileVerifications}
-            profilePublicKey={profilePubkey}
+            profilePubkey={profilePubkey}
             inOnboardingFlow={true}
           />
           <Box />
