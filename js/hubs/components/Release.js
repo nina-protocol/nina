@@ -348,6 +348,9 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
   '&::-webkit-scrollbar': {
     display: 'none',
   },
+  '& pre': {
+    whiteSpace: 'pre-wrap',
+  },
   [theme.breakpoints.up('md')]: {
     maxHeight: '275px',
     overflowY: 'scroll',
