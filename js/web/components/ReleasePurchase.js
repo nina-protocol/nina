@@ -379,7 +379,7 @@ const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({
     display: 'none',
   },
   '& pre': {
-    whiteSpace: 'pre-wrap'
+    whiteSpace: 'pre-wrap',
   },
   [theme.breakpoints.up('md')]: {
     maxHeight: releaseGates ? '182px' : '256px',
