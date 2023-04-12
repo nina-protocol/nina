@@ -180,13 +180,13 @@ const ReleaseCard = (props) => {
             </Typography>
             <Typography variant="h4" color="white" align="left">
               {metadata?.properties?.artist.length > 100
-                ? `${metadata?.properties?.artist.substring(0, 50)}...`
+                ? `${metadata?.properties?.artist.substring(0, 60)}...`
                 : metadata?.properties?.artist || metadata?.artist.length > 100
-                ? `${metadata?.artist.substring(0, 50)}...`
+                ? `${metadata?.artist.substring(0, 60)}...`
                 : metadata?.artist}{' '}
               -{' '}
               <i>
-                {title.length > 100 ? `${title.substring(0, 50)}...` : title}
+                {title.length > 100 ? `${title.substring(0, 60)}...` : title}
               </i>
             </Typography>
           </>
