@@ -8,11 +8,12 @@ import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import IdentityVerification from '@nina-protocol/nina-internal-sdk/esm/IdentityVerification'
+
 import {
   imageManager,
   timeSince,
 } from '@nina-protocol/nina-internal-sdk/src/utils'
-import IdentityVerification from './IdentityVerification'
 import CreateHub from './CreateHub'
 import Balance from './Balance'
 const { getImageFromCDN, loader } = imageManager
@@ -407,7 +408,7 @@ const Profile = ({ profilePubkey }) => {
                     )}
                     <IdentityVerification
                       verifications={profileVerifications}
-                      profilePublicKey={profilePubkey}
+                      pprofilePubkey={profilePubkey}
                     />
                     {inDashboard && <CreateHub />}
                   </Box>

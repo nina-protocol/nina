@@ -25,6 +25,7 @@ const NavBar = () => {
   const { healthOk, getSubscriptionsForUser, getUserBalances } = useContext(
     Nina.Context
   )
+
   const base58 = useMemo(
     () => wallet?.publicKey?.toBase58(),
     [wallet?.publicKey]
@@ -101,14 +102,9 @@ const NavBar = () => {
             {wallet?.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
                 <StyledWalletButton router={router}>
-                  <Typography
-                    variant="subtitle1"
-                    sx={{ textTransform: 'none' }}
-                  >
-                    {wallet?.connected &&
-                      `${wallet.wallet.adapter.name} – ${walletDisplay}`}
-                    {!wallet?.connected && 'Connect Wallet'}
-                  </Typography>
+                  {wallet?.connected &&
+                    `${wallet.wallet.adapter.name} – ${walletDisplay}`}
+                  {!wallet?.connected && 'Login'}
                 </StyledWalletButton>
                 <DevnetIndicator />
               </StyledWalletDialogProvider>

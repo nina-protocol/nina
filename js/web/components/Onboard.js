@@ -17,12 +17,15 @@ import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import StepContent from '@mui/material/StepContent'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import IdentityVerification from '@nina-protocol/nina-internal-sdk/esm/IdentityVerification'
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
+
 import dynamic from 'next/dynamic'
+import { render } from 'react-dom'
 
 const BundlrModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/BundlrModal')
 )
-const IdentityVerification = dynamic(() => import('./IdentityVerification'))
 const Onboard = () => {
   const router = useRouter()
   const {
@@ -33,6 +36,7 @@ const Onboard = () => {
     getSolPrice,
     getUserBalances,
     verificationState,
+    solBalance,
   } = useContext(Nina.Context)
   const { query } = router
   const [code, setCode] = useState()
@@ -74,6 +78,7 @@ const Onboard = () => {
   useEffect(() => {
     if (wallet.connected) {
       setActiveStep(1)
+      getUserBalances()
     }
   }, [wallet.connected])
 
@@ -87,6 +92,21 @@ const Onboard = () => {
       setActiveStep(3)
     }
   }, [bundlrUsdBalance])
+
+  const renderToolTop = (copy, link) => {
+    return (
+      <Box>
+        <Box sx={{ p: 3, border: '1px solid black' }}>
+          <Typography variant="h4" sx={{ color: 'black' }} gutterBottom>
+            You need SOL to {copy}
+          </Typography>
+          <Link href={link}>
+            <a>Learn more.</a>
+          </Link>
+        </Box>
+      </Box>
+    )
+  }
 
   const onboardingSteps = [
     {
@@ -140,7 +160,7 @@ const Onboard = () => {
         <>
           <IdentityVerification
             verifications={profileVerifications}
-            profilePublicKey={profilePubkey}
+            profilePubkey={profilePubkey}
             inOnboardingFlow={true}
           />
           <Box />
@@ -153,16 +173,45 @@ const Onboard = () => {
         </>
       ),
     },
+    {
+      title: `Success`,
+      content: `You're all set. You can now start uploading your music to Nina.`,
+      cta: (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+          }}
+        >
+          <Link href="/dashboard">
+            <ClaimCodeButton sx={{ marginTop: '10px' }}>
+              Go to Dashboard
+            </ClaimCodeButton>
+          </Link>
+          <Link href="/hubs/create">
+            <ClaimCodeButton sx={{ marginTop: '10px' }}>
+              Create a Hub
+            </ClaimCodeButton>
+          </Link>
+          <Link href="/upload">
+            <ClaimCodeButton sx={{ marginTop: '10px' }}>
+              Publish a Track
+            </ClaimCodeButton>
+          </Link>
+        </Box>
+      ),
+    },
   ]
 
   const signUpSteps = [
     {
-      title: 'Sign Up',
+      title: 'Create Account',
       content: `To get started, please sign up below.`,
       cta: (
         <>
           <WalletConnectModal inOnboardingFlow={true}>
-            Sign Up
+            Create an Account
           </WalletConnectModal>
         </>
       ),
@@ -175,16 +224,75 @@ const Onboard = () => {
         <>
           <IdentityVerification
             verifications={profileVerifications}
-            profilePublicKey={profilePubkey}
+            profilePubkey={profilePubkey}
             inOnboardingFlow={true}
           />
           <Box />
           <ClaimCodeButton
-            onClick={() => setActiveStep(4)}
+            onClick={() => setActiveStep(2)}
             sx={{ marginTop: '10px' }}
           >
             Do this Later
           </ClaimCodeButton>
+        </>
+      ),
+    },
+    {
+      title: `Success`,
+      content: `You're all set. You can now start uploading your music to Nina.`,
+      cta: (
+        <>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100%',
+            }}
+          >
+            <Link href="/dashboard">
+              <ClaimCodeButton sx={{ marginTop: '10px' }}>
+                Go to Dashboard
+              </ClaimCodeButton>
+            </Link>
+
+            <HtmlTooltip
+              placement="top"
+              title={
+                solBalance > 0 ? null : renderToolTop('create a Hub', '/learn')
+              }
+            >
+              <Box width={'100%'}>
+                <Link href="/hubs/create">
+                  <ClaimCodeButton
+                    sx={{ marginTop: '10px' }}
+                    disabled={solBalance === 0}
+                  >
+                    Create a Hub
+                  </ClaimCodeButton>
+                </Link>
+              </Box>
+            </HtmlTooltip>
+
+            <HtmlTooltip
+              placement="top"
+              title={
+                solBalance > 0
+                  ? null
+                  : renderToolTop('publish a Track', '/learn')
+              }
+            >
+              <Box width={'100%'}>
+                <Link href="/upload">
+                  <ClaimCodeButton
+                    sx={{ marginTop: '10px' }}
+                    disabled={solBalance === 0}
+                  >
+                    Publish a Track
+                  </ClaimCodeButton>
+                </Link>
+              </Box>
+            </HtmlTooltip>
+          </Box>
         </>
       ),
     },
@@ -229,7 +337,7 @@ const Onboard = () => {
     getSolPrice()
   }
 
-  const OnboardSteps = (steps) => {
+  const renderSteps = (steps) => {
     return (
       <Box sx={{ width: '75%' }}>
         <Stepper activeStep={activeStep} orientation="vertical">
@@ -259,37 +367,7 @@ const Onboard = () => {
     )
   }
 
-  const SignUpSteps = () => {
-    return (
-      <Box sx={{ width: '75%' }}>
-        <Stepper activeStep={activeStep} orientation="vertical">
-          {signUpSteps.map((step, index) => {
-            return (
-              <Step key={index}>
-                <StepLabel>{step.title}</StepLabel>
-                <StepContent>
-                  <Typography variant="body1" mb={1}>
-                    {step.content}
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      width: '75%',
-                    }}
-                  >
-                    {step.cta}
-                  </Box>
-                </StepContent>
-              </Step>
-            )
-          })}
-        </Stepper>
-      </Box>
-    )
-  }
-
-  const SuccessfulOnboarding = () => {
+  const successfulOnboarding = () => {
     return (
       <Box>
         <Typography variant="h1" mb={1}>
@@ -344,10 +422,10 @@ const Onboard = () => {
                         and start uploading your music. Please follow the steps
                         below to get started.
                       </Typography>
-                      {OnboardSteps(onboardingSteps)}
+                      {renderSteps(onboardingSteps)}
                     </>
                   ) : (
-                    <>{SuccessfulOnboarding()}</>
+                    <>{successfulOnboarding()}</>
                   )}
                 </>
               )}
@@ -359,10 +437,10 @@ const Onboard = () => {
                       <Typography variant="h3" mb={1}>
                         Follow the steps below to get started.
                       </Typography>
-                      {OnboardSteps(signUpSteps)}
+                      {renderSteps(signUpSteps)}
                     </>
                   ) : (
-                    <>{SuccessfulOnboarding()}</>
+                    <>{successfulOnboarding()}</>
                   )}
                 </>
               )}
@@ -409,6 +487,22 @@ const ClaimCodeButton = styled(Button)(({ theme }) => ({
   padding: '16px 20px',
   color: theme.palette.black,
   fontSize: '12px',
+  width: '100%',
+}))
+
+const HtmlTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: '#f5f5f9',
+    color: 'rgba(0, 0, 0, 0.87)',
+    maxWidth: '100%',
+    // border: '1px solid #dadde9',
+  },
+  a: {
+    color: theme.palette.blue,
+    fontSize: '18px',
+  },
 }))
 
 export default Onboard
