@@ -18,11 +18,10 @@ import StepLabel from '@mui/material/StepLabel'
 import StepContent from '@mui/material/StepContent'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import IdentityVerification from '@nina-protocol/nina-internal-sdk/esm/IdentityVerification'
-import Tooltip, {TooltipProps, tooltipClasses} from '@mui/material/Tooltip';
-
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
 
 import dynamic from 'next/dynamic'
-import {render} from 'react-dom'
+import { render } from 'react-dom'
 
 const BundlrModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/BundlrModal')
@@ -37,7 +36,7 @@ const Onboard = () => {
     getSolPrice,
     getUserBalances,
     verificationState,
-    solBalance
+    solBalance,
   } = useContext(Nina.Context)
   const { query } = router
   const [code, setCode] = useState()
@@ -97,15 +96,13 @@ const Onboard = () => {
   const renderToolTop = (copy, link) => {
     return (
       <Box>
-        <Box sx={{p: 3, border: '1px solid black'}}>
-          <Typography variant="h4" sx={{color: 'black'}} gutterBottom>
-           You need SOL to {copy}
-           </Typography> 
-           <Link href={link}>
-            <a>
-              Learn more.
-            </a>
-           </Link>
+        <Box sx={{ p: 3, border: '1px solid black' }}>
+          <Typography variant="h4" sx={{ color: 'black' }} gutterBottom>
+            You need SOL to {copy}
+          </Typography>
+          <Link href={link}>
+            <a>Learn more.</a>
+          </Link>
         </Box>
       </Box>
     )
@@ -253,7 +250,7 @@ const Onboard = () => {
             }}
           >
             <Link href="/dashboard">
-              <ClaimCodeButton sx={{ marginTop: '10px' }} >
+              <ClaimCodeButton sx={{ marginTop: '10px' }}>
                 Go to Dashboard
               </ClaimCodeButton>
             </Link>
@@ -261,39 +258,40 @@ const Onboard = () => {
             <HtmlTooltip
               placement="top"
               title={
-                solBalance > 0 ? null : (
-                  renderToolTop('create a Hub', '/learn')
-                )
+                solBalance > 0 ? null : renderToolTop('create a Hub', '/learn')
               }
             >
               <Box width={'100%'}>
                 <Link href="/hubs/create">
-                  <ClaimCodeButton sx={{marginTop: '10px'}} disabled={solBalance === 0} >
+                  <ClaimCodeButton
+                    sx={{ marginTop: '10px' }}
+                    disabled={solBalance === 0}
+                  >
                     Create a Hub
                   </ClaimCodeButton>
                 </Link>
               </Box>
             </HtmlTooltip>
 
-    
             <HtmlTooltip
               placement="top"
               title={
-                solBalance > 0 ? null : (
-                renderToolTop('publish a Track', '/learn')
-                )
+                solBalance > 0
+                  ? null
+                  : renderToolTop('publish a Track', '/learn')
               }
             >
               <Box width={'100%'}>
                 <Link href="/upload">
-                  <ClaimCodeButton sx={{marginTop: '10px'}} disabled={solBalance === 0} >
+                  <ClaimCodeButton
+                    sx={{ marginTop: '10px' }}
+                    disabled={solBalance === 0}
+                  >
                     Publish a Track
                   </ClaimCodeButton>
                 </Link>
               </Box>
             </HtmlTooltip>
-
-            
           </Box>
         </>
       ),
@@ -489,22 +487,22 @@ const ClaimCodeButton = styled(Button)(({ theme }) => ({
   padding: '16px 20px',
   color: theme.palette.black,
   fontSize: '12px',
-  width: '100%'
+  width: '100%',
 }))
 
-const HtmlTooltip = styled(({className, ...props}) => (
-  <Tooltip {...props} classes={{popper: className}} />
-))(({theme}) => ({
+const HtmlTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
     backgroundColor: '#f5f5f9',
     color: 'rgba(0, 0, 0, 0.87)',
     maxWidth: '100%',
     // border: '1px solid #dadde9',
   },
-  'a':{
+  a: {
     color: theme.palette.blue,
-    fontSize: '18px'
-  }
-}));
+    fontSize: '18px',
+  },
+}))
 
 export default Onboard
