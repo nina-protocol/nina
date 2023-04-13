@@ -28,7 +28,11 @@ import {
   faEthereum,
 } from '@fortawesome/free-brands-svg-icons'
 
-const IdentityVerification = ({ verifications, profilePublicKey }) => {
+const IdentityVerification = ({
+  verifications,
+  profilePublicKey,
+  inOnboardingFlow,
+}) => {
   const web3 = new Web3(process.env.ETH_CLUSTER_URL)
   const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
@@ -303,23 +307,30 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   }
   return (
     <>
-      <CtaWrapper>
+      <CtaWrapper inOnboardingFlow={inOnboardingFlow}>
         {buttonTypes &&
-          buttonTypes.map((buttonType, index) => {
-            return (
-              <Button
-                onClick={() => handleIdentityButtonAction(buttonType)}
-                key={index}
-              >
-                <Box display="flex" alignItems="center">
-                  {logos[buttonType]}{' '}
-                  <Typography ml={1} variant="body2">
-                    {buttonTextForType(buttonType)}
-                  </Typography>
-                </Box>
-              </Button>
-            )
-          })}
+          buttonTypes
+            .slice(0, inOnboardingFlow ? 2 : buttonTypes.length)
+            .map((buttonType, index) => {
+              return (
+                <StyledCta
+                  onClick={() => handleIdentityButtonAction(buttonType)}
+                  key={index}
+                  inOnboardingFlow={inOnboardingFlow}
+                >
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    padding={inOnboardingFlow ? '8px' : ''}
+                  >
+                    {logos[buttonType]}{' '}
+                    <Typography ml={1} variant="body2">
+                      {buttonTextForType(buttonType)}
+                    </Typography>
+                  </Box>
+                </StyledCta>
+              )
+            })}
       </CtaWrapper>
       {activeValue && (
         <Box>
@@ -336,12 +347,12 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   )
 }
 
-const CtaWrapper = styled(Box)(({ theme }) => ({
+const CtaWrapper = styled(Box)(({ theme, inOnboardingFlow }) => ({
   '& button': {
     color: 'black',
     border: '1px solid black',
     borderRadius: '0px',
-    margin: '0 8px',
+    margin: inOnboardingFlow ? '10px 0 0 0' : '0 8px',
     [theme.breakpoints.down('md')]: {
       border: 'none',
       margin: '0px',
@@ -357,6 +368,12 @@ const CtaWrapper = styled(Box)(({ theme }) => ({
       },
     },
   },
+}))
+
+const StyledCta = styled(Button)(({ inOnboardingFlow }) => ({
+  width: inOnboardingFlow ? '100%' : '',
+  // margin: inOnboardingFlow ? '10px 0px 0px 0px' : '0px',
+  // padding: inOnboardingFlow ? '10px' : '10px 10px 10px 0px',
 }))
 
 export default IdentityVerification

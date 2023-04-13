@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
 
 export default function EmailForm({ handleEmailLoginCustom }) {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('')
 
   function handleSubmit(e) {
-    e.preventDefault();
-    handleEmailLoginCustom(email);
+    e.preventDefault()
+    handleEmailLoginCustom(email)
   }
 
   return (
@@ -20,5 +20,5 @@ export default function EmailForm({ handleEmailLoginCustom }) {
       />
       <button type="submit">Login</button>
     </form>
-  );
+  )
 }

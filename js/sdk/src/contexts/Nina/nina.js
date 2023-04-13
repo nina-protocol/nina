@@ -113,6 +113,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     shouldRemainInCollectionAfterSale,
     getAmountHeld,
     getUserBalances,
+    getSolBalanceForPublicKey,
     getNpcAmountHeld,
     bundlrFund,
     bundlrWithdraw,
@@ -185,6 +186,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         shouldRemainInCollectionAfterSale,
         getAmountHeld,
         getUserBalances,
+        getSolBalanceForPublicKey,
         usdcBalance,
         getNpcAmountHeld,
         npcAmountHeld,
@@ -227,7 +229,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         MAX_AUDIO_FILE_UPLOAD_SIZE,
         MAX_IMAGE_FILE_UPLOAD_SIZE,
         subscriptionSubscribeDelegated,
-        subscriptionUnsubscribeDelegated,    
+        subscriptionUnsubscribeDelegated,
       }}
     >
       {children}
@@ -395,7 +397,9 @@ const ninaContextHelper = ({
 
   const subscriptionSubscribeDelegated = async (to, type, hubHandle) => {
     try {
-      const message = new TextEncoder().encode(provider.wallet.publicKey.toBase58())
+      const message = new TextEncoder().encode(
+        provider.wallet.publicKey.toBase58()
+      )
       const messageBase64 = encodeBase64(message)
       const signature = await provider.wallet.signMessage(message)
       const signatureBase64 = encodeBase64(signature)
@@ -405,12 +409,15 @@ const ninaContextHelper = ({
         signature: signatureBase64,
         message: messageBase64,
         publicKey: provider.wallet.publicKey.toBase58(),
-        type
+        type,
       }
       if (hubHandle) {
         params.hubHandle = hubHandle
       }
-      const request = await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/follow`, params)
+      const request = await axios.post(
+        `${process.env.NINA_IDENTITY_ENDPOINT}/follow`,
+        params
+      )
       if (request.data.status === 'success') {
         await getConfirmTransaction(request.data.txid, provider.connection)
         await getSubscription(request.data.subscription)
@@ -427,17 +434,22 @@ const ninaContextHelper = ({
 
   const subscriptionUnsubscribeDelegated = async (to, hubHandle) => {
     try {
-      const message = new TextEncoder().encode(provider.wallet.publicKey.toBase58())
+      const message = new TextEncoder().encode(
+        provider.wallet.publicKey.toBase58()
+      )
       const messageBase64 = encodeBase64(message)
       const signature = await provider.wallet.signMessage(message)
       const signatureBase64 = encodeBase64(signature)
 
-      const request = await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/unfollow`, {
-        to,
-        signature: signatureBase64,
-        message: messageBase64,
-        publicKey: provider.wallet.publicKey.toBase58(),
-      })
+      const request = await axios.post(
+        `${process.env.NINA_IDENTITY_ENDPOINT}/unfollow`,
+        {
+          to,
+          signature: signatureBase64,
+          message: messageBase64,
+          publicKey: provider.wallet.publicKey.toBase58(),
+        }
+      )
 
       if (request.data.status === 'success') {
         if (hubHandle) {
@@ -445,7 +457,7 @@ const ninaContextHelper = ({
         } else {
           await getSubscriptionsForUser(provider.wallet.publicKey.toBase58())
         }
-        removeSubScriptionFromState(request.data.subscription)  
+        removeSubScriptionFromState(request.data.subscription)
       }
       return {
         success: true,
@@ -701,6 +713,13 @@ const ninaContextHelper = ({
     return solUsdcBalanceResult
   }
 
+  const getSolBalanceForPublicKey = async (publicKey) => {
+    let solUsdcBalanceResult = await provider.connection.getBalance(
+      new anchor.web3.PublicKey(publicKey)
+    )
+    return ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol)
+  }
+
   const getUserBalances = async () => {
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
@@ -938,7 +957,7 @@ const ninaContextHelper = ({
         const bundlrInstance = new module.WebBundlr(
           bundlrHttpAddress,
           'solana',
-          provider.wallet.wallet.adapter,
+          provider.wallet,
           {
             providerUrl: process.env.SOLANA_CLUSTER_URL_BUNDLR,
             timeout: 1000000000000000,
@@ -1185,6 +1204,7 @@ const ninaContextHelper = ({
     shouldRemainInCollectionAfterSale,
     getAmountHeld,
     getUserBalances,
+    getSolBalanceForPublicKey,
     getNpcAmountHeld,
     bundlrFund,
     bundlrWithdraw,
