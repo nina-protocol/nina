@@ -116,7 +116,7 @@ const WalletConnectModal = (props) => {
           {children}
         </StyledButton>
       ) : (
-        <Box display="flex">
+        <Box>
           <Button
             onClick={() => {
               if (wallet?.connected) {
@@ -137,21 +137,18 @@ const WalletConnectModal = (props) => {
           </Button>
         {!wallet?.connected && (
           
-          <>{' '}
-            <Typography variant="subtitle1" >
+          <>
               {' / '}
-            </Typography>
-            {' '}
             <Link
             href="/getStarted"
-      
             style={{textTransform: 'none'}}
             >
-              <Typography variant="subtitle1" component={'a'}
+              <StyledLink variant="subtitle1"
+                component={'a'}
                 style={{fontSize: '10px !important'}}
               >
-                Sign Up
-              </Typography>
+                {' '}Sign Up
+              </StyledLink>
             </Link>
           </>
           )}
@@ -178,7 +175,7 @@ const WalletConnectModal = (props) => {
           <StyledPaper>
             {signingUp && (
               <Box sx={{mb:1}}>
-                <Typography variant='body1'>To get create an account, all you need is an email.</Typography>
+                <Typography variant='body1'>To create an account, all you need is an email.</Typography>
               </Box>
             )}
             {showOtpUI ? (
@@ -258,5 +255,9 @@ const StyledButton = styled(Button)(({ theme }) => ({
   width: '100%',
   fontSize: '12px',
 }))
+
+const StyledLink = styled(Typography)(({ theme }) => ({
+  color: `${theme.palette.blue} !important`,
+})) 
 
 export default WalletConnectModal
