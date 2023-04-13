@@ -265,7 +265,7 @@ const Onboard = () => {
               placement="top"
               title={
                 solBalance > 0 ? null : (
-                  renderToolTop('create a hub', '/learn')
+                  renderToolTop('create a Hub', '/learn')
                 )
               }
             >
@@ -283,7 +283,7 @@ const Onboard = () => {
               placement="top"
               title={
                 solBalance > 0 ? null : (
-                renderToolTop('publish a track', '/learn')
+                renderToolTop('publish a Track', '/learn')
                 )
               }
             >
