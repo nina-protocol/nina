@@ -11,24 +11,21 @@ export default function EmailForm({
   email,
   setEmail,
   signingUp,
-  pending, 
-  setPending
 }) {
   const [placeholder, setPlaceholder] = useState('Enter your email')
-  // const [pending, setPending] = useState(false)
+  const [pending, setPending] = useState(false)
   const buttonText = useMemo(() => {
     return signingUp ? 'Create Account' : 'Login'}
     , [signingUp] ) 
   const handleSubmit = async (e) => {
-    // setPending(true)
-    console.log('pending 22222:>> ', pending);
+    setPending(true)
     e.preventDefault()
     if (!email) {
       setPlaceholder('Please enter valid email')
       return
     }
     await handleEmailLoginCustom(email)
-    // setPending(false)
+    setPending(false)
   }
 
   console.log('pending !!!!!:>> ', pending);
