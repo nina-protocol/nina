@@ -26,8 +26,9 @@ const WalletConnectModal = (props) => {
   const [open, setOpen] = useState(false)
   const [signingUp, setSigningUp] = useState(false)
   const [showOtpUI, setShowOtpUI] = useState(false)
-  const [otpLogin, setOtpLogin] = useState(false)
+  const [otpLogin, setOtpLogin] = useState(undefined)
   const [showWallets, setShowWallets] = useState(false)
+  const [pending, setPending] = useState(false)
   const walletText = useMemo(() => {
    return signingUp ? 'I want to sign up with a wallet' : 'I want to Login with a wallet'
   }, [signingUp])
@@ -78,6 +79,7 @@ const WalletConnectModal = (props) => {
 
           console.log(err)
         })
+        // setPending(false) 
     } catch (err) {
       console.error(err)
     }
@@ -184,6 +186,8 @@ const WalletConnectModal = (props) => {
                 email={email}
                 setEmail={setEmail}
                 signingUp={signingUp}
+                pending={pending}
+                setPending={setPending}
               />
             )}
 
