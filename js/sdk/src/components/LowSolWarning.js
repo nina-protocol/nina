@@ -1,13 +1,28 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
-const LowSolWarning = ({ requiredSol, formattedSolBalance }) => {
+const LowSolWarning = ({ requiredSol, formattedSolBalance, action }) => {
+  const [actionText, setActionText] = useState('')
+  useEffect(() => {
+    switch (action){
+      case 'publish':
+        return setActionText('upload a Release')
+      case 'hub':
+        return setActionText('create a Hub')
+      case 'purchase':
+        return setActionText('purchase this Release')
+      default: 
+        break
+    }
+  }, [action, actionText])
+  console.log('action', action)
+  console.log('actionText', actionText)
   return (
     <LowSolBox>
       <Typography variant="h5" component="h2" sx={{ paddingBottom: '16px' }}>
-        You do not have enough SOL in your wallet to upload a Release
+       {` You do not have enough SOL in your wallet to ${actionText}.`}
       </Typography>
       <ModalTypography variant="h3" component="p" gutterBottom>
         {`${requiredSol} SOL is required to upload a Release.`}
@@ -17,7 +32,7 @@ const LowSolWarning = ({ requiredSol, formattedSolBalance }) => {
             SOL in your wallet.`}
       </ModalTypography>
       <ModalTypography variant="h3" component="p" gutterBottom>
-        {`Please add more SOL to your wallet to upload a Release.`}
+        {`Please add more SOL to your wallet to ${actionText}.`}
       </ModalTypography>
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
         <ModalTypography variant="h3" component="p" gutterBottom>
