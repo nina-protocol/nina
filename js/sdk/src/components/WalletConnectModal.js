@@ -20,8 +20,8 @@ const WalletConnectModal = (props) => {
   )
 
   const [open, setOpen] = useState(false)
-  const [showOtpUI, setShowOtpUI] = useState(false);
-  const [otpLogin, setOtpLogin] = useState();
+  const [showOtpUI, setShowOtpUI] = useState(false)
+  const [otpLogin, setOtpLogin] = useState()
 
   const handleLogin = async (email) => {
     const magic = new Magic(process.env.MAGIC_KEY, {
@@ -31,42 +31,42 @@ const WalletConnectModal = (props) => {
         }),
       },
     })
-  
+
     console.log('bruh email', email, magic)
     try {
-      setOtpLogin();
-      const otpLogin = magic.auth.loginWithEmailOTP({ email, showUI: false });
+      setOtpLogin()
+      const otpLogin = magic.auth.loginWithEmailOTP({ email, showUI: false })
       console.log('otpLogin', otpLogin)
       otpLogin
         .on('invalid-email-otp', () => {
-          console.log('invalid email OTP');
+          console.log('invalid email OTP')
         })
         .on('verify-email-otp', (otp) => {
-          console.log('verify email OTP', otp);
+          console.log('verify email OTP', otp)
         })
-        .on("email-otp-sent", () => {
-          console.log("on email OTP sent!");
+        .on('email-otp-sent', () => {
+          console.log('on email OTP sent!')
 
-          setOtpLogin(otpLogin);
-          setShowOtpUI(true);
+          setOtpLogin(otpLogin)
+          setShowOtpUI(true)
         })
-        .on("done", (result) => {
-          connectMagicWallet(magic);
+        .on('done', (result) => {
+          connectMagicWallet(magic)
 
-          console.log(`DID Token: %c${result}`, "color: orange");
+          console.log(`DID Token: %c${result}`, 'color: orange')
         })
-        .on("settled", () => {
-          setOtpLogin();
-          setShowOtpUI(false);
+        .on('settled', () => {
+          setOtpLogin()
+          setShowOtpUI(false)
         })
         .catch((err) => {
-          console.log("%cError caught during login:\n", "color: orange");
+          console.log('%cError caught during login:\n', 'color: orange')
 
-          console.log(err);
-        });
+          console.log(err)
+        })
       console.log('beep')
     } catch (err) {
-      console.error(err);
+      console.error(err)
     }
   }
 

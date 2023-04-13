@@ -4,9 +4,6 @@ import {
   useConnection,
 } from '@solana/wallet-adapter-react'
 import * as anchor from '@project-serum/anchor'
-import tweetnaclUtil from 'tweetnacl-util'
-
-const { decodeBase64 } = tweetnaclUtil
 
 const WalletContext = createContext()
 const WalletContextProvider = ({ children }) => {
