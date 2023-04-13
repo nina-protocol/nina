@@ -553,7 +553,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         </ConnectMessage>
       )}
 
-      {wallet?.connected &&
+      {/* {wallet?.connected &&
         solBalanceFetched &&
         !hubPubkey &&
         npcAmountHeld === 0 &&
@@ -581,7 +581,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
               </Typography>
             </NpcMessage>
           </Box>
-        )}
+        )} */}
       {releaseCreated && (
         <ReleaseCreateSuccess
           releasePubkey={releasePubkey}
@@ -604,7 +604,8 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
       {wallet?.connected &&
         !releaseCreated &&
         solBalanceFetched &&
-        (npcAmountHeld >= 1 || profileHubs?.length > 0 || hubPubkey) && (
+        // (npcAmountHeld >= 1 || profileHubs?.length > 0 || hubPubkey) && 
+        (
           <>
             <UploadInfoModal
               userHasSeenUpdateMessage={localStorage.getItem(
@@ -777,6 +778,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                 <LowSolWarning
                   requiredSol={releaseCreateFee}
                   formattedSolBalance={formattedSolBalance}
+                  action={'publish'}
                 />
               </NinaBox>
             )}

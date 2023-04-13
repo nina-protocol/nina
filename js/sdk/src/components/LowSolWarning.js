@@ -17,8 +17,6 @@ const LowSolWarning = ({ requiredSol, formattedSolBalance, action }) => {
         break
     }
   }, [action, actionText])
-  console.log('action', action)
-  console.log('actionText', actionText)
   return (
     <LowSolBox>
       <Typography variant="h5" component="h2" sx={{ paddingBottom: '16px' }}>
