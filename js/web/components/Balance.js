@@ -2,14 +2,24 @@ import React, { useContext, useEffect, useState } from 'react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { Box, Typography } from '@mui/material'
 import { styled } from '@mui/system'
-
+import SwapModal from '@nina-protocol/nina-internal-sdk/esm/SwapModal'
 const Balance = ({ profilePublishedReleases }) => {
-  const { ninaClient, solBalance, usdcBalance } = useContext(Nina.Context)
+  const { ninaClient, solBalance, usdcBalance, getUserBalances } = useContext(Nina.Context)
   const [revenueSumForArtist, setRevenueSumForArtist] = useState(0)
+  const [userSolBalance, setUserSolBalance] = useState(0)
+  const [userUsdcBalance, setUserUsdcBalance] = useState(0)
 
   useEffect(() => {
     fetchRevenueSumForArtist()
   }, [profilePublishedReleases, revenueSumForArtist])
+
+  useEffect(() => {
+    setUserSolBalance(ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol).toFixed(4))
+  }, [solBalance])
+
+  useEffect(() => {
+    setUserUsdcBalance(usdcBalance)
+  }, [usdcBalance])
 
   const fetchRevenueSumForArtist = () => {
     let revenueSum = 0
@@ -17,6 +27,13 @@ const Balance = ({ profilePublishedReleases }) => {
       revenueSum += release.recipient.owed
     })
     setRevenueSumForArtist(revenueSum)
+  }
+
+  const refreshBalances = async () => {
+    const yo = await getUserBalances()
+    console.log('yo', yo)
+    setUserSolBalance(sol)
+    setUserUsdcBalance(usdc)
   }
 
   return (
@@ -28,13 +45,11 @@ const Balance = ({ profilePublishedReleases }) => {
       </BalanceWrapper>
       <BalanceWrapper>
         <Typography variant="body2">
-          {`sol: ${ninaClient
-            .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
-            .toFixed(2)}`}
+          {`sol: ${userSolBalance}`}
         </Typography>
       </BalanceWrapper>
       <BalanceWrapper>
-        <Typography variant="body2">{`usdc: $${usdcBalance}`}</Typography>
+        <Typography variant="body2">{`usdc: $${userUsdcBalance}`}</Typography>
       </BalanceWrapper>
       {revenueSumForArtist > 0 && (
         <BalanceWrapper>
@@ -43,6 +58,7 @@ const Balance = ({ profilePublishedReleases }) => {
             .toFixed(2)}`}</Typography>
         </BalanceWrapper>
       )}
+      <SwapModal refreshBalances={refreshBalances} />
     </Box>
   )
 }
