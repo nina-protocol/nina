@@ -43,6 +43,7 @@ pub mod subscription_subscribe_account_delegated;
 pub mod subscription_subscribe_hub;
 pub mod subscription_subscribe_hub_delegated;
 pub mod subscription_unsubscribe;
+pub mod subscription_unsubscribe_delegated;
 
 pub use release_init::*;
 pub use release_init_with_credit::*;
@@ -89,3 +90,4 @@ pub use subscription_subscribe_account_delegated::*;
 pub use subscription_subscribe_hub::*;
 pub use subscription_subscribe_hub_delegated::*;
 pub use subscription_unsubscribe::*;
+pub use subscription_unsubscribe_delegated::*;

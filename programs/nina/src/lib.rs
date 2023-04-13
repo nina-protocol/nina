@@ -311,4 +311,10 @@ pub mod nina {
     ) -> Result <()> {
         instructions::subscription_unsubscribe::handler(ctx)
     }
+
+    pub fn subscription_unsubscribe_delegated(
+        ctx: Context<SubscriptionUnsubscribeDelegated>
+    ) -> Result <()> {
+        instructions::subscription_unsubscribe_delegated::handler(ctx)
+    }
 }

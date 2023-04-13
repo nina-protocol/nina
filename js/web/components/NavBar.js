@@ -3,8 +3,6 @@ import { configureScope } from '@sentry/nextjs'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import Tooltip from '@mui/material/Tooltip'
-import Button from '@mui/material/Button'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
@@ -12,17 +10,11 @@ import NavDrawer from './NavDrawer'
 import { withFormik } from 'formik'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import {
-  WalletDialogProvider,
-  WalletMultiButton,
-} from '@solana/wallet-adapter-material-ui'
 import Breadcrumbs from './Breadcrumbs'
 import NavSearch from './NavSearch'
 import SearchIcon from '@mui/icons-material/Search'
-import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 import DevnetIndicator from '@nina-protocol/nina-internal-sdk/esm/DevnetIndicator'
 import PendingReleasesIndicator from '@nina-protocol/nina-internal-sdk/esm/PendingReleasesIndicator'
-import WalletConnectModal from '@nina-protocol/nina-internal-sdk/esm/WalletConnectModal'
 import FeedDrawer from './FeedDrawer'
 import WalletButton from '@nina-protocol/nina-internal-sdk/esm/WalletButton'
 
@@ -75,7 +67,11 @@ const NavBar = () => {
       <Logo>
         <Link href="/" passHref>
           <a>
-            <Typography variant="h4">NINA</Typography>
+            <object
+              style={{ pointerEvents: 'none' }}
+              data="/images/Nina-Wordmark-Black.svg"
+              height="20px"
+            />
           </a>
         </Link>
       </Logo>
