@@ -197,7 +197,7 @@ const Onboard = () => {
           </Link>
           <Link href="/hubs/create">
             <ClaimCodeButton sx={{ marginTop: '10px' }}>
-              Create a Hub !
+              Create a Hub
             </ClaimCodeButton>
           </Link>
           <Link href="/upload">
@@ -272,7 +272,7 @@ const Onboard = () => {
               <Box width={'100%'}>
                 <Link href="/hubs/create">
                   <ClaimCodeButton sx={{marginTop: '10px'}} disabled={solBalance === 0} >
-                    Create a hub w tip
+                    Create a Hub 
                   </ClaimCodeButton>
                 </Link>
               </Box>
