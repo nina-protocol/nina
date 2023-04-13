@@ -47,8 +47,6 @@ export default function EmailOTP({ login, email }) {
   }
 
   const autoSubmit = async (value, login) => {
-    console.log('value !:>> ', value)
-    console.log('login !:>> ', login)
     setDisabled(true)
     setRetries((r) => r - 1)
     // setPasscode("");
@@ -78,12 +76,8 @@ export default function EmailOTP({ login, email }) {
   }
 
   const handleChange = (value) => {
-    console.log('value :>> ', value)
     const trimmedValue = value.replace(/\s/g, '')
-    console.log('trimmedValue :>> ', trimmedValue)
-
     setPasscode(trimmedValue)
-    console.log('passcode :>> ', passcode)
   }
 
   const handleCancel = () => {

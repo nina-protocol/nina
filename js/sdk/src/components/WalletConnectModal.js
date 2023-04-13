@@ -31,7 +31,6 @@ const WalletConnectModal = (props) => {
   const walletText = useMemo(() => {
    return signingUp ? 'I want to sign up with a wallet' : 'I want to Login with a wallet'
   }, [signingUp])
-  // const [pending, setPending] = useState(false)
   const [email, setEmail] = useState()
 
   const handleWalletCollapse = () => {
@@ -39,7 +38,6 @@ const WalletConnectModal = (props) => {
   }
 
   const handleLogin = async (email) => {
-    // setPending(true)
     const magic = new Magic(process.env.MAGIC_KEY, {
       extensions: {
         solana: new SolanaExtension({
@@ -78,7 +76,6 @@ const WalletConnectModal = (props) => {
 
           console.log(err)
         })
-      // setPending(false)
     } catch (err) {
       console.error(err)
     }
@@ -95,7 +92,6 @@ const WalletConnectModal = (props) => {
     event.preventDefault()
     wallet.select(walletName)
     setOpen(false)
-    // show the newb a welcome message
   }
 
   return (
