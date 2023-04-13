@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState, useMemo } from 'react'
+import React, { useEffect, useContext, useState, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
@@ -28,12 +28,8 @@ import {
   faEthereum,
 } from '@fortawesome/free-brands-svg-icons'
 
-const IdentityVerification = ({
-  verifications,
-  profilePublicKey,
-  inOnboardingFlow,
-}) => {
-  const web3 = new Web3(process.env.ETH_CLUSTER_URL)
+const IdentityVerification = ({verifications, profilePubkey, inOnboardingFlow }) => {
+ 
   const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
   const { wallet } = useContext(Wallet.Context)
@@ -58,6 +54,7 @@ const IdentityVerification = ({
   const [action, setAction] = useState(undefined)
   const [activeType, setActiveType] = useState(undefined)
   const [activeValue, setActiveValue] = useState(undefined)
+
 
   const logos = {
     soundcloud: (
@@ -117,7 +114,7 @@ const IdentityVerification = ({
 
   const buttonTypes = useMemo(() => {
     const buttonArray = []
-    if (publicKey?.toBase58() === profilePublicKey) {
+    if (publicKey?.toBase58() === profilePubkey) {
       buttonArray.push('twitter', 'soundcloud', 'ethereum')
     } else {
       verifications.forEach((verification) => {
@@ -238,7 +235,7 @@ const IdentityVerification = ({
           signTransaction,
           soundcloudToken
         )
-        await getVerificationsForUser(profilePublicKey)
+        await getVerificationsForUser(profilePubkey)
         break
       case 'twitter':
         await verifyTwitter(
@@ -248,7 +245,7 @@ const IdentityVerification = ({
           publicKey,
           signTransaction
         )
-        await getVerificationsForUser(profilePublicKey)
+        await getVerificationsForUser(profilePubkey)
         break
       case 'instagram':
         await verifyInstagram(
@@ -259,11 +256,11 @@ const IdentityVerification = ({
           signTransaction,
           instagramToken
         )
-        await getVerificationsForUser(profilePublicKey)
+        await getVerificationsForUser(profilePubkey)
         break
       case 'ethereum':
         await verifyEthereum(provider, ethAddress, publicKey, signTransaction)
-        await getVerificationsForUser(profilePublicKey)
+        await getVerificationsForUser(profilePubkey)
         break
     }
   }
