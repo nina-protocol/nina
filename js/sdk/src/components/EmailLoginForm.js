@@ -19,6 +19,7 @@ export default function EmailForm({
   const buttonText = useMemo(() => {
     return signingUp ? 'Create Account' : 'Login'}
     , [signingUp] ) 
+    
   const handleSubmit = async (e) => {
     // setPending(true)
     console.log('pending 22222:>> ', pending);

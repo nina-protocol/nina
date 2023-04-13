@@ -6,12 +6,13 @@ import { styled } from '@mui/material/styles'
 import { Typography } from '@mui/material'
 import Dots from './Dots'
 
-export default function EmailOTP({ login, email }) {
+export default function EmailOTP({ login, email, setPending, pending }) {
   const [passcode, setPasscode] = useState('')
   const [retries, setRetries] = useState(2)
   const [message, setMessage] = useState()
   const [disabled, setDisabled] = useState(false)
-  const [pending, setPending] = useState(false)
+
+  console.log('pending in OTP:>> ', pending);
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -47,6 +48,7 @@ export default function EmailOTP({ login, email }) {
   }
 
   const autoSubmit = async (value, login) => {
+    setPending(true)
     setDisabled(true)
     setRetries((r) => r - 1)
     // setPasscode("");

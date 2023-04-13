@@ -63,6 +63,7 @@ const WalletConnectModal = (props) => {
 
           setOtpLogin(otpLogin)
           setShowOtpUI(true)
+          setPending(false)
         })
         .on('done', (result) => {
           connectMagicWallet(magic)
@@ -72,14 +73,13 @@ const WalletConnectModal = (props) => {
         .on('settled', () => {
           setOtpLogin()
           setShowOtpUI(false)
-          setOpen(false)
+          // setOpen(false)
         })
         .catch((err) => {
           console.log('%cError caught during login:\n', 'color: orange')
 
           console.log(err)
         })
-        // setPending(false) 
     } catch (err) {
       console.error(err)
     }
@@ -179,7 +179,7 @@ const WalletConnectModal = (props) => {
               </Box>
             )}
             {showOtpUI ? (
-              <EmailOTPForm login={otpLogin} email={email} />
+              <EmailOTPForm login={otpLogin} email={email} pending={pending} setPending={setPending} />
             ) : (
               <EmailLoginForm
                 handleEmailLoginCustom={handleLogin}
