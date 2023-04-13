@@ -12,6 +12,7 @@ const BundlrModal = ({
   handleLowUploadModalClose,
   uploadSize,
   availableSol,
+  inOnboardFlow,
 }) => {
   const [open, setOpen] = useState(false)
 
@@ -31,7 +32,7 @@ const BundlrModal = ({
   const renderCtas = () => {
     return (
       <>
-        {!inCreate && displaySmall && (
+        {!inCreate && !inOnboardFlow && displaySmall && (
           <StyledSmallToggle
             align={'right'}
             variant="subtitle1"
@@ -41,7 +42,7 @@ const BundlrModal = ({
             Manage Upload Account
           </StyledSmallToggle>
         )}
-        {!inCreate && !displaySmall && (
+        {!inCreate && !inOnboardFlow && !displaySmall && (
           <Button
             variant="contained"
             color="primary"
@@ -53,7 +54,12 @@ const BundlrModal = ({
             </Typography>
           </Button>
         )}
-        {inCreate && (
+        {inOnboardFlow && (
+          <StyledButton variant="outlined" onClick={() => setOpen(true)}>
+            Manage Upload Account
+          </StyledButton>
+        )}
+        {inCreate && !inOnboardFlow && (
           <Button
             variant="outlined"
             color="primary"
@@ -102,6 +108,15 @@ const StyledSmallToggle = styled(Typography)(() => ({
   '&:hover': {
     opacity: '50%',
   },
+}))
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  border: `1px solid ${theme.palette.black}`,
+  borderRadius: '0px',
+  padding: '16px 20px',
+  color: theme.palette.black,
+  width: '100%',
+  fontSize: '12px',
 }))
 
 export default BundlrModal

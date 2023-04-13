@@ -1615,23 +1615,27 @@ const releaseContextHelper = ({
   }
 
   const fetchGatesForRelease = async (releasePubkey) => {
-    const { gates } = (
-      await axios.get(
-        `${process.env.NINA_GATE_URL}/releases/${releasePubkey}/gates`
-      )
-    ).data
-    if (gates.length > 0) {
-      setGatesState((prevState) => ({
-        ...prevState,
-        [releasePubkey]: gates,
-      }))
-    } else {
-      const prevState = { ...gatesState }
-      delete prevState[releasePubkey]
-      setGatesState(prevState)
-    }
+    try {
+      const { gates } = (
+        await axios.get(
+          `${process.env.NINA_GATE_URL}/releases/${releasePubkey}/gates`
+        )
+      ).data
+      if (gates.length > 0) {
+        setGatesState((prevState) => ({
+          ...prevState,
+          [releasePubkey]: gates,
+        }))
+      } else {
+        const prevState = { ...gatesState }
+        delete prevState[releasePubkey]
+        setGatesState(prevState)
+      }
 
-    return gates
+      return gates
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   /*
