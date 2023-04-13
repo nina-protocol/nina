@@ -15,7 +15,7 @@ export default function EmailForm({
   const [placeholder, setPlaceholder] = useState('Enter your email')
   const [pending, setPending] = useState(false)
   const buttonText = useMemo(() => {
-    return signingUp ? 'Create' : 'Login'}
+    return signingUp ? 'Create Account' : 'Login'}
     , [signingUp] ) 
   const handleSubmit = async (e) => {
     setPending(true)

@@ -114,7 +114,6 @@ const IdentityVerification = ({verifications, profilePubkey, inOnboardingFlow })
 
   const buttonTypes = useMemo(() => {
     const buttonArray = []
-    console.log('verifications !!!!!:>> ', verifications);
     console.log('publicKey?.toBase58()', publicKey?.toBase58())
     console.log('profilePubkey', profilePubkey)
     if (publicKey?.toBase58() === profilePubkey) {

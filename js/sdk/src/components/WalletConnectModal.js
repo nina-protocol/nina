@@ -95,7 +95,6 @@ const WalletConnectModal = (props) => {
     event.preventDefault()
     wallet.select(walletName)
     setOpen(false)
-    // show the newb a welcome message
   }
 
   return (
