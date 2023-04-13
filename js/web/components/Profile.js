@@ -408,7 +408,7 @@ const Profile = ({ profilePubkey }) => {
                     )}
                     <IdentityVerification
                       verifications={profileVerifications}
-                      pprofilePubkey={profilePubkey}
+                      profilePubkey={profilePubkey}
                     />
                     {inDashboard && <CreateHub />}
                   </Box>
