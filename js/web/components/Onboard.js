@@ -94,9 +94,6 @@ const Onboard = () => {
     }
   }, [bundlrUsdBalance])
 
-  console.log('solBalance :>> ', solBalance);
-  console.log('solBalance === 0 :>> ', solBalance === 0);
-
   const renderToolTop = (copy, link) => {
     return (
       <Box>
@@ -272,7 +269,7 @@ const Onboard = () => {
               <Box width={'100%'}>
                 <Link href="/hubs/create">
                   <ClaimCodeButton sx={{marginTop: '10px'}} disabled={solBalance === 0} >
-                    Create a Hub 
+                    Create a Hub
                   </ClaimCodeButton>
                 </Link>
               </Box>
@@ -342,7 +339,7 @@ const Onboard = () => {
     getSolPrice()
   }
 
-  const OnboardSteps = (steps) => {
+  const renderSteps = (steps) => {
     return (
       <Box sx={{ width: '75%' }}>
         <Stepper activeStep={activeStep} orientation="vertical">
@@ -372,38 +369,7 @@ const Onboard = () => {
     )
   }
 
-  const SignUpSteps = () => {
-    return (
-      <Box sx={{ width: '75%' }}>
-        <Stepper activeStep={activeStep} orientation="vertical">
-          {signUpSteps.map((step, index) => {
-            return (
-              <Step key={index}>
-                <StepLabel>{step.title}</StepLabel>
-                <StepContent>
-                  <Typography variant="body1" mb={1}>
-                    {step.content}
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      
-                      flexDirection: 'column',
-                      width: '75%',
-                    }}
-                  >
-                    {step.cta}
-                  </Box>
-                </StepContent>
-              </Step>
-            )
-          })}
-        </Stepper>
-      </Box>
-    )
-  }
-
-  const SuccessfulOnboarding = () => {
+  const successfulOnboarding = () => {
     return (
       <Box>
         <Typography variant="h1" mb={1}>
@@ -458,10 +424,10 @@ const Onboard = () => {
                         and start uploading your music. Please follow the steps
                         below to get started.
                       </Typography>
-                      {OnboardSteps(onboardingSteps)}
+                      {renderSteps(onboardingSteps)}
                     </>
                   ) : (
-                    <>{SuccessfulOnboarding()}</>
+                    <>{successfulOnboarding()}</>
                   )}
                 </>
               )}
@@ -473,10 +439,10 @@ const Onboard = () => {
                       <Typography variant="h3" mb={1}>
                         Follow the steps below to get started.
                       </Typography>
-                      {OnboardSteps(signUpSteps)}
+                      {renderSteps(signUpSteps)}
                     </>
                   ) : (
-                    <>{SuccessfulOnboarding()}</>
+                    <>{successfulOnboarding()}</>
                   )}
                 </>
               )}
@@ -533,8 +499,7 @@ const HtmlTooltip = styled(({className, ...props}) => (
     backgroundColor: '#f5f5f9',
     color: 'rgba(0, 0, 0, 0.87)',
     maxWidth: '100%',
-    // fontSize: theme.typography.pxToRem(12),
-    border: '1px solid #dadde9',
+    // border: '1px solid #dadde9',
   },
   'a':{
     color: theme.palette.blue,
