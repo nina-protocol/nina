@@ -44,7 +44,7 @@ const Onboard = () => {
   const { wallet } = useContext(Wallet.Context)
   const [claimedError, setClaimedError] = useState(false)
   const [claimedCodeSuccess, setClaimedCodeSuccess] = useState(false)
-  const [activeStep, setActiveStep] = useState(2)
+  const [activeStep, setActiveStep] = useState(0)
   const { enqueueSnackbar } = useSnackbar()
   const profilePubkey = wallet?.publicKey?.toBase58()
   const [profileVerifications, setProfileVerifications] = useState([])
@@ -372,6 +372,74 @@ const Onboard = () => {
     )
   }
 
+  const SignUpSteps = () => {
+    return (
+      <Box sx={{ width: '75%' }}>
+        <Stepper activeStep={activeStep} orientation="vertical">
+          {signUpSteps.map((step, index) => {
+            return (
+              <Step key={index}>
+                <StepLabel>{step.title}</StepLabel>
+                <StepContent>
+                  <Typography variant="body1" mb={1}>
+                    {step.content}
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      
+                      flexDirection: 'column',
+                      width: '75%',
+                    }}
+                  >
+                    {step.cta}
+                  </Box>
+                </StepContent>
+              </Step>
+            )
+          })}
+        </Stepper>
+      </Box>
+    )
+  }
+
+  const SuccessfulOnboarding = () => {
+    return (
+      <Box>
+        <Typography variant="h1" mb={1}>
+          {`You're all set.`}
+        </Typography>
+        <Typography variant="h3" mb={1}>
+          You can now start uploading your music to Nina.
+        </Typography>
+        <Box
+          mt={2}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '50%',
+          }}
+        >
+          <Link href="/dashboard">
+            <ClaimCodeButton sx={{ marginTop: '10px' }}>
+              Go to Dashboard
+            </ClaimCodeButton>
+          </Link>
+          <Link href="/hubs/create">
+            <ClaimCodeButton sx={{ marginTop: '10px' }}>
+              Create a Hub
+            </ClaimCodeButton>
+          </Link>
+          <Link href="/upload">
+            <ClaimCodeButton sx={{ marginTop: '10px' }}>
+              Publish a Track
+            </ClaimCodeButton>
+          </Link>
+        </Box>
+      </Box>
+    )
+  }
+
   return (
     <ScrollablePageWrapper>
       <StyledGrid>
@@ -383,21 +451,33 @@ const Onboard = () => {
               </Typography>
               {code !== undefined && (
                 <>
-                  <Typography variant="h3" mb={1}>
-                    You are receiving complimentary SOL to create your Hub and
-                    start uploading your music. Please follow the steps below to
-                    get started.
-                  </Typography>
-                  {OnboardSteps(onboardingSteps)}
+                  {activeStep < onboardingSteps.length ? (
+                    <>
+                      <Typography variant="h3" mb={1}>
+                        You are receiving complimentary SOL to create your Hub
+                        and start uploading your music. Please follow the steps
+                        below to get started.
+                      </Typography>
+                      {OnboardSteps(onboardingSteps)}
+                    </>
+                  ) : (
+                    <>{SuccessfulOnboarding()}</>
+                  )}
                 </>
               )}
 
               {code === undefined && (
                 <>
-                  <Typography variant="h3" mb={1}>
-                    Follow the steps below to get started.
-                  </Typography>
-                  {OnboardSteps(signUpSteps)}
+                  {activeStep < signUpSteps.length ? (
+                    <>
+                      <Typography variant="h3" mb={1}>
+                        Follow the steps below to get started.
+                      </Typography>
+                      {OnboardSteps(signUpSteps)}
+                    </>
+                  ) : (
+                    <>{SuccessfulOnboarding()}</>
+                  )}
                 </>
               )}
             </Box>

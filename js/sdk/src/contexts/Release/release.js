@@ -1631,10 +1631,17 @@ const releaseContextHelper = ({
         delete prevState[releasePubkey]
         setGatesState(prevState)
       }
+<<<<<<< HEAD
   
       return gates
     } catch (error) {
       console.log(error)
+=======
+
+      return gates
+    } catch (error) {
+      console.error(error)
+>>>>>>> 5717cc672a937105152a754d2d6c4cb5ec562303
     }
   }
 
