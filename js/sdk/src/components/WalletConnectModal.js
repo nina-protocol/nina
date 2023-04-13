@@ -26,8 +26,9 @@ const WalletConnectModal = (props) => {
   const [open, setOpen] = useState(false)
   const [signingUp, setSigningUp] = useState(false)
   const [showOtpUI, setShowOtpUI] = useState(false)
-  const [otpLogin, setOtpLogin] = useState(false)
+  const [otpLogin, setOtpLogin] = useState(undefined)
   const [showWallets, setShowWallets] = useState(false)
+  const [pending, setPending] = useState(false)
   const walletText = useMemo(() => {
    return signingUp ? 'I want to sign up with a wallet' : 'I want to Login with a wallet'
   }, [signingUp])
@@ -38,6 +39,7 @@ const WalletConnectModal = (props) => {
   }
 
   const handleLogin = async (email) => {
+    setPending(true)
     const magic = new Magic(process.env.MAGIC_KEY, {
       extensions: {
         solana: new SolanaExtension({
@@ -47,7 +49,7 @@ const WalletConnectModal = (props) => {
     })
 
     try {
-      setOtpLogin()
+      // setOtpLogin()
       const otpLogin = magic.auth.loginWithEmailOTP({ email, showUI: false })
       otpLogin
         .on('invalid-email-otp', () => {
@@ -70,12 +72,14 @@ const WalletConnectModal = (props) => {
         .on('settled', () => {
           setOtpLogin()
           setShowOtpUI(false)
+          setOpen(false)
         })
         .catch((err) => {
           console.log('%cError caught during login:\n', 'color: orange')
 
           console.log(err)
         })
+        // setPending(false) 
     } catch (err) {
       console.error(err)
     }
@@ -182,6 +186,8 @@ const WalletConnectModal = (props) => {
                 email={email}
                 setEmail={setEmail}
                 signingUp={signingUp}
+                pending={pending}
+                setPending={setPending}
               />
             )}
 
