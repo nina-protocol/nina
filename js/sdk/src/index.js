@@ -32,5 +32,8 @@ export { default as CloseRelease } from './components/CloseRelease'
 export { default as RedeemReleaseCode } from './components/RedeemReleaseCode'
 export { default as WalletConnectModal } from './components/WalletConnectModal'
 export { default as WalletButton } from './components/WalletButton'
+<<<<<<< HEAD
 export { default as NoSolWarning } from './components/NoSolWarning'
+=======
+>>>>>>> d512e6c11446ea7fc18fd385f4b445cc4e5b87b5
 export { default as IndentityVerification } from './components/IndentityVerification'

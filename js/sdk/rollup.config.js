@@ -55,7 +55,10 @@ export default [
       RedeemReleaseCode: 'src/components/RedeemReleaseCode.js',
       WalletConnectModal: 'src/components/WalletConnectModal.js',
       WalletButton: 'src/components/WalletButton.js',
+<<<<<<< HEAD
       NoSolWarning: 'src/components/NoSolWarning.js',
+=======
+>>>>>>> d512e6c11446ea7fc18fd385f4b445cc4e5b87b5
       IdentityVerification: 'src/components/IdentityVerification.js',
     },
     output: [

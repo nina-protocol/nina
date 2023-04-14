@@ -21,8 +21,12 @@ import HubCreateConfirm from './HubCreateConfirm'
 import NinaBox from './NinaBox'
 import Dots from './Dots'
 import ImageMediaDropzone from './ImageMediaDropzone'
+<<<<<<< HEAD
 import roundUp from '../utils/formatting'
 const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
+=======
+
+>>>>>>> d512e6c11446ea7fc18fd385f4b445cc4e5b87b5
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
 const ColorModal = dynamic(() => import('./ColorModal'), { ssr: false })
 const HubCreateSuccess = dynamic(() => import('./HubCreateSuccess'), {
@@ -57,12 +61,15 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     bundlrBalance,
     bundlrPricePerMb,
     solPrice,
+<<<<<<< HEAD
     getNpcAmountHeld,
     npcAmountHeld,
     ninaClient,
     solBalance,
 
     NinaProgramActionCost,
+=======
+>>>>>>> d512e6c11446ea7fc18fd385f4b445cc4e5b87b5
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
   } = useContext(Nina.Context)
@@ -406,6 +413,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     )
   }
 
+<<<<<<< HEAD
   return (
     <StyledGrid item md={12}>
       {!wallet.connected && (
@@ -421,6 +429,17 @@ const HubCreate = ({ update, hubData, inHubs }) => {
         setOpen={setOpen}
       />
 
+=======
+  if (!wallet.connected) {
+    return (
+      <ConnectMessage variant="body" gutterBottom>
+        Please connect your wallet to create a hub
+      </ConnectMessage>
+    )
+  }
+  return (
+    <StyledGrid item md={12}>
+>>>>>>> d512e6c11446ea7fc18fd385f4b445cc4e5b87b5
       {update && (
         <Typography gutterBottom>
           Updating {hubData.data.displayName}
