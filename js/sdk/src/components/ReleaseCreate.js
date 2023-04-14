@@ -20,7 +20,6 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 import ReleaseCreateForm from './ReleaseCreateForm'
 import ReleaseCreateConfirm from './ReleaseCreateConfirm'
 import NinaBox from './NinaBox'
@@ -40,7 +39,6 @@ const NoSolWarning = dynamic(() => import('./NoSolWarning'), { ssr: false })
 const UploadInfoModal = dynamic(() => import('./UploadInfoModal'), {
   ssr: false,
 })
-const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
 const ReleaseCreateSuccess = dynamic(() => import('./ReleaseCreateSuccess'), {
   ssr: false,
@@ -77,8 +75,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     bundlrPricePerMb,
     solPrice,
     getSolPrice,
-    getNpcAmountHeld,
-    npcAmountHeld,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
     NinaProgramActionCost,
@@ -152,12 +148,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     }, 5000)
     return () => clearInterval(checkBalance)
   }, [getUserBalances, releaseCreateFee, solBalance])
-
-  useEffect(async () => {
-    if (canAddContent && hubPubkey && hubData && hubData.authority) {
-      getNpcAmountHeld()
-    }
-  }, [wallet?.connected])
 
   useEffect(() => {
     if (releasePubkey && releaseState.tokenData[releasePubkey]) {
@@ -509,13 +499,13 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   }
 
   const handleLowUploadModalClose = () => {
-    setShowLowUploadModal(false)
-    if (artwork) {
-      artwork.remove()
-    }
-    if (track) {
-      track.remove()
-    }
+    // setShowLowUploadModal(false)
+    // if (artwork) {
+    //   artwork.remove()
+    // }
+    // if (track) {
+    //   track.remove()
+    // }
   }
 
   const handleReload = () => {
@@ -581,36 +571,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         open={open}
         setOpen={setOpen}
       />
-
-      {/* {wallet?.connected &&
-        solBalanceFetched &&
-        !hubPubkey &&
-        npcAmountHeld === 0 &&
-        (!profileHubs || profileHubs?.length === 0) && (
-          <Box style={{ display: 'flex' }}>
-            <NpcMessage>
-              <Typography variant="h3" sx={{ mb: 1 }}>
-                Nina is currently in a closed beta for uploading releases.
-              </Typography>
-              <EmailCapture size="medium" />
-              <Typography variant="h3" sx={{ mt: 1 }}>
-                Check our{' '}
-                <Link href="/faq">
-                  <a>FAQ</a>
-                </Link>{' '}
-                or hit us at{' '}
-                <Link
-                  target="_blank"
-                  rel="noreferrer"
-                  href="href=mailto:artists@ninaprotocol.com"
-                >
-                  <a>artists@ninaprotocol.com</a>
-                </Link>{' '}
-                with any questions.
-              </Typography>
-            </NpcMessage>
-          </Box>
-        )} */}
       {releaseCreated && (
         <ReleaseCreateSuccess
           releasePubkey={releasePubkey}
@@ -631,14 +591,12 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
 
       {wallet?.connected && !solBalanceFetched && <Dots size={'50px'} />}
       {wallet?.connected && !releaseCreated && solBalanceFetched && (
-        // (npcAmountHeld >= 1 || profileHubs?.length > 0 || hubPubkey) &&
         <>
           <UploadInfoModal
             userHasSeenUpdateMessage={localStorage.getItem(
               'nina-upload-update-message'
             )}
           />
-          {/* {(releaseCreateFee < formattedSolBalance ) && ( */}
           <NinaBox columns="350px 400px" gridColumnGap="10px">
             <Box sx={{ width: '100%' }}>
               <MediaDropzones
@@ -832,22 +790,6 @@ const CreateCta = styled(Box)(({ theme }) => ({
 const BundlrBalanceInfo = styled(Typography)(() => ({
   whiteSpace: 'nowrap',
   margin: '5px 0',
-}))
-
-const NpcMessage = styled(Box)(({ theme }) => ({
-  textAlign: 'left',
-  margin: 'auto',
-  width: '800px',
-  padding: '0 0 50px',
-  [theme.breakpoints.down('md')]: {
-    width: '80vw',
-  },
-  '& .MuiTypography-root': {
-    paddingBottom: '10px',
-  },
-  '& a': {
-    color: theme.palette.blue,
-  },
 }))
 
 export default ReleaseCreate

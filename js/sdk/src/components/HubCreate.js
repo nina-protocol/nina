@@ -97,9 +97,6 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
   )
-  useEffect(() => {
-    getNpcAmountHeld()
-  }, [wallet?.connected])
 
   useEffect(() => {
     if (isPublishing) {
@@ -424,31 +421,17 @@ const HubCreate = ({ update, hubData, inHubs }) => {
         setOpen={setOpen}
       />
 
-      {/* {!update && wallet?.connected && npcAmountHeld === 0 && (
-        <Box width="50%" margin="24vh auto">
-          <BlueTypography
-            variant="h1"
-            align="left"
-            sx={{ padding: { md: '0px 0px', xs: '30px 0px' }, mb: 4 }}
-          >
-            You do not have any credits to create a Hub.
-          </BlueTypography>
-          <EmailCapture size="medium" />
-        </Box>
-      )} */}
-
       {update && (
         <Typography gutterBottom>
           Updating {hubData.data.displayName}
         </Typography>
       )}
-      {!update && npcAmountHeld > 0 && (
+      {!update && (
         <Typography variant="h3" gutterBottom>
           Create Hub
         </Typography>
       )}
-      {wallet.connected && (
-        // (update || npcAmountHeld > 0) > 0 &&
+      {wallet?.connected && (
         <NinaBox columns="500px" gridColumnGap="10px">
           <CreateFormWrapper>
             <HubCreateForm
@@ -629,13 +612,6 @@ const Warning = styled(Typography)(({ theme }) => ({
   textTransform: 'none !important',
   color: theme.palette.red,
   opacity: '85%',
-}))
-
-const BlueTypography = styled(Typography)(({ theme }) => ({
-  '& a': {
-    color: theme.palette.blue,
-    textDecoration: 'none',
-  },
 }))
 
 export default HubCreate

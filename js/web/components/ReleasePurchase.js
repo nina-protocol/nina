@@ -385,7 +385,11 @@ const ReleasePurchase = (props) => {
               } available for download exclusively to owners of this release.`}
             </StyledTypographyButtonSub>
           )}
-          <RedeemReleaseCode releasePubkey={releasePubkey} />
+
+          <RedeemReleaseCode
+            releasePubkey={releasePubkey}
+            gates={releaseGates?.length > 0}
+          />
         </Box>
       </Box>
     </Box>
