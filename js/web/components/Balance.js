@@ -4,7 +4,9 @@ import { Box, Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import SwapModal from '@nina-protocol/nina-internal-sdk/esm/SwapModal'
 const Balance = ({ profilePublishedReleases }) => {
-  const { ninaClient, solBalance, usdcBalance, getUserBalances } = useContext(Nina.Context)
+  const { ninaClient, solBalance, usdcBalance, getUserBalances } = useContext(
+    Nina.Context
+  )
   const [revenueSumForArtist, setRevenueSumForArtist] = useState(0)
   const [userSolBalance, setUserSolBalance] = useState(0)
   const [userUsdcBalance, setUserUsdcBalance] = useState(0)
@@ -14,7 +16,9 @@ const Balance = ({ profilePublishedReleases }) => {
   }, [profilePublishedReleases, revenueSumForArtist])
 
   useEffect(() => {
-    setUserSolBalance(ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol).toFixed(4))
+    setUserSolBalance(
+      ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol).toFixed(4)
+    )
   }, [solBalance])
 
   useEffect(() => {
@@ -31,7 +35,6 @@ const Balance = ({ profilePublishedReleases }) => {
 
   const refreshBalances = async () => {
     const yo = await getUserBalances()
-    console.log('yo', yo)
     setUserSolBalance(sol)
     setUserUsdcBalance(usdc)
   }
@@ -44,9 +47,7 @@ const Balance = ({ profilePublishedReleases }) => {
         </Typography>
       </BalanceWrapper>
       <BalanceWrapper>
-        <Typography variant="body2">
-          {`sol: ${userSolBalance}`}
-        </Typography>
+        <Typography variant="body2">{`sol: ${userSolBalance}`}</Typography>
       </BalanceWrapper>
       <BalanceWrapper>
         <Typography variant="body2">{`usdc: $${userUsdcBalance}`}</Typography>
