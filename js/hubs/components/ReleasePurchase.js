@@ -15,6 +15,9 @@ import Dots from './Dots'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 
+const NoSolWarning = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/NoSolWarning')
+)
 const RedeemReleaseCode = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/RedeemReleaseCode')
 )
@@ -48,12 +51,13 @@ const ReleasePurchase = (props) => {
     usdcBalance,
     ninaClient,
     checkIfHasBalanceToCompleteAction,
+    solBalance,
     NinaProgramAction,
   } = useContext(Nina.Context)
   const [release, setRelease] = useState(undefined)
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [publishedHub, setPublishedHub] = useState()
-
+  const [showNoSolModal, setShowNoSolModal] = useState(false)
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
     [releasePubkey, releasePurchaseTransactionPending]
@@ -109,6 +113,11 @@ const ReleasePurchase = (props) => {
         publicKey: releasePubkey,
         hub: hubPubkey,
       })
+      return
+    }
+
+    if (solBalance === 0) {
+      setShowNoSolModal(true)
       return
     }
 
@@ -177,6 +186,15 @@ const ReleasePurchase = (props) => {
 
   return (
     <ReleasePurchaseWrapper mt={1}>
+      <NoSolWarning
+        requiredSol={ninaClient.nativeToUiString(
+          release.price,
+          release.paymentMint
+        )}
+        action="purchase"
+        open={showNoSolModal}
+        setOpen={setShowNoSolModal}
+      />
       <AmountRemaining variant="body2" align="left">
         {release.editionType === 'open' ? (
           <Typography variant="body2" align="left">

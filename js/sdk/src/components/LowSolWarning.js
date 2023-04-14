@@ -6,21 +6,19 @@ import Link from 'next/link'
 const LowSolWarning = ({ requiredSol, formattedSolBalance, action }) => {
   const [actionText, setActionText] = useState('')
   useEffect(() => {
-    switch (action){
+    switch (action) {
       case 'publish':
         return setActionText('upload a Release')
       case 'hub':
         return setActionText('create a Hub')
-      case 'purchase':
-        return setActionText('purchase this Release')
-      default: 
+      default:
         break
     }
   }, [action, actionText])
   return (
     <LowSolBox>
       <Typography variant="h5" component="h2" sx={{ paddingBottom: '16px' }}>
-       {` You do not have enough SOL in your wallet to ${actionText}.`}
+        {` You do not have enough SOL in your wallet to ${actionText}.`}
       </Typography>
       <ModalTypography variant="h3" component="p" gutterBottom>
         {`${requiredSol} SOL is required to upload a Release.`}

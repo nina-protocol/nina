@@ -36,6 +36,10 @@ const RedeemReleaseCode = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/RedeemReleaseCode')
 )
 
+const NoSolWarning = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/NoSolWarning')
+)
+
 const ReleasePurchase = (props) => {
   const {
     releasePubkey,
@@ -60,6 +64,7 @@ const ReleasePurchase = (props) => {
     collection,
     ninaClient,
     usdcBalance,
+    solBalance,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
   } = useContext(Nina.Context)
@@ -76,6 +81,7 @@ const ReleasePurchase = (props) => {
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
   const [publishedHub, setPublishedHub] = useState()
   const [description, setDescription] = useState()
+  const [showNoSolModal, setShowNoSolModal] = useState(false)
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
     [releasePubkey, releasePurchaseTransactionPending]
@@ -161,6 +167,12 @@ const ReleasePurchase = (props) => {
       })
       return
     }
+
+    if (solBalance === 0) {
+      setShowNoSolModal(true)
+      return
+    }
+
     let result
     if ((!amountHeld || amountHeld === 0) && release.price > 0) {
       const error = await checkIfHasBalanceToCompleteAction(
@@ -229,6 +241,16 @@ const ReleasePurchase = (props) => {
 
   return (
     <Box sx={{ position: 'relative', height: '100%' }}>
+      <NoSolWarning
+        requiredSol={ninaClient.nativeToUiString(
+          release.price,
+          release.paymentMint
+        )}
+        action={'purchase'}
+        open={showNoSolModal}
+        setOpen={setShowNoSolModal}
+      />
+
       <Box>
         <AmountRemaining variant="body2" align="left">
           {release.editionType === 'open' ? (
@@ -363,7 +385,6 @@ const ReleasePurchase = (props) => {
               } available for download exclusively to owners of this release.`}
             </StyledTypographyButtonSub>
           )}
-
           <RedeemReleaseCode releasePubkey={releasePubkey} />
         </Box>
       </Box>

@@ -36,6 +36,7 @@ import {
   uploadHasItemForType,
 } from '../utils/uploadManager'
 import LowSolWarning from './LowSolWarning'
+import NoSolWarning from './NoSolWarning'
 
 const HubCreateSchema = Yup.object().shape({
   handle: Yup.string().required('Hub Handle is Required'),
@@ -65,10 +66,9 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
   } = useContext(Nina.Context)
-  const hubCreateFee = roundUp( NinaProgramActionCost?.HUB_INIT_WITH_CREDIT,3)
-  const formattedSolBalance = ninaClient
-      .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
-      .toFixed(3) || 0
+  const hubCreateFee = roundUp(NinaProgramActionCost?.HUB_INIT_WITH_CREDIT, 3)
+  const formattedSolBalance =
+    ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol).toFixed(3) || 0
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
   const [hubPubkey, setHubPubkey] = useState(hubData?.publicKey || undefined)
@@ -88,7 +88,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
   const [hubCreated, setHubCreated] = useState(false)
   const [uploadId, setUploadId] = useState()
   const [publishingStepText, setPublishingStepText] = useState()
-
+  const [open, setOpen] = useState(false)
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
@@ -170,6 +170,12 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     const artworkSize = artwork ? artwork.meta.size / 1000000 : 0
     setUploadSize(artworkSize.toFixed(2))
   }, [artwork])
+
+  useEffect(() => {
+    if (wallet.connected && solBalance === 0) {
+      setOpen(true)
+    }
+  }, [solBalance])
 
   const colorReset = () => {
     setBackgroundColor()
@@ -402,6 +408,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
       />
     )
   }
+
   return (
     <StyledGrid item md={12}>
       {!wallet.connected && (
@@ -409,6 +416,13 @@ const HubCreate = ({ update, hubData, inHubs }) => {
           Please connect your wallet to create a hub
         </ConnectMessage>
       )}
+
+      <NoSolWarning
+        requiredSol={hubCreateFee}
+        action={'hub'}
+        open={open}
+        setOpen={setOpen}
+      />
 
       {/* {!update && wallet?.connected && npcAmountHeld === 0 && (
         <Box width="50%" margin="24vh auto">
@@ -433,140 +447,131 @@ const HubCreate = ({ update, hubData, inHubs }) => {
           Create Hub
         </Typography>
       )}
-      {wallet.connected &&
-        (hubCreateFee < formattedSolBalance ? (
-          // (update || npcAmountHeld > 0) > 0 &&
-          <NinaBox columns="500px" gridColumnGap="10px">
-            <CreateFormWrapper>
-              <HubCreateForm
-                onChange={handleFormChange}
-                values={formValues.hubForm}
-                HubCreateSchema={HubCreateSchema}
+      {wallet.connected && (
+        // (update || npcAmountHeld > 0) > 0 &&
+        <NinaBox columns="500px" gridColumnGap="10px">
+          <CreateFormWrapper>
+            <HubCreateForm
+              onChange={handleFormChange}
+              values={formValues.hubForm}
+              HubCreateSchema={HubCreateSchema}
+              update={update}
+              hubData={hubData}
+            />
+
+            <DropzoneWrapper>
+              <ImageMediaDropzone
+                setArtwork={setArtwork}
+                type="artwork"
+                currentImageUrl={update ? hubData.data.image : null}
                 update={update}
-                hubData={hubData}
+                inHubCreate={true}
+              />
+            </DropzoneWrapper>
+
+            <ColorWrapper>
+              <ColorModal
+                backgroundColor={backgroundColor}
+                setBackgroundColor={setBackgroundColor}
+                textColor={textColor}
+                setTextColor={setTextColor}
+                colorReset={colorReset}
               />
 
-              <DropzoneWrapper>
-                <ImageMediaDropzone
-                  setArtwork={setArtwork}
-                  type="artwork"
-                  currentImageUrl={update ? hubData.data.image : null}
-                  update={update}
-                  inHubCreate={true}
-                />
-              </DropzoneWrapper>
+              {backgroundColor && (
+                <Typography
+                  mt={1}
+                  style={{
+                    borderLeft: `15px solid ${backgroundColor}`,
+                    paddingLeft: '10px',
+                  }}
+                >
+                  BackgroundColor: {backgroundColor}
+                </Typography>
+              )}
+              {textColor && (
+                <Typography
+                  style={{
+                    borderLeft: `15px solid ${textColor}`,
+                    paddingLeft: '10px',
+                  }}
+                >
+                  TextColor: {textColor}
+                </Typography>
+              )}
+            </ColorWrapper>
 
-              <ColorWrapper>
-                <ColorModal
-                  backgroundColor={backgroundColor}
-                  setBackgroundColor={setBackgroundColor}
-                  textColor={textColor}
-                  setTextColor={setTextColor}
-                  colorReset={colorReset}
-                />
+            {formValues.hubForm.publishFee > 30 ||
+              (formValues.hubForm.referralFee > 30 && (
+                <Box>
+                  <Warning variant="subtitle1">
+                    Are you certain about the fees you set? High fees may
+                    discourage potential collectors.
+                  </Warning>
+                </Box>
+              ))}
+          </CreateFormWrapper>
 
-                {backgroundColor && (
-                  <Typography
-                    mt={1}
-                    style={{
-                      borderLeft: `15px solid ${backgroundColor}`,
-                      paddingLeft: '10px',
-                    }}
-                  >
-                    BackgroundColor: {backgroundColor}
-                  </Typography>
-                )}
-                {textColor && (
-                  <Typography
-                    style={{
-                      borderLeft: `15px solid ${textColor}`,
-                      paddingLeft: '10px',
-                    }}
-                  >
-                    TextColor: {textColor}
-                  </Typography>
-                )}
-              </ColorWrapper>
+          <CreateCta>
+            {bundlrBalance === 0 && <BundlrModal inCreate={true} />}
 
-              {formValues.hubForm.publishFee > 30 ||
-                (formValues.hubForm.referralFee > 30 && (
-                  <Box>
-                    <Warning variant="subtitle1">
-                      Are you certain about the fees you set? High fees may
-                      discourage potential collectors.
-                    </Warning>
-                  </Box>
-                ))}
-            </CreateFormWrapper>
-
-            <CreateCta>
-              {bundlrBalance === 0 && <BundlrModal inCreate={true} />}
-
-              {bundlrBalance > 0 &&
-                formValuesConfirmed &&
-                (update || isPublishing) && (
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    color="primary"
-                    onClick={handleSubmit}
-                    disabled={
-                      isPublishing ||
-                      !formIsValid ||
-                      bundlrBalance === 0 ||
-                      mbs < uploadSize ||
-                      artwork?.meta.status === 'uploading'
-                    }
-                    sx={{ height: '54px' }}
-                  >
-                    {isPublishing && <Dots msg={publishingStepText} />}
-                    {!isPublishing && buttonText}
-                  </Button>
-                )}
-
-              {bundlrBalance > 0 && !formValuesConfirmed && (
-                <HubCreateConfirm
-                  hubData={hubData}
-                  formValues={formValues}
-                  formIsValid={formIsValid}
-                  handleSubmit={handleSubmit}
-                  setFormValuesConfirmed={setFormValuesConfirmed}
-                  update={update}
-                  backgroundColor={backgroundColor}
-                  textColor={textColor}
-                />
+            {bundlrBalance > 0 &&
+              formValuesConfirmed &&
+              (update || isPublishing) && (
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleSubmit}
+                  disabled={
+                    isPublishing ||
+                    !formIsValid ||
+                    bundlrBalance === 0 ||
+                    mbs < uploadSize ||
+                    artwork?.meta.status === 'uploading'
+                  }
+                  sx={{ height: '54px' }}
+                >
+                  {isPublishing && <Dots msg={publishingStepText} />}
+                  {!isPublishing && buttonText}
+                </Button>
               )}
 
-              <Box display="flex" justifyContent="space-between">
-                {bundlrBalance > 0 && (
-                  <BundlrBalanceInfo variant="subtitle1" align="left">
-                    Bundlr Balance: {bundlrBalance?.toFixed(4)} SOL / $
-                    {bundlrUsdBalance.toFixed(2)} / {mbs?.toFixed(2)} MB ($
-                    {(bundlrUsdBalance / mbs)?.toFixed(4)}/MB)
-                  </BundlrBalanceInfo>
-                )}
-                {bundlrBalance === 0 && (
-                  <BundlrBalanceInfo variant="subtitle1" align="left">
-                    Please fund your Upload Account to enable publishing
-                  </BundlrBalanceInfo>
-                )}
-                {uploadSize > 0 && (
-                  <Typography variant="subtitle1" align="right">
-                    Upload Size: {uploadSize} MB
-                  </Typography>
-                )}
-              </Box>
-            </CreateCta>
-          </NinaBox>
-        ) : (
-          <NinaBox>
-            <LowSolWarning
-              requiredSol={hubCreateFee}
-              formattedSolBalance={formattedSolBalance}
-              action={'hub'}
-            />
-          </NinaBox>
-        ))}
+            {bundlrBalance > 0 && !formValuesConfirmed && (
+              <HubCreateConfirm
+                hubData={hubData}
+                formValues={formValues}
+                formIsValid={formIsValid}
+                handleSubmit={handleSubmit}
+                setFormValuesConfirmed={setFormValuesConfirmed}
+                update={update}
+                backgroundColor={backgroundColor}
+                textColor={textColor}
+              />
+            )}
+
+            <Box display="flex" justifyContent="space-between">
+              {bundlrBalance > 0 && (
+                <BundlrBalanceInfo variant="subtitle1" align="left">
+                  Bundlr Balance: {bundlrBalance?.toFixed(4)} SOL / $
+                  {bundlrUsdBalance.toFixed(2)} / {mbs?.toFixed(2)} MB ($
+                  {(bundlrUsdBalance / mbs)?.toFixed(4)}/MB)
+                </BundlrBalanceInfo>
+              )}
+              {bundlrBalance === 0 && (
+                <BundlrBalanceInfo variant="subtitle1" align="left">
+                  Please fund your Upload Account to enable publishing
+                </BundlrBalanceInfo>
+              )}
+              {uploadSize > 0 && (
+                <Typography variant="subtitle1" align="right">
+                  Upload Size: {uploadSize} MB
+                </Typography>
+              )}
+            </Box>
+          </CreateCta>
+        </NinaBox>
+      )}
     </StyledGrid>
   )
 }
