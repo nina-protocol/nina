@@ -16,7 +16,6 @@ import EmailLoginForm from './EmailLoginForm'
 import EmailOTPForm from './EmailOTPForm'
 import Link from 'next/link'
 
-
 const WalletConnectModal = (props) => {
   const { children, inOnboardingFlow } = props
   const { wallet, walletExtension, connectMagicWallet } = useContext(
@@ -30,7 +29,9 @@ const WalletConnectModal = (props) => {
   const [showWallets, setShowWallets] = useState(false)
   const [pending, setPending] = useState(false)
   const walletText = useMemo(() => {
-   return signingUp ? 'I want to sign up with a wallet' : 'I want to Login with a wallet'
+    return signingUp
+      ? 'I want to sign up with a wallet'
+      : 'I want to Login with a wallet'
   }, [signingUp])
   const [email, setEmail] = useState()
 
@@ -79,7 +80,7 @@ const WalletConnectModal = (props) => {
 
           console.log(err)
         })
-        // setPending(false) 
+      // setPending(false)
     } catch (err) {
       console.error(err)
     }
@@ -133,36 +134,31 @@ const WalletConnectModal = (props) => {
               },
             }}
           >
-              {children}
+            {children}
           </Button>
-        {!wallet?.connected && (
-          
-          <>
+          {!wallet?.connected && (
+            <>
               {' / '}
-            <Link
-            href="/getStarted"
-            style={{textTransform: 'none'}}
-            >
-              <StyledLink variant="subtitle1"
-                component={'a'}
-                style={{fontSize: '10px !important'}}
-              >
-                {' '}Sign Up
-              </StyledLink>
-            </Link>
-          </>
+              <Link href="/getStarted" style={{ textTransform: 'none' }}>
+                <StyledLink
+                  variant="subtitle1"
+                  component={'a'}
+                  style={{ fontSize: '10px !important' }}
+                >
+                  {' '}
+                  Sign Up
+                </StyledLink>
+              </Link>
+            </>
           )}
-    
         </Box>
-
-        
       )}
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={open}
         onClose={() => {
-          setSigningUp(false) 
+          setSigningUp(false)
           setOpen(false)
         }}
         closeAfterTransition
@@ -174,8 +170,10 @@ const WalletConnectModal = (props) => {
         <Fade in={open}>
           <StyledPaper>
             {signingUp && (
-              <Box sx={{mb:1}}>
-                <Typography variant='body1'>To create an account, all you need is an email.</Typography>
+              <Box sx={{ mb: 1 }}>
+                <Typography variant="body1">
+                  To create an account, all you need is an email.
+                </Typography>
               </Box>
             )}
             {showOtpUI ? (
@@ -260,6 +258,6 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 const StyledLink = styled(Typography)(({ theme }) => ({
   color: `${theme.palette.blue} !important`,
-})) 
+}))
 
 export default WalletConnectModal
