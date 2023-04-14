@@ -727,6 +727,7 @@ const ninaContextHelper = ({
           `https://price.jup.ag/v4/price?ids=SOL`
         )
         const solUsdcBalanceResult = await getSolBalance()
+        let usdc = 0
         setSolUsdcBalance(
           (
             ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) *
@@ -746,7 +747,8 @@ const ninaContextHelper = ({
             await provider.connection.getTokenAccountBalance(
               usdcTokenAccountPubkey
             )
-          setUsdcBalance(usdcTokenAccount.value.uiAmount.toFixed(2))
+          usdc = usdcTokenAccount.value.uiAmount.toFixed(2)
+          setUsdcBalance(usdc)
           return
         } else {
           setUsdcBalance(0)
@@ -758,6 +760,8 @@ const ninaContextHelper = ({
       setUsdcBalance(0)
       setSolUsdcBalance(0)
     }
+    console.log("BRO")
+    return { usdc, sol: ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) }
   }
 
   const getNpcAmountHeld = async () => {
