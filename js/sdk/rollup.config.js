@@ -55,7 +55,7 @@ export default [
       RedeemReleaseCode: 'src/components/RedeemReleaseCode.js',
       WalletConnectModal: 'src/components/WalletConnectModal.js',
       WalletButton: 'src/components/WalletButton.js',
-      SwapModal: 'src/components/SwapModal.js'
+      SwapModal: 'src/components/SwapModal.js',
       IdentityVerification: 'src/components/IdentityVerification.js',
     },
     output: [
