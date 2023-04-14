@@ -4,9 +4,6 @@ import {
   useConnection,
 } from '@solana/wallet-adapter-react'
 import * as anchor from '@project-serum/anchor'
-import tweetnaclUtil from 'tweetnacl-util'
-
-const { decodeBase64 } = tweetnaclUtil
 
 const WalletContext = createContext()
 const WalletContextProvider = ({ children }) => {
@@ -15,6 +12,15 @@ const WalletContextProvider = ({ children }) => {
   const [magicWallet, setMagicWallet] = useState(null)
 
   const wallet = useMemo(() => {
+    //local storage set here
+    if (typeof window !== 'undefined') {
+      console.log('setting local storage')
+      if (magicWallet) {
+        localStorage.setItem('nina_magic_wallet', 'true')
+      } else if (walletExtension) {
+        localStorage.setItem('nina_magic_wallet', 'false')
+      }
+    }
     return magicWallet || walletExtension || {}
   }, [walletExtension, magicWallet])
 
@@ -53,8 +59,8 @@ const walletContextHelper = ({ setMagicWallet, connection }) => {
         },
         publicKey: new anchor.web3.PublicKey(user.publicAddress),
         signMessage: async (message) => {
-          const messageBytes = decodeBase64(message)
-          return await magic.solana.signMessage(messageBytes)
+          // const messageBytes = decodeBase64(message)
+          return await magic.solana.signMessage(message)
         },
         signTransaction: async (transaction) => {
           const serializedTransaction = transaction.serializeMessage()

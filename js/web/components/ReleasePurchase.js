@@ -354,7 +354,7 @@ const ReleasePurchase = (props) => {
           releaseGates={releaseGates}
         />
         <Box sx={{ position: 'absolute', top: '110%' }} align="center">
-          {amountHeld === 0 && (
+          {releaseGates && amountHeld === 0 && (
             <StyledTypographyButtonSub>
               {`There ${releaseGates?.length > 1 ? 'are' : 'is'} ${
                 releaseGates?.length
@@ -364,7 +364,10 @@ const ReleasePurchase = (props) => {
             </StyledTypographyButtonSub>
           )}
 
-          <RedeemReleaseCode releasePubkey={releasePubkey} />
+          <RedeemReleaseCode
+            releasePubkey={releasePubkey}
+            gates={releaseGates?.length > 0}
+          />
         </Box>
       </Box>
     </Box>

@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState, useMemo } from 'react'
+import React, { useEffect, useContext, useState, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
@@ -28,8 +28,8 @@ import {
   faEthereum,
 } from '@fortawesome/free-brands-svg-icons'
 
-const IdentityVerification = ({ verifications, profilePublicKey }) => {
-  const web3 = new Web3(process.env.ETH_CLUSTER_URL)
+const IdentityVerification = ({verifications, profilePubkey, inOnboardingFlow }) => {
+ 
   const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
   const { wallet } = useContext(Wallet.Context)
@@ -54,6 +54,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const [action, setAction] = useState(undefined)
   const [activeType, setActiveType] = useState(undefined)
   const [activeValue, setActiveValue] = useState(undefined)
+
 
   const logos = {
     soundcloud: (
@@ -113,7 +114,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
 
   const buttonTypes = useMemo(() => {
     const buttonArray = []
-    if (publicKey?.toBase58() === profilePublicKey) {
+    if (publicKey?.toBase58() === profilePubkey) {
       buttonArray.push('twitter', 'soundcloud', 'ethereum')
     } else {
       verifications.forEach((verification) => {
@@ -234,7 +235,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           signTransaction,
           soundcloudToken
         )
-        await getVerificationsForUser(profilePublicKey)
+        await getVerificationsForUser(profilePubkey)
         break
       case 'twitter':
         await verifyTwitter(
@@ -244,7 +245,7 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           publicKey,
           signTransaction
         )
-        await getVerificationsForUser(profilePublicKey)
+        await getVerificationsForUser(profilePubkey)
         break
       case 'instagram':
         await verifyInstagram(
@@ -255,11 +256,11 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           signTransaction,
           instagramToken
         )
-        await getVerificationsForUser(profilePublicKey)
+        await getVerificationsForUser(profilePubkey)
         break
       case 'ethereum':
         await verifyEthereum(provider, ethAddress, publicKey, signTransaction)
-        await getVerificationsForUser(profilePublicKey)
+        await getVerificationsForUser(profilePubkey)
         break
     }
   }
@@ -303,23 +304,30 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   }
   return (
     <>
-      <CtaWrapper>
+      <CtaWrapper inOnboardingFlow={inOnboardingFlow}>
         {buttonTypes &&
-          buttonTypes.map((buttonType, index) => {
-            return (
-              <Button
-                onClick={() => handleIdentityButtonAction(buttonType)}
-                key={index}
-              >
-                <Box display="flex" alignItems="center">
-                  {logos[buttonType]}{' '}
-                  <Typography ml={1} variant="body2">
-                    {buttonTextForType(buttonType)}
-                  </Typography>
-                </Box>
-              </Button>
-            )
-          })}
+          buttonTypes
+            .slice(0, inOnboardingFlow ? 2 : buttonTypes.length)
+            .map((buttonType, index) => {
+              return (
+                <StyledCta
+                  onClick={() => handleIdentityButtonAction(buttonType)}
+                  key={index}
+                  inOnboardingFlow={inOnboardingFlow}
+                >
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    padding={inOnboardingFlow ? '8px' : ''}
+                  >
+                    {logos[buttonType]}{' '}
+                    <Typography ml={1} variant="body2">
+                      {buttonTextForType(buttonType)}
+                    </Typography>
+                  </Box>
+                </StyledCta>
+              )
+            })}
       </CtaWrapper>
       {activeValue && (
         <Box>
@@ -336,12 +344,12 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   )
 }
 
-const CtaWrapper = styled(Box)(({ theme }) => ({
+const CtaWrapper = styled(Box)(({ theme, inOnboardingFlow }) => ({
   '& button': {
     color: 'black',
     border: '1px solid black',
     borderRadius: '0px',
-    margin: '0 8px',
+    margin: inOnboardingFlow ? '10px 0 0 0' : '0 8px',
     [theme.breakpoints.down('md')]: {
       border: 'none',
       margin: '0px',
@@ -357,6 +365,12 @@ const CtaWrapper = styled(Box)(({ theme }) => ({
       },
     },
   },
+}))
+
+const StyledCta = styled(Button)(({ inOnboardingFlow }) => ({
+  width: inOnboardingFlow ? '100%' : '',
+  // margin: inOnboardingFlow ? '10px 0px 0px 0px' : '0px',
+  // padding: inOnboardingFlow ? '10px' : '10px 10px 10px 0px',
 }))
 
 export default IdentityVerification

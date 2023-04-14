@@ -185,11 +185,11 @@ const NavBar = ({ hubPubkey }) => {
                   >
                     {wallet?.connected
                       ? `${wallet.wallet.adapter.name} – ${walletDisplay}`
-                      : 'Connect Wallet'}
+                      : 'Login'}
                   </StyledWalletButtonTypography>
                 </StyledWalletButton>
               )}
-              <DevnetIndicator />
+              {/* <DevnetIndicator /> */}
             </NavCtas>
           </WalletWrapper>
         </CtaWrapper>
