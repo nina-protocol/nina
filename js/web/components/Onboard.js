@@ -501,15 +501,6 @@ const GetStartedPageWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
-const ClaimCodeButton = styled(Button)(({ theme }) => ({
-  // border: `1px solid ${theme.palette.black}`,
-  // borderRadius: '0px',
-  // padding: '16px 20px',
-  // color: theme.palette.black,
-  // fontSize: '12px',
-  // width: '100%',
-}))
-
 const HtmlTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({

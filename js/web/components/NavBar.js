@@ -117,7 +117,7 @@ const NavBar = () => {
                     `${wallet.wallet.adapter.name} – ${walletDisplay}`}
                   {!wallet?.connected && 'Sign In'}
                 </StyledWalletButton>
-                {/* <DevnetIndicator /> */}
+                <DevnetIndicator />
               </StyledWalletDialogProvider>
             )}
           </NavCtas>
@@ -274,7 +274,6 @@ const StyledWalletButton = styled(WalletButton)(({ theme }) => ({
   textTransform: 'capitalize',
   paddingRight: '20px',
   paddingLeft: '20px',
-  // fontSize: '20px',
   backgroundColor: `${theme.palette.transparent} !important`,
   boxShadow: 'none !important',
   paddingTop: '0 !important',
