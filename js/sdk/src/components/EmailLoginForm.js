@@ -14,20 +14,17 @@ export default function EmailForm({
   pending, 
 }) {
   const [placeholder, setPlaceholder] = useState('Enter your email')
-  // const [pending, setPending] = useState(false)
   const buttonText = useMemo(() => {
-    return signingUp ? 'Create Account' : 'Login'}
+    return signingUp ? 'Create Account' : 'Continue'}
     , [signingUp] ) 
     
   const handleSubmit = async (e) => {
-    // setPending(true)
     e.preventDefault()
     if (!email) {
       setPlaceholder('Please enter valid email')
       return
     }
     await handleEmailLoginCustom(email)
-    // setPending(false)
   }
 
   return (
@@ -45,7 +42,7 @@ export default function EmailForm({
         />
 
         <Button variant="outlined" type="submit">
-          <Typography variant='body1'>
+          <Typography variant='body1' style={{fontSize: '14px !important'}}>
             {pending ? <Dots size="30px" /> : buttonText}
           </Typography>
         </Button>

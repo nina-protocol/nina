@@ -22,9 +22,9 @@ const WalletConnectModal = (props) => {
     Wallet.Context
   )
 
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const [signingUp, setSigningUp] = useState(false)
-  const [showOtpUI, setShowOtpUI] = useState(false)
+  const [showOtpUI, setShowOtpUI] = useState(true)
   const [otpLogin, setOtpLogin] = useState(undefined)
   const [showWallets, setShowWallets] = useState(false)
   const [pending, setPending] = useState(false)
@@ -42,7 +42,6 @@ const WalletConnectModal = (props) => {
     if (typeof window !== 'undefined') {
       const prefersMagicWallet = localStorage.getItem('nina_magic_wallet')
       if (prefersMagicWallet === 'false') {
-        console.log('in here');
         setShowWallets(true)
       }
     }
@@ -61,8 +60,6 @@ const WalletConnectModal = (props) => {
     try {
       // setOtpLogin()
       localStorage.setItem('nina_magic_wallet', 'true')
-
-      console.log('localStorage.nina_magic_wallet :>> ', localStorage.nina_magic_wallet);
       const otpLogin = magic.auth.loginWithEmailOTP({ email, showUI: false })
       otpLogin
         .on('invalid-email-otp', () => {
@@ -96,6 +93,14 @@ const WalletConnectModal = (props) => {
       console.error(err)
     }
   }
+
+  const handleClose = () => {
+    setOpen(false)
+    setShowOtpUI(false)
+    setSigningUp(false)
+    setEmail()
+  }
+
   const supportedWallets = useMemo(() => {
     if (walletExtension) {
       return walletExtension.wallets.filter(
@@ -156,10 +161,7 @@ const WalletConnectModal = (props) => {
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={open}
-        onClose={() => {
-          setSigningUp(false) 
-          setOpen(false)
-        }}
+        onClose={handleClose}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
@@ -186,33 +188,37 @@ const WalletConnectModal = (props) => {
               />
             )}
 
+
+            {!showOtpUI && (
             <Box sx={{ mt: 1 }}>
               <Typography onClick={handleWalletCollapse}>
                 <a style={{ textDecoration: 'underline' }}>
                   {showWallets ? 'Hide Wallets' : walletText}
                 </a>
               </Typography>
-
-              <Collapse in={showWallets} timeout="auto" unmountOnExit>
-                <WalletButtons>
-                  {supportedWallets?.map((wallet) => (
-                    <Button
-                      key={wallet.adapter.name}
-                      style={{ marginTop: '15px' }}
-                      color="primary"
-                      variant="outlined"
-                      onClick={(event) =>
-                        handleWalletClickEvent(event, wallet.adapter.name)
-                      }
-                    >
-                      <Typography>
-                        {wallet.adapter.name}
-                      </Typography>
-                    </Button>
-                  ))}
-                </WalletButtons>
-              </Collapse>
+                <Collapse in={showWallets} timeout="auto" unmountOnExit>
+                  <WalletButtons>
+            
+                    {supportedWallets?.map((wallet) => (
+                      <Button
+                        key={wallet.adapter.name}
+                        style={{ marginTop: '15px' }}
+                        color="primary"
+                        variant="outlined"
+                        onClick={(event) =>
+                          handleWalletClickEvent(event, wallet.adapter.name)
+                        }
+                      >
+                        <Typography>
+                          {wallet.adapter.name}
+                        </Typography>
+                      </Button>
+                    ))}
+                  </WalletButtons>
+                </Collapse>
             </Box>
+            )}
+
           </StyledPaper>
         </Fade>
       </StyledModal>
@@ -237,6 +243,11 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   zIndex: '10',
   display: 'flex',
   flexDirection: 'column',
+  [theme.breakpoints.down('md')]: {
+    width: '90vw',
+    padding: theme.spacing(2),
+
+  },
 }))
 
 const WalletButtons = styled(Box)(() => ({

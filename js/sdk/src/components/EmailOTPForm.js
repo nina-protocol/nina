@@ -128,14 +128,6 @@ export default function EmailOTP({ login, email, setPending, pending }) {
           >
             {pending ? <Dots size="40px" /> : 'Submit'}
           </Button>
-          <Button
-            id="cancel-otp"
-            onClick={handleCancel}
-            variant="outlined"
-            disabled={disabled}
-          >
-            Cancel
-          </Button>
         </Ctas>
       </form>
     </Root>
@@ -148,7 +140,7 @@ const Ctas = styled(Box)(() => ({
   flexDirection: 'column',
 }))
 
-const Root = styled(Box)(() => ({
+const Root = styled(Box)(({theme}) => ({
   '.MuiOtpInput-TextField':{
     '& input': {
       fontSize: '30px'
@@ -156,5 +148,16 @@ const Root = styled(Box)(() => ({
   },
   '.MuiOtpInput-TextField:last-of-type': {
     display: 'none',
+  },
+  [theme.breakpoints.down('md')]: {
+    // width: '90vw',
+    // padding: theme.spacing(1),
+    '.MuiOtpInput-TextField': {
+      '& input': {
+        border: '2px solid red !important',
+        fontSize: 'unset'
+      }
+    },
+
   },
 }))

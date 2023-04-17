@@ -115,7 +115,7 @@ const NavBar = () => {
                 <StyledWalletButton router={router}>
                   {wallet?.connected &&
                     `${wallet.wallet.adapter.name} – ${walletDisplay}`}
-                  {!wallet?.connected && 'Login'}
+                  {!wallet?.connected && 'Sign In'}
                 </StyledWalletButton>
                 {/* <DevnetIndicator /> */}
               </StyledWalletDialogProvider>
