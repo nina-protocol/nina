@@ -22,7 +22,6 @@ import NinaBox from './NinaBox'
 import Dots from './Dots'
 import ImageMediaDropzone from './ImageMediaDropzone'
 import roundUp from '../utils/formatting'
-const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
 const ColorModal = dynamic(() => import('./ColorModal'), { ssr: false })
 const HubCreateSuccess = dynamic(() => import('./HubCreateSuccess'), {
@@ -35,7 +34,6 @@ import {
   UploadType,
   uploadHasItemForType,
 } from '../utils/uploadManager'
-import LowSolWarning from './LowSolWarning'
 import NoSolWarning from './NoSolWarning'
 
 const HubCreateSchema = Yup.object().shape({
@@ -57,18 +55,12 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     bundlrBalance,
     bundlrPricePerMb,
     solPrice,
-    getNpcAmountHeld,
-    npcAmountHeld,
-    ninaClient,
     solBalance,
-
     NinaProgramActionCost,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
   } = useContext(Nina.Context)
   const hubCreateFee = roundUp(NinaProgramActionCost?.HUB_INIT_WITH_CREDIT, 3)
-  const formattedSolBalance =
-    ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol).toFixed(3) || 0
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
   const [hubPubkey, setHubPubkey] = useState(hubData?.publicKey || undefined)
