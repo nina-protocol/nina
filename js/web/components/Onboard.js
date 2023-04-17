@@ -343,7 +343,7 @@ const Onboard = () => {
         <Stepper activeStep={activeStep} orientation="vertical">
           {steps.map((step, index) => {
             return (
-              <Step key={index}>
+              <NinaStep key={index}>
                 <StepLabel>{step.title}</StepLabel>
                 <StepContent>
                   <Typography variant="body1" mb={1}>
@@ -359,7 +359,7 @@ const Onboard = () => {
                     {step.cta}
                   </Box>
                 </StepContent>
-              </Step>
+              </NinaStep>
             )
           })}
         </Stepper>
@@ -488,6 +488,15 @@ const ClaimCodeButton = styled(Button)(({ theme }) => ({
   color: theme.palette.black,
   fontSize: '12px',
   width: '100%',
+}))
+
+const NinaStep = styled(Step)(({ theme }) => ({
+  '& .MuiStepLabel-root .Mui-completed': {
+    color: theme.palette.blue,
+  },
+  '& .MuiStepLabel-root .Mui-active': {
+    color: theme.palette.blue,
+  },
 }))
 
 const HtmlTooltip = styled(({ className, ...props }) => (
