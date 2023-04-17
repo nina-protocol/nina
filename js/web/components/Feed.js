@@ -608,7 +608,7 @@ const Feed = ({
       {feedItems && wallet?.connected && (
         <Box>
           <FeedWrapper ref={scrollRef}>
-            {!items && (
+            {!items || items.length === 0 && (
               <Box
                 sx={{
                   display: 'flex',
