@@ -90,9 +90,11 @@ export default function EmailOTP({ login, email, setPending, pending }) {
 
   return (
     <Root id="otp-component">
-      <Typography variant="h3" style={{ marginBottom: '15px' }}>
-        Your account was succesfully created.
-      </Typography>
+      {signingUp && (
+        <Typography variant="h3" style={{ marginBottom: '15px' }}>
+          Your account was succesfully created.
+        </Typography>
+      )}
       <Typography variant="h3" style={{ marginBottom: '15px' }}>
         A one-time passcode was sent to <i>{email}</i>.
       </Typography>
