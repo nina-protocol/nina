@@ -70,10 +70,13 @@ const NoSolWarning = (props) => {
               <StyledTypography component="p" gutterBottom>
                 {`Please add more ${currency} to your wallet to ${actionText}.`}
               </StyledTypography>
-              <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                <StyledTypography component="p" gutterBottom>
-                  {`For any questions, please reach out to us at `}
-                </StyledTypography>
+              <StyledTypography
+                component="p"
+                gutterBottom
+                sx={{ display: 'flex', flexDirection: 'row' }}
+              >
+                {`For any questions, please reach out to us at`}
+                &nbsp;
                 <Link href="mailto:contact@ninaprotocol.com">
                   <a
                     target="_blank"
@@ -85,10 +88,8 @@ const NoSolWarning = (props) => {
                     </ContactTypography>
                   </a>
                 </Link>
-                <StyledTypography component="p" gutterBottom>
-                  {`.`}
-                </StyledTypography>
-              </Box>
+                {`.`}
+              </StyledTypography>
               <Button
                 style={{ marginTop: '15px' }}
                 color="primary"
@@ -138,7 +139,6 @@ const ContactTypography = styled(Typography)(({ theme }) => ({
   color: theme.palette.blue,
   marginTop: '0px',
   marginBottom: '0px',
-  marginLeft: '6px',
   textDecoration: 'none',
 }))
 
