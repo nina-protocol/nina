@@ -12,7 +12,6 @@ export default function EmailForm({
   setEmail,
   signingUp,
   pending, 
-  setPending
 }) {
   const [placeholder, setPlaceholder] = useState('Enter your email')
   // const [pending, setPending] = useState(false)
@@ -22,7 +21,6 @@ export default function EmailForm({
     
   const handleSubmit = async (e) => {
     // setPending(true)
-    console.log('pending 22222:>> ', pending);
     e.preventDefault()
     if (!email) {
       setPlaceholder('Please enter valid email')
@@ -31,8 +29,6 @@ export default function EmailForm({
     await handleEmailLoginCustom(email)
     // setPending(false)
   }
-
-  console.log('pending !!!!!:>> ', pending);
 
   return (
     <LoginWrapper>
@@ -49,7 +45,9 @@ export default function EmailForm({
         />
 
         <Button variant="outlined" type="submit">
-          {pending ? <Dots size="30px" /> : buttonText}
+          <Typography variant='body1'>
+            {pending ? <Dots size="30px" /> : buttonText}
+          </Typography>
         </Button>
       </form>
     </LoginWrapper>

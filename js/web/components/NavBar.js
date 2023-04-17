@@ -101,16 +101,9 @@ const NavBar = () => {
             </UploadWrapper>
 
             {!wallet?.connected && (
-
               <>
-                <Link
-                  href="/getStarted"
-                  style={{textTransform: 'none'}}
-                >
-                  <SignUpLink variant="body1"
-                    component={'a'}
-                    style={{fontSize: '10px !important'}}
-                  >
+                <Link href="/getStarted" style={{ textTransform: 'none' }}>
+                  <SignUpLink variant="body1" component={'a'}>
                     Sign Up
                   </SignUpLink>
                 </Link>
@@ -135,7 +128,6 @@ const NavBar = () => {
     </Root>
   )
 }
-
 
 const Root = styled('nav')(({ theme }) => ({
   background: `${theme.palette.transparent}`,
@@ -189,7 +181,6 @@ const SearchBarWrapper = styled('div')(({ theme }) => ({
   },
 }))
 const UploadWrapper = styled('div')(({ theme }) => ({
-  marginRight: theme.spacing(1),
   [theme.breakpoints.down('md')]: {
     display: 'none',
   },
@@ -287,7 +278,7 @@ const StyledWalletButton = styled(WalletButton)(({ theme }) => ({
   backgroundColor: `${theme.palette.transparent} !important`,
   boxShadow: 'none !important',
   paddingTop: '0 !important',
-  // marginTop: '2px',
+  marginTop: '2px',
   '& img': {
     display: 'none',
   },
@@ -299,18 +290,16 @@ const StyledWalletButton = styled(WalletButton)(({ theme }) => ({
   },
 }))
 
-
 const BlueTypography = styled(Typography)(({ theme }) => ({
   '& a': { color: theme.palette.blue },
   cursor: 'pointer',
 }))
 
-const SignUpLink = styled(Typography)(({theme}) => ({
+const SignUpLink = styled(Typography)(({ theme }) => ({
   color: `${theme.palette.blue} !important`,
   border: '1px solid blue',
-  padding: '4px'
-})) 
-
+  padding: '4px',
+}))
 
 export default withFormik({
   enableReinitialize: true,

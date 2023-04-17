@@ -34,8 +34,19 @@ const WalletConnectModal = (props) => {
   const [email, setEmail] = useState()
 
   const handleWalletCollapse = () => {
+    localStorage.setItem('nina_magic_wallet', showWallets)
     setShowWallets(!showWallets)
   }
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const prefersMagicWallet = localStorage.getItem('nina_magic_wallet')
+      if (prefersMagicWallet === 'false') {
+        console.log('in here');
+        setShowWallets(true)
+      }
+    }
+  }, [])
 
   const handleLogin = async (email) => {
     setPending(true)
@@ -49,6 +60,9 @@ const WalletConnectModal = (props) => {
 
     try {
       // setOtpLogin()
+      localStorage.setItem('nina_magic_wallet', 'true')
+
+      console.log('localStorage.nina_magic_wallet :>> ', localStorage.nina_magic_wallet);
       const otpLogin = magic.auth.loginWithEmailOTP({ email, showUI: false })
       otpLogin
         .on('invalid-email-otp', () => {
@@ -192,7 +206,7 @@ const WalletConnectModal = (props) => {
                       }
                     >
                       <Typography>
-                        Connect Wallet: {wallet.adapter.name}
+                        {wallet.adapter.name}
                       </Typography>
                     </Button>
                   ))}
@@ -236,7 +250,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
   // padding: '16px 20px',
   // color: theme.palette.black,
   width: '100%',
-  fontSize: '12px !important',
+  // fontSize: '12px',
 }))
 
 export default WalletConnectModal
