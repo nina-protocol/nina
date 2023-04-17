@@ -187,10 +187,6 @@ const ReleasePurchase = (props) => {
   return (
     <ReleasePurchaseWrapper mt={1}>
       <NoSolWarning
-        requiredSol={ninaClient.nativeToUiString(
-          release.price,
-          release.paymentMint
-        )}
         action="purchase"
         open={showNoSolModal}
         setOpen={setShowNoSolModal}

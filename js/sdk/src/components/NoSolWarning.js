@@ -5,14 +5,12 @@ import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
-import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
 
 const NoSolWarning = (props) => {
-  const { requiredSol, action, open, setOpen } = props
+  const { action, open, setOpen } = props
   const [actionText, setActionText] = useState('')
-  const [currency, setCurrency] = useState('SOL')
   useEffect(() => {
     switch (action) {
       case 'publish':
@@ -25,18 +23,6 @@ const NoSolWarning = (props) => {
         break
     }
   }, [action, actionText])
-
-  useEffect(() => {
-    switch (action) {
-      case 'publish':
-      case 'hub':
-        return setCurrency('SOL')
-      case 'purchase':
-        return setCurrency('USDC')
-      default:
-        break
-    }
-  }, [action, currency])
 
   const handleClose = () => {
     setOpen(false)
@@ -57,20 +43,13 @@ const NoSolWarning = (props) => {
         <Fade in={open}>
           <StyledPaper>
             <>
-              <StyledTypography variant="h4" sx={{ paddingBottom: '16px' }}>
-                {` You do not have enough ${currency} in your wallet to ${actionText}.`}
-              </StyledTypography>
-              <StyledTypography component="p" gutterBottom>
-                {`${requiredSol} ${currency} is required to ${actionText}.`}
-              </StyledTypography>
-              <StyledTypography component="p" gutterBottom>
-                {`You currently have 0
-            ${currency} in your wallet.`}
-              </StyledTypography>
-              <StyledTypography component="p" gutterBottom>
-                {`Please add more ${currency} to your wallet to ${actionText}.`}
-              </StyledTypography>
-              <StyledTypography
+              <Typography component="p" gutterBottom>
+                {`You do not have any SOL in your wallet.`}
+              </Typography>
+              <Typography component="p" gutterBottom>
+                {`Please add more SOL to your wallet to ${actionText}.`}
+              </Typography>
+              <Typography
                 component="p"
                 gutterBottom
                 sx={{ display: 'flex', flexDirection: 'row' }}
@@ -89,7 +68,7 @@ const NoSolWarning = (props) => {
                   </a>
                 </Link>
                 {`.`}
-              </StyledTypography>
+              </Typography>
               <Button
                 style={{ marginTop: '15px' }}
                 color="primary"
@@ -131,9 +110,9 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   flexDirection: 'column',
 }))
 
-const StyledTypography = styled(Typography)(() => ({
-  marginBottom: '20px',
-}))
+// const StyledTypography = styled(Typography)(() => ({
+//   marginBottom: '20px',
+// }))
 
 const ContactTypography = styled(Typography)(({ theme }) => ({
   color: theme.palette.blue,

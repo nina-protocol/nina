@@ -407,7 +407,6 @@ const HubCreate = ({ update, hubData, inHubs }) => {
       )}
 
       <NoSolWarning
-        requiredSol={hubCreateFee}
         action={'hub'}
         open={open}
         setOpen={setOpen}

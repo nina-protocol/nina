@@ -566,7 +566,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
       )}
 
       <NoSolWarning
-        requiredSol={releaseCreateFee}
         action={'publish'}
         open={open}
         setOpen={setOpen}
