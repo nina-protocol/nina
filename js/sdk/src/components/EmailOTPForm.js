@@ -126,7 +126,7 @@ export default function EmailOTP({ login, email, setPending, pending }) {
             disabled={disabled}
             style={{ marginBottom: '15px' }}
           >
-            {pending ? <Dots msg="Logging In" size="40px" /> : 'Submit'}
+            {pending ? <Dots size="40px" /> : 'Submit'}
           </Button>
           <Button
             id="cancel-otp"

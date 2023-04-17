@@ -30,7 +30,7 @@ const WalletConnectModal = (props) => {
   const [showWallets, setShowWallets] = useState(false)
   const [pending, setPending] = useState(false)
   const walletText = useMemo(() => {
-   return signingUp ? 'I want to sign up with a wallet' : 'I want to Login with a wallet'
+   return signingUp ? 'I want to sign up with a wallet' : 'I want to login with a wallet'
   }, [signingUp])
   const [email, setEmail] = useState()
 
@@ -73,7 +73,6 @@ const WalletConnectModal = (props) => {
         .on('settled', () => {
           setOtpLogin()
           setShowOtpUI(false)
-          // setOpen(false)
         })
         .catch((err) => {
           console.log('%cError caught during login:\n', 'color: orange')
