@@ -137,14 +137,15 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   )
 
   useEffect(() => {
-    if (wallet.connected && solBalance === 0) {
-      setOpen(true)
-    }
-  }, [])
-  useEffect(() => {
     refreshBundlr()
     getUserBalances()
   }, [])
+
+  useEffect(() => {
+    if (wallet.connected && solBalance === 0 && solBalanceFetched) {
+      setOpen(true)
+    }
+  }, [solBalanceFetched])
 
   useEffect(() => {
     const checkBalance = setInterval(() => {

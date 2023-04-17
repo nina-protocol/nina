@@ -55,8 +55,10 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     bundlrPricePerMb,
     solPrice,
     solBalance,
+    solBalanceFetched,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
+    getUserBalances,
   } = useContext(Nina.Context)
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
@@ -88,10 +90,14 @@ const HubCreate = ({ update, hubData, inHubs }) => {
   )
 
   useEffect(() => {
-    if (wallet.connected && solBalance === 0) {
+    getUserBalances()
+  }, [])
+
+  useEffect(() => {
+    if (wallet.connected && solBalance === 0 && solBalanceFetched) {
       setOpen(true)
     }
-  }, [])
+  }, [solBalanceFetched])
 
   useEffect(() => {
     if (isPublishing) {
