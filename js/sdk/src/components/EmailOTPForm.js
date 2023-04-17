@@ -96,7 +96,7 @@ export default function EmailOTP({ login, email, setPending, pending }) {
       <Typography variant="h3" style={{ marginBottom: '15px' }}>
         A one-time passcode was sent to <i>{email}</i>.
       </Typography>
-      </Typography> */}
+
       {message && (
         <div id="otp-message">
           <Typography variant="h6" gutterBottom>
