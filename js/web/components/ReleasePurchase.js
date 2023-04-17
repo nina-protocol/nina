@@ -364,7 +364,10 @@ const ReleasePurchase = (props) => {
             </StyledTypographyButtonSub>
           )}
 
-          <RedeemReleaseCode releasePubkey={releasePubkey} />
+          <RedeemReleaseCode
+            releasePubkey={releasePubkey}
+            gates={releaseGates?.length > 0}
+          />
         </Box>
       </Box>
     </Box>

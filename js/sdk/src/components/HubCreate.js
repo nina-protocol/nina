@@ -22,7 +22,6 @@ import NinaBox from './NinaBox'
 import Dots from './Dots'
 import ImageMediaDropzone from './ImageMediaDropzone'
 
-const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
 const ColorModal = dynamic(() => import('./ColorModal'), { ssr: false })
 const HubCreateSuccess = dynamic(() => import('./HubCreateSuccess'), {
@@ -55,8 +54,6 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     bundlrBalance,
     bundlrPricePerMb,
     solPrice,
-    getNpcAmountHeld,
-    npcAmountHeld,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
   } = useContext(Nina.Context)
@@ -89,9 +86,6 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
   )
-  useEffect(() => {
-    getNpcAmountHeld()
-  }, [wallet?.connected])
 
   useEffect(() => {
     if (isPublishing) {
@@ -394,38 +388,27 @@ const HubCreate = ({ update, hubData, inHubs }) => {
       />
     )
   }
+
+  if (!wallet.connected) {
+    return (
+      <ConnectMessage variant="body" gutterBottom>
+        Please connect your wallet to create a hub
+      </ConnectMessage>
+    )
+  }
   return (
     <StyledGrid item md={12}>
-      {!wallet.connected && (
-        <ConnectMessage variant="body" gutterBottom>
-          Please connect your wallet to create a hub
-        </ConnectMessage>
-      )}
-
-      {!update && wallet?.connected && npcAmountHeld === 0 && (
-        <Box width="50%" margin="24vh auto">
-          <BlueTypography
-            variant="h1"
-            align="left"
-            sx={{ padding: { md: '0px 0px', xs: '30px 0px' }, mb: 4 }}
-          >
-            You do not have any credits to create a Hub.
-          </BlueTypography>
-          <EmailCapture size="medium" />
-        </Box>
-      )}
-
       {update && (
         <Typography gutterBottom>
           Updating {hubData.data.displayName}
         </Typography>
       )}
-      {!update && npcAmountHeld > 0 && (
+      {!update && (
         <Typography variant="h3" gutterBottom>
           Create Hub
         </Typography>
       )}
-      {wallet?.connected && (update || npcAmountHeld > 0) > 0 && (
+      {wallet?.connected && (
         <NinaBox columns="500px" gridColumnGap="10px">
           <CreateFormWrapper>
             <HubCreateForm
@@ -606,13 +589,6 @@ const Warning = styled(Typography)(({ theme }) => ({
   textTransform: 'none !important',
   color: theme.palette.red,
   opacity: '85%',
-}))
-
-const BlueTypography = styled(Typography)(({ theme }) => ({
-  '& a': {
-    color: theme.palette.blue,
-    textDecoration: 'none',
-  },
 }))
 
 export default HubCreate
