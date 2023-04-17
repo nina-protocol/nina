@@ -5,14 +5,13 @@ import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import { Typography } from '@mui/material'
 import Dots from './Dots'
+import {fontSize} from '@material-ui/system'
 
 export default function EmailOTP({ login, email, setPending, pending }) {
   const [passcode, setPasscode] = useState('')
   const [retries, setRetries] = useState(2)
   const [message, setMessage] = useState()
   const [disabled, setDisabled] = useState(false)
-
-  console.log('pending in OTP:>> ', pending);
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -92,13 +91,12 @@ export default function EmailOTP({ login, email, setPending, pending }) {
   return (
     <Root id="otp-component">
       <Typography variant="h3" style={{ marginBottom: '15px' }}>
-        Enter one-time passcode
+        Your account was succesfully created.
       </Typography>
-      <Typography variant="body1" style={{ marginBottom: '15px' }}>
-        <>
-          ({`the code was sent to:`} <i>{email}</i>)
-        </>
+      <Typography variant="h3" style={{ marginBottom: '15px' }}>
+        A one-time passcode was sent to <i>{email}</i>.
       </Typography>
+      </Typography> */}
       {message && (
         <div id="otp-message">
           <Typography variant="h6" gutterBottom>
@@ -126,7 +124,7 @@ export default function EmailOTP({ login, email, setPending, pending }) {
             disabled={disabled}
             style={{ marginBottom: '15px' }}
           >
-            {pending ? <Dots size="40px" /> : 'Submit'}
+            {pending ? <Dots size="40px" /> : 'Continue'}
           </Button>
         </Ctas>
       </form>
@@ -150,12 +148,9 @@ const Root = styled(Box)(({theme}) => ({
     display: 'none',
   },
   [theme.breakpoints.down('md')]: {
-    // width: '90vw',
-    // padding: theme.spacing(1),
     '.MuiOtpInput-TextField': {
       '& input': {
-        border: '2px solid red !important',
-        fontSize: 'unset'
+        padding: theme.spacing(1, 0),
       }
     },
 

@@ -22,9 +22,9 @@ const WalletConnectModal = (props) => {
     Wallet.Context
   )
 
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const [signingUp, setSigningUp] = useState(false)
-  const [showOtpUI, setShowOtpUI] = useState(true)
+  const [showOtpUI, setShowOtpUI] = useState(false)
   const [otpLogin, setOtpLogin] = useState(undefined)
   const [showWallets, setShowWallets] = useState(false)
   const [pending, setPending] = useState(false)
@@ -41,7 +41,7 @@ const WalletConnectModal = (props) => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const prefersMagicWallet = localStorage.getItem('nina_magic_wallet')
-      if (prefersMagicWallet === 'false') {
+      if (prefersMagicWallet === 'false' || prefersMagicWallet === null) {
         setShowWallets(true)
       }
     }
@@ -58,7 +58,6 @@ const WalletConnectModal = (props) => {
     })
 
     try {
-      // setOtpLogin()
       localStorage.setItem('nina_magic_wallet', 'true')
       const otpLogin = magic.auth.loginWithEmailOTP({ email, showUI: false })
       otpLogin
@@ -86,7 +85,6 @@ const WalletConnectModal = (props) => {
         })
         .catch((err) => {
           console.log('%cError caught during login:\n', 'color: orange')
-
           console.log(err)
         })
     } catch (err) {
@@ -99,6 +97,7 @@ const WalletConnectModal = (props) => {
     setShowOtpUI(false)
     setSigningUp(false)
     setEmail()
+    setPending(false)
   }
 
   const supportedWallets = useMemo(() => {
@@ -111,6 +110,7 @@ const WalletConnectModal = (props) => {
 
   const handleWalletClickEvent = (event, walletName) => {
     event.preventDefault()
+    localStorage.setItem('nina_magic_wallet', 'false')
     wallet.select(walletName)
     setOpen(false)
   }
@@ -175,6 +175,7 @@ const WalletConnectModal = (props) => {
                 <Typography variant='body1'>To create an account, all you need is an email.</Typography>
               </Box>
             )}
+
             {showOtpUI ? (
               <EmailOTPForm login={otpLogin} email={email} pending={pending} setPending={setPending} />
             ) : (

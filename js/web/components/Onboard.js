@@ -126,7 +126,9 @@ const Onboard = () => {
 
       cta: (
         <>
-          <Button variant="outlined" onClick={() => handleClaimCode(code)}>
+          <Button
+          variant="outlined"
+          onClick={() => handleClaimCode(code)}>
             {pending ? <Dots size="40px" /> : 'Claim Code'}
           </Button>
           {claimedError && (
@@ -168,7 +170,7 @@ const Onboard = () => {
           <Button
             variant="outlined"
             onClick={() => setActiveStep(4)}
-            sx={{ marginTop: '10px', width: '100%' }}
+            sx={{marginTop: '10px', width: '100%'}}
           >
             Do this Later
           </Button>
@@ -187,25 +189,25 @@ const Onboard = () => {
           }}
         >
           <Link href="/dashboard">
-            <Button
-              variant="outlined"
-              sx={{ marginTop: '10px', width: '100%' }}
+            <Button 
+            variant="outlined"
+            sx={{marginTop: '10px', width: '100%'}}
             >
               Go to Dashboard
             </Button>
           </Link>
           <Link href="/hubs/create">
-            <Button
-              variant="outlined"
-              sx={{ marginTop: '10px', width: '100%' }}
+            <Button 
+            variant="outlined"
+            sx={{marginTop: '10px', width: '100%'}}
             >
               Create a Hub
             </Button>
           </Link>
           <Link href="/upload">
-            <Button
-              variant="outlined"
-              sx={{ marginTop: '10px', width: '100%' }}
+            <Button 
+            variant="outlined"
+            sx={{marginTop: '10px', width: '100%'}}
             >
               Publish a Track!!!!
             </Button>
@@ -242,7 +244,7 @@ const Onboard = () => {
           <Button
             variant="outlined"
             onClick={() => setActiveStep(2)}
-            sx={{ marginTop: '10px', width: '100%' }}
+            sx={{marginTop: '10px', width: '100%'}}
           >
             Do this Later
           </Button>
@@ -263,8 +265,8 @@ const Onboard = () => {
           >
             <Link href="/dashboard">
               <Button
-                variant="outlined"
-                sx={{ marginTop: '10px', width: '100%' }}
+              variant="outlined"
+              sx={{marginTop: '10px', width: '100%'}}
               >
                 Go to Dashboard
               </Button>
@@ -280,7 +282,7 @@ const Onboard = () => {
                 <Link href="/hubs/create">
                   <Button
                     variant="outlined"
-                    sx={{ marginTop: '10px', width: '100%' }}
+                    sx={{marginTop: '10px', width: '100%'}}
                     disabled={solBalance === 0}
                   >
                     Create a Hub
@@ -305,7 +307,7 @@ const Onboard = () => {
                     sx={{ marginTop: '10px', width: '100%' }}
                     disabled={solBalance === 0}
                   >
-                    Publish a Track2222
+                    Publish a Track
                   </Button>
                 </Link>
               </Box>
@@ -405,17 +407,27 @@ const Onboard = () => {
           }}
         >
           <Link href="/dashboard">
-            <Button variant="outlined" width="100%" sx={{ marginTop: '10px' }}>
+            <Button 
+              variant="outlined"
+              width='100%'
+             sx={{ marginTop: '10px' }}>
               Go to Dashboard
             </Button>
           </Link>
           <Link href="/hubs/create">
-            <Button variant="outlined" width="100%" sx={{ marginTop: '10px' }}>
+            <Button 
+              variant="outlined"
+              width='100%'
+
+            sx={{ marginTop: '10px' }}>
               Create a Hub
             </Button>
           </Link>
           <Link href="/upload">
-            <Button variant="outlined" width="100%" sx={{ marginTop: '10px' }}>
+            <Button 
+              variant="outlined"
+            width='100%'
+            sx={{ marginTop: '10px' }}>
               Publish a Track
             </Button>
           </Link>
