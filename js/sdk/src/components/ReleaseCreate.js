@@ -95,8 +95,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const formattedSolBalance = ninaClient
     .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
     .toFixed(3)
-  const noSol = wallet.connected && solBalance === 0
-
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState(undefined)
   const [uploadSize, setUploadSize] = useState()
@@ -126,7 +124,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const [processingProgress, setProcessingProgress] = useState()
   const [awaitingPendingReleases, setAwaitingPendingReleases] = useState(false)
   const [showLowUploadModal, setShowLowUploadModal] = useState(false)
-  const [open, setOpen] = useState(noSol)
+  const [open, setOpen] = useState(false)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
 
   const availableStorage = useMemo(
@@ -139,10 +137,10 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   )
 
   useEffect(() => {
-    if (wallet.connected && solBalance > 0) {
-      setOpen(false)
+    if (wallet.connected && solBalance === 0) {
+      setOpen(true)
     }
-  }, [solBalance])
+  }, [])
   useEffect(() => {
     refreshBundlr()
     getUserBalances()

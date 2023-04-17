@@ -21,7 +21,6 @@ import HubCreateConfirm from './HubCreateConfirm'
 import NinaBox from './NinaBox'
 import Dots from './Dots'
 import ImageMediaDropzone from './ImageMediaDropzone'
-import roundUp from '../utils/formatting'
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
 const ColorModal = dynamic(() => import('./ColorModal'), { ssr: false })
 const HubCreateSuccess = dynamic(() => import('./HubCreateSuccess'), {
@@ -56,12 +55,9 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     bundlrPricePerMb,
     solPrice,
     solBalance,
-    NinaProgramActionCost,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
   } = useContext(Nina.Context)
-  const hubCreateFee = roundUp(NinaProgramActionCost?.HUB_INIT_WITH_CREDIT, 3)
-  const noSol = wallet.connected && solBalance === 0
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
   const [hubPubkey, setHubPubkey] = useState(hubData?.publicKey || undefined)
@@ -81,7 +77,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
   const [hubCreated, setHubCreated] = useState(false)
   const [uploadId, setUploadId] = useState()
   const [publishingStepText, setPublishingStepText] = useState()
-  const [open, setOpen] = useState(noSol)
+  const [open, setOpen] = useState(false)
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
@@ -92,10 +88,10 @@ const HubCreate = ({ update, hubData, inHubs }) => {
   )
 
   useEffect(() => {
-    if (wallet.connected && solBalance > 0) {
-      setOpen(false)
+    if (wallet.connected && solBalance === 0) {
+      setOpen(true)
     }
-  }, [solBalance])
+  }, [])
 
   useEffect(() => {
     if (isPublishing) {
