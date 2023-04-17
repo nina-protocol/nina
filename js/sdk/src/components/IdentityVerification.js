@@ -268,14 +268,6 @@ const IdentityVerification = ({
   }
 
   const handleConnectAccount = async (type) => {
-    const error = await checkIfHasBalanceToCompleteAction(
-      NinaProgramAction.CONNECTION_CREATE
-    )
-    if (error) {
-      enqueueSnackbar(error.msg)
-      return
-    }
-
     localStorage.setItem('codeSource', type)
 
     switch (type) {
