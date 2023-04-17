@@ -40,26 +40,31 @@ const Balance = ({ profilePublishedReleases }) => {
   }
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', alignItems: 'baseline' }}>
       <BalanceWrapper balance={true}>
         <Typography variant="body2" sx={{ textDecoration: 'underline' }}>
           Balances
         </Typography>
       </BalanceWrapper>
       <BalanceWrapper>
-        <Typography variant="body2">{`sol: ${userSolBalance}`}</Typography>
+        <Typography variant="body2">{`sol: `}</Typography>
+        <Typography variant="body2">{`${userSolBalance}`}</Typography>
       </BalanceWrapper>
       <BalanceWrapper>
-        <Typography variant="body2">{`usdc: $${userUsdcBalance}`}</Typography>
+        <Typography variant="body2">{`usdc: `}</Typography>
+        <Typography variant="body2">{`$${userUsdcBalance}`}</Typography>
       </BalanceWrapper>
       {revenueSumForArtist > 0 && (
         <BalanceWrapper>
-          <Typography variant="body2">{`revenue owed: $${ninaClient
-            .nativeToUi(revenueSumForArtist, ninaClient.ids.mints.usdc)
-            .toFixed(2)}`}</Typography>
+          <Typography variant="body2" noWrap>{`revenue owed: `}</Typography>
+          <Typography variant="body2">
+            {`$${ninaClient
+              .nativeToUi(revenueSumForArtist, ninaClient.ids.mints.usdc)
+              .toFixed(2)}`}
+          </Typography>
         </BalanceWrapper>
       )}
-      <SwapModal refreshBalances={refreshBalances} />
+      <SwapModal refreshBalances={refreshBalances} inProfile={true} />
     </Box>
   )
 }
@@ -68,8 +73,8 @@ const BalanceWrapper = styled(Box)(({ theme, balance }) => ({
     color: 'black',
     textTransform: 'uppercase',
     borderRadius: '0px',
-    margin: balance ? '0px 8px 0px 204px' : '0 8px',
-    padding: '0px 0px 8px 0px',
+    margin: balance ? '0px 8px 0px 204px' : '0 16px',
+    padding: '0px',
     display: 'flex',
     alignItems: 'center',
     [theme.breakpoints.down('md')]: {

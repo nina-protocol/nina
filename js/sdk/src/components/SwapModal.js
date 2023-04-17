@@ -14,7 +14,7 @@ import Box from '@mui/material/Box'
 import Backdrop from '@mui/material/Backdrop'
 import AutorenewIcon from '@mui/icons-material/Autorenew'
 
-const SwapModal = ({refreshBalances}) => {
+const SwapModal = ({ refreshBalances, inProfile }) => {
   const { ninaClient, usdcBalance, solBalance } = useContext(Nina.Context)
   const { wallet, connection } = useContext(Wallet.Context)
   const [open, setOpen] = useState(false)
@@ -22,13 +22,22 @@ const SwapModal = ({refreshBalances}) => {
   const [quote, setQuote] = useState()
   const [isSolToUsdc, setIsSolToUsdc] = useState(false)
   const [baseCurrency, setBaseCurrency] = useState(ninaClient.ids.mints.usdc)
-  const [outputCurrency, setOutputCurrency] = useState(ninaClient.ids.mints.wsol)
+  const [outputCurrency, setOutputCurrency] = useState(
+    ninaClient.ids.mints.wsol
+  )
 
-  const multiplier = useMemo(() => isSolToUsdc ? 100 : 10000, [isSolToUsdc])
+  const multiplier = useMemo(() => (isSolToUsdc ? 100 : 10000), [isSolToUsdc])
 
   const outputAmount = useMemo(() => {
     if (quote) {
-      return Math.floor(ninaClient.nativeToUi(quote?.estimatedAmountOut.toNumber(), outputCurrency) * multiplier) / multiplier
+      return (
+        Math.floor(
+          ninaClient.nativeToUi(
+            quote?.estimatedAmountOut.toNumber(),
+            outputCurrency
+          ) * multiplier
+        ) / multiplier
+      )
     }
     return 0
   }, [quote])
@@ -38,22 +47,27 @@ const SwapModal = ({refreshBalances}) => {
   }, [usdcBalance, solBalance, isSolToUsdc])
 
   const refreshQuote = async () => {
-    const newBaseCurrency = isSolToUsdc ? ninaClient.ids.mints.wsol : ninaClient.ids.mints.usdc
+    const newBaseCurrency = isSolToUsdc
+      ? ninaClient.ids.mints.wsol
+      : ninaClient.ids.mints.usdc
     setBaseCurrency(newBaseCurrency)
-    setOutputCurrency(isSolToUsdc ? ninaClient.ids.mints.usdc : ninaClient.ids.mints.wsol)
+    setOutputCurrency(
+      isSolToUsdc ? ninaClient.ids.mints.usdc : ninaClient.ids.mints.wsol
+    )
 
     const sol = ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol)
 
     let defaultInputAmount = 0
     if (isSolToUsdc) {
-      if (sol > .1) {
-        defaultInputAmount = Math.floor(sol * .25 * multiplier) / multiplier
+      if (sol > 0.1) {
+        defaultInputAmount = Math.floor(sol * 0.25 * multiplier) / multiplier
       } else if (sol > 0) {
         defaultInputAmount = sol
       }
     } else {
       if (usdcBalance > 5) {
-        defaultInputAmount = Math.floor(usdcBalance * .25 * multiplier) / multiplier
+        defaultInputAmount =
+          Math.floor(usdcBalance * 0.25 * multiplier) / multiplier
       } else if (usdcBalance > 0) {
         defaultInputAmount = usdcBalance
       }
@@ -68,7 +82,14 @@ const SwapModal = ({refreshBalances}) => {
   const handleInputAmountChange = async (amount, currency = baseCurrency) => {
     setInputAmount(amount)
     if (amount > 0) {
-      setQuote(await swapQuote(wallet, connection, ninaClient.uiToNative(amount, currency), isSolToUsdc))
+      setQuote(
+        await swapQuote(
+          wallet,
+          connection,
+          ninaClient.uiToNative(amount, currency),
+          isSolToUsdc
+        )
+      )
     }
   }
 
@@ -81,8 +102,8 @@ const SwapModal = ({refreshBalances}) => {
   return (
     <Root>
       <StyledSmallToggle
-        align={'right'}
-        variant="subtitle1"
+        align={inProfile ? 'center' : 'right'}
+        variant={inProfile ? 'body2' : 'subtitle1'}
         textTransform={'none'}
         onClick={() => setOpen(true)}
       >
@@ -103,11 +124,12 @@ const SwapModal = ({refreshBalances}) => {
           <StyledPaper>
             <InputWrapper>
               <Typography
-              variant="h3"
-              sx={{ textAlign: 'center' }}
-              onClick={() => setIsSolToUsdc(!isSolToUsdc)}
+                variant="h3"
+                sx={{ textAlign: 'center' }}
+                onClick={() => setIsSolToUsdc(!isSolToUsdc)}
               >
-                {isSolToUsdc ? 'Swap SOL to USDC' : 'Swap USDC to SOL'}<AutorenewIcon sx={{marginLeft: '8px'}} fontSize='10px' />
+                {isSolToUsdc ? 'Swap SOL to USDC' : 'Swap USDC to SOL'}
+                <AutorenewIcon sx={{ marginLeft: '8px' }} fontSize="10px" />
               </Typography>
               <SwapWrapper>
                 <TextField
@@ -126,7 +148,7 @@ const SwapModal = ({refreshBalances}) => {
                     ),
                   }}
                 />
-                <Typography sx={{margin: '0 10px'}}>For</Typography>
+                <Typography sx={{ margin: '0 10px' }}>For</Typography>
                 <TextField
                   sx={{ width: '20%' }}
                   id={'swapOutput'}
@@ -175,7 +197,7 @@ const SwapWrapper = styled(Box)(() => ({
 
 const StyledSmallToggle = styled(Typography)(() => ({
   cursor: 'pointer',
-  margin: '5px 0',
+  margin: '5px',
   textDecoration: 'underline',
   '&:hover': {
     opacity: '50%',
@@ -203,6 +225,5 @@ const InputWrapper = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
 }))
-
 
 export default SwapModal
