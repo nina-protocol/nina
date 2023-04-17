@@ -119,8 +119,7 @@ const HomePage = ({ loading }) => {
               rel="noreferrer"
             >
               Learn More
-            </a>{' '}
-            or <EmailCapture size="large" />
+            </a>
           </BlueTypography>
         </Box>
       </HomePageContainer>
