@@ -61,6 +61,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     NinaProgramAction,
   } = useContext(Nina.Context)
   const hubCreateFee = roundUp(NinaProgramActionCost?.HUB_INIT_WITH_CREDIT, 3)
+  const noSol = wallet.connected && solBalance === 0
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
   const [hubPubkey, setHubPubkey] = useState(hubData?.publicKey || undefined)
@@ -80,7 +81,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
   const [hubCreated, setHubCreated] = useState(false)
   const [uploadId, setUploadId] = useState()
   const [publishingStepText, setPublishingStepText] = useState()
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(noSol)
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
@@ -89,6 +90,12 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
   )
+
+  useEffect(() => {
+    if (wallet.connected && solBalance > 0) {
+      setOpen(false)
+    }
+  }, [solBalance])
 
   useEffect(() => {
     if (isPublishing) {
@@ -159,12 +166,6 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     const artworkSize = artwork ? artwork.meta.size / 1000000 : 0
     setUploadSize(artworkSize.toFixed(2))
   }, [artwork])
-
-  useEffect(() => {
-    if (wallet.connected && solBalance === 0) {
-      setOpen(true)
-    }
-  }, [solBalance])
 
   const colorReset = () => {
     setBackgroundColor()
@@ -406,11 +407,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
         </ConnectMessage>
       )}
 
-      <NoSolWarning
-        action={'hub'}
-        open={open}
-        setOpen={setOpen}
-      />
+      <NoSolWarning action={'hub'} open={open} setOpen={setOpen} />
 
       {update && (
         <Typography gutterBottom>
