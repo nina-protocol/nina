@@ -56,7 +56,7 @@ const Balance = ({ profilePublishedReleases }) => {
       </BalanceWrapper>
       {revenueSumForArtist > 0 && (
         <BalanceWrapper>
-          <Typography variant="body2" noWrap>{`revenue owed: `}</Typography>
+          <Typography variant="body2" noWrap>{`to collect: `}</Typography>
           <Typography variant="body2">
             {`$${ninaClient
               .nativeToUi(revenueSumForArtist, ninaClient.ids.mints.usdc)
