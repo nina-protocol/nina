@@ -14,7 +14,6 @@ import { Magic } from 'magic-sdk'
 import { SolanaExtension } from '@magic-ext/solana'
 import EmailLoginForm from './EmailLoginForm'
 import EmailOTPForm from './EmailOTPForm'
-import Link from 'next/link'
 
 
 const WalletConnectModal = (props) => {
@@ -98,7 +97,7 @@ const WalletConnectModal = (props) => {
   }
 
   return (
-    <>
+    <Box>
       {inOnboardingFlow ? (
         <StyledButton
           onClick={() => {
@@ -127,6 +126,7 @@ const WalletConnectModal = (props) => {
             sx={{
               padding: '0px',
               textTransform: 'none',
+              fontSize: '14px',
               '&:hover': {
                 opacity: '50%',
               },
@@ -134,24 +134,6 @@ const WalletConnectModal = (props) => {
           >
               {children}
           </Button>
-        {!wallet?.connected && (
-          
-          <>
-              {' / '}
-            <Link
-            href="/getStarted"
-            style={{textTransform: 'none'}}
-            >
-              <StyledLink variant="subtitle1"
-                component={'a'}
-                style={{fontSize: '10px !important'}}
-              >
-                {' '}Sign Up
-              </StyledLink>
-            </Link>
-          </>
-          )}
-    
         </Box>
 
         
@@ -220,7 +202,7 @@ const WalletConnectModal = (props) => {
           </StyledPaper>
         </Fade>
       </StyledModal>
-    </>
+    </Box>
   )
 }
 
@@ -249,16 +231,12 @@ const WalletButtons = styled(Box)(() => ({
 }))
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  border: `1px solid ${theme.palette.black}`,
-  borderRadius: '0px',
-  padding: '16px 20px',
-  color: theme.palette.black,
+  // border: `1px solid ${theme.palette.black}`,
+  // borderRadius: '0px',
+  // padding: '16px 20px',
+  // color: theme.palette.black,
   width: '100%',
-  fontSize: '12px',
+  fontSize: '12px !important',
 }))
-
-const StyledLink = styled(Typography)(({ theme }) => ({
-  color: `${theme.palette.blue} !important`,
-})) 
 
 export default WalletConnectModal

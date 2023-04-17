@@ -99,6 +99,24 @@ const NavBar = () => {
                 </BlueTypography>
               )}
             </UploadWrapper>
+
+            {!wallet?.connected && (
+
+              <>
+                <Link
+                  href="/getStarted"
+                  style={{textTransform: 'none'}}
+                >
+                  <SignUpLink variant="body1"
+                    component={'a'}
+                    style={{fontSize: '10px !important'}}
+                  >
+                    Sign Up
+                  </SignUpLink>
+                </Link>
+              </>
+            )}
+
             {wallet?.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
                 <StyledWalletButton router={router}>
@@ -106,7 +124,7 @@ const NavBar = () => {
                     `${wallet.wallet.adapter.name} – ${walletDisplay}`}
                   {!wallet?.connected && 'Login'}
                 </StyledWalletButton>
-                <DevnetIndicator />
+                {/* <DevnetIndicator /> */}
               </StyledWalletDialogProvider>
             )}
           </NavCtas>
@@ -118,14 +136,6 @@ const NavBar = () => {
   )
 }
 
-const PREFIX = 'NavBar'
-
-const classes = {
-  nav: `${PREFIX}-nav`,
-  walletDialogProvider: `${PREFIX}-walletDialogProvider`,
-  walletButtonWrapper: `${PREFIX}-walletButtonWrapper`,
-  connectionDot: `${PREFIX}-connectionDot`,
-}
 
 const Root = styled('nav')(({ theme }) => ({
   background: `${theme.palette.transparent}`,
@@ -204,6 +214,9 @@ const DesktopWalletWrapper = styled(Box)(() => ({
   display: 'flex',
 }))
 const StyledWalletDialogProvider = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  margin: 'auto',
+  padding: '0px 15px',
   '& .MuiList-root': {
     background: `${theme.palette.transparent} !important`,
   },
@@ -270,10 +283,11 @@ const StyledWalletButton = styled(WalletButton)(({ theme }) => ({
   textTransform: 'capitalize',
   paddingRight: '20px',
   paddingLeft: '20px',
+  // fontSize: '20px',
   backgroundColor: `${theme.palette.transparent} !important`,
   boxShadow: 'none !important',
   paddingTop: '0 !important',
-  marginTop: '2px',
+  // marginTop: '2px',
   '& img': {
     display: 'none',
   },
@@ -285,28 +299,18 @@ const StyledWalletButton = styled(WalletButton)(({ theme }) => ({
   },
 }))
 
-const ConnectionDot = styled('span')(({ theme }) => ({
-  height: '11px',
-  width: '14px',
-  backgroundColor: theme.palette.red,
-  borderRadius: '50%',
-  display: 'inline-block',
-  marginTop: '4px',
-  '&.connected-healthy': {
-    backgroundColor: theme.palette.green,
-  },
-  '&.connected-unhealthy': {
-    backgroundColor: theme.palette.yellow,
-  },
-  [theme.breakpoints.down('md')]: {
-    marginRight: '15px',
-  },
-}))
 
 const BlueTypography = styled(Typography)(({ theme }) => ({
   '& a': { color: theme.palette.blue },
   cursor: 'pointer',
 }))
+
+const SignUpLink = styled(Typography)(({theme}) => ({
+  color: `${theme.palette.blue} !important`,
+  border: '1px solid blue',
+  padding: '4px'
+})) 
+
 
 export default withFormik({
   enableReinitialize: true,
