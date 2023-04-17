@@ -16,7 +16,7 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import axios from 'axios'
 
 const RedeemReleaseCode = (props) => {
-  const { releasePubkey } = props
+  const { releasePubkey, gates } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
   const [open, setOpen] = useState(false)
@@ -55,7 +55,7 @@ const RedeemReleaseCode = (props) => {
   }
   return (
     <Root>
-      <StyledButton onClick={() => setOpen(true)}>
+      <StyledButton onClick={() => setOpen(true)} gates={gates}>
         Redeem Release Code
       </StyledButton>
 
@@ -108,8 +108,8 @@ const Root = styled('div')(() => ({
 }))
 
 const StyledButton = styled(Button)(({ theme, gates }) => ({
-  position: 'absolute',
-  top: '110%',
+  position: gates ? 'absolute' : '',
+  top: gates ? '110%' : '',
   textDecoration: 'underline',
   padding: '0px',
   marginTop: gates ? '8px' : '0px',

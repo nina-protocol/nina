@@ -353,7 +353,7 @@ const ReleasePurchase = (props) => {
           inSettings={false}
           releaseGates={releaseGates}
         />
-        <Box sx={{ position: 'absolute', top: '110%' }} align="center">
+        <GatesNotification gates={releaseGates?.length}>
           {releaseGates && amountHeld === 0 && (
             <StyledTypographyButtonSub>
               {`There ${releaseGates?.length > 1 ? 'are' : 'is'} ${
@@ -368,7 +368,7 @@ const ReleasePurchase = (props) => {
             releasePubkey={releasePubkey}
             gates={releaseGates?.length > 0}
           />
-        </Box>
+        </GatesNotification>
       </Box>
     </Box>
   )
@@ -412,6 +412,13 @@ const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({
     maxHeight: releaseGates ? '182px' : '256px',
     overflowY: 'scroll',
   },
+}))
+
+const GatesNotification = styled(Box)(({ theme, gates }) => ({
+  alignItems: 'center',
+  position: 'absolute',
+  top: '110%',
+  width: gates ? 'auto' : '100%',
 }))
 
 export default ReleasePurchase
