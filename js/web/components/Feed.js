@@ -608,30 +608,31 @@ const Feed = ({
       {feedItems && wallet?.connected && (
         <Box>
           <FeedWrapper ref={scrollRef}>
-            {!items && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  mt: 5,
-                  mb: 5,
-                  textAlign: 'left',
-                }}
-              >
-                <Typography variant="h5" mb={1}>
-                  Welcome to the Nina Navigator.
-                </Typography>
-                <Typography variant="h4" mb={1}>
-                  Here you will see recent activity and recommendations based on
-                  your Releases, Collection, and who you Follow.
-                </Typography>
-                <Typography variant="h4">
-                  Switch to the &apos;SUGGESTIONS&apos; tab to start following
-                  some Hubs.
-                </Typography>
-              </Box>
-            )}
+            {!items ||
+              (items.length === 0 && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    mt: 5,
+                    mb: 5,
+                    textAlign: 'left',
+                  }}
+                >
+                  <Typography variant="h5" mb={1}>
+                    Welcome to the Nina Navigator.
+                  </Typography>
+                  <Typography variant="h4" mb={1}>
+                    Here you will see recent activity and recommendations based
+                    on your Releases, Collection, and who you Follow.
+                  </Typography>
+                  <Typography variant="h4">
+                    Switch to the &apos;SUGGESTIONS&apos; tab to start following
+                    some Hubs.
+                  </Typography>
+                </Box>
+              ))}
             {feedItems?.map((item, index) => (
               <CardWrapper key={index}>{item}</CardWrapper>
             ))}
