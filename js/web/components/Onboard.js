@@ -19,15 +19,11 @@ import StepContent from '@mui/material/StepContent'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import IdentityVerification from '@nina-protocol/nina-internal-sdk/esm/IdentityVerification'
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
-import makeStyles from '@mui/styles/core'
 import dynamic from 'next/dynamic'
-import { render } from 'react-dom'
 
 const BundlrModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/BundlrModal')
 )
-
-
 
 const Onboard = () => {
   const router = useRouter()
@@ -96,14 +92,6 @@ const Onboard = () => {
     }
   }, [bundlrUsdBalance])
 
-    const useStyles = makeStyles(() => ({
-      root: {
-        '& .MuiStepIcon-active': { color: 'red' },
-        '& .MuiStepIcon-completed': { color: 'green' },
-        '& .Mui-disabled .MuiStepIcon-root': { color: 'cyan' },
-      },
-    }))
-    const classes = useStyles()
   const renderToolTop = (copy, link) => {
     return (
       <Box>
@@ -118,7 +106,7 @@ const Onboard = () => {
       </Box>
     )
   }
-
+  // MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiStepIcon-root Mui-active css-19tjt4z-MuiSvgIcon-root-MuiStepIcon-root
   const onboardingSteps = [
     {
       title: 'Login or Sign Up',
@@ -351,11 +339,11 @@ const Onboard = () => {
   const renderSteps = (steps) => {
     return (
       <Box sx={{ width: '75%' }}>
-        <Stepper className={classes.root} activeStep={activeStep} orientation="vertical">
+        <Stepper activeStep={activeStep} orientation="vertical">
           {steps.map((step, index) => {
             return (
               <NinaStep key={index}>
-                <NinaStepLabel>{step.title}</NinaStepLabel>
+                <StepLabel>{step.title}</StepLabel>
                 <StepContent>
                   <Typography variant="body1" mb={1}>
                     {step.content}
@@ -502,20 +490,18 @@ const ClaimCodeButton = styled(Button)(({ theme }) => ({
 }))
 
 const NinaStep = styled(Step)(({ theme }) => ({
-  // MuiStepLabel-iconContainer Mui-completed css-vnkopk-MuiStepLabel-iconContainer
-  '& .MuiStepIcon-active': {
-    color: `${theme.palette.blue} !important`,
+  '& .MuiStepLabel-iconContainer .Mui-completed': {
+    color: theme.palette.blue,
   },
-  '& .MuiStepIcon-completed .MuiStepIcon-root': {
-    color: `${theme.palette.black} !important`,
+  '& .MuiStepLabel-iconContainer .Mui-active': {
+    color: theme.palette.blue,
   },
-}))
-
-const NinaStepLabel = styled(StepLabel)(({ theme }) => ({
-  '& .MuiStepLabel-iconContainer .Mui-completed .css-vnkopk-MuiStepLabel-iconContainer':
-    {
-      color: `${theme.palette.blue} !important`,
-    },
+  '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel': {
+    color: theme.palette.black,
+  },
+  '& .MuiStepLabel-root .Mui-active .MuiStepIcon-text': {
+    fill: theme.palette.white,
+  },
 }))
 
 const HtmlTooltip = styled(({ className, ...props }) => (
