@@ -92,7 +92,7 @@ const ExchangeComponent = (props) => {
 
   const handleExchangeAction = async (exchange) => {
     let result
-    setNoSolModalAction('purchase')
+    setNoSolModalAction('buy offer')
     if (solBalance === 0) {
       setOpenNoSolModal(true)
       return
@@ -148,9 +148,8 @@ const ExchangeComponent = (props) => {
       isSelling: !isBuy,
       isInit: true,
     }
-    isBuy ? setNoSolModalAction('purchase') : setNoSolModalAction('sell')
+    isBuy ? setNoSolModalAction('create offer') : setNoSolModalAction('sell')
     if (solBalance === 0) {
-      console.log(noSolModalAction)
       setOpenNoSolModal(true)
       return
     }

@@ -13,14 +13,18 @@ const NoSolWarning = (props) => {
   const [actionText, setActionText] = useState('')
   useEffect(() => {
     switch (action) {
-      case 'publish':
+      case 'upload':
         return setActionText('upload a Release')
       case 'hub':
         return setActionText('create a Hub')
       case 'purchase':
         return setActionText('purchase this Release')
       case 'sell':
-        return setActionText('sell this Release')
+        return setActionText('create this listing')
+      case 'buy offer':
+        return setActionText('complete this exchange')
+      case 'create offer':
+        return setActionText('create this buy offer')
       default:
         break
     }
