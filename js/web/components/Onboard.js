@@ -106,7 +106,6 @@ const Onboard = () => {
       </Box>
     )
   }
-  // MuiSvgIcon-root MuiSvgIcon-fontSizeMedium MuiStepIcon-root Mui-active css-19tjt4z-MuiSvgIcon-root-MuiStepIcon-root
   const onboardingSteps = [
     {
       title: 'Login or Sign Up',
