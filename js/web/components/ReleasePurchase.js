@@ -36,6 +36,10 @@ const RedeemReleaseCode = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/RedeemReleaseCode')
 )
 
+const NoSolWarning = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/NoSolWarning')
+)
+
 const ReleasePurchase = (props) => {
   const {
     releasePubkey,
@@ -60,6 +64,7 @@ const ReleasePurchase = (props) => {
     collection,
     ninaClient,
     usdcBalance,
+    solBalance,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
   } = useContext(Nina.Context)
@@ -76,6 +81,7 @@ const ReleasePurchase = (props) => {
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
   const [publishedHub, setPublishedHub] = useState()
   const [description, setDescription] = useState()
+  const [showNoSolModal, setShowNoSolModal] = useState(false)
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
     [releasePubkey, releasePurchaseTransactionPending]
@@ -161,6 +167,12 @@ const ReleasePurchase = (props) => {
       })
       return
     }
+
+    if (solBalance === 0) {
+      setShowNoSolModal(true)
+      return
+    }
+
     let result
     if ((!amountHeld || amountHeld === 0) && release.price > 0) {
       const error = await checkIfHasBalanceToCompleteAction(
@@ -229,6 +241,16 @@ const ReleasePurchase = (props) => {
 
   return (
     <Box sx={{ position: 'relative', height: '100%' }}>
+      <NoSolWarning
+        requiredSol={ninaClient.nativeToUiString(
+          release.price,
+          release.paymentMint
+        )}
+        action={'purchase'}
+        open={showNoSolModal}
+        setOpen={setShowNoSolModal}
+      />
+
       <Box>
         <AmountRemaining variant="body2" align="left">
           {release.editionType === 'open' ? (
@@ -325,7 +347,7 @@ const ReleasePurchase = (props) => {
           background: 'white',
         }}
       >
-        <Box sx={{ mb: 1, mt: 1 }}>
+        <Box sx={{ mt: 1 }}>
           <form onSubmit={handleSubmit}>
             <Button
               variant="outlined"
@@ -353,22 +375,21 @@ const ReleasePurchase = (props) => {
           inSettings={false}
           releaseGates={releaseGates}
         />
-        <Box sx={{ position: 'absolute', top: '110%' }} align="center">
-          {releaseGates && amountHeld === 0 && (
-            <StyledTypographyButtonSub>
-              {`There ${releaseGates?.length > 1 ? 'are' : 'is'} ${
-                releaseGates?.length
-              } ${
-                releaseGates?.length > 1 ? 'files' : 'file'
-              } available for download exclusively to owners of this release.`}
-            </StyledTypographyButtonSub>
-          )}
+        {amountHeld === 0 && (
+          <GatesNotification gates={releaseGates?.length}>
+            {releaseGates && (
+              <StyledTypographyButtonSub>
+                {`There ${releaseGates?.length > 1 ? 'are' : 'is'} ${
+                  releaseGates?.length
+                } ${
+                  releaseGates?.length > 1 ? 'files' : 'file'
+                } available for download exclusively to owners of this release.`}
+              </StyledTypographyButtonSub>
+            )}
 
-          <RedeemReleaseCode
-            releasePubkey={releasePubkey}
-            gates={releaseGates?.length > 0}
-          />
-        </Box>
+            <RedeemReleaseCode releasePubkey={releasePubkey} />
+          </GatesNotification>
+        )}
       </Box>
     </Box>
   )
@@ -412,6 +433,13 @@ const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({
     maxHeight: releaseGates ? '182px' : '256px',
     overflowY: 'scroll',
   },
+}))
+
+const GatesNotification = styled(Box)(({ theme, gates }) => ({
+  alignItems: 'center',
+  position: 'absolute',
+  top: '110%',
+  width: gates ? 'auto' : '100%',
 }))
 
 export default ReleasePurchase
