@@ -353,22 +353,21 @@ const ReleasePurchase = (props) => {
           inSettings={false}
           releaseGates={releaseGates}
         />
-        <GatesNotification gates={releaseGates?.length}>
-          {releaseGates && amountHeld === 0 && (
-            <StyledTypographyButtonSub>
-              {`There ${releaseGates?.length > 1 ? 'are' : 'is'} ${
-                releaseGates?.length
-              } ${
-                releaseGates?.length > 1 ? 'files' : 'file'
-              } available for download exclusively to owners of this release.`}
-            </StyledTypographyButtonSub>
-          )}
+        {amountHeld === 0 && (
+          <GatesNotification gates={releaseGates?.length}>
+            {releaseGates && (
+              <StyledTypographyButtonSub>
+                {`There ${releaseGates?.length > 1 ? 'are' : 'is'} ${
+                  releaseGates?.length
+                } ${
+                  releaseGates?.length > 1 ? 'files' : 'file'
+                } available for download exclusively to owners of this release.`}
+              </StyledTypographyButtonSub>
+            )}
 
-          <RedeemReleaseCode
-            releasePubkey={releasePubkey}
-            gates={releaseGates?.length > 0}
-          />
-        </GatesNotification>
+            <RedeemReleaseCode releasePubkey={releasePubkey} />
+          </GatesNotification>
+        )}
       </Box>
     </Box>
   )

@@ -761,7 +761,10 @@ const ninaContextHelper = ({
       setUsdcBalance(0)
       setSolUsdcBalance(0)
     }
-    return { usdc, sol: ninaClient.nativeToUi(solBalanceResult, ids.mints.wsol) }
+    return {
+      usdc,
+      sol: ninaClient.nativeToUi(solBalanceResult, ids.mints.wsol),
+    }
   }
 
   const getNpcAmountHeld = async () => {

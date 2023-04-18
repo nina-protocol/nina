@@ -108,8 +108,8 @@ const Root = styled('div')(() => ({
 }))
 
 const StyledButton = styled(Button)(({ theme, gates }) => ({
-  position: gates ? 'absolute' : '',
-  top: gates ? '110%' : '',
+  // position: gates ? 'absolute' : '',
+  // top: gates ? '110%' : '',
   textDecoration: 'underline',
   padding: '0px',
   marginTop: '0px',
