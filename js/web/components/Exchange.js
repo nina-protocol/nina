@@ -94,6 +94,7 @@ const ExchangeComponent = (props) => {
 
     if (solBalance === 0) {
       setOpenNoSolModal(true)
+      return
     }
 
     if (exchange.isInit) {
@@ -146,6 +147,11 @@ const ExchangeComponent = (props) => {
       amount: ninaClient.uiToNative(amount, release.paymentMint),
       isSelling: !isBuy,
       isInit: true,
+    }
+
+    if (solBalance === 0) {
+      setOpenNoSolModal(true)
+      return
     }
 
     const exchangeCompletedByInput = filterExchangeMatch(
