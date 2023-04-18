@@ -171,6 +171,13 @@ const lightThemeOptions = {
         },
       },
     },
+    MuiPaper: {
+      styleOverrides:{
+        root: {
+          outline: 'none',
+        }
+      }
+    },
     MuiSlider: {
       styleOverrides: {
         thumb: {

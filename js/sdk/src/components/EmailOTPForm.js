@@ -115,6 +115,7 @@ export default function EmailOTP({ login, email, setPending, pending }) {
           onComplete={(value) => {
             autoSubmit(value, login)
           }}
+  
         />
         <Ctas sx={{ my: 1 }}>
           <Button
@@ -141,7 +142,10 @@ const Ctas = styled(Box)(() => ({
 const Root = styled(Box)(({theme}) => ({
   '.MuiOtpInput-TextField':{
     '& input': {
-      fontSize: '30px'
+      fontSize: '30px',
+      '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+        '-webkit-appearance': 'none',
+      }
     }
   },
   '.MuiOtpInput-TextField:last-of-type': {
