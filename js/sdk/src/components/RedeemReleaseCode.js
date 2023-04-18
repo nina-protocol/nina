@@ -112,7 +112,7 @@ const StyledButton = styled(Button)(({ theme, gates }) => ({
   top: gates ? '110%' : '',
   textDecoration: 'underline',
   padding: '0px',
-  marginTop: gates ? '8px' : '0px',
+  marginTop: '0px',
   color: theme.palette.grey[500],
   textTransform: 'capitalize',
 }))
