@@ -41,51 +41,48 @@ const Balance = ({ profilePublishedReleases }) => {
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'baseline' }}>
-      <BalanceWrapper balance={true}>
-        <Typography variant="body2" sx={{ textDecoration: 'underline' }}>
+      <Box sx={{ marginLeft: '100px' }}>
+        <StyledTypography variant="body2" sx={{ textDecoration: 'underline' }}>
           Balances
-        </Typography>
-      </BalanceWrapper>
-      <BalanceWrapper>
-        <Typography variant="body2">{`sol: `}</Typography>
-        <Typography variant="body2">{`${userSolBalance}`}</Typography>
-      </BalanceWrapper>
-      <BalanceWrapper>
-        <Typography variant="body2">{`usdc: `}</Typography>
-        <Typography variant="body2">{`$${userUsdcBalance}`}</Typography>
-      </BalanceWrapper>
+        </StyledTypography>
+      </Box>
+      <StyledBox>
+        <StyledTypography variant="body2">{`sol: `}</StyledTypography>
+        <StyledTypography variant="body2">{`${userSolBalance}`}</StyledTypography>
+      </StyledBox>
+      <StyledBox>
+        <StyledTypography variant="body2">{`usdc: `}</StyledTypography>
+        <StyledTypography variant="body2">{`$${userUsdcBalance}`}</StyledTypography>
+      </StyledBox>
       {revenueSumForArtist > 0 && (
-        <BalanceWrapper>
-          <Typography variant="body2" noWrap>{`to collect: `}</Typography>
-          <Typography variant="body2">
+        <StyledBox>
+          <StyledTypography
+            variant="body2"
+            noWrap
+          >{`to collect: `}</StyledTypography>
+          <StyledTypography variant="body2">
             {`$${ninaClient
               .nativeToUi(revenueSumForArtist, ninaClient.ids.mints.usdc)
               .toFixed(2)}`}
-          </Typography>
-        </BalanceWrapper>
+          </StyledTypography>
+        </StyledBox>
       )}
-      <SwapModal refreshBalances={refreshBalances} inProfile={true} />
+      <StyledBox>
+        <SwapModal refreshBalances={refreshBalances} inProfile={true} />
+      </StyledBox>
     </Box>
   )
 }
-const BalanceWrapper = styled(Box)(({ theme, balance }) => ({
-  '& p': {
-    color: 'black',
-    textTransform: 'uppercase',
-    borderRadius: '0px',
-    margin: balance ? '0px 8px 0px 204px' : '0 16px',
-    padding: '0px',
-    display: 'flex',
-    alignItems: 'center',
-    [theme.breakpoints.down('md')]: {
-      border: 'none',
-      margin: '0px',
-      padding: '5px 5px 5px 0px',
-      '& p': {
-        display: 'none',
-      },
-    },
-  },
+
+const StyledTypography = styled(Typography)(() => ({
+  textTransform: 'uppercase',
+  padding: '0px',
+  display: 'flex',
+  alignItems: 'center',
+}))
+
+const StyledBox = styled(Box)(() => ({
+  marginLeft: '30px',
 }))
 
 export default Balance

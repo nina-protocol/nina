@@ -167,7 +167,6 @@ const SwapModal = ({ refreshBalances, inProfile }) => {
                 />
               </SwapWrapper>
               <Button
-                style={{ marginTop: '15px' }}
                 color="primary"
                 variant="outlined"
                 onClick={() => handleSwap()}
