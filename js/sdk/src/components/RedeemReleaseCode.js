@@ -107,12 +107,10 @@ const Root = styled('div')(() => ({
   position: 'relative',
 }))
 
-const StyledButton = styled(Button)(({ theme, gates }) => ({
-  position: 'absolute',
-  top: '110%',
+const StyledButton = styled(Button)(({ theme }) => ({
   textDecoration: 'underline',
   padding: '0px',
-  marginTop: gates ? '8px' : '0px',
+  marginTop: '0px',
   color: theme.palette.grey[500],
   textTransform: 'capitalize',
 }))
