@@ -21,14 +21,14 @@ const NoSolWarning = (props) => {
         return setActionText('purchase this Release')
       case 'sell':
         return setActionText('create this listing')
-      case 'buy offer':
+      case 'buyOffer':
         return setActionText('complete this exchange')
-      case 'create offer':
+      case 'createOffer':
         return setActionText('create this buy offer')
       default:
         break
     }
-  }, [action, actionText])
+  }, [action])
 
   const handleClose = () => {
     setOpen(false)

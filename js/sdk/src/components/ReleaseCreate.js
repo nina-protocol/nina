@@ -566,7 +566,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         </ConnectMessage>
       )}
 
-      <NoSolWarning action={'publish'} open={open} setOpen={setOpen} />
+      <NoSolWarning action={'upload'} open={open} setOpen={setOpen} />
       {releaseCreated && (
         <ReleaseCreateSuccess
           releasePubkey={releasePubkey}
