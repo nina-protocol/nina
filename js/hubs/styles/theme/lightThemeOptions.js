@@ -172,11 +172,11 @@ const lightThemeOptions = {
       },
     },
     MuiPaper: {
-      styleOverrides:{
+      styleOverrides: {
         root: {
           outline: 'none',
-        }
-      }
+        },
+      },
     },
     MuiSlider: {
       styleOverrides: {

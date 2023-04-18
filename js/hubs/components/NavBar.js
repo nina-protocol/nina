@@ -175,11 +175,18 @@ const NavBar = ({ hubPubkey }) => {
         </Link>
         <CtaWrapper>
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
-            <a href="https://www.ninaprotocol.com/getStarted" target="_blank" rel="noopener noreferrer"
-              style={{margin: '0px 8px', border: '1px solid black', padding: '2px 8px'}}
-            >
-              Sign Up
-            </a>
+          <a
+            href="https://www.ninaprotocol.com/getStarted"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              margin: '0px 8px',
+              border: '1px solid black',
+              padding: '2px 8px',
+            }}
+          >
+            Sign Up
+          </a>
           <WalletWrapper id="wallet-wrapper">
             <NavCtas>
               {wallet.wallets && (
