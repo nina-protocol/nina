@@ -66,6 +66,7 @@ const ExchangeComponent = (props) => {
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey])
   const [updateTime, setUpdateTime] = useState(Date.now())
   const [openNoSolModal, setOpenNoSolModal] = useState(false)
+  const [noSolModalAction, setNoSolModalAction] = useState(undefined)
   useEffect(() => {
     const handleGetExchanges = async () => {
       await getRelease(releasePubkey)
@@ -91,7 +92,7 @@ const ExchangeComponent = (props) => {
 
   const handleExchangeAction = async (exchange) => {
     let result
-
+    setNoSolModalAction('purchase')
     if (solBalance === 0) {
       setOpenNoSolModal(true)
       return
@@ -140,7 +141,6 @@ const ExchangeComponent = (props) => {
 
   const onExchangeInitSubmit = async (e, isBuy, amount) => {
     e.preventDefault()
-
     let result
     const data = {
       releasePubkey,
@@ -148,8 +148,9 @@ const ExchangeComponent = (props) => {
       isSelling: !isBuy,
       isInit: true,
     }
-
+    isBuy ? setNoSolModalAction('purchase') : setNoSolModalAction('sell')
     if (solBalance === 0) {
+      console.log(noSolModalAction)
       setOpenNoSolModal(true)
       return
     }
@@ -355,7 +356,7 @@ const ExchangeComponent = (props) => {
           />
         )}
         <NoSolWarning
-          action="purchase"
+          action={noSolModalAction}
           open={openNoSolModal}
           setOpen={setOpenNoSolModal}
         />
