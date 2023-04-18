@@ -344,7 +344,7 @@ const Onboard = () => {
           {steps.map((step, index) => {
             return (
               <NinaStep key={index}>
-                <StepLabel>{step.title}</StepLabel>
+                <NinaStepLabel>{step.title}</NinaStepLabel>
                 <StepContent>
                   <Typography variant="body1" mb={1}>
                     {step.content}
@@ -491,12 +491,25 @@ const ClaimCodeButton = styled(Button)(({ theme }) => ({
 }))
 
 const NinaStep = styled(Step)(({ theme }) => ({
-  '& .MuiStepLabel-root .Mui-completed': {
-    color: theme.palette.blue,
+  '& .Mui-completed': {
+    color: `${theme.palette.blue} !important`,
+  },
+  '& .MuiStepLabel-label.Mui-completed.MuiStepLabel-alternativeLabel': {
+    color: `${theme.palette.black} !important`, // Just text label (ACTIVE)
   },
   '& .MuiStepLabel-root .Mui-active': {
-    color: theme.palette.blue,
+    color: `${theme.palette.blue} !important`,
   },
+  '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel': {
+    color: `${theme.palette.black} !important`, // Just text label (COMPLETED)
+  },
+}))
+
+const NinaStepLabel = styled(StepLabel)(({ theme }) => ({
+  '& .MuiStepLabel-iconContainer .Mui-completed .css-vnkopk-MuiStepLabel-iconContainer':
+    {
+      color: `${theme.palette.blue} !important`,
+    },
 }))
 
 const HtmlTooltip = styled(({ className, ...props }) => (
