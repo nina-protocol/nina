@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import { styled } from '@mui/system'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
-import { SwapModal } from '@nina-protocol/nina-internal-sdk/esm/SwapModal'
+import SwapModal from '@nina-protocol/nina-internal-sdk/esm/SwapModal'
 
 const Balance = ({ profilePublishedReleases }) => {
   const { ninaClient, solBalance, usdcBalance } = useContext(Nina.Context)
@@ -51,7 +51,7 @@ const Balance = ({ profilePublishedReleases }) => {
         fullWidth
         onClick={() => setOpen(true)}
       >
-        Balances
+        Your Balances
       </Button>
 
       <StyledModal
@@ -67,13 +67,31 @@ const Balance = ({ profilePublishedReleases }) => {
       >
         <Fade in={open}>
           <StyledPaper>
-            <StyledTypography variant="h3">{`sol: ${userSolBalance}`}</StyledTypography>
-            <StyledTypography variant="h3">{`usdc: $${userUsdcBalance}`}</StyledTypography>
-            {revenueSumForArtist > 0 && (
-              <StyledTypography variant="h3">{`to collect: $${ninaClient
-                .nativeToUi(revenueSumForArtist, ninaClient.ids.mints.usdc)
-                .toFixed(2)}`}</StyledTypography>
-            )}
+            <Typography
+              variant="h2"
+              mb={2}
+              sx={{ textDecoration: 'underline' }}
+              gutterBottom
+            >
+              Balances
+            </Typography>
+            <Typography
+              variant="h3"
+              gutterBottom
+            >{`SOL: ${userSolBalance}`}</Typography>
+            <Typography
+              variant="h3"
+              gutterBottom
+            >{`USDC: $${userUsdcBalance}`}</Typography>
+
+            <Typography variant="h3" gutterBottom>{`To Collect: $${
+              revenueSumForArtist > 0
+                ? ninaClient
+                    .nativeToUi(revenueSumForArtist, ninaClient.ids.mints.usdc)
+                    .toFixed(2)
+                : '0'
+            }`}</Typography>
+            <SwapModal />
           </StyledPaper>
         </Fade>
       </StyledModal>
