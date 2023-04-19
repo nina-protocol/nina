@@ -93,10 +93,15 @@ const SwapModal = ({ refreshBalances }) => {
   return (
     <>
       <InputWrapper>
-        <Typography variant="h4" noWrap>
+        <Typography
+          mb={0.5}
+          variant="body1"
+          noWrap
+          sx={{ alignItems: 'baseline', textDecoration: 'underline' }}
+        >
           {isSolToUsdc ? 'Swap SOL to USDC' : 'Swap USDC to SOL'}
           <AutorenewIcon
-            sx={{ marginLeft: '8px' }}
+            sx={{ marginLeft: '8px', marginBotton: '0px' }}
             fontSize="10px"
             onClick={() => setIsSolToUsdc(!isSolToUsdc)}
           />
@@ -119,7 +124,6 @@ const SwapModal = ({ refreshBalances }) => {
           />
           <Typography sx={{ margin: '0 10px' }}>For</Typography>
           <TextField
-            // sx={{ width: '20%' }}
             id={'swapOutput'}
             name={'swapOutput'}
             value={outputAmount}
@@ -134,15 +138,15 @@ const SwapModal = ({ refreshBalances }) => {
               ),
             }}
           />
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={() => handleSwap()}
-            sx={{ marginLeft: '15px' }}
-          >
-            Swap
-          </Button>
         </SwapWrapper>
+        <Button
+          color="primary"
+          variant="outlined"
+          fullWidth
+          onClick={() => handleSwap()}
+        >
+          <Typography>Swap</Typography>
+        </Button>
       </InputWrapper>
     </>
   )
@@ -151,6 +155,7 @@ const SwapModal = ({ refreshBalances }) => {
 const SwapWrapper = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
+  marginBottom: '15px',
 }))
 
 const InputWrapper = styled(Box)(() => ({

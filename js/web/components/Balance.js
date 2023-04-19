@@ -12,6 +12,7 @@ import {
 import { styled } from '@mui/system'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import SwapModal from '@nina-protocol/nina-internal-sdk/esm/SwapModal'
+import Divider from '@mui/material/Divider'
 
 const Balance = ({ profilePublishedReleases }) => {
   const { ninaClient, solBalance, usdcBalance } = useContext(Nina.Context)
@@ -66,29 +67,57 @@ const Balance = ({ profilePublishedReleases }) => {
         <Fade in={open}>
           <StyledPaper>
             <Typography
-              variant="h2"
-              mb={2}
+              variant="h4"
+              mb={1}
               sx={{ textDecoration: 'underline' }}
               gutterBottom
             >
-              Balances
+              Your Balances
             </Typography>
-            <Typography
-              variant="h4"
-              gutterBottom
-            >{`SOL: ${userSolBalance}`}</Typography>
-            <Typography
-              variant="h4"
-              gutterBottom
-            >{`USDC: $${userUsdcBalance}`}</Typography>
+            <Box mb={1} sx={{ display: 'flex', flexDirection: 'row' }}>
+              <Typography
+                variant="body1"
+                gutterBottom
+                sx={{ textDecoration: 'underline' }}
+              >{`SOL:`}</Typography>
+              &nbsp;
+              <Typography variant="body1" gutterBottom>
+                {userSolBalance}
+              </Typography>
+            </Box>
+            <Box mb={1} sx={{ display: 'flex', flexDirection: 'row' }}>
+              <Typography
+                variant="body1"
+                gutterBottom
+                sx={{ textDecoration: 'underline' }}
+              >{`USDC:`}</Typography>
+              &nbsp;
+              <Typography variant="body1" gutterBottom>
+                {userUsdcBalance}
+              </Typography>
+            </Box>
 
-            <Typography variant="h4" gutterBottom>{`To Collect: $${
-              revenueSumForArtist > 0
-                ? ninaClient
-                    .nativeToUi(revenueSumForArtist, ninaClient.ids.mints.usdc)
-                    .toFixed(2)
-                : '0'
-            }`}</Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+              <Typography
+                variant="body1"
+                gutterBottom
+                sx={{ textDecoration: 'underline' }}
+              >{`To Collect:`}</Typography>
+              &nbsp;
+              <Typography variant="body1" gutterBottom>
+                {`$${
+                  revenueSumForArtist > 0
+                    ? ninaClient
+                        .nativeToUi(
+                          revenueSumForArtist,
+                          ninaClient.ids.mints.usdc
+                        )
+                        .toFixed(2)
+                    : '0'
+                }`}
+              </Typography>
+            </Box>
+            <Divider sx={{ margin: '15px 0' }} />
             <SwapModal />
           </StyledPaper>
         </Fade>
