@@ -838,6 +838,7 @@ const releaseContextHelper = ({
         ...releasePurchaseTransactionPending,
         [releasePubkey]: false,
       })
+
       const txid = await releasePurchaseHelper(
         releasePubkey,
         provider,

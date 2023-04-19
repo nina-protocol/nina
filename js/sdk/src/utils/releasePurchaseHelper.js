@@ -120,6 +120,7 @@ const releasePurchaseHelper = async (
   usdcBalance,
   hubPubkey = null
 ) => {
+  console.log('releasePurchaseHelper', releasePubkey, hubPubkey)
   let hub
   releasePubkey = new anchor.web3.PublicKey(releasePubkey)
   const program = await ninaClient.useProgram()
@@ -128,7 +129,7 @@ const releasePurchaseHelper = async (
   if (release.price.toNumber() === 0) {
     const message = new TextEncoder().encode(releasePubkey.toBase58())
     const messageBase64 = encodeBase64(message)
-    const signature = await provider.wallet.signMessage(messageBase64)
+    const signature = await provider.wallet.signMessage(message)
     const signatureBase64 = encodeBase64(signature)
     const response = await axios.get(
       `${
