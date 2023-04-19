@@ -43,6 +43,7 @@ const WalletButton = ({
   variant = 'contained',
   type = 'button',
   router,
+  inHubs,
   children,
   ...props
 }) => {
@@ -99,14 +100,17 @@ const WalletButton = ({
           </Button>
         </WalletMenuItem>
         <Collapse in={!!anchor}>
-          <WalletActionMenuItem
-            onClick={async () => {
-              setAnchor(undefined)
-              router.push('/dashboard')
-            }}
-          >
-            View Dashboard
-          </WalletActionMenuItem>
+
+          {!inHubs && (
+            <WalletActionMenuItem
+              onClick={async () => {
+                setAnchor(undefined)
+                router.push('/dashboard')
+              }}
+            >
+              View Dashboard
+            </WalletActionMenuItem>
+          )}
           <WalletActionMenuItem
             onClick={async () => {
               setAnchor(undefined)
@@ -118,20 +122,13 @@ const WalletButton = ({
           <WalletActionMenuItem
             onClick={() => {
               setAnchor(undefined)
-            }}
-          >
-            Change wallet
-          </WalletActionMenuItem>
-          <WalletActionMenuItem
-            onClick={() => {
-              setAnchor(undefined)
               // eslint-disable-next-line @typescript-eslint/no-empty-function
               wallet.disconnect().catch(() => {
                 // Silently catch because any errors are caught by the context `onError` handler
               })
             }}
           >
-            Disconnect
+            Sign Out
           </WalletActionMenuItem>
         </Collapse>
       </StyledMenu>

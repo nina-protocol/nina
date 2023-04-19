@@ -1,8 +1,10 @@
-import React, { createContext, useMemo, useState } from 'react'
+import React, { createContext, useMemo, useState, useEffect } from 'react'
 import {
   useWallet as useWalletWalletAdapter,
   useConnection,
 } from '@solana/wallet-adapter-react'
+import { Magic } from 'magic-sdk'
+import { SolanaExtension } from '@magic-ext/solana'
 import * as anchor from '@project-serum/anchor'
 
 const WalletContext = createContext()
@@ -10,15 +12,44 @@ const WalletContextProvider = ({ children }) => {
   const { connection } = useConnection()
   const walletExtension = useWalletWalletAdapter()
   const [magicWallet, setMagicWallet] = useState(null)
+  const [magic, setMagic] = useState(null)
 
+<<<<<<< HEAD
   const wallet = useMemo(() => {
     return magicWallet || walletExtension || {}
   }, [walletExtension, magicWallet])
 
   const { connectMagicWallet } = walletContextHelper({
+=======
+  const { connectMagicWallet, useMagic } = walletContextHelper({
+>>>>>>> 308586862e63147ac08c500e60385d82b2e3dbd4
     setMagicWallet,
     connection,
+    magic,
+    setMagic
   })
+
+  useEffect(() => {
+    const checkIfMagicWalletIsLoggedIn = async () => {
+      const _magic = new Magic(process.env.MAGIC_KEY, {
+        extensions: {
+          solana: new SolanaExtension({
+            rpcUrl: process.env.SOLANA_CLUSTER_URL,
+          }),
+        },
+      })
+      setMagic(_magic)
+      // const isLoggedIn = await _magic.user.isLoggedIn()
+      // if (isLoggedIn) {
+        connectMagicWallet(_magic)
+      // }
+    }
+    checkIfMagicWalletIsLoggedIn()
+  }, [])
+
+  const wallet = useMemo(() => {
+    return magicWallet || walletExtension || {}
+  }, [walletExtension, magicWallet])
 
   return (
     <WalletContext.Provider
@@ -27,6 +58,7 @@ const WalletContextProvider = ({ children }) => {
         wallet,
         walletExtension,
         connectMagicWallet,
+        useMagic,
       }}
     >
       {children}
@@ -34,12 +66,30 @@ const WalletContextProvider = ({ children }) => {
   )
 }
 
-const walletContextHelper = ({ setMagicWallet, connection }) => {
+const walletContextHelper = ({ setMagicWallet, connection, magic, setMagic }) => {
+  const useMagic = async () => {
+    console.log('magic', magic)
+    let _magic = magic
+    if (!_magic) {
+      magicInstance = new Magic(process.env.MAGIC_KEY, {
+        extensions: {
+          solana: new SolanaExtension({
+            rpcUrl: process.env.SOLANA_CLUSTER_URL,
+          }),
+        },
+      })
+      setMagic(_magic)
+    }
+
+    return _magic
+  }
+
   const connectMagicWallet = async (magic) => {
     const isLoggedIn = await magic.user.isLoggedIn()
+    console.log('bruv')
     if (isLoggedIn) {
       const user = await magic.user.getMetadata()
-
+      console.log('user: ', user)
       const wallet = {
         connected: true,
         connecting: false,
@@ -54,10 +104,22 @@ const walletContextHelper = ({ setMagicWallet, connection }) => {
           return await magic.solana.signMessage(message)
         },
         signTransaction: async (transaction) => {
-          const serializedTransaction = transaction.serializeMessage()
+          console.log('transaction: ', transaction)        
+          const serializeConfig = {
+            requireAllSignatures: false,
+            verifySignatures: true,
+          }
+          console.log('transaction.signatures: ', transaction.signatures)
+          for (signature of transaction.signatures) {
+            console.log('publicKey: ', signature.publicKey.toBase58())
+          }
+          // const serializedTransaction = transaction.serializeMessage()
+          // console.log('serializedTransaction: ', serializedTransaction)
           const signedTransaction = await magic.solana.signTransaction(
-            serializedTransaction
+            transaction,
+            serializeConfig
           )
+          console.log('signedTransaction: ', signedTransaction)
           return signedTransaction
         },
         sendTransaction: async (transaction) => {
@@ -89,6 +151,7 @@ const walletContextHelper = ({ setMagicWallet, connection }) => {
 
   return {
     connectMagicWallet,
+    useMagic
   }
 }
 

@@ -17,6 +17,7 @@ import {
   verifyTwitter,
   deleteTwitterVerification,
   deleteEthereumVerification,
+  deleteSoundcloudVerification,
   verifySoundcloud,
   verifyInstagram,
 } from '../utils/identityVerification'
@@ -40,8 +41,6 @@ const IdentityVerification = ({
   const {
     ninaClient,
     getVerificationsForUser,
-    NinaProgramAction,
-    checkIfHasBalanceToCompleteAction,
   } = useContext(Nina.Context)
   const { provider } = ninaClient
 
@@ -216,6 +215,12 @@ const IdentityVerification = ({
           window.open(`https://instagram.com/${value}`, '_blank')
           break
         case 'soundcloud':
+          // deleteSoundcloudVerification(
+          //   provider,
+          //   value,
+          //   publicKey,
+          //   signTransaction,
+          // )
           window.open(`https://soundcloud.com/${value}`, '_blank')
           break
         case 'ethereum':
@@ -268,6 +273,11 @@ const IdentityVerification = ({
   }
 
   const handleConnectAccount = async (type) => {
+    if (inOnboardingFlow) {
+      localStorage.setItem('inOnboardingFlow', 'true')
+    } else {
+      localStorage.removeItem('inOnboardFlow')
+    }
     localStorage.setItem('codeSource', type)
 
     switch (type) {

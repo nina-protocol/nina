@@ -5,6 +5,7 @@ import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import { Typography } from '@mui/material'
 import Dots from './Dots'
+import {fontSize} from '@material-ui/system'
 
 export default function EmailOTP({ login, email, setPending, pending }) {
   const [passcode, setPasscode] = useState('')
@@ -89,6 +90,7 @@ export default function EmailOTP({ login, email, setPending, pending }) {
 
   return (
     <Root id="otp-component">
+
       <Typography variant="h3" style={{ marginBottom: '15px' }}>
         A one-time passcode was sent to <i>{email}</i>.
       </Typography>
@@ -111,6 +113,7 @@ export default function EmailOTP({ login, email, setPending, pending }) {
           onComplete={(value) => {
             autoSubmit(value, login)
           }}
+  
         />
         <Ctas sx={{ my: 1 }}>
           <Button
@@ -138,7 +141,10 @@ const Root = styled(Box)(({ theme }) => ({
   '.MuiOtpInput-TextField': {
     '& input': {
       fontSize: '30px',
-    },
+      '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+        '-webkit-appearance': 'none',
+      }
+    }
   },
   '.MuiOtpInput-TextField:last-of-type': {
     display: 'none',

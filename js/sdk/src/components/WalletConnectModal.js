@@ -10,14 +10,12 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import { WalletReadyState } from '@solana/wallet-adapter-base'
-import { Magic } from 'magic-sdk'
-import { SolanaExtension } from '@magic-ext/solana'
 import EmailLoginForm from './EmailLoginForm'
 import EmailOTPForm from './EmailOTPForm'
 
 const WalletConnectModal = (props) => {
   const { children, inOnboardingFlow } = props
-  const { wallet, walletExtension, connectMagicWallet } = useContext(
+  const { wallet, walletExtension, connectMagicWallet, useMagic } = useContext(
     Wallet.Context
   )
 
@@ -50,45 +48,27 @@ const WalletConnectModal = (props) => {
 
   const handleLogin = async (email) => {
     setPending(true)
-    const magic = new Magic(process.env.MAGIC_KEY, {
-      extensions: {
-        solana: new SolanaExtension({
-          rpcUrl: process.env.SOLANA_CLUSTER_URL,
-        }),
-      },
-    })
-
+    const magic = await useMagic()
     try {
       localStorage.setItem('nina_magic_wallet', 'true')
       const otpLogin = magic.auth.loginWithEmailOTP({ email, showUI: false })
       otpLogin
-        .on('invalid-email-otp', () => {
-          console.log('invalid email OTP')
-        })
-        .on('verify-email-otp', (otp) => {
-          console.log('verify email OTP', otp)
-        })
         .on('email-otp-sent', () => {
-          console.log('on email OTP sent!')
-
           setOtpLogin(otpLogin)
           setShowOtpUI(true)
           setPending(false)
         })
         .on('done', (result) => {
           connectMagicWallet(magic)
-
-          console.log(`DID Token: %c${result}`, 'color: orange')
         })
         .on('settled', () => {
           setOtpLogin()
           setShowOtpUI(false)
         })
         .catch((err) => {
-          console.log('%cError caught during login:\n', 'color: orange')
-          console.log(err)
+
+          console.error('magic login error: ', err)
         })
-      // setPending(false)
     } catch (err) {
       console.error(err)
     }
@@ -130,7 +110,7 @@ const WalletConnectModal = (props) => {
             }
           }}
           variant="outlined"
-          style={{ width: '100%' }}
+          style={{width: '100%'}}
         >
           {children}
         </Button>
@@ -207,13 +187,16 @@ const WalletConnectModal = (props) => {
                           handleWalletClickEvent(event, wallet.adapter.name)
                         }
                       >
-                        <Typography>{wallet.adapter.name}</Typography>
+                        <Typography>
+                          {wallet.adapter.name}
+                        </Typography>
                       </Button>
                     ))}
                   </WalletButtons>
                 </Collapse>
-              </Box>
+            </Box>
             )}
+
           </StyledPaper>
         </Fade>
       </StyledModal>
@@ -248,5 +231,4 @@ const WalletButtons = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
 }))
-
 export default WalletConnectModal
