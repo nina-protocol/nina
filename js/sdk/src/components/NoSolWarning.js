@@ -58,18 +58,16 @@ const NoSolWarning = (props) => {
               <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                 <Typography component="p" gutterBottom>
                   {`For any questions, please reach out to us at`}{' '}
-                </Typography>
-                <Link href="mailto:contact@ninaprotocol.com">
                   <a
                     target="_blank"
                     rel="noreferrer"
-                    style={{ margin: '0px', textDecoration: 'none' }}
+                    style={{margin: '0px', textDecoration: 'none'}}
+                    href="mailto:contact@ninaprotocol.com"
                   >
-                    <ContactTypography component="p">
-                      {`contact@ninaprotocol.com`}
-                    </ContactTypography>
+                    {`contact@ninaprotocol.com`}
                   </a>
-                </Link>
+                </Typography>
+          
                 <Typography component="p" gutterBottom>
                   {`.`}
                 </Typography>
@@ -88,7 +86,7 @@ const NoSolWarning = (props) => {
       </StyledModal>
     </Root>
   )
-}yarn 
+}
 
 const Root = styled('div')(() => ({
   display: 'flex',
@@ -113,6 +111,9 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   zIndex: '10',
   display: 'flex',
   flexDirection: 'column',
+  'a': {
+    color: theme.palette.blue,
+  }
 }))
 
 // const StyledTypography = styled(Typography)(() => ({
