@@ -31,10 +31,7 @@ const WalletContextProvider = ({ children }) => {
         },
       })
       setMagic(_magic)
-      // const isLoggedIn = await _magic.user.isLoggedIn()
-      // if (isLoggedIn) {
-        connectMagicWallet(_magic)
-      // }
+      connectMagicWallet(_magic)
     }
     checkIfMagicWalletIsLoggedIn()
   }, [])

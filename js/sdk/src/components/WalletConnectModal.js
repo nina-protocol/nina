@@ -150,16 +150,13 @@ const WalletConnectModal = (props) => {
       >
         <Fade in={open}>
           <StyledPaper>
-            {signingUp && (
-              <Box sx={{ mb: 1 }}>
-                <Typography variant="body1">
-                  To create an account, all you need is an email.
-                </Typography>
-              </Box>
-            )}
-
             {showOtpUI ? (
-              <EmailOTPForm login={otpLogin} email={email} pending={pending} setPending={setPending} />
+              <EmailOTPForm
+                login={otpLogin}
+                email={email}
+                pending={pending}
+                setPending={setPending}
+              />
             ) : (
               <EmailLoginForm
                 handleEmailLoginCustom={handleLogin}
@@ -171,17 +168,15 @@ const WalletConnectModal = (props) => {
               />
             )}
 
-
             {!showOtpUI && (
-            <Box sx={{ mt: 1 }}>
-              <Typography onClick={handleWalletCollapse}>
-                <a style={{ textDecoration: 'underline' }}>
-                  {showWallets ? 'Hide Wallets' : walletText}
-                </a>
-              </Typography>
+              <Box sx={{ mt: 1 }}>
+                <Typography onClick={handleWalletCollapse}>
+                  <a style={{ textDecoration: 'underline' }}>
+                    {showWallets ? 'Hide Wallets' : walletText}
+                  </a>
+                </Typography>
                 <Collapse in={showWallets} timeout="auto" unmountOnExit>
                   <WalletButtons>
-            
                     {supportedWallets?.map((wallet) => (
                       <Button
                         key={wallet.adapter.name}
@@ -229,7 +224,6 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     width: '90vw',
     padding: theme.spacing(2),
-
   },
 }))
 

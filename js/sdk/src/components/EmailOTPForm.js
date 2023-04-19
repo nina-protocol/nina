@@ -90,9 +90,7 @@ export default function EmailOTP({ login, email, setPending, pending }) {
 
   return (
     <Root id="otp-component">
-      <Typography variant="h3" style={{ marginBottom: '15px' }}>
-        Your account was succesfully created.
-      </Typography>
+
       <Typography variant="h3" style={{ marginBottom: '15px' }}>
         A one-time passcode was sent to <i>{email}</i>.
       </Typography>
@@ -139,8 +137,8 @@ const Ctas = styled(Box)(() => ({
   flexDirection: 'column',
 }))
 
-const Root = styled(Box)(({theme}) => ({
-  '.MuiOtpInput-TextField':{
+const Root = styled(Box)(({ theme }) => ({
+  '.MuiOtpInput-TextField': {
     '& input': {
       fontSize: '30px',
       '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
@@ -155,8 +153,7 @@ const Root = styled(Box)(({theme}) => ({
     '.MuiOtpInput-TextField': {
       '& input': {
         padding: theme.spacing(1, 0),
-      }
+      },
     },
-
   },
 }))
