@@ -18,7 +18,6 @@ import StepLabel from '@mui/material/StepLabel'
 import StepContent from '@mui/material/StepContent'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import IdentityVerification from '@nina-protocol/nina-internal-sdk/esm/IdentityVerification'
-import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
 import Dots from './Dots'
 
 import dynamic from 'next/dynamic'
@@ -95,20 +94,6 @@ const Onboard = () => {
     }
   }, [bundlrUsdBalance])
 
-  const renderToolTop = (copy, link) => {
-    return (
-      <Box>
-        <Box sx={{ p: 3, border: '1px solid black' }}>
-          <Typography variant="h4" sx={{ color: 'black' }} gutterBottom>
-            You need SOL to {copy}
-          </Typography>
-          <Link href={link}>
-            <a>Learn more.</a>
-          </Link>
-        </Box>
-      </Box>
-    )
-  }
   const onboardingSteps = [
     {
       title: 'Login or Sign Up',
@@ -179,38 +164,57 @@ const Onboard = () => {
       title: `Success`,
       content: `You're all set. You can now start uploading your music to Nina.`,
       cta: (
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: '100%',
-          }}
-        >
-          <Link href="/dashboard">
-            <Button
-              variant="outlined"
-              sx={{ marginTop: '10px', width: '100%' }}
+        <>
+          {solBalance > 0 && (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%',
+              }}
             >
-              Go to Dashboard
-            </Button>
-          </Link>
-          <Link href="/hubs/create">
-            <Button
-              variant="outlined"
-              sx={{ marginTop: '10px', width: '100%' }}
-            >
-              Create a Hub
-            </Button>
-          </Link>
-          <Link href="/upload">
-            <Button
-              variant="outlined"
-              sx={{ marginTop: '10px', width: '100%' }}
-            >
-              Publish a Track!!!!
-            </Button>
-          </Link>
-        </Box>
+              <Link href="/dashboard">
+                <Button
+                  variant="outlined"
+                  sx={{marginTop: '10px', width: '100%'}}
+                >
+                  Go to Dashboard
+                </Button>
+              </Link>
+
+              <Link href="/hubs/create">
+                <Button
+                  variant="outlined"
+                  sx={{marginTop: '10px', width: '100%'}}
+                  disabled={solBalance === 0}
+                >
+                  Create a Hub
+                </Button>
+              </Link>
+
+              <Link href="/upload">
+                <Button
+                  variant="outlined"
+                  width={'100%'}
+                  sx={{marginTop: '10px', width: '100%'}}
+                  disabled={solBalance === 0}
+                >
+                  Publish a Track
+                </Button>
+              </Link>
+            </Box>
+          )}
+
+          {solBalance === 0 && (
+            <Box sx={{display: 'flex', flexDirection: 'column', width: 'max-content'}}>
+              <Link href="/">
+                <Typography gutterBottom component={'a'}>
+                  Visit the Homepage to start exploring
+                </Typography>
+              </Link>
+            </Box>
+          )}
+        </>
       ),
     },
   ]
@@ -251,9 +255,10 @@ const Onboard = () => {
     },
     {
       title: `Success`,
-      content: `You're all set. You can now start uploading your music to Nina.`,
+      content: `You're all set. ${ solBalance > 0 ? 'You can now start uploading your music to Nina' : ''}`,
       cta: (
         <>
+        {solBalance > 0 && (
           <Box
             sx={{
               display: 'flex',
@@ -270,47 +275,38 @@ const Onboard = () => {
               </Button>
             </Link>
 
-            <HtmlTooltip
-              placement="top"
-              title={
-                solBalance > 0 ? null : renderToolTop('create a Hub', '/learn')
-              }
-            >
-              <Box width={'100%'}>
-                <Link href="/hubs/create">
-                  <Button
-                    variant="outlined"
-                    sx={{ marginTop: '10px', width: '100%' }}
-                    disabled={solBalance === 0}
-                  >
-                    Create a Hub
-                  </Button>
-                </Link>
-              </Box>
-            </HtmlTooltip>
+            <Link href="/hubs/create">
+              <Button
+                variant="outlined"
+                sx={{ marginTop: '10px', width: '100%' }}
+                disabled={solBalance === 0}
+              >
+                Create a Hub
+              </Button>
+            </Link>
 
-            <HtmlTooltip
-              placement="top"
-              title={
-                solBalance > 0
-                  ? null
-                  : renderToolTop('publish a Track', '/learn')
-              }
-            >
-              <Box width={'100%'}>
-                <Link href="/upload">
-                  <Button
-                    variant="outlined"
-                    width={'100%'}
-                    sx={{ marginTop: '10px', width: '100%' }}
-                    disabled={solBalance === 0}
-                  >
-                    Publish a Track
-                  </Button>
-                </Link>
-              </Box>
-            </HtmlTooltip>
+            <Link href="/upload">
+              <Button
+                variant="outlined"
+                width={'100%'}
+                sx={{ marginTop: '10px', width: '100%' }}
+                disabled={solBalance === 0}
+              >
+                Publish a Track
+              </Button>
+            </Link>
           </Box>
+        )}
+
+        {solBalance === 0 && (
+          <Box sx={{ display: 'flex', flexDirection: 'column', width: 'max-content'}}>
+           <Link href="/">
+            <Typography gutterBottom component={'a'}>
+              Visit the Homepage to start exploring
+            </Typography>
+           </Link>
+          </Box>
+        )}
         </>
       ),
     },
@@ -387,43 +383,6 @@ const Onboard = () => {
     )
   }
 
-  const successfulOnboarding = () => {
-    return (
-      <Box>
-        <Typography variant="h1" mb={1}>
-          {`You're all set.`}
-        </Typography>
-        <Typography variant="h3" mb={1}>
-          You can now start uploading your music to Nina.
-        </Typography>
-        <Box
-          mt={2}
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: '50%',
-          }}
-        >
-          <Link href="/dashboard">
-            <Button variant="outlined" width="100%" sx={{ marginTop: '10px' }}>
-              Go to Dashboard
-            </Button>
-          </Link>
-          <Link href="/hubs/create">
-            <Button variant="outlined" width="100%" sx={{ marginTop: '10px' }}>
-              Create a Hub
-            </Button>
-          </Link>
-          <Link href="/upload">
-            <Button variant="outlined" width="100%" sx={{ marginTop: '10px' }}>
-              Publish a Track
-            </Button>
-          </Link>
-        </Box>
-      </Box>
-    )
-  }
-
   return (
     <ScrollablePageWrapper>
       <StyledGrid>
@@ -435,33 +394,25 @@ const Onboard = () => {
               </Typography>
               {code !== undefined && (
                 <>
-                  {activeStep < onboardingSteps.length ? (
-                    <>
-                      <Typography variant="h3" mb={1}>
-                        You are receiving complimentary SOL to create your Hub
-                        and start uploading your music. Please follow the steps
-                        below to get started.
-                      </Typography>
-                      {renderSteps(onboardingSteps)}
-                    </>
-                  ) : (
-                    <>{successfulOnboarding()}</>
-                  )}
+                  <>
+                    <Typography variant="h3" mb={1}>
+                      You are receiving complimentary SOL to create your Hub
+                      and start uploading your music. Please follow the steps
+                      below to get started.
+                    </Typography>
+                    {renderSteps(onboardingSteps)}
+                  </>
                 </>
               )}
 
               {code === undefined && (
                 <>
-                  {activeStep < signUpSteps.length ? (
-                    <>
-                      <Typography variant="h3" mb={1}>
-                        Follow the steps below to get started.
-                      </Typography>
-                      {renderSteps(signUpSteps)}
-                    </>
-                  ) : (
-                    <>{successfulOnboarding()}</>
-                  )}
+                  <>
+                    <Typography variant="h3" mb={1}>
+                      Follow the steps below to get started.
+                    </Typography>
+                    {renderSteps(signUpSteps)}
+                  </>
                 </>
               )}
             </Box>
@@ -501,15 +452,6 @@ const GetStartedPageWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
-const ClaimCodeButton = styled(Button)(({ theme }) => ({
-  border: `1px solid ${theme.palette.black}`,
-  borderRadius: '0px',
-  padding: '16px 20px',
-  color: theme.palette.black,
-  fontSize: '12px',
-  width: '100%',
-}))
-
 const NinaStep = styled(Step)(({ theme }) => ({
   '& .MuiStepLabel-iconContainer .Mui-completed': {
     color: theme.palette.blue,
@@ -524,20 +466,4 @@ const NinaStep = styled(Step)(({ theme }) => ({
     fill: theme.palette.white,
   },
 }))
-
-const HtmlTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: '#f5f5f9',
-    color: 'rgba(0, 0, 0, 0.87)',
-    maxWidth: '100%',
-    // border: '1px solid #dadde9',
-  },
-  a: {
-    color: theme.palette.blue,
-    fontSize: '18px',
-  },
-}))
-
 export default Onboard
