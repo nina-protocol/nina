@@ -156,9 +156,7 @@ const Onboard = () => {
             onClick={() => setActiveStep(4)}
             sx={{ marginTop: '10px', width: '100%' }}
           >
-            <Typography variant="body2">
-            Continue
-            </Typography>
+            <Typography variant="body2">Continue</Typography>
           </Button>
         </>
       ),
@@ -235,9 +233,7 @@ const Onboard = () => {
       cta: (
         <>
           <WalletConnectModal inOnboardingFlow={true}>
-            <Typography variant="body2">
-              Create an Account
-            </Typography>
+            <Typography variant="body2">Create an Account</Typography>
           </WalletConnectModal>
         </>
       ),
@@ -259,9 +255,7 @@ const Onboard = () => {
             onClick={() => setActiveStep(2)}
             sx={{ marginTop: '10px', width: '100%' }}
           >
-            <Typography variant="body2">
-              Continue
-            </Typography>
+            <Typography variant="body2">Continue</Typography>
           </Button>
         </>
       ),

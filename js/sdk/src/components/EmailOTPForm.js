@@ -5,7 +5,6 @@ import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import { Typography } from '@mui/material'
 import Dots from './Dots'
-import { fontSize } from '@material-ui/system'
 
 export default function EmailOTP({ login, email, setPending, pending }) {
   const [passcode, setPasscode] = useState('')

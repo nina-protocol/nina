@@ -1,8 +1,7 @@
 import React from 'react'
 import Head from 'next/head'
-// import Onboard from '../components/Onboard'
+import Onboard from '../components/Onboard'
 import dynamic from 'next/dynamic'
-const Onboard = dynamic(() => import('../components/Onboard'), { ssr: false })
 const GetStartedPage = () => {
   return (
     <>
