@@ -12,7 +12,6 @@ import Collapse from '@mui/material/Collapse'
 import { WalletReadyState } from '@solana/wallet-adapter-base'
 import EmailLoginForm from './EmailLoginForm'
 import EmailOTPForm from './EmailOTPForm'
-import Link from 'next/link'
 
 const WalletConnectModal = (props) => {
   const { children, inOnboardingFlow } = props
@@ -34,18 +33,30 @@ const WalletConnectModal = (props) => {
   const [email, setEmail] = useState()
 
   const handleWalletCollapse = () => {
+    localStorage.setItem('nina_magic_wallet', showWallets)
     setShowWallets(!showWallets)
   }
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const prefersMagicWallet = localStorage.getItem('nina_magic_wallet')
+      if (prefersMagicWallet === 'false' || prefersMagicWallet === null) {
+        setShowWallets(true)
+      }
+    }
+  }, [])
 
   const handleLogin = async (email) => {
     setPending(true)
     const magic = await useMagic()
     try {
+      localStorage.setItem('nina_magic_wallet', 'true')
       const otpLogin = magic.auth.loginWithEmailOTP({ email, showUI: false })
       otpLogin
         .on('email-otp-sent', () => {
           setOtpLogin(otpLogin)
           setShowOtpUI(true)
+          setPending(false)
         })
         .on('done', (result) => {
           connectMagicWallet(magic)
@@ -53,7 +64,6 @@ const WalletConnectModal = (props) => {
         .on('settled', () => {
           setOtpLogin()
           setShowOtpUI(false)
-          setOpen(false)
         })
         .catch((err) => {
 
@@ -63,6 +73,15 @@ const WalletConnectModal = (props) => {
       console.error(err)
     }
   }
+
+  const handleClose = () => {
+    setOpen(false)
+    setShowOtpUI(false)
+    setSigningUp(false)
+    setEmail()
+    setPending(false)
+  }
+
   const supportedWallets = useMemo(() => {
     if (walletExtension) {
       return walletExtension.wallets.filter(
@@ -73,14 +92,15 @@ const WalletConnectModal = (props) => {
 
   const handleWalletClickEvent = (event, walletName) => {
     event.preventDefault()
+    localStorage.setItem('nina_magic_wallet', 'false')
     wallet.select(walletName)
     setOpen(false)
   }
 
   return (
-    <>
+    <Box>
       {inOnboardingFlow ? (
-        <StyledButton
+        <Button
           onClick={() => {
             if (wallet?.connected) {
               wallet.disconnect()
@@ -90,10 +110,10 @@ const WalletConnectModal = (props) => {
             }
           }}
           variant="outlined"
-          sx={{ mt: 1 }}
+          style={{width: '100%'}}
         >
           {children}
-        </StyledButton>
+        </Button>
       ) : (
         <Box>
           <Button
@@ -107,6 +127,7 @@ const WalletConnectModal = (props) => {
             sx={{
               padding: '0px',
               textTransform: 'none',
+              fontSize: '14px',
               '&:hover': {
                 opacity: '50%',
               },
@@ -114,31 +135,13 @@ const WalletConnectModal = (props) => {
           >
             {children}
           </Button>
-          {!wallet?.connected && (
-            <>
-              {' / '}
-              <Link href="/getStarted" style={{ textTransform: 'none' }}>
-                <StyledLink
-                  variant="subtitle1"
-                  component={'a'}
-                  style={{ fontSize: '10px !important' }}
-                >
-                  {' '}
-                  Sign Up
-                </StyledLink>
-              </Link>
-            </>
-          )}
         </Box>
       )}
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={open}
-        onClose={() => {
-          setSigningUp(false)
-          setOpen(false)
-        }}
+        onClose={handleClose}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
@@ -154,8 +157,9 @@ const WalletConnectModal = (props) => {
                 </Typography>
               </Box>
             )}
+
             {showOtpUI ? (
-              <EmailOTPForm login={otpLogin} email={email} />
+              <EmailOTPForm login={otpLogin} email={email} pending={pending} setPending={setPending} />
             ) : (
               <EmailLoginForm
                 handleEmailLoginCustom={handleLogin}
@@ -167,37 +171,41 @@ const WalletConnectModal = (props) => {
               />
             )}
 
+
+            {!showOtpUI && (
             <Box sx={{ mt: 1 }}>
               <Typography onClick={handleWalletCollapse}>
                 <a style={{ textDecoration: 'underline' }}>
                   {showWallets ? 'Hide Wallets' : walletText}
                 </a>
               </Typography>
-
-              <Collapse in={showWallets} timeout="auto" unmountOnExit>
-                <WalletButtons>
-                  {supportedWallets?.map((wallet) => (
-                    <Button
-                      key={wallet.adapter.name}
-                      style={{ marginTop: '15px' }}
-                      color="primary"
-                      variant="outlined"
-                      onClick={(event) =>
-                        handleWalletClickEvent(event, wallet.adapter.name)
-                      }
-                    >
-                      <Typography>
-                        Connect Wallet: {wallet.adapter.name}
-                      </Typography>
-                    </Button>
-                  ))}
-                </WalletButtons>
-              </Collapse>
+                <Collapse in={showWallets} timeout="auto" unmountOnExit>
+                  <WalletButtons>
+            
+                    {supportedWallets?.map((wallet) => (
+                      <Button
+                        key={wallet.adapter.name}
+                        style={{ marginTop: '15px' }}
+                        color="primary"
+                        variant="outlined"
+                        onClick={(event) =>
+                          handleWalletClickEvent(event, wallet.adapter.name)
+                        }
+                      >
+                        <Typography>
+                          {wallet.adapter.name}
+                        </Typography>
+                      </Button>
+                    ))}
+                  </WalletButtons>
+                </Collapse>
             </Box>
+            )}
+
           </StyledPaper>
         </Fade>
       </StyledModal>
-    </>
+    </Box>
   )
 }
 
@@ -218,24 +226,15 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   zIndex: '10',
   display: 'flex',
   flexDirection: 'column',
+  [theme.breakpoints.down('md')]: {
+    width: '90vw',
+    padding: theme.spacing(2),
+
+  },
 }))
 
 const WalletButtons = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
 }))
-
-const StyledButton = styled(Button)(({ theme }) => ({
-  border: `1px solid ${theme.palette.black}`,
-  borderRadius: '0px',
-  padding: '16px 20px',
-  color: theme.palette.black,
-  width: '100%',
-  fontSize: '12px',
-}))
-
-const StyledLink = styled(Typography)(({ theme }) => ({
-  color: `${theme.palette.blue} !important`,
-}))
-
 export default WalletConnectModal

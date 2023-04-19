@@ -5,13 +5,13 @@ import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import { Typography } from '@mui/material'
 import Dots from './Dots'
+import {fontSize} from '@material-ui/system'
 
-export default function EmailOTP({ login, email }) {
+export default function EmailOTP({ login, email, setPending, pending }) {
   const [passcode, setPasscode] = useState('')
   const [retries, setRetries] = useState(2)
   const [message, setMessage] = useState()
   const [disabled, setDisabled] = useState(false)
-  const [pending, setPending] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -47,6 +47,7 @@ export default function EmailOTP({ login, email }) {
   }
 
   const autoSubmit = async (value, login) => {
+    setPending(true)
     setDisabled(true)
     setRetries((r) => r - 1)
     // setPasscode("");
@@ -90,13 +91,12 @@ export default function EmailOTP({ login, email }) {
   return (
     <Root id="otp-component">
       <Typography variant="h3" style={{ marginBottom: '15px' }}>
-        Enter one-time passcode
+        Your account was succesfully created.
       </Typography>
-      <Typography variant="body1" style={{ marginBottom: '15px' }}>
-        <>
-          ({`the code was sent to:`} <i>{email}</i>)
-        </>
+      <Typography variant="h3" style={{ marginBottom: '15px' }}>
+        A one-time passcode was sent to <i>{email}</i>.
       </Typography>
+
       {message && (
         <div id="otp-message">
           <Typography variant="h6" gutterBottom>
@@ -115,6 +115,7 @@ export default function EmailOTP({ login, email }) {
           onComplete={(value) => {
             autoSubmit(value, login)
           }}
+  
         />
         <Ctas sx={{ my: 1 }}>
           <Button
@@ -124,15 +125,7 @@ export default function EmailOTP({ login, email }) {
             disabled={disabled}
             style={{ marginBottom: '15px' }}
           >
-            {pending ? <Dots msg="Logging In" size="40px" /> : 'Submit'}
-          </Button>
-          <Button
-            id="cancel-otp"
-            onClick={handleCancel}
-            variant="outlined"
-            disabled={disabled}
-          >
-            Cancel
+            {pending ? <Dots size="40px" /> : 'Continue'}
           </Button>
         </Ctas>
       </form>
@@ -146,13 +139,24 @@ const Ctas = styled(Box)(() => ({
   flexDirection: 'column',
 }))
 
-const Root = styled(Box)(() => ({
-  '.MuiOtpInput-TextField': {
+const Root = styled(Box)(({theme}) => ({
+  '.MuiOtpInput-TextField':{
     '& input': {
       fontSize: '30px',
-    },
+      '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+        '-webkit-appearance': 'none',
+      }
+    }
   },
   '.MuiOtpInput-TextField:last-of-type': {
     display: 'none',
+  },
+  [theme.breakpoints.down('md')]: {
+    '.MuiOtpInput-TextField': {
+      '& input': {
+        padding: theme.spacing(1, 0),
+      }
+    },
+
   },
 }))

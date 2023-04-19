@@ -175,21 +175,35 @@ const NavBar = ({ hubPubkey }) => {
         </Link>
         <CtaWrapper>
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
+          {!wallet?.connected && (
+            <a
+              href="https://www.ninaprotocol.com/getStarted"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                margin: '0px 8px',
+                border: '1px solid black',
+                padding: '2px 8px',
+              }}
+            >
+              Sign Up
+            </a>
+          )}
           <WalletWrapper id="wallet-wrapper">
             <NavCtas>
               {wallet.wallets && (
-                <StyledWalletButton>
+                <StyledWalletButton inHubs={true}>
                   <StyledWalletButtonTypography
                     variant="body1"
                     sx={{ textTransform: 'none' }}
                   >
                     {wallet?.connected
                       ? `${wallet.wallet.adapter.name} – ${walletDisplay}`
-                      : 'Login'}
+                      : 'Sign In'}
                   </StyledWalletButtonTypography>
                 </StyledWalletButton>
               )}
-              {/* <DevnetIndicator /> */}
+              <DevnetIndicator />
             </NavCtas>
           </WalletWrapper>
         </CtaWrapper>
@@ -342,6 +356,7 @@ const StyledWalletButton = styled(WalletButton)(({ theme }) => ({
 
 const CtaWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
+  alignItems: 'center',
 }))
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({

@@ -355,8 +355,6 @@ const CtaWrapper = styled(Box)(({ theme, inOnboardingFlow }) => ({
     borderRadius: '0px',
     margin: inOnboardingFlow ? '10px 0 0 0' : '0 8px',
     [theme.breakpoints.down('md')]: {
-      border: 'none',
-      margin: '0px',
       padding: '10px 10px 10px 0px',
       '& p': {
         display: 'none',
