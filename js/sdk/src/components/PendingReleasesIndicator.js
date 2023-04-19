@@ -30,11 +30,7 @@ const PendingReleasesIndicator = ({ inHubs }) => {
                   onClick={() => setPendingReleasesOpen(!pendingReleasesOpen)}
                   style={{
                     textDecoration: 'underline',
-                    color: `${
-                      status === 'success'
-                        ? 'green'
-                        : 'red'
-                    }`,
+                    color: `${status === 'success' ? 'green' : 'red'}`,
                   }}
                 >
                   <Typography
