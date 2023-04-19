@@ -7,7 +7,7 @@ import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
-
+import Box from '@mui/material/Box'
 const NoSolWarning = (props) => {
   const { action, open, setOpen } = props
   const [actionText, setActionText] = useState('')
@@ -55,13 +55,10 @@ const NoSolWarning = (props) => {
               <Typography component="p" gutterBottom>
                 {`Please add more SOL to your wallet to ${actionText}.`}
               </Typography>
-              <Typography
-                component="p"
-                gutterBottom
-                sx={{ display: 'flex', flexDirection: 'row' }}
-              >
-                {`For any questions, please reach out to us at`}
-                &nbsp;
+              <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                <Typography component="p" gutterBottom>
+                  {`For any questions, please reach out to us at`}{' '}
+                </Typography>
                 <Link href="mailto:contact@ninaprotocol.com">
                   <a
                     target="_blank"
@@ -73,8 +70,10 @@ const NoSolWarning = (props) => {
                     </ContactTypography>
                   </a>
                 </Link>
-                {`.`}
-              </Typography>
+                <Typography component="p" gutterBottom>
+                  {`.`}
+                </Typography>
+              </Box>
               <Button
                 style={{ marginTop: '15px' }}
                 color="primary"
