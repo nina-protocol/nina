@@ -93,7 +93,7 @@ const SwapModal = ({ refreshBalances }) => {
   return (
     <>
       <InputWrapper>
-        <Typography variant="h3" noWrap>
+        <Typography variant="h4" noWrap>
           {isSolToUsdc ? 'Swap SOL to USDC' : 'Swap USDC to SOL'}
           <AutorenewIcon
             sx={{ marginLeft: '8px' }}

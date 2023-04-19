@@ -47,7 +47,7 @@ const Balance = ({ profilePublishedReleases }) => {
       <CtaWrapper>
         <Button type="submit" onClick={() => setOpen(true)}>
           <Box display="flex" alignItems="center">
-            <Typography variant="body2">Balances</Typography>
+            <Typography variant="body2">Wallet</Typography>
           </Box>
         </Button>
       </CtaWrapper>
@@ -74,15 +74,15 @@ const Balance = ({ profilePublishedReleases }) => {
               Balances
             </Typography>
             <Typography
-              variant="h3"
+              variant="h4"
               gutterBottom
             >{`SOL: ${userSolBalance}`}</Typography>
             <Typography
-              variant="h3"
+              variant="h4"
               gutterBottom
             >{`USDC: $${userUsdcBalance}`}</Typography>
 
-            <Typography variant="h3" gutterBottom>{`To Collect: $${
+            <Typography variant="h4" gutterBottom>{`To Collect: $${
               revenueSumForArtist > 0
                 ? ninaClient
                     .nativeToUi(revenueSumForArtist, ninaClient.ids.mints.usdc)
@@ -136,8 +136,8 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 
 const CtaWrapper = styled(Box)(({ theme }) => ({
   '& button': {
-    color: theme.palette.blue,
-
+    color: theme.palette.black,
+    textDecoration: 'underline',
     borderRadius: '0px',
     // margin: '0 8px',
     [theme.breakpoints.down('md')]: {
