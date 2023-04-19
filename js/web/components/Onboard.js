@@ -155,7 +155,7 @@ const Onboard = () => {
             onClick={() => setActiveStep(4)}
             sx={{ marginTop: '10px', width: '100%' }}
           >
-            Do this Later
+            Continue
           </Button>
         </>
       ),
@@ -176,7 +176,7 @@ const Onboard = () => {
               <Link href="/dashboard">
                 <Button
                   variant="outlined"
-                  sx={{marginTop: '10px', width: '100%'}}
+                  sx={{ marginTop: '10px', width: '100%' }}
                 >
                   Go to Dashboard
                 </Button>
@@ -185,7 +185,7 @@ const Onboard = () => {
               <Link href="/hubs/create">
                 <Button
                   variant="outlined"
-                  sx={{marginTop: '10px', width: '100%'}}
+                  sx={{ marginTop: '10px', width: '100%' }}
                   disabled={solBalance === 0}
                 >
                   Create a Hub
@@ -196,7 +196,7 @@ const Onboard = () => {
                 <Button
                   variant="outlined"
                   width={'100%'}
-                  sx={{marginTop: '10px', width: '100%'}}
+                  sx={{ marginTop: '10px', width: '100%' }}
                   disabled={solBalance === 0}
                 >
                   Publish a Track
@@ -206,7 +206,13 @@ const Onboard = () => {
           )}
 
           {solBalance === 0 && (
-            <Box sx={{display: 'flex', flexDirection: 'column', width: 'max-content'}}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: 'max-content',
+              }}
+            >
               <Link href="/">
                 <Typography gutterBottom component={'a'}>
                   Visit the Homepage to start exploring
@@ -248,65 +254,73 @@ const Onboard = () => {
             onClick={() => setActiveStep(2)}
             sx={{ marginTop: '10px', width: '100%' }}
           >
-            Do this Later
+            Continue
           </Button>
         </>
       ),
     },
     {
       title: `Success`,
-      content: `You're all set. ${ solBalance > 0 ? 'You can now start uploading your music to Nina' : ''}`,
+      content: `You're all set. ${
+        solBalance > 0 ? 'You can now start uploading your music to Nina' : ''
+      }`,
       cta: (
         <>
-        {solBalance > 0 && (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-            }}
-          >
-            <Link href="/dashboard">
-              <Button
-                variant="outlined"
-                sx={{ marginTop: '10px', width: '100%' }}
-              >
-                Go to Dashboard
-              </Button>
-            </Link>
+          {solBalance > 0 && (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%',
+              }}
+            >
+              <Link href="/dashboard">
+                <Button
+                  variant="outlined"
+                  sx={{ marginTop: '10px', width: '100%' }}
+                >
+                  Go to Dashboard
+                </Button>
+              </Link>
 
-            <Link href="/hubs/create">
-              <Button
-                variant="outlined"
-                sx={{ marginTop: '10px', width: '100%' }}
-                disabled={solBalance === 0}
-              >
-                Create a Hub
-              </Button>
-            </Link>
+              <Link href="/hubs/create">
+                <Button
+                  variant="outlined"
+                  sx={{ marginTop: '10px', width: '100%' }}
+                  disabled={solBalance === 0}
+                >
+                  Create a Hub
+                </Button>
+              </Link>
 
-            <Link href="/upload">
-              <Button
-                variant="outlined"
-                width={'100%'}
-                sx={{ marginTop: '10px', width: '100%' }}
-                disabled={solBalance === 0}
-              >
-                Publish a Track
-              </Button>
-            </Link>
-          </Box>
-        )}
+              <Link href="/upload">
+                <Button
+                  variant="outlined"
+                  width={'100%'}
+                  sx={{ marginTop: '10px', width: '100%' }}
+                  disabled={solBalance === 0}
+                >
+                  Publish a Track
+                </Button>
+              </Link>
+            </Box>
+          )}
 
-        {solBalance === 0 && (
-          <Box sx={{ display: 'flex', flexDirection: 'column', width: 'max-content'}}>
-           <Link href="/">
-            <Typography gutterBottom component={'a'}>
-              Visit the Homepage to start exploring
-            </Typography>
-           </Link>
-          </Box>
-        )}
+          {solBalance === 0 && (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: 'max-content',
+              }}
+            >
+              <Link href="/">
+                <Typography gutterBottom component={'a'}>
+                  Visit the Homepage to start exploring
+                </Typography>
+              </Link>
+            </Box>
+          )}
         </>
       ),
     },
@@ -396,9 +410,9 @@ const Onboard = () => {
                 <>
                   <>
                     <Typography variant="h3" mb={1}>
-                      You are receiving complimentary SOL to create your Hub
-                      and start uploading your music. Please follow the steps
-                      below to get started.
+                      You are receiving complimentary SOL to create your Hub and
+                      start uploading your music. Please follow the steps below
+                      to get started.
                     </Typography>
                     {renderSteps(onboardingSteps)}
                   </>

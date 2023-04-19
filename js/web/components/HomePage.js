@@ -119,7 +119,11 @@ const HomePage = ({ loading }) => {
               rel="noreferrer"
             >
               Learn More
-            </a>
+            </a>{' '}
+            or{' '}
+            <Link href="/getStarted">
+              <a>Sign up</a>
+            </Link>
           </BlueTypography>
         </Box>
       </HomePageContainer>
