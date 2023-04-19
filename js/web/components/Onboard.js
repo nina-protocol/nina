@@ -57,13 +57,14 @@ const Onboard = () => {
   }, [])
   useEffect(() => {
     if (!router.isReady) return
-    if (router.isReady && query.code) {
-      const onboardingCodeString = query.code.toString()
+    if (router.isReady && query.claim) {
+      const onboardingCodeString = query.claim.toString()
       const formattedOnboardingCodeString = onboardingCodeString.replaceAll(
         '/',
         ''
       )
       if (formattedOnboardingCodeString) {
+        localStorage.setItem('onboardingCode', formattedOnboardingCodeString)
         setCode(formattedOnboardingCodeString)
       }
     }

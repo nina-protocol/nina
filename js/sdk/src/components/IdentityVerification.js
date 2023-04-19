@@ -271,6 +271,11 @@ const IdentityVerification = ({verifications, profilePubkey, inOnboardingFlow })
   }
 
   const handleConnectAccount = async (type) => {
+    if (inOnboardingFlow) {
+      localStorage.setItem('inOnboardingFlow', 'true')
+    } else {
+      localStorage.removeItem('inOnboardFlow')
+    }
     localStorage.setItem('codeSource', type)
 
     switch (type) {
