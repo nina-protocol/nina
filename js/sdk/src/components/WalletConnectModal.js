@@ -88,10 +88,7 @@ const WalletConnectModal = (props) => {
           console.log('%cError caught during login:\n', 'color: orange')
           console.log(err)
         })
-<<<<<<< HEAD
-=======
       // setPending(false)
->>>>>>> 87eb5486b277e6c57cd4ee680f9dd098d595da25
     } catch (err) {
       console.error(err)
     }
@@ -158,21 +155,6 @@ const WalletConnectModal = (props) => {
           >
             {children}
           </Button>
-          {!wallet?.connected && (
-            <>
-              {' / '}
-              <Link href="/getStarted" style={{ textTransform: 'none' }}>
-                <StyledLink
-                  variant="subtitle1"
-                  component={'a'}
-                  style={{ fontSize: '10px !important' }}
-                >
-                  {' '}
-                  Sign Up
-                </StyledLink>
-              </Link>
-            </>
-          )}
         </Box>
       )}
       <StyledModal
@@ -274,10 +256,6 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const WalletButtons = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
-}))
-
-const StyledLink = styled(Typography)(({ theme }) => ({
-  color: `${theme.palette.blue} !important`,
 }))
 
 export default WalletConnectModal

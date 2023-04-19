@@ -90,11 +90,6 @@ export default function EmailOTP({ login, email, setPending, pending }) {
 
   return (
     <Root id="otp-component">
-      {signingUp && (
-        <Typography variant="h3" style={{ marginBottom: '15px' }}>
-          Your account was succesfully created.
-        </Typography>
-      )}
       <Typography variant="h3" style={{ marginBottom: '15px' }}>
         A one-time passcode was sent to <i>{email}</i>.
       </Typography>
@@ -140,7 +135,7 @@ const Ctas = styled(Box)(() => ({
   flexDirection: 'column',
 }))
 
-const Root = styled(Box)(() => ({
+const Root = styled(Box)(({theme}) => ({
   '.MuiOtpInput-TextField': {
     '& input': {
       fontSize: '30px',

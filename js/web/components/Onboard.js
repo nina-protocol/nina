@@ -19,11 +19,8 @@ import StepContent from '@mui/material/StepContent'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import IdentityVerification from '@nina-protocol/nina-internal-sdk/esm/IdentityVerification'
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
-<<<<<<< HEAD
 import Dots from './Dots'
 
-=======
->>>>>>> 87eb5486b277e6c57cd4ee680f9dd098d595da25
 import dynamic from 'next/dynamic'
 
 const BundlrModal = dynamic(() =>
@@ -504,8 +501,6 @@ const GetStartedPageWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
-<<<<<<< HEAD
-=======
 const ClaimCodeButton = styled(Button)(({ theme }) => ({
   border: `1px solid ${theme.palette.black}`,
   borderRadius: '0px',
@@ -530,7 +525,6 @@ const NinaStep = styled(Step)(({ theme }) => ({
   },
 }))
 
->>>>>>> 87eb5486b277e6c57cd4ee680f9dd098d595da25
 const HtmlTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
