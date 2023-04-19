@@ -91,6 +91,9 @@ const MediaDropzone = ({
 
   const handleChangeStatus = useMemo(() => {
     return ({ meta, file, remove }, status) => {
+      if (status === 'rejected_file_type') {
+        return
+      }
       if (meta.status === 'error_validation') {
         const size = meta.size / 1000000
         if (file.type.includes('audio')) {
@@ -290,6 +293,7 @@ const MediaDropzone = ({
         PreviewComponent={Preview}
         initialFiles={croppedImage ? [croppedImage] : []}
         styles={styles}
+        multiple={false}
       />
 
       {inHubCreate && (
