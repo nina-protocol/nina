@@ -1,15 +1,24 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useMemo } from 'react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import { Box, Typography } from '@mui/material'
+import {
+  Box,
+  Typography,
+  Button,
+  Modal,
+  Paper,
+  Backdrop,
+  Fade,
+} from '@mui/material'
 import { styled } from '@mui/system'
-import SwapModal from '@nina-protocol/nina-internal-sdk/esm/SwapModal'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import { SwapModal } from '@nina-protocol/nina-internal-sdk/esm/SwapModal'
+
 const Balance = ({ profilePublishedReleases }) => {
-  const { ninaClient, solBalance, usdcBalance, getUserBalances } = useContext(
-    Nina.Context
-  )
+  const { ninaClient, solBalance, usdcBalance } = useContext(Nina.Context)
   const [revenueSumForArtist, setRevenueSumForArtist] = useState(0)
   const [userSolBalance, setUserSolBalance] = useState(0)
   const [userUsdcBalance, setUserUsdcBalance] = useState(0)
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     fetchRevenueSumForArtist()
@@ -33,44 +42,42 @@ const Balance = ({ profilePublishedReleases }) => {
     setRevenueSumForArtist(revenueSum)
   }
 
-  const refreshBalances = async () => {
-    const yo = await getUserBalances()
-    setUserSolBalance(sol)
-    setUserUsdcBalance(usdc)
-  }
-
   return (
-    <Box sx={{ display: 'flex', alignItems: 'baseline' }}>
-      <Box sx={{ marginLeft: '100px' }}>
-        <StyledTypography variant="body2" sx={{ textDecoration: 'underline' }}>
-          Balances
-        </StyledTypography>
-      </Box>
-      <StyledBox>
-        <StyledTypography variant="body2">{`sol: `}</StyledTypography>
-        <StyledTypography variant="body2">{`${userSolBalance}`}</StyledTypography>
-      </StyledBox>
-      <StyledBox>
-        <StyledTypography variant="body2">{`usdc: `}</StyledTypography>
-        <StyledTypography variant="body2">{`$${userUsdcBalance}`}</StyledTypography>
-      </StyledBox>
-      {revenueSumForArtist > 0 && (
-        <StyledBox>
-          <StyledTypography
-            variant="body2"
-            noWrap
-          >{`to collect: `}</StyledTypography>
-          <StyledTypography variant="body2">
-            {`$${ninaClient
-              .nativeToUi(revenueSumForArtist, ninaClient.ids.mints.usdc)
-              .toFixed(2)}`}
-          </StyledTypography>
-        </StyledBox>
-      )}
-      <StyledBox>
-        <SwapModal refreshBalances={refreshBalances} inProfile={true} />
-      </StyledBox>
-    </Box>
+    <Root>
+      <Button
+        variant="outlined"
+        color="primary"
+        type="submit"
+        fullWidth
+        onClick={() => setOpen(true)}
+      >
+        Balances
+      </Button>
+
+      <StyledModal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open}
+        onClose={() => setOpen(false)}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <StyledPaper>
+            <StyledTypography variant="h3">{`sol: ${userSolBalance}`}</StyledTypography>
+            <StyledTypography variant="h3">{`usdc: $${userUsdcBalance}`}</StyledTypography>
+            {revenueSumForArtist > 0 && (
+              <StyledTypography variant="h3">{`to collect: $${ninaClient
+                .nativeToUi(revenueSumForArtist, ninaClient.ids.mints.usdc)
+                .toFixed(2)}`}</StyledTypography>
+            )}
+          </StyledPaper>
+        </Fade>
+      </StyledModal>
+    </Root>
   )
 }
 
@@ -81,8 +88,39 @@ const StyledTypography = styled(Typography)(() => ({
   alignItems: 'center',
 }))
 
-const StyledBox = styled(Box)(() => ({
-  marginLeft: '30px',
+const Root = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  width: '100%',
+}))
+
+const StyledModal = styled(Modal)(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}))
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  border: '2px solid #000',
+  boxShadow: theme.shadows[5],
+  padding: theme.spacing(2, 4, 3),
+  width: '40vw',
+  maxHeight: '90vh',
+  overflowY: 'auto',
+  zIndex: '10',
+  display: 'flex',
+  flexDirection: 'column',
+  [theme.breakpoints.down('md')]: {
+    width: 'unset',
+    margin: '15px',
+    padding: theme.spacing(2),
+  },
+}))
+
+const InputWrapper = styled(Box)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
 }))
 
 export default Balance
