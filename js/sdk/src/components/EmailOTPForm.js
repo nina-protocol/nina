@@ -140,11 +140,11 @@ const Ctas = styled(Box)(() => ({
   flexDirection: 'column',
 }))
 
-const Root = styled(Box)(({theme}) => ({
-  '.MuiOtpInput-TextField':{
+const Root = styled(Box)(() => ({
+  '.MuiOtpInput-TextField': {
     '& input': {
-      fontSize: '30px'
-    }
+      fontSize: '30px',
+    },
   },
   '.MuiOtpInput-TextField:last-of-type': {
     display: 'none',
