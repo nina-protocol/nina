@@ -29,8 +29,11 @@ import {
   faEthereum,
 } from '@fortawesome/free-brands-svg-icons'
 
-const IdentityVerification = ({verifications, profilePubkey, inOnboardingFlow }) => {
- 
+const IdentityVerification = ({
+  verifications,
+  profilePubkey,
+  inOnboardingFlow,
+}) => {
   const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
   const { wallet } = useContext(Wallet.Context)
@@ -53,7 +56,6 @@ const IdentityVerification = ({verifications, profilePubkey, inOnboardingFlow })
   const [action, setAction] = useState(undefined)
   const [activeType, setActiveType] = useState(undefined)
   const [activeValue, setActiveValue] = useState(undefined)
-
 
   const logos = {
     soundcloud: (

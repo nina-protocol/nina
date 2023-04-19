@@ -19,13 +19,12 @@ import StepContent from '@mui/material/StepContent'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import IdentityVerification from '@nina-protocol/nina-internal-sdk/esm/IdentityVerification'
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
-
 import dynamic from 'next/dynamic'
-import { render } from 'react-dom'
 
 const BundlrModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/BundlrModal')
 )
+
 const Onboard = () => {
   const router = useRouter()
   const {
@@ -108,7 +107,6 @@ const Onboard = () => {
       </Box>
     )
   }
-
   const onboardingSteps = [
     {
       title: 'Login or Sign Up',
@@ -344,7 +342,7 @@ const Onboard = () => {
         <Stepper activeStep={activeStep} orientation="vertical">
           {steps.map((step, index) => {
             return (
-              <Step key={index}>
+              <NinaStep key={index}>
                 <StepLabel>{step.title}</StepLabel>
                 <StepContent>
                   <Typography variant="body1" mb={1}>
@@ -360,7 +358,7 @@ const Onboard = () => {
                     {step.cta}
                   </Box>
                 </StepContent>
-              </Step>
+              </NinaStep>
             )
           })}
         </Stepper>
@@ -489,6 +487,21 @@ const ClaimCodeButton = styled(Button)(({ theme }) => ({
   color: theme.palette.black,
   fontSize: '12px',
   width: '100%',
+}))
+
+const NinaStep = styled(Step)(({ theme }) => ({
+  '& .MuiStepLabel-iconContainer .Mui-completed': {
+    color: theme.palette.blue,
+  },
+  '& .MuiStepLabel-iconContainer .Mui-active': {
+    color: theme.palette.blue,
+  },
+  '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel': {
+    color: theme.palette.black,
+  },
+  '& .MuiStepLabel-root .Mui-active .MuiStepIcon-text': {
+    fill: theme.palette.white,
+  },
 }))
 
 const HtmlTooltip = styled(({ className, ...props }) => (

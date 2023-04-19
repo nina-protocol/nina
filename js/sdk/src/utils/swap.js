@@ -18,7 +18,7 @@ export const swapQuote = async (
   wallet,
   connection,
   amount,
-  isSolToUsdc = true,
+  isSolToUsdc = true
 ) => {
   const context = WhirlpoolContext.from(
     connection,
@@ -44,11 +44,7 @@ export const swapQuote = async (
   return inputTokenQuote
 }
 
-export const swap = async (
-  quote,
-  wallet,
-  connection,
-) => {
+export const swap = async (quote, wallet, connection) => {
   const context = WhirlpoolContext.from(
     connection,
     wallet,

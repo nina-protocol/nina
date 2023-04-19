@@ -147,10 +147,10 @@ const Ctas = styled(Box)(() => ({
 }))
 
 const Root = styled(Box)(() => ({
-  '.MuiOtpInput-TextField':{
+  '.MuiOtpInput-TextField': {
     '& input': {
-      fontSize: '30px'
-    }
+      fontSize: '30px',
+    },
   },
   '.MuiOtpInput-TextField:last-of-type': {
     display: 'none',

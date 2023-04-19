@@ -14,7 +14,6 @@ import EmailLoginForm from './EmailLoginForm'
 import EmailOTPForm from './EmailOTPForm'
 import Link from 'next/link'
 
-
 const WalletConnectModal = (props) => {
   const { children, inOnboardingFlow } = props
   const { wallet, walletExtension, connectMagicWallet, useMagic } = useContext(
@@ -28,7 +27,9 @@ const WalletConnectModal = (props) => {
   const [showWallets, setShowWallets] = useState(false)
   const [pending, setPending] = useState(false)
   const walletText = useMemo(() => {
-   return signingUp ? 'I want to sign up with a wallet' : 'I want to Login with a wallet'
+    return signingUp
+      ? 'I want to sign up with a wallet'
+      : 'I want to Login with a wallet'
   }, [signingUp])
   const [email, setEmail] = useState()
 
@@ -38,28 +39,16 @@ const WalletConnectModal = (props) => {
 
   const handleLogin = async (email) => {
     setPending(true)
-    console.log('ello', useMagic)
     const magic = await useMagic()
-    console.log('ello2')
     try {
       const otpLogin = magic.auth.loginWithEmailOTP({ email, showUI: false })
       otpLogin
-        .on('invalid-email-otp', () => {
-          console.log('invalid email OTP')
-        })
-        .on('verify-email-otp', (otp) => {
-          console.log('verify email OTP', otp)
-        })
         .on('email-otp-sent', () => {
-          console.log('on email OTP sent!')
-
           setOtpLogin(otpLogin)
           setShowOtpUI(true)
         })
         .on('done', (result) => {
           connectMagicWallet(magic)
-
-          console.log(`DID Token: %c${result}`, 'color: orange')
         })
         .on('settled', () => {
           setOtpLogin()
@@ -67,9 +56,8 @@ const WalletConnectModal = (props) => {
           setOpen(false)
         })
         .catch((err) => {
-          console.log('%cError caught during login:\n', 'color: orange')
 
-          console.log(err)
+          console.error('magic login error: ', err)
         })
     } catch (err) {
       console.error(err)
@@ -124,36 +112,31 @@ const WalletConnectModal = (props) => {
               },
             }}
           >
-              {children}
+            {children}
           </Button>
-        {!wallet?.connected && (
-          
-          <>
+          {!wallet?.connected && (
+            <>
               {' / '}
-            <Link
-            href="/getStarted"
-            style={{textTransform: 'none'}}
-            >
-              <StyledLink variant="subtitle1"
-                component={'a'}
-                style={{fontSize: '10px !important'}}
-              >
-                {' '}Sign Up
-              </StyledLink>
-            </Link>
-          </>
+              <Link href="/getStarted" style={{ textTransform: 'none' }}>
+                <StyledLink
+                  variant="subtitle1"
+                  component={'a'}
+                  style={{ fontSize: '10px !important' }}
+                >
+                  {' '}
+                  Sign Up
+                </StyledLink>
+              </Link>
+            </>
           )}
-    
         </Box>
-
-        
       )}
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={open}
         onClose={() => {
-          setSigningUp(false) 
+          setSigningUp(false)
           setOpen(false)
         }}
         closeAfterTransition
@@ -165,8 +148,10 @@ const WalletConnectModal = (props) => {
         <Fade in={open}>
           <StyledPaper>
             {signingUp && (
-              <Box sx={{mb:1}}>
-                <Typography variant='body1'>To create an account, all you need is an email.</Typography>
+              <Box sx={{ mb: 1 }}>
+                <Typography variant="body1">
+                  To create an account, all you need is an email.
+                </Typography>
               </Box>
             )}
             {showOtpUI ? (
@@ -251,6 +236,6 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 const StyledLink = styled(Typography)(({ theme }) => ({
   color: `${theme.palette.blue} !important`,
-})) 
+}))
 
 export default WalletConnectModal
