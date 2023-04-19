@@ -50,14 +50,14 @@ const NoSolWarning = (props) => {
           <StyledPaper>
             <>
               <Typography component="p" gutterBottom>
-                {`You do not have any SOL in your wallet.`}
+                {`You do not have any SOL.`}
               </Typography>
               <Typography component="p" gutterBottom>
-                {`Please add more SOL to your wallet to ${actionText}.`}
+                {`Please add Sol to ${actionText}.`}
               </Typography>
-              <Box mt={1} sx={{ display: 'flex', flexDirection: 'row' }}>
+              <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                 <Typography component="p" gutterBottom>
-                  {`For any questions, please reach out to us at`}{' '}
+                  {`For any questions, please reach out at`}{' '}
                   <a
                     target="_blank"
                     rel="noreferrer"
@@ -66,12 +66,7 @@ const NoSolWarning = (props) => {
                   >
                     {`contact@ninaprotocol.com`}
                   </a>{' '}
-                </Typography>
-                <Typography>{'.'}</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                <Typography component="p" gutterBottom>
-                  {`You can also reach out to us via our`}{' '}
+                  {`or our`}{' '}
                   <a
                     target="_blank"
                     rel="noreferrer"
@@ -79,26 +74,10 @@ const NoSolWarning = (props) => {
                     href="https://discord.gg/ePkqJqSBgj"
                   >
                     {`Discord`}
-                  </a>{' '}
+                  </a>
+                  {'.'}
                 </Typography>
-                <Typography>{'.'}</Typography>
               </Box>
-              {(action === 'upload' || action === 'hub') && (
-                <Box mt={1} sx={{ display: 'flex', flexDirection: 'row' }}>
-                  <Typography component="p" gutterBottom>
-                    {`If you are an artist looking to release music on Nina, you can apply for a grant through the`}{' '}
-                    <a
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ margin: '0px', textDecoration: 'none' }}
-                      href="https://discord.gg/ePkqJqSBgj"
-                    >
-                      {`Nina Artist Program`}
-                    </a>
-                    {'.'}
-                  </Typography>
-                </Box>
-              )}
               <Button
                 style={{ marginTop: '15px' }}
                 color="primary"
