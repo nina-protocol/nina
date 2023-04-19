@@ -100,6 +100,7 @@ const Onboard = () => {
       content: `To get started, please login or sign up below.`,
       cta: (
         <WalletConnectModal inOnboardingFlow={true}>
+          <Typography variant="body2">Login / Sign Up</Typography>
           Login / Sign Up
         </WalletConnectModal>
       ),
@@ -155,7 +156,9 @@ const Onboard = () => {
             onClick={() => setActiveStep(4)}
             sx={{ marginTop: '10px', width: '100%' }}
           >
+            <Typography variant="body2">
             Continue
+            </Typography>
           </Button>
         </>
       ),
@@ -232,7 +235,9 @@ const Onboard = () => {
       cta: (
         <>
           <WalletConnectModal inOnboardingFlow={true}>
-            Create an Account
+            <Typography variant="body2">
+              Create an Account
+            </Typography>
           </WalletConnectModal>
         </>
       ),
@@ -254,7 +259,9 @@ const Onboard = () => {
             onClick={() => setActiveStep(2)}
             sx={{ marginTop: '10px', width: '100%' }}
           >
-            Continue
+            <Typography variant="body2">
+              Continue
+            </Typography>
           </Button>
         </>
       ),

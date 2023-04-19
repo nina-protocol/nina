@@ -170,14 +170,6 @@ const WalletConnectModal = (props) => {
       >
         <Fade in={open}>
           <StyledPaper>
-            {signingUp && (
-              <Box sx={{ mb: 1 }}>
-                <Typography variant="body1">
-                  To create an account, all you need is an email.
-                </Typography>
-              </Box>
-            )}
-
             {showOtpUI ? (
               <EmailOTPForm login={otpLogin} email={email} pending={pending} setPending={setPending} />
             ) : (
