@@ -103,7 +103,7 @@ class ReverseEthAddressRegistryState {
       anchor.web3.SystemProgram.programId,
       reverseRegistryKey,
       publicKey,
-      publicKey,
+      NINA_ID,
       hashedVerifiedPubkey,
       new Numberu64(LAMPORTS_FOR_REVERSE_REGISTRY * 2),
       new Numberu32(ReverseEthAddressRegistryStateBuff.length),
@@ -186,7 +186,7 @@ class ReverseSoundcloudRegistryState {
       anchor.web3.SystemProgram.programId,
       reverseRegistryKey,
       publicKey,
-      publicKey,
+      NINA_ID,
       hashedVerifiedPubkey,
       new Numberu64(LAMPORTS_FOR_REVERSE_REGISTRY * 2),
       new Numberu32(ReverseSoundcloudRegistryStateBuff.length),
@@ -269,7 +269,7 @@ class ReverseTwitterRegistryState {
       anchor.web3.SystemProgram.programId,
       reverseRegistryKey,
       publicKey,
-      publicKey,
+      NINA_ID,
       hashedVerifiedPubkey,
       new Numberu64(LAMPORTS_FOR_REVERSE_REGISTRY * 2),
       new Numberu32(ReverseTwitterRegistryStateBuff.length),
@@ -352,7 +352,7 @@ class ReverseInstagramRegistryState {
       anchor.web3.SystemProgram.programId,
       reverseRegistryKey,
       publicKey,
-      publicKey,
+      NINA_ID,
       hashedVerifiedPubkey,
       new Numberu64(LAMPORTS_FOR_REVERSE_REGISTRY * 2),
       new Numberu32(ReverseInstagramRegistryStateBuff.length),
@@ -394,7 +394,7 @@ const verifyEthereum = async (
       provider.connection,
       ethAddress,
       96,
-      publicKey,
+      NINA_ID,
       publicKey,
       LAMPORTS_FOR_NAME_ACCOUNT,
       NINA_ID,
@@ -412,7 +412,7 @@ const verifyEthereum = async (
     const tx = new anchor.web3.Transaction({
       recentBlockhash: (await provider.connection.getLatestBlockhash())
         .blockhash,
-      feePayer: publicKey,
+      feePayer: NINA_ID,
     })
     tx.add(ix, createIx, reverseRegistryIx)
     await signTransaction(tx)
@@ -460,7 +460,7 @@ const verifySoundcloud = async (
       provider.connection,
       soundcloudHandle,
       96,
-      publicKey,
+      NINA_ID,
       publicKey,
       LAMPORTS_FOR_NAME_ACCOUNT,
       NINA_ID,
@@ -478,11 +478,9 @@ const verifySoundcloud = async (
     const tx = new anchor.web3.Transaction({
       recentBlockhash: (await provider.connection.getLatestBlockhash())
         .blockhash,
-      feePayer: publicKey,
+      feePayer: NINA_ID,
     })
     tx.add(ix, createIx, reverseRegistryIx)
-    await signTransaction(tx)
-    // Send Transaction To Server To Verify Signatures
     const response = await axios.post(
       `${process.env.NINA_IDENTITY_ENDPOINT}/sc/register`,
       {
@@ -527,7 +525,7 @@ const verifyTwitter = async (
       provider.connection,
       twitterHandle,
       96,
-      publicKey,
+      NINA_ID,
       publicKey,
       LAMPORTS_FOR_NAME_ACCOUNT,
       NINA_ID,
@@ -543,7 +541,7 @@ const verifyTwitter = async (
     const tx = new anchor.web3.Transaction({
       recentBlockhash: (await provider.connection.getLatestBlockhash())
         .blockhash,
-      feePayer: publicKey,
+      feePayer: NINA_ID,
     })
     tx.add(ix, createIx, reverseRegistryIx)
     await signTransaction(tx)
@@ -602,14 +600,14 @@ const deleteTwitterVerification = async (
       deleteInstruction(
         NAME_PROGRAM_ID,
         twitterHandleRegistryKey,
-        publicKey,
+        NINA_ID,
         publicKey
       ),
       // Delete the reverse registry
       deleteInstruction(
         NAME_PROGRAM_ID,
         reverseRegistryKey,
-        publicKey,
+        NINA_ID,
         publicKey
       ),
     ]
@@ -617,17 +615,23 @@ const deleteTwitterVerification = async (
     const tx = new anchor.web3.Transaction({
       recentBlockhash: (await provider.connection.getLatestBlockhash())
         .blockhash,
-      feePayer: publicKey,
+      feePayer: NINA_ID,
     })
     tx.add(...instructions)
-    await signTransaction(tx)
-    await sendTransaction(tx, provider.connection)
-    // const response = await axios.post(
-    //   `${process.env.NINA_IDENTITY_ENDPOINT}/tw/unregister`,
-    //   {
-    //     tx: tx.serialize({ verifySignatures: false }).toString('base64'),
-    //   }
-    // )
+    const signedTx = await signTransaction(tx)
+    console.log('signedTx: ', signedTx)
+    if (signedTx) {
+      console.log('in here')
+      tx.addSignature(publicKey, signedTx.signature[1].signature)
+    }
+
+    // await sendTransaction(tx, provider.connection)
+    const response = await axios.post(
+      `${process.env.NINA_IDENTITY_ENDPOINT}/unregister`,
+      {
+        tx: tx.serialize({ verifySignatures: false }).toString('base64'),
+      }
+    )
 
     return true
   } catch (error) {
@@ -664,14 +668,14 @@ const deleteEthereumVerification = async (
       deleteInstruction(
         NAME_PROGRAM_ID,
         ethAddressRegistryKey,
-        publicKey,
+        NINA_ID,
         publicKey
       ),
       // Delete the reverse registry
       deleteInstruction(
         NAME_PROGRAM_ID,
         reverseRegistryKey,
-        publicKey,
+        NINA_ID,
         publicKey
       ),
     ]
@@ -679,17 +683,94 @@ const deleteEthereumVerification = async (
     const tx = new anchor.web3.Transaction({
       recentBlockhash: (await provider.connection.getLatestBlockhash())
         .blockhash,
-      feePayer: publicKey,
+      feePayer: NINA_ID,
     })
     tx.add(...instructions)
-    await signTransaction(tx)
-    await sendTransaction(tx, provider.connection)
-    // const response = await axios.post(
-    //   `${process.env.NINA_IDENTITY_ENDPOINT}/tw/unregister`,
-    //   {
-    //     tx: tx.serialize({ verifySignatures: false }).toString('base64'),
-    //   }
-    // )
+    const signedTx = await signTransaction(tx)
+    tx.addSignature(publicKey, signedTx.signature[1].signature)
+    const response = await axios.post(
+      `${process.env.NINA_IDENTITY_ENDPOINT}/unregister`,
+      {
+        tx: tx.serialize({ verifySignatures: false }).toString('base64'),
+      }
+    )
+
+    return true
+  } catch (error) {
+    console.warn('error: ', error)
+    return false
+  }
+}
+
+const deleteSoundcloudVerification = async (
+  provider,
+  soundcloudHandle,
+  publicKey,
+  signTransaction,
+) => {
+  try {
+    console.log('soundcloudHandle: ', soundcloudHandle)
+    const hashedSoundcloudHandle = await getHashedName(soundcloudHandle)
+    console.log('hashedSoundcloudHandle: ', hashedSoundcloudHandle)
+    const soundcloudRegistryKey = await getNameAccountKey(
+      hashedSoundcloudHandle,
+      NINA_ID,
+      NINA_ID_SC_TLD
+    )
+
+    const hashedVerifiedPubkey = await getHashedName(publicKey.toString())
+    const reverseRegistryKey = await getNameAccountKey(
+      hashedVerifiedPubkey,
+      NINA_ID,
+      NINA_ID_SC_TLD
+    )
+
+    const instructions = [
+      // Delete the user facing registry
+      deleteInstruction(
+        NAME_PROGRAM_ID,
+        soundcloudRegistryKey,
+        NINA_ID,
+        publicKey
+      ),
+      // Delete the reverse registry
+      deleteInstruction(
+        NAME_PROGRAM_ID,
+        reverseRegistryKey,
+        NINA_ID,
+        publicKey
+      ),
+    ]
+    // Build and Sign Transaction
+    let tx = new anchor.web3.Transaction({
+      recentBlockhash: (await provider.connection.getLatestBlockhash())
+        .blockhash,
+      feePayer: NINA_ID,
+    })
+    tx.add(...instructions)
+    console.log('tx before sign: ', tx)
+    const signedTx = await signTransaction(tx)
+    // tx.signatures = signedTx.signature
+    // tx.signatures = [signedTx.signature[1]]
+    console.log('signedTx: ', signedTx)
+    if (signedTx.signature) {
+      console.log('in here')
+      tx.addSignature(publicKey, signedTx.signature[1].signature)
+    } else {
+      tx = signedTx
+    }
+
+    console.log("tx after sign: ", tx)
+    for (let signature of tx.signatures) {
+      console.log("signature: ", signature.publicKey.toBase58())
+    }
+    // tx.addSignature
+    const response = await axios.post(
+      `${process.env.NINA_IDENTITY_ENDPOINT}/unregister`,
+      {
+        tx: tx.serialize({ verifySignatures: false }).toString('base64'),
+      }
+    )
 
     return true
   } catch (error) {
@@ -717,7 +798,7 @@ const verifyInstagram = async (
       provider.connection,
       instagramHandle,
       96,
-      publicKey,
+      NINA_ID,
       publicKey,
       LAMPORTS_FOR_NAME_ACCOUNT,
       NINA_ID,
@@ -735,7 +816,7 @@ const verifyInstagram = async (
     const tx = new anchor.web3.Transaction({
       recentBlockhash: (await provider.connection.getLatestBlockhash())
         .blockhash,
-      feePayer: publicKey,
+      feePayer: NINA_ID,
     })
     tx.add(ix, createIx, reverseRegistryIx)
     await signTransaction(tx)
@@ -775,4 +856,5 @@ export {
   verifyEthereum,
   deleteTwitterVerification,
   deleteEthereumVerification,
+  deleteSoundcloudVerification
 }

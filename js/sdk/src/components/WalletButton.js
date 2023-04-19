@@ -118,20 +118,13 @@ const WalletButton = ({
           <WalletActionMenuItem
             onClick={() => {
               setAnchor(undefined)
-            }}
-          >
-            Change wallet
-          </WalletActionMenuItem>
-          <WalletActionMenuItem
-            onClick={() => {
-              setAnchor(undefined)
               // eslint-disable-next-line @typescript-eslint/no-empty-function
               wallet.disconnect().catch(() => {
                 // Silently catch because any errors are caught by the context `onError` handler
               })
             }}
           >
-            Disconnect
+            Sign Out
           </WalletActionMenuItem>
         </Collapse>
       </StyledMenu>

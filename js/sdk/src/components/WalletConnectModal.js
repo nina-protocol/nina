@@ -10,8 +10,6 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import { WalletReadyState } from '@solana/wallet-adapter-base'
-import { Magic } from 'magic-sdk'
-import { SolanaExtension } from '@magic-ext/solana'
 import EmailLoginForm from './EmailLoginForm'
 import EmailOTPForm from './EmailOTPForm'
 import Link from 'next/link'
@@ -19,7 +17,7 @@ import Link from 'next/link'
 
 const WalletConnectModal = (props) => {
   const { children, inOnboardingFlow } = props
-  const { wallet, walletExtension, connectMagicWallet } = useContext(
+  const { wallet, walletExtension, connectMagicWallet, useMagic } = useContext(
     Wallet.Context
   )
 
@@ -40,16 +38,10 @@ const WalletConnectModal = (props) => {
 
   const handleLogin = async (email) => {
     setPending(true)
-    const magic = new Magic(process.env.MAGIC_KEY, {
-      extensions: {
-        solana: new SolanaExtension({
-          rpcUrl: process.env.SOLANA_CLUSTER_URL,
-        }),
-      },
-    })
-
+    console.log('ello', useMagic)
+    const magic = await useMagic()
+    console.log('ello2')
     try {
-      // setOtpLogin()
       const otpLogin = magic.auth.loginWithEmailOTP({ email, showUI: false })
       otpLogin
         .on('invalid-email-otp', () => {
@@ -79,7 +71,6 @@ const WalletConnectModal = (props) => {
 
           console.log(err)
         })
-        // setPending(false) 
     } catch (err) {
       console.error(err)
     }
