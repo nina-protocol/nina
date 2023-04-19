@@ -374,7 +374,12 @@ const Profile = ({ profilePubkey }) => {
             <Box display="flex">
               {profilePubkey && (
                 <>
-                  <Box>
+                  <Box
+                    display="flex"
+                    sx={{
+                      flexDirection: 'row',
+                    }}
+                  >
                     {profileImage && profileImage?.includes('https') ? (
                       <Image
                         height={100}
@@ -389,6 +394,9 @@ const Profile = ({ profilePubkey }) => {
                     ) : (
                       <img src={profileImage} height={100} width={100} />
                     )}
+                    <Typography ml={1}>
+                      {displayNameForAccount(profilePubkey)}
+                    </Typography>
                   </Box>
                   <Box
                     sx={{
@@ -398,11 +406,8 @@ const Profile = ({ profilePubkey }) => {
                     }}
                     display="flex"
                     alignItems={'start'}
+                    flexWrap={'wrap'}
                   >
-                    <Typography>
-                      {displayNameForAccount(profilePubkey)}
-                    </Typography>
-
                     {wallet.connected && (
                       <Subscribe accountAddress={profilePubkey} />
                     )}
@@ -411,13 +416,15 @@ const Profile = ({ profilePubkey }) => {
                       profilePubkey={profilePubkey}
                     />
                     {inDashboard && <CreateHub />}
+                    {inDashboard && (
+                      <Balance
+                        profilePublishedReleases={profilePublishedReleases}
+                      />
+                    )}
                   </Box>
                 </>
               )}
             </Box>
-            {inDashboard && (
-              <Balance profilePublishedReleases={profilePublishedReleases} />
-            )}
           </ProfileHeaderContainer>
         </ProfileHeaderWrapper>
         {hasData && (

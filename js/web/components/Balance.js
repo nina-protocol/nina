@@ -44,15 +44,13 @@ const Balance = ({ profilePublishedReleases }) => {
 
   return (
     <Root>
-      <Button
-        variant="outlined"
-        color="primary"
-        type="submit"
-        fullWidth
-        onClick={() => setOpen(true)}
-      >
-        Your Balances
-      </Button>
+      <CtaWrapper>
+        <Button type="submit" onClick={() => setOpen(true)}>
+          <Box display="flex" alignItems="center">
+            <Typography variant="body2">Balances</Typography>
+          </Box>
+        </Button>
+      </CtaWrapper>
 
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -136,9 +134,27 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   },
 }))
 
-const InputWrapper = styled(Box)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
+const CtaWrapper = styled(Box)(({ theme }) => ({
+  '& button': {
+    color: theme.palette.blue,
+
+    borderRadius: '0px',
+    // margin: '0 8px',
+    [theme.breakpoints.down('md')]: {
+      border: 'none',
+      margin: '0px',
+      padding: '10px 10px 10px 0px',
+      '& p': {
+        display: 'none',
+      },
+    },
+    '& svg': {
+      fontSize: '16px',
+      [theme.breakpoints.down('md')]: {
+        fontSize: '20px',
+      },
+    },
+  },
 }))
 
 export default Balance
