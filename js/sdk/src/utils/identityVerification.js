@@ -619,9 +619,7 @@ const deleteTwitterVerification = async (
     })
     tx.add(...instructions)
     const signedTx = await signTransaction(tx)
-    console.log('signedTx: ', signedTx)
     if (signedTx) {
-      console.log('in here')
       tx.addSignature(publicKey, signedTx.signature[1].signature)
     }
 
@@ -709,9 +707,7 @@ const deleteSoundcloudVerification = async (
   signTransaction,
 ) => {
   try {
-    console.log('soundcloudHandle: ', soundcloudHandle)
     const hashedSoundcloudHandle = await getHashedName(soundcloudHandle)
-    console.log('hashedSoundcloudHandle: ', hashedSoundcloudHandle)
     const soundcloudRegistryKey = await getNameAccountKey(
       hashedSoundcloudHandle,
       NINA_ID,
@@ -748,23 +744,14 @@ const deleteSoundcloudVerification = async (
       feePayer: NINA_ID,
     })
     tx.add(...instructions)
-    console.log('tx before sign: ', tx)
+
     const signedTx = await signTransaction(tx)
-    // tx.signatures = signedTx.signature
-    // tx.signatures = [signedTx.signature[1]]
-    console.log('signedTx: ', signedTx)
     if (signedTx.signature) {
-      console.log('in here')
       tx.addSignature(publicKey, signedTx.signature[1].signature)
     } else {
       tx = signedTx
     }
 
-    console.log("tx after sign: ", tx)
-    for (let signature of tx.signatures) {
-      console.log("signature: ", signature.publicKey.toBase58())
-    }
-    // tx.addSignature
     const response = await axios.post(
       `${process.env.NINA_IDENTITY_ENDPOINT}/unregister`,
       {

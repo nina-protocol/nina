@@ -213,13 +213,13 @@ const IdentityVerification = ({verifications, profilePubkey, inOnboardingFlow })
           window.open(`https://instagram.com/${value}`, '_blank')
           break
         case 'soundcloud':
-          deleteSoundcloudVerification(
-            provider,
-            value,
-            publicKey,
-            signTransaction,
-          )
-          // window.open(`https://soundcloud.com/${value}`, '_blank')
+          // deleteSoundcloudVerification(
+          //   provider,
+          //   value,
+          //   publicKey,
+          //   signTransaction,
+          // )
+          window.open(`https://soundcloud.com/${value}`, '_blank')
           break
         case 'ethereum':
           window.open(`https://etherscan.io/address/${value}`, '_blank')
