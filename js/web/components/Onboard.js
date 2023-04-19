@@ -19,6 +19,8 @@ import StepContent from '@mui/material/StepContent'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import IdentityVerification from '@nina-protocol/nina-internal-sdk/esm/IdentityVerification'
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip'
+import Dots from './Dots'
+
 import dynamic from 'next/dynamic'
 
 const BundlrModal = dynamic(() =>
@@ -46,6 +48,7 @@ const Onboard = () => {
   const { enqueueSnackbar } = useSnackbar()
   const profilePubkey = wallet?.publicKey?.toBase58()
   const [profileVerifications, setProfileVerifications] = useState([])
+  const [pending, setPending] = useState(false)
   const bundlrUsdBalance = useMemo(
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
@@ -118,14 +121,14 @@ const Onboard = () => {
     },
     {
       title: 'Claim your onboarding code',
-      content: `   Once you've connected your wallet, you'll be able to claim your
+      content: `Once you've connected your wallet, you'll be able to claim your
           onboarding code. This code will give you access to the Nina ecosystem. Your onboarding code is: ${code}`,
 
       cta: (
         <>
-          <ClaimCodeButton onClick={() => handleClaimCode(code)}>
-            Claim Code
-          </ClaimCodeButton>
+          <Button variant="outlined" onClick={() => handleClaimCode(code)}>
+            {pending ? <Dots size="40px" /> : 'Claim Code'}
+          </Button>
           {claimedError && (
             <Typography mt={1} mb={1}>
               This code has already been claimed or is invalid. If you believe
@@ -162,12 +165,13 @@ const Onboard = () => {
             inOnboardingFlow={true}
           />
           <Box />
-          <ClaimCodeButton
+          <Button
+            variant="outlined"
             onClick={() => setActiveStep(4)}
-            sx={{ marginTop: '10px' }}
+            sx={{ marginTop: '10px', width: '100%' }}
           >
             Do this Later
-          </ClaimCodeButton>
+          </Button>
         </>
       ),
     },
@@ -183,19 +187,28 @@ const Onboard = () => {
           }}
         >
           <Link href="/dashboard">
-            <ClaimCodeButton sx={{ marginTop: '10px' }}>
+            <Button
+              variant="outlined"
+              sx={{ marginTop: '10px', width: '100%' }}
+            >
               Go to Dashboard
-            </ClaimCodeButton>
+            </Button>
           </Link>
           <Link href="/hubs/create">
-            <ClaimCodeButton sx={{ marginTop: '10px' }}>
+            <Button
+              variant="outlined"
+              sx={{ marginTop: '10px', width: '100%' }}
+            >
               Create a Hub
-            </ClaimCodeButton>
+            </Button>
           </Link>
           <Link href="/upload">
-            <ClaimCodeButton sx={{ marginTop: '10px' }}>
-              Publish a Track
-            </ClaimCodeButton>
+            <Button
+              variant="outlined"
+              sx={{ marginTop: '10px', width: '100%' }}
+            >
+              Publish a Track!!!!
+            </Button>
           </Link>
         </Box>
       ),
@@ -226,12 +239,13 @@ const Onboard = () => {
             inOnboardingFlow={true}
           />
           <Box />
-          <ClaimCodeButton
+          <Button
+            variant="outlined"
             onClick={() => setActiveStep(2)}
-            sx={{ marginTop: '10px' }}
+            sx={{ marginTop: '10px', width: '100%' }}
           >
             Do this Later
-          </ClaimCodeButton>
+          </Button>
         </>
       ),
     },
@@ -248,9 +262,12 @@ const Onboard = () => {
             }}
           >
             <Link href="/dashboard">
-              <ClaimCodeButton sx={{ marginTop: '10px' }}>
+              <Button
+                variant="outlined"
+                sx={{ marginTop: '10px', width: '100%' }}
+              >
                 Go to Dashboard
-              </ClaimCodeButton>
+              </Button>
             </Link>
 
             <HtmlTooltip
@@ -261,12 +278,13 @@ const Onboard = () => {
             >
               <Box width={'100%'}>
                 <Link href="/hubs/create">
-                  <ClaimCodeButton
-                    sx={{ marginTop: '10px' }}
+                  <Button
+                    variant="outlined"
+                    sx={{ marginTop: '10px', width: '100%' }}
                     disabled={solBalance === 0}
                   >
                     Create a Hub
-                  </ClaimCodeButton>
+                  </Button>
                 </Link>
               </Box>
             </HtmlTooltip>
@@ -281,12 +299,14 @@ const Onboard = () => {
             >
               <Box width={'100%'}>
                 <Link href="/upload">
-                  <ClaimCodeButton
-                    sx={{ marginTop: '10px' }}
+                  <Button
+                    variant="outlined"
+                    width={'100%'}
+                    sx={{ marginTop: '10px', width: '100%' }}
                     disabled={solBalance === 0}
                   >
                     Publish a Track
-                  </ClaimCodeButton>
+                  </Button>
                 </Link>
               </Box>
             </HtmlTooltip>
@@ -303,6 +323,7 @@ const Onboard = () => {
     const signatureBase64 = encodeBase64(signature)
 
     try {
+      setPending(true)
       const response = await axios.post(
         `${process.env.NINA_IDENTITY_ENDPOINT}/onboardingCodes/${code}`,
         {
@@ -327,6 +348,7 @@ const Onboard = () => {
       console.error(error)
       setClaimedError(true)
     }
+    setPending(false)
   }
 
   const refreshBundlr = () => {
@@ -383,19 +405,19 @@ const Onboard = () => {
           }}
         >
           <Link href="/dashboard">
-            <ClaimCodeButton sx={{ marginTop: '10px' }}>
+            <Button variant="outlined" width="100%" sx={{ marginTop: '10px' }}>
               Go to Dashboard
-            </ClaimCodeButton>
+            </Button>
           </Link>
           <Link href="/hubs/create">
-            <ClaimCodeButton sx={{ marginTop: '10px' }}>
+            <Button variant="outlined" width="100%" sx={{ marginTop: '10px' }}>
               Create a Hub
-            </ClaimCodeButton>
+            </Button>
           </Link>
           <Link href="/upload">
-            <ClaimCodeButton sx={{ marginTop: '10px' }}>
+            <Button variant="outlined" width="100%" sx={{ marginTop: '10px' }}>
               Publish a Track
-            </ClaimCodeButton>
+            </Button>
           </Link>
         </Box>
       </Box>
@@ -479,14 +501,6 @@ const GetStartedPageWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
-const ClaimCodeButton = styled(Button)(({ theme }) => ({
-  border: `1px solid ${theme.palette.black}`,
-  borderRadius: '0px',
-  padding: '16px 20px',
-  color: theme.palette.black,
-  fontSize: '12px',
-  width: '100%',
-}))
 
 const NinaStep = styled(Step)(({ theme }) => ({
   '& .MuiStepLabel-iconContainer .Mui-completed': {

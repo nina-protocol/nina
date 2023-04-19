@@ -77,7 +77,7 @@ const EmailCapture = ({ size }) => {
 
   useEffect(() => {
     if (connected) {
-      setFormValues({ ...formValues, wallet: publicKey.toString() })
+      setFormValues({ ...formValues, wallet: publicKey?.toString() })
     }
   }, [connected, publicKey])
 
