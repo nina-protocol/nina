@@ -43,11 +43,7 @@ export default function EmailForm({
         />
 
         <Button variant="outlined" type="submit">
-<<<<<<< HEAD
           <Typography variant="body1" style={{ fontSize: '14px !important' }}>
-=======
-          <Typography variant='body1' style={{fontSize: '14px !important'}}>
->>>>>>> 308586862e63147ac08c500e60385d82b2e3dbd4
             {pending ? <Dots size="30px" /> : buttonText}
           </Typography>
         </Button>

@@ -14,15 +14,7 @@ const WalletContextProvider = ({ children }) => {
   const [magicWallet, setMagicWallet] = useState(null)
   const [magic, setMagic] = useState(null)
 
-<<<<<<< HEAD
-  const wallet = useMemo(() => {
-    return magicWallet || walletExtension || {}
-  }, [walletExtension, magicWallet])
-
-  const { connectMagicWallet } = walletContextHelper({
-=======
   const { connectMagicWallet, useMagic } = walletContextHelper({
->>>>>>> 308586862e63147ac08c500e60385d82b2e3dbd4
     setMagicWallet,
     connection,
     magic,
@@ -39,10 +31,7 @@ const WalletContextProvider = ({ children }) => {
         },
       })
       setMagic(_magic)
-      // const isLoggedIn = await _magic.user.isLoggedIn()
-      // if (isLoggedIn) {
-        connectMagicWallet(_magic)
-      // }
+      connectMagicWallet(_magic)
     }
     checkIfMagicWalletIsLoggedIn()
   }, [])
