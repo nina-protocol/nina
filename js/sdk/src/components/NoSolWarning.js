@@ -55,23 +55,50 @@ const NoSolWarning = (props) => {
               <Typography component="p" gutterBottom>
                 {`Please add more SOL to your wallet to ${actionText}.`}
               </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+              <Box mt={1} sx={{ display: 'flex', flexDirection: 'row' }}>
                 <Typography component="p" gutterBottom>
                   {`For any questions, please reach out to us at`}{' '}
                   <a
                     target="_blank"
                     rel="noreferrer"
-                    style={{margin: '0px', textDecoration: 'none'}}
+                    style={{ margin: '0px', textDecoration: 'none' }}
                     href="mailto:contact@ninaprotocol.com"
                   >
                     {`contact@ninaprotocol.com`}
-                  </a>
+                  </a>{' '}
                 </Typography>
-          
-                <Typography component="p" gutterBottom>
-                  {`.`}
-                </Typography>
+                <Typography>{'.'}</Typography>
               </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                <Typography component="p" gutterBottom>
+                  {`You can also reach out to us via our`}{' '}
+                  <a
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ margin: '0px', textDecoration: 'none' }}
+                    href="https://discord.gg/ePkqJqSBgj"
+                  >
+                    {`Discord`}
+                  </a>{' '}
+                </Typography>
+                <Typography>{'.'}</Typography>
+              </Box>
+              {(action === 'upload' || action === 'hub') && (
+                <Box mt={1} sx={{ display: 'flex', flexDirection: 'row' }}>
+                  <Typography component="p" gutterBottom>
+                    {`If you are an artist looking to release music on Nina, you can apply for a grant through the`}{' '}
+                    <a
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ margin: '0px', textDecoration: 'none' }}
+                      href="https://discord.gg/ePkqJqSBgj"
+                    >
+                      {`Nina Artist Program`}
+                    </a>
+                    {'.'}
+                  </Typography>
+                </Box>
+              )}
               <Button
                 style={{ marginTop: '15px' }}
                 color="primary"
@@ -111,9 +138,9 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   zIndex: '10',
   display: 'flex',
   flexDirection: 'column',
-  'a': {
+  a: {
     color: theme.palette.blue,
-  }
+  },
 }))
 
 // const StyledTypography = styled(Typography)(() => ({
