@@ -15,7 +15,6 @@ import { SolanaExtension } from '@magic-ext/solana'
 import EmailLoginForm from './EmailLoginForm'
 import EmailOTPForm from './EmailOTPForm'
 
-
 const WalletConnectModal = (props) => {
   const { children, inOnboardingFlow } = props
   const { wallet, walletExtension, connectMagicWallet } = useContext(
@@ -29,7 +28,9 @@ const WalletConnectModal = (props) => {
   const [showWallets, setShowWallets] = useState(false)
   const [pending, setPending] = useState(false)
   const walletText = useMemo(() => {
-   return signingUp ? 'I want to sign up with a wallet' : 'I want to login with a wallet'
+    return signingUp
+      ? 'I want to sign up with a wallet'
+      : 'I want to Login with a wallet'
   }, [signingUp])
   const [email, setEmail] = useState()
 
@@ -151,11 +152,9 @@ const WalletConnectModal = (props) => {
               },
             }}
           >
-              {children}
+            {children}
           </Button>
         </Box>
-
-        
       )}
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -171,8 +170,10 @@ const WalletConnectModal = (props) => {
         <Fade in={open}>
           <StyledPaper>
             {signingUp && (
-              <Box sx={{mb:1}}>
-                <Typography variant='body1'>To create an account, all you need is an email.</Typography>
+              <Box sx={{ mb: 1 }}>
+                <Typography variant="body1">
+                  To create an account, all you need is an email.
+                </Typography>
               </Box>
             )}
 

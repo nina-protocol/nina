@@ -26,6 +26,7 @@ import dynamic from 'next/dynamic'
 const BundlrModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/BundlrModal')
 )
+
 const Onboard = () => {
   const router = useRouter()
   const {
@@ -108,7 +109,6 @@ const Onboard = () => {
       </Box>
     )
   }
-
   const onboardingSteps = [
     {
       title: 'Login or Sign Up',
@@ -363,7 +363,7 @@ const Onboard = () => {
         <Stepper activeStep={activeStep} orientation="vertical">
           {steps.map((step, index) => {
             return (
-              <Step key={index}>
+              <NinaStep key={index}>
                 <StepLabel>{step.title}</StepLabel>
                 <StepContent>
                   <Typography variant="body1" mb={1}>
@@ -379,7 +379,7 @@ const Onboard = () => {
                     {step.cta}
                   </Box>
                 </StepContent>
-              </Step>
+              </NinaStep>
             )
           })}
         </Stepper>
@@ -498,6 +498,22 @@ const GetStartedPageWrapper = styled(Box)(({ theme }) => ({
     width: '80%',
     margin: '25px auto',
     paddingBottom: '100px',
+  },
+}))
+
+
+const NinaStep = styled(Step)(({ theme }) => ({
+  '& .MuiStepLabel-iconContainer .Mui-completed': {
+    color: theme.palette.blue,
+  },
+  '& .MuiStepLabel-iconContainer .Mui-active': {
+    color: theme.palette.blue,
+  },
+  '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel': {
+    color: theme.palette.black,
+  },
+  '& .MuiStepLabel-root .Mui-active .MuiStepIcon-text': {
+    fill: theme.palette.white,
   },
 }))
 

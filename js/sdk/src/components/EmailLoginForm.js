@@ -4,14 +4,15 @@ import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import Dots from './Dots'
-import {Typography} from '@mui/material'
+import { Typography } from '@mui/material'
 
 export default function EmailForm({
   handleEmailLoginCustom,
   email,
   setEmail,
   signingUp,
-  pending, 
+  pending,
+  setPending,
 }) {
   const [placeholder, setPlaceholder] = useState('Enter your email')
   const buttonText = useMemo(() => {

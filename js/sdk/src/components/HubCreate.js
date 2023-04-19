@@ -21,7 +21,6 @@ import HubCreateConfirm from './HubCreateConfirm'
 import NinaBox from './NinaBox'
 import Dots from './Dots'
 import ImageMediaDropzone from './ImageMediaDropzone'
-
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
 const ColorModal = dynamic(() => import('./ColorModal'), { ssr: false })
 const HubCreateSuccess = dynamic(() => import('./HubCreateSuccess'), {
@@ -34,6 +33,7 @@ import {
   UploadType,
   uploadHasItemForType,
 } from '../utils/uploadManager'
+import NoSolWarning from './NoSolWarning'
 
 const HubCreateSchema = Yup.object().shape({
   handle: Yup.string().required('Hub Handle is Required'),
@@ -54,10 +54,12 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     bundlrBalance,
     bundlrPricePerMb,
     solPrice,
+    solBalance,
+    solBalanceFetched,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
+    getUserBalances,
   } = useContext(Nina.Context)
-
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
   const [hubPubkey, setHubPubkey] = useState(hubData?.publicKey || undefined)
@@ -77,7 +79,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
   const [hubCreated, setHubCreated] = useState(false)
   const [uploadId, setUploadId] = useState()
   const [publishingStepText, setPublishingStepText] = useState()
-
+  const [open, setOpen] = useState(false)
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
@@ -86,6 +88,16 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
   )
+
+  useEffect(() => {
+    getUserBalances()
+  }, [])
+
+  useEffect(() => {
+    if (wallet.connected && solBalance === 0 && solBalanceFetched) {
+      setOpen(true)
+    }
+  }, [solBalanceFetched])
 
   useEffect(() => {
     if (isPublishing) {
@@ -389,15 +401,16 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     )
   }
 
-  if (!wallet.connected) {
-    return (
-      <ConnectMessage variant="body" gutterBottom>
-        Please connect your wallet to create a hub
-      </ConnectMessage>
-    )
-  }
   return (
     <StyledGrid item md={12}>
+      {!wallet.connected && (
+        <ConnectMessage variant="body" gutterBottom>
+          Please connect your wallet to create a hub
+        </ConnectMessage>
+      )}
+
+      <NoSolWarning action={'hub'} open={open} setOpen={setOpen} />
+
       {update && (
         <Typography gutterBottom>
           Updating {hubData.data.displayName}
