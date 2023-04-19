@@ -19,7 +19,6 @@ const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 const SOL_DENOMINATED_WALLETS = [
   'HesfTj24Eatwy8vvra5UdhX1xJWLeqRM7QdDwjX1xmmk',
   '3Z8cBM8XT5CBJwVJzpZo6ikkinYma1EEqN2o39ZFYApZ',
-  '7g2euzpRxm2A9kgk4UJ9J5ntUYvodTw4s4m7sL1C8JE',
 ]
 
 const ReleaseCreateForm = ({
