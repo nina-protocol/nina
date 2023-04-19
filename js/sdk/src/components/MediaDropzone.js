@@ -99,15 +99,19 @@ const MediaDropzone = ({
         if (file.type.includes('audio')) {
           if (file.type !== 'audio/mpeg') {
             alert(`Your track is not an MP3. \nPlease upload an MP3.`)
+            setTrack(undefined)
+            return
           } else if (size > MAX_AUDIO_FILE_UPLOAD_SIZE) {
             alert(
               `Your track is ${size} mb... \nPlease upload a file smaller than ${MAX_AUDIO_FILE_UPLOAD_SIZE} mbs`
             )
+            return
           }
         } else if (type === 'artwork') {
           alert(
             `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} mbs`
           )
+          return
         }
       }
 
@@ -272,7 +276,7 @@ const MediaDropzone = ({
     <>
       <Dropzone
         onChangeStatus={handleChangeStatus}
-        accept={type === 'track' ? 'audio/*' : 'image/*'}
+        accept={type === 'track' ? 'audio/mpeg' : 'image/jpeg,image/png'}
         maxFiles={1}
         validate={
           type === 'track'
