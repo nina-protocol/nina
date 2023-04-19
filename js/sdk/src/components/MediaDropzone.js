@@ -114,15 +114,13 @@ const MediaDropzone = ({
           setUncroppedImage(undefined)
           setCroppedImage(undefined)
         } else if (status === 'done') {
-          if (!artwork) {
-            try {
-              setArtwork({
-                file,
-                meta,
-              })
-            } catch (error) {
-              console.warn('error :>> ', error)
-            }
+          try {
+            setArtwork({
+              file,
+              meta,
+            })
+          } catch (error) {
+            console.warn('error :>> ', error)
           }
         }
       } else if (type === 'cropper') {
@@ -177,6 +175,9 @@ const MediaDropzone = ({
 
   const validateImage = (fileWithMeta) => {
     const size = fileWithMeta.file.size / 1000000
+    if (fileWithMeta.file.type !== 'image/png') {
+      return true
+    }
 
     if (size > MAX_IMAGE_FILE_UPLOAD_SIZE) {
       return true
