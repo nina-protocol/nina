@@ -7,7 +7,7 @@ import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
-
+import Box from '@mui/material/Box'
 const NoSolWarning = (props) => {
   const { action, open, setOpen } = props
   const [actionText, setActionText] = useState('')
@@ -50,31 +50,34 @@ const NoSolWarning = (props) => {
           <StyledPaper>
             <>
               <Typography component="p" gutterBottom>
-                {`You do not have any SOL in your wallet.`}
+                {`You do not have any SOL.`}
               </Typography>
               <Typography component="p" gutterBottom>
-                {`Please add more SOL to your wallet to ${actionText}.`}
+                {`Please add Sol to ${actionText}.`}
               </Typography>
-              <Typography
-                component="p"
-                gutterBottom
-                sx={{ display: 'flex', flexDirection: 'row' }}
-              >
-                {`For any questions, please reach out to us at`}
-                &nbsp;
-                <Link href="mailto:contact@ninaprotocol.com">
+              <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                <Typography component="p" gutterBottom>
+                  {`For any questions, please reach out at`}{' '}
                   <a
                     target="_blank"
                     rel="noreferrer"
                     style={{ margin: '0px', textDecoration: 'none' }}
+                    href="mailto:contact@ninaprotocol.com"
                   >
-                    <ContactTypography component="p">
-                      {`contact@ninaprotocol.com`}
-                    </ContactTypography>
+                    {`contact@ninaprotocol.com`}
+                  </a>{' '}
+                  {`or our`}{' '}
+                  <a
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ margin: '0px', textDecoration: 'none' }}
+                    href="https://discord.gg/ePkqJqSBgj"
+                  >
+                    {`Discord`}
                   </a>
-                </Link>
-                {`.`}
-              </Typography>
+                  {'.'}
+                </Typography>
+              </Box>
               <Button
                 style={{ marginTop: '15px' }}
                 color="primary"
@@ -114,6 +117,9 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   zIndex: '10',
   display: 'flex',
   flexDirection: 'column',
+  a: {
+    color: theme.palette.blue,
+  },
 }))
 
 // const StyledTypography = styled(Typography)(() => ({
