@@ -5,7 +5,7 @@ import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import { Typography } from '@mui/material'
 import Dots from './Dots'
-import {fontSize} from '@material-ui/system'
+import { fontSize } from '@material-ui/system'
 
 export default function EmailOTP({ login, email, setPending, pending }) {
   const [passcode, setPasscode] = useState('')
@@ -135,7 +135,7 @@ const Ctas = styled(Box)(() => ({
   flexDirection: 'column',
 }))
 
-const Root = styled(Box)(({theme}) => ({
+const Root = styled(Box)(({ theme }) => ({
   '.MuiOtpInput-TextField': {
     '& input': {
       fontSize: '30px',
@@ -148,8 +148,7 @@ const Root = styled(Box)(({theme}) => ({
     '.MuiOtpInput-TextField': {
       '& input': {
         padding: theme.spacing(1, 0),
-      }
+      },
     },
-
   },
 }))

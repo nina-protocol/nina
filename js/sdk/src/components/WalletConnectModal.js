@@ -130,7 +130,7 @@ const WalletConnectModal = (props) => {
             }
           }}
           variant="outlined"
-          style={{width: '100%'}}
+          style={{ width: '100%' }}
         >
           {children}
         </Button>
@@ -171,7 +171,12 @@ const WalletConnectModal = (props) => {
         <Fade in={open}>
           <StyledPaper>
             {showOtpUI ? (
-              <EmailOTPForm login={otpLogin} email={email} pending={pending} setPending={setPending} />
+              <EmailOTPForm
+                login={otpLogin}
+                email={email}
+                pending={pending}
+                setPending={setPending}
+              />
             ) : (
               <EmailLoginForm
                 handleEmailLoginCustom={handleLogin}
@@ -183,17 +188,15 @@ const WalletConnectModal = (props) => {
               />
             )}
 
-
             {!showOtpUI && (
-            <Box sx={{ mt: 1 }}>
-              <Typography onClick={handleWalletCollapse}>
-                <a style={{ textDecoration: 'underline' }}>
-                  {showWallets ? 'Hide Wallets' : walletText}
-                </a>
-              </Typography>
+              <Box sx={{ mt: 1 }}>
+                <Typography onClick={handleWalletCollapse}>
+                  <a style={{ textDecoration: 'underline' }}>
+                    {showWallets ? 'Hide Wallets' : walletText}
+                  </a>
+                </Typography>
                 <Collapse in={showWallets} timeout="auto" unmountOnExit>
                   <WalletButtons>
-            
                     {supportedWallets?.map((wallet) => (
                       <Button
                         key={wallet.adapter.name}
@@ -204,16 +207,13 @@ const WalletConnectModal = (props) => {
                           handleWalletClickEvent(event, wallet.adapter.name)
                         }
                       >
-                        <Typography>
-                          {wallet.adapter.name}
-                        </Typography>
+                        <Typography>{wallet.adapter.name}</Typography>
                       </Button>
                     ))}
                   </WalletButtons>
                 </Collapse>
-            </Box>
+              </Box>
             )}
-
           </StyledPaper>
         </Fade>
       </StyledModal>
@@ -241,7 +241,6 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     width: '90vw',
     padding: theme.spacing(2),
-
   },
 }))
 
