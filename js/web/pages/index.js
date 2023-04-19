@@ -11,7 +11,6 @@ export default function Home() {
   useEffect(() => {
     if (wallet.connected && router?.query?.code) {
       const inOnboardingFlow = localStorage.getItem('inOnboardingFlow')
-      console.log('inOnboardingFlow', inOnboardingFlow)
       if (inOnboardingFlow) {
         const onboardingCode = localStorage.getItem('onboardingCode')
         localStorage.removeItem('inOnboardingFlow')
@@ -24,7 +23,7 @@ export default function Home() {
         router.push(`/dashboard?code=${router.query.code}`)
       }
     }
-  }, [wallet, router.query.code])
+  }, [wallet, router, router.query.code])
   return (
     <>
       <Head>
