@@ -88,7 +88,7 @@ const NoSolWarning = (props) => {
       </StyledModal>
     </Root>
   )
-}
+}yarn 
 
 const Root = styled('div')(() => ({
   display: 'flex',
