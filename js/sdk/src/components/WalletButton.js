@@ -43,6 +43,7 @@ const WalletButton = ({
   variant = 'contained',
   type = 'button',
   router,
+  inHubs,
   children,
   ...props
 }) => {
@@ -99,14 +100,17 @@ const WalletButton = ({
           </Button>
         </WalletMenuItem>
         <Collapse in={!!anchor}>
-          <WalletActionMenuItem
-            onClick={async () => {
-              setAnchor(undefined)
-              router.push('/dashboard')
-            }}
-          >
-            View Dashboard
-          </WalletActionMenuItem>
+
+          {!inHubs && (
+            <WalletActionMenuItem
+              onClick={async () => {
+                setAnchor(undefined)
+                router.push('/dashboard')
+              }}
+            >
+              View Dashboard
+            </WalletActionMenuItem>
+          )}
           <WalletActionMenuItem
             onClick={async () => {
               setAnchor(undefined)
