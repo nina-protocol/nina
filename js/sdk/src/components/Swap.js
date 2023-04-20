@@ -10,6 +10,7 @@ import TextField from '@mui/material/TextField'
 
 import Box from '@mui/material/Box'
 import AutorenewIcon from '@mui/icons-material/Autorenew'
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 
 const Swap = ({ refreshBalances }) => {
   const { ninaClient, usdcBalance, solBalance } = useContext(Nina.Context)
@@ -93,16 +94,21 @@ const Swap = ({ refreshBalances }) => {
   return (
     <>
       <InputWrapper>
+
         <Typography
-          mb={0.5}
-          variant="h3"
-          noWrap
-          sx={{ alignItems: 'baseline', textDecoration: 'underline' }}
+          variant='h3'
+          sx={{ alignItems: 'baseline', textDecoration: 'underline', mb: 1 }}
         >
-          {isSolToUsdc ? 'Swap SOL to USDC' : 'Swap USDC to SOL'}
-          <AutorenewIcon
+          Swap
+        </Typography>
+        <Typography
+          variant="h3"
+          sx={{ alignItems: 'baseline',  mb:3,  display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          {isSolToUsdc ? 'SOL to USDC' : 'USDC to SOL'}
+          <SwapHorizIcon
             sx={{ marginLeft: '8px', marginBotton: '0px' }}
-            fontSize="10px"
+            fontSize="large"
             onClick={() => setIsSolToUsdc(!isSolToUsdc)}
           />
         </Typography>
@@ -155,7 +161,8 @@ const Swap = ({ refreshBalances }) => {
 const SwapWrapper = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
-  marginBottom: '15px',
+  marginBottom: '30px',
+  justifyContent: 'space-around',
 }))
 
 const InputWrapper = styled(Box)(() => ({
