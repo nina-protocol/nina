@@ -16,7 +16,6 @@ import {
   verifyTwitter,
   verifySoundcloud,
   verifyInstagram,
-  deleteSoundcloudVerification,
 } from '../utils/identityVerification'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -108,7 +107,10 @@ const IdentityVerification = ({
   const buttonTypes = useMemo(() => {
     const buttonArray = []
     if (publicKey?.toBase58() === profilePubkey) {
-      buttonArray.push('twitter', 'soundcloud', 'ethereum')
+      buttonArray.push('twitter', 'soundcloud')
+      if (accountVerifiedForType('ethereum')) {
+        buttonArray.push('ethereum')
+      }
     } else {
       verifications.forEach((verification) => {
         if (verification.type === 'twitter') {
@@ -206,13 +208,7 @@ const IdentityVerification = ({
           window.open(`https://instagram.com/${value}`, '_blank')
           break
         case 'soundcloud':
-          deleteSoundcloudVerification(
-            provider,
-            value,
-            publicKey,
-            signTransaction
-          )
-          // window.open(`https://soundcloud.com/${value}`, '_blank')
+          window.open(`https://soundcloud.com/${value}`, '_blank')
           break
         case 'ethereum':
           window.open(`https://etherscan.io/address/${value}`, '_blank')
