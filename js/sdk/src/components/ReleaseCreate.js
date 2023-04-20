@@ -36,9 +36,6 @@ import {
 import roundUp from '../utils/formatting'
 
 const NoSolWarning = dynamic(() => import('./NoSolWarning'), { ssr: false })
-const UploadInfoModal = dynamic(() => import('./UploadInfoModal'), {
-  ssr: false,
-})
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
 const ReleaseCreateSuccess = dynamic(() => import('./ReleaseCreateSuccess'), {
   ssr: false,
@@ -601,11 +598,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
       {wallet?.connected && !solBalanceFetched && <Dots size={'50px'} />}
       {wallet?.connected && !releaseCreated && solBalanceFetched && (
         <>
-          <UploadInfoModal
-            userHasSeenUpdateMessage={localStorage.getItem(
-              'nina-upload-update-message'
-            )}
-          />
           <NinaBox columns="350px 400px" gridColumnGap="10px">
             <Box sx={{ width: '100%' }}>
               <MediaDropzones

@@ -11,7 +11,6 @@ import Royalty from './Royalty'
 import Gates from './Gates'
 import CloseIcon from '@mui/icons-material/Close'
 import CloseRelease from './CloseRelease'
-import ReleaseSettingsWelcome from './ReleaseSettingsWelcome'
 import ShareToTwitter from './ShareToTwitter'
 import ReleaseCode from './ReleaseCode'
 
@@ -31,7 +30,6 @@ const ReleaseSettingsModal = ({
   }
   return (
     <Root>
-      {isAuthority && <ReleaseSettingsWelcome />}
       {(isAuthority || userIsRecipient) && (
         <Button
           onClick={() => setOpen(true)}

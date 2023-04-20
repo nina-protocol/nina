@@ -47,7 +47,6 @@ export default [
       QuillEditor: 'src/components/QuillEditor.js',
       MediaDropzone: 'src/components/MediaDropzone.js',
       MediaDropzones: 'src/components/MediaDropzones.js',
-      UploadInfoModal: 'src/components/UploadInfoModal.js',
       BundlrModal: 'src/components/BundlrModal.js',
       CloseRelease: 'src/components/CloseRelease.js',
       Gates: 'src/components/Gates.js',
