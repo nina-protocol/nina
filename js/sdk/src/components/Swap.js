@@ -11,7 +11,7 @@ import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 import AutorenewIcon from '@mui/icons-material/Autorenew'
 
-const SwapModal = ({ refreshBalances }) => {
+const Swap = ({ refreshBalances }) => {
   const { ninaClient, usdcBalance, solBalance } = useContext(Nina.Context)
   const { wallet, connection } = useContext(Wallet.Context)
   const [inputAmount, setInputAmount] = useState(0)
@@ -95,7 +95,7 @@ const SwapModal = ({ refreshBalances }) => {
       <InputWrapper>
         <Typography
           mb={0.5}
-          variant="body1"
+          variant="h3"
           noWrap
           sx={{ alignItems: 'baseline', textDecoration: 'underline' }}
         >
@@ -163,4 +163,4 @@ const InputWrapper = styled(Box)(() => ({
   flexDirection: 'column',
 }))
 
-export default SwapModal
+export default Swap
