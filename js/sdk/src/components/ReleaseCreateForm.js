@@ -16,9 +16,7 @@ import FormLabel from '@mui/material/FormLabel'
 import Wallet from '../contexts/Wallet'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
 
-const SOL_DENOMINATED_WALLETS = [
-  '3Z8cBM8XT5CBJwVJzpZo6ikkinYma1EEqN2o39ZFYApZ',
-]
+const SOL_DENOMINATED_WALLETS = ['3Z8cBM8XT5CBJwVJzpZo6ikkinYma1EEqN2o39ZFYApZ']
 
 const ReleaseCreateForm = ({
   field,
