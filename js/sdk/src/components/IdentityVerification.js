@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import axios from 'axios'
-import Web3 from 'web3'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateManager'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { useSnackbar } from 'notistack'
@@ -15,11 +14,9 @@ import IdentityVerificationModal from './IdentityVerificationModal'
 import {
   verifyEthereum,
   verifyTwitter,
-  deleteTwitterVerification,
-  deleteEthereumVerification,
-  deleteSoundcloudVerification,
   verifySoundcloud,
   verifyInstagram,
+  deleteSoundcloudVerification,
 } from '../utils/identityVerification'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -37,11 +34,8 @@ const IdentityVerification = ({
   const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
   const { wallet } = useContext(Wallet.Context)
-  const { publicKey, signTransaction, sendTransaction } = wallet
-  const {
-    ninaClient,
-    getVerificationsForUser,
-  } = useContext(Nina.Context)
+  const { publicKey, signTransaction } = wallet
+  const { ninaClient, getVerificationsForUser } = useContext(Nina.Context)
   const { provider } = ninaClient
 
   const [open, setOpen] = useState(false)
@@ -53,8 +47,6 @@ const IdentityVerification = ({
   const [instagramHandle, setInstagramHandle] = useState(undefined)
   const [instagramToken, setInstagramToken] = useState(undefined)
   const [instagramUserId, setInstagramUserId] = useState(undefined)
-  const [action, setAction] = useState(undefined)
-  const [activeType, setActiveType] = useState(undefined)
   const [activeValue, setActiveValue] = useState(undefined)
 
   const logos = {
@@ -140,7 +132,6 @@ const IdentityVerification = ({
     const codeSource = localStorage.getItem('codeSource')
     const getHandle = async () => {
       try {
-        setActiveType(codeSource)
         if (codeSource === 'soundcloud') {
           const response = await axios.post(
             `${process.env.NINA_IDENTITY_ENDPOINT}/sc/user`,
@@ -215,13 +206,13 @@ const IdentityVerification = ({
           window.open(`https://instagram.com/${value}`, '_blank')
           break
         case 'soundcloud':
-          // deleteSoundcloudVerification(
-          //   provider,
-          //   value,
-          //   publicKey,
-          //   signTransaction,
-          // )
-          window.open(`https://soundcloud.com/${value}`, '_blank')
+          deleteSoundcloudVerification(
+            provider,
+            value,
+            publicKey,
+            signTransaction
+          )
+          // window.open(`https://soundcloud.com/${value}`, '_blank')
           break
         case 'ethereum':
           window.open(`https://etherscan.io/address/${value}`, '_blank')
@@ -233,29 +224,28 @@ const IdentityVerification = ({
   }
 
   const handleVerify = async () => {
+    let success = false
     switch (localStorage.getItem('codeSource')) {
       case 'soundcloud':
-        await verifySoundcloud(
+        success = await verifySoundcloud(
           provider,
           soundcloudHandle,
           publicKey,
           signTransaction,
           soundcloudToken
         )
-        await getVerificationsForUser(profilePubkey)
         break
       case 'twitter':
-        await verifyTwitter(
+        success = await verifyTwitter(
           provider,
           twitterHandle,
           twitterToken,
           publicKey,
           signTransaction
         )
-        await getVerificationsForUser(profilePubkey)
         break
       case 'instagram':
-        await verifyInstagram(
+        success = await verifyInstagram(
           provider,
           instagramUserId,
           instagramHandle,
@@ -263,12 +253,22 @@ const IdentityVerification = ({
           signTransaction,
           instagramToken
         )
-        await getVerificationsForUser(profilePubkey)
         break
       case 'ethereum':
-        await verifyEthereum(provider, ethAddress, publicKey, signTransaction)
-        await getVerificationsForUser(profilePubkey)
+        success = await verifyEthereum(
+          provider,
+          ethAddress,
+          publicKey,
+          signTransaction
+        )
         break
+    }
+
+    if (success) {
+      await getVerificationsForUser(profilePubkey)
+      enqueueSnackbar('Account verified.', {
+        variant: 'success',
+      })
     }
   }
 

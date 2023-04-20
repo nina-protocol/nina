@@ -100,7 +100,6 @@ const WalletButton = ({
           </Button>
         </WalletMenuItem>
         <Collapse in={!!anchor}>
-
           {!inHubs && (
             <WalletActionMenuItem
               onClick={async () => {

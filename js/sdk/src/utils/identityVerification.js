@@ -418,15 +418,12 @@ const verifyEthereum = async (
     await signTransaction(tx)
 
     // Send Transaction To Server To Verify Signatures
-    const response = await axios.post(
-      `${process.env.NINA_IDENTITY_ENDPOINT}/eth`,
-      {
-        ethAddress,
-        ethSignature: signature,
-        tx: tx.serialize({ verifySignatures: false }).toString('base64'),
-        solPublicKey: publicKey.toBase58(),
-      }
-    )
+    await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/eth`, {
+      ethAddress,
+      ethSignature: signature,
+      tx: tx.serialize({ verifySignatures: false }).toString('base64'),
+      solPublicKey: publicKey.toBase58(),
+    })
     logEvent('connection_eth_success', 'engagement', {
       ethAddress,
       wallet: provider.wallet.publicKey.toBase58(),
@@ -481,15 +478,14 @@ const verifySoundcloud = async (
       feePayer: NINA_ID,
     })
     tx.add(ix, createIx, reverseRegistryIx)
-    const response = await axios.post(
-      `${process.env.NINA_IDENTITY_ENDPOINT}/sc/register`,
-      {
-        handle: soundcloudHandle,
-        token: soundcloudToken,
-        tx: tx.serialize({ verifySignatures: false }).toString('base64'),
-        publicKey: publicKey.toBase58(),
-      }
-    )
+    await signTransaction(tx)
+
+    await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/sc/register`, {
+      handle: soundcloudHandle,
+      token: soundcloudToken,
+      tx: tx.serialize({ verifySignatures: false }).toString('base64'),
+      publicKey: publicKey.toBase58(),
+    })
     logEvent('connection_sc_success', 'engagement', {
       soundcloudHandle,
       wallet: provider.wallet.publicKey.toBase58(),
@@ -547,15 +543,12 @@ const verifyTwitter = async (
     await signTransaction(tx)
 
     // Send Transaction To Server To Verify Signatures
-    const response = await axios.post(
-      `${process.env.NINA_IDENTITY_ENDPOINT}/tw/register`,
-      {
-        handle: twitterHandle,
-        token: twitterToken,
-        tx: tx.serialize({ verifySignatures: false }).toString('base64'),
-        publicKey: publicKey.toBase58(),
-      }
-    )
+    await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/tw/register`, {
+      handle: twitterHandle,
+      token: twitterToken,
+      tx: tx.serialize({ verifySignatures: false }).toString('base64'),
+      publicKey: publicKey.toBase58(),
+    })
     logEvent('connection_tw_success', 'engagement', {
       twitterHandle,
       wallet: provider.wallet.publicKey.toBase58(),
@@ -577,8 +570,7 @@ const deleteTwitterVerification = async (
   provider,
   twitterHandle,
   publicKey,
-  signTransaction,
-  sendTransaction
+  signTransaction
 ) => {
   try {
     const hashedTwitterHandle = await getHashedName(twitterHandle)
@@ -624,12 +616,9 @@ const deleteTwitterVerification = async (
     }
 
     // await sendTransaction(tx, provider.connection)
-    const response = await axios.post(
-      `${process.env.NINA_IDENTITY_ENDPOINT}/unregister`,
-      {
-        tx: tx.serialize({ verifySignatures: false }).toString('base64'),
-      }
-    )
+    await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/unregister`, {
+      tx: tx.serialize({ verifySignatures: false }).toString('base64'),
+    })
 
     return true
   } catch (error) {
@@ -643,8 +632,7 @@ const deleteEthereumVerification = async (
   provider,
   ethAddress,
   publicKey,
-  signTransaction,
-  sendTransaction
+  signTransaction
 ) => {
   try {
     const hashedEthAddress = await getHashedName(ethAddress)
@@ -686,12 +674,9 @@ const deleteEthereumVerification = async (
     tx.add(...instructions)
     const signedTx = await signTransaction(tx)
     tx.addSignature(publicKey, signedTx.signature[1].signature)
-    const response = await axios.post(
-      `${process.env.NINA_IDENTITY_ENDPOINT}/unregister`,
-      {
-        tx: tx.serialize({ verifySignatures: false }).toString('base64'),
-      }
-    )
+    await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/unregister`, {
+      tx: tx.serialize({ verifySignatures: false }).toString('base64'),
+    })
 
     return true
   } catch (error) {
@@ -704,7 +689,7 @@ const deleteSoundcloudVerification = async (
   provider,
   soundcloudHandle,
   publicKey,
-  signTransaction,
+  signTransaction
 ) => {
   try {
     const hashedSoundcloudHandle = await getHashedName(soundcloudHandle)
@@ -752,12 +737,9 @@ const deleteSoundcloudVerification = async (
       tx = signedTx
     }
 
-    const response = await axios.post(
-      `${process.env.NINA_IDENTITY_ENDPOINT}/unregister`,
-      {
-        tx: tx.serialize({ verifySignatures: false }).toString('base64'),
-      }
-    )
+    await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/unregister`, {
+      tx: tx.serialize({ verifySignatures: false }).toString('base64'),
+    })
 
     return true
   } catch (error) {
@@ -809,16 +791,13 @@ const verifyInstagram = async (
     await signTransaction(tx)
 
     // Send Transaction To Server To Verify Signatures
-    const response = await axios.post(
-      `${process.env.NINA_IDENTITY_ENDPOINT}/ig/register`,
-      {
-        handle: instagramHandle,
-        userId: instagramUserId,
-        tx: tx.serialize({ verifySignatures: false }).toString('base64'),
-        publicKey: publicKey.toBase58(),
-        token,
-      }
-    )
+    await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/ig/register`, {
+      handle: instagramHandle,
+      userId: instagramUserId,
+      tx: tx.serialize({ verifySignatures: false }).toString('base64'),
+      publicKey: publicKey.toBase58(),
+      token,
+    })
     logEvent('connection_ig_success', 'engagement', {
       instagramHandle,
       wallet: provider.wallet.publicKey.toBase58(),
@@ -843,5 +822,5 @@ export {
   verifyEthereum,
   deleteTwitterVerification,
   deleteEthereumVerification,
-  deleteSoundcloudVerification
+  deleteSoundcloudVerification,
 }

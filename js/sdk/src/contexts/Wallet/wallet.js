@@ -18,7 +18,7 @@ const WalletContextProvider = ({ children }) => {
     setMagicWallet,
     connection,
     magic,
-    setMagic
+    setMagic,
   })
 
   useEffect(() => {
@@ -55,12 +55,16 @@ const WalletContextProvider = ({ children }) => {
   )
 }
 
-const walletContextHelper = ({ setMagicWallet, connection, magic, setMagic }) => {
+const walletContextHelper = ({
+  setMagicWallet,
+  connection,
+  magic,
+  setMagic,
+}) => {
   const useMagic = async () => {
-    console.log('magic', magic)
     let _magic = magic
     if (!_magic) {
-      magicInstance = new Magic(process.env.MAGIC_KEY, {
+      _magic = new Magic(process.env.MAGIC_KEY, {
         extensions: {
           solana: new SolanaExtension({
             rpcUrl: process.env.SOLANA_CLUSTER_URL,
@@ -75,10 +79,8 @@ const walletContextHelper = ({ setMagicWallet, connection, magic, setMagic }) =>
 
   const connectMagicWallet = async (magic) => {
     const isLoggedIn = await magic.user.isLoggedIn()
-    console.log('bruv')
     if (isLoggedIn) {
       const user = await magic.user.getMetadata()
-      console.log('user: ', user)
       const wallet = {
         connected: true,
         connecting: false,
@@ -89,26 +91,17 @@ const walletContextHelper = ({ setMagicWallet, connection, magic, setMagic }) =>
         },
         publicKey: new anchor.web3.PublicKey(user.publicAddress),
         signMessage: async (message) => {
-          // const messageBytes = decodeBase64(message)
           return await magic.solana.signMessage(message)
         },
         signTransaction: async (transaction) => {
-          console.log('transaction: ', transaction)        
           const serializeConfig = {
             requireAllSignatures: false,
             verifySignatures: true,
           }
-          console.log('transaction.signatures: ', transaction.signatures)
-          for (signature of transaction.signatures) {
-            console.log('publicKey: ', signature.publicKey.toBase58())
-          }
-          // const serializedTransaction = transaction.serializeMessage()
-          // console.log('serializedTransaction: ', serializedTransaction)
           const signedTransaction = await magic.solana.signTransaction(
             transaction,
             serializeConfig
           )
-          console.log('signedTransaction: ', signedTransaction)
           return signedTransaction
         },
         sendTransaction: async (transaction) => {
@@ -140,7 +133,7 @@ const walletContextHelper = ({ setMagicWallet, connection, magic, setMagic }) =>
 
   return {
     connectMagicWallet,
-    useMagic
+    useMagic,
   }
 }
 

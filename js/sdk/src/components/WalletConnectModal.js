@@ -58,7 +58,7 @@ const WalletConnectModal = (props) => {
           setShowOtpUI(true)
           setPending(false)
         })
-        .on('done', (result) => {
+        .on('done', () => {
           connectMagicWallet(magic)
         })
         .on('settled', () => {
@@ -66,7 +66,6 @@ const WalletConnectModal = (props) => {
           setShowOtpUI(false)
         })
         .catch((err) => {
-
           console.error('magic login error: ', err)
         })
     } catch (err) {
@@ -110,7 +109,7 @@ const WalletConnectModal = (props) => {
             }
           }}
           variant="outlined"
-          style={{width: '100%'}}
+          style={{ width: '100%' }}
         >
           {children}
         </Button>
@@ -187,16 +186,13 @@ const WalletConnectModal = (props) => {
                           handleWalletClickEvent(event, wallet.adapter.name)
                         }
                       >
-                        <Typography>
-                          {wallet.adapter.name}
-                        </Typography>
+                        <Typography>{wallet.adapter.name}</Typography>
                       </Button>
                     ))}
                   </WalletButtons>
                 </Collapse>
-            </Box>
+              </Box>
             )}
-
           </StyledPaper>
         </Fade>
       </StyledModal>

@@ -1635,7 +1635,7 @@ const releaseContextHelper = ({
 
       return gates
     } catch (error) {
-      console.log(error)
+      console.warn(error)
     }
   }
 

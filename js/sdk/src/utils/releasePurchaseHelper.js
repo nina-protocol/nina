@@ -120,7 +120,6 @@ const releasePurchaseHelper = async (
   usdcBalance,
   hubPubkey = null
 ) => {
-  console.log('releasePurchaseHelper', releasePubkey, hubPubkey)
   let hub
   releasePubkey = new anchor.web3.PublicKey(releasePubkey)
   const program = await ninaClient.useProgram()

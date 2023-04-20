@@ -12,13 +12,12 @@ export default function EmailForm({
   setEmail,
   signingUp,
   pending,
-  setPending,
 }) {
   const [placeholder, setPlaceholder] = useState('Enter your email')
   const buttonText = useMemo(() => {
-    return signingUp ? 'Create Account' : 'Continue'}
-    , [signingUp] ) 
-    
+    return signingUp ? 'Create Account' : 'Continue'
+  }, [signingUp])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!email) {

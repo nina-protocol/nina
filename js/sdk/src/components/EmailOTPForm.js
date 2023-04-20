@@ -1,11 +1,10 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState } from 'react'
 import { MuiOtpInput } from 'mui-one-time-password-input'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import { Typography } from '@mui/material'
 import Dots from './Dots'
-import {fontSize} from '@material-ui/system'
 
 export default function EmailOTP({ login, email, setPending, pending }) {
   const [passcode, setPasscode] = useState('')
@@ -52,7 +51,6 @@ export default function EmailOTP({ login, email, setPending, pending }) {
     setRetries((r) => r - 1)
     // setPasscode("");
     const trimmedPasscode = value.replaceAll(/\s/g, '')
-    console.log('trimmedPasscode :>> ', trimmedPasscode)
     // Send OTP for verification
     await login.emit('verify-email-otp', trimmedPasscode)
 
@@ -81,16 +79,8 @@ export default function EmailOTP({ login, email, setPending, pending }) {
     setPasscode(trimmedValue)
   }
 
-  const handleCancel = () => {
-    login.emit('cancel')
-    setDisabled(false)
-    setPending(false)
-    console.log('%cUser canceled login.', 'color: orange')
-  }
-
   return (
     <Root id="otp-component">
-
       <Typography variant="h3" style={{ marginBottom: '15px' }}>
         A one-time passcode was sent to <i>{email}</i>.
       </Typography>
@@ -113,7 +103,6 @@ export default function EmailOTP({ login, email, setPending, pending }) {
           onComplete={(value) => {
             autoSubmit(value, login)
           }}
-  
         />
         <Ctas sx={{ my: 1 }}>
           <Button
@@ -143,8 +132,8 @@ const Root = styled(Box)(({ theme }) => ({
       fontSize: '30px',
       '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
         '-webkit-appearance': 'none',
-      }
-    }
+      },
+    },
   },
   '.MuiOtpInput-TextField:last-of-type': {
     display: 'none',

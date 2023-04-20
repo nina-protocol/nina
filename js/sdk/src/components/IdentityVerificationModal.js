@@ -78,7 +78,7 @@ const IdentityVerificationModal = ({ action, type, value, open, setOpen }) => {
   )
 }
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',

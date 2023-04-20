@@ -6,8 +6,8 @@ import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Link from 'next/link'
 import Box from '@mui/material/Box'
+
 const NoSolWarning = (props) => {
   const { action, open, setOpen } = props
   const [actionText, setActionText] = useState('')
@@ -120,17 +120,6 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   a: {
     color: theme.palette.blue,
   },
-}))
-
-// const StyledTypography = styled(Typography)(() => ({
-//   marginBottom: '20px',
-// }))
-
-const ContactTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
-  marginTop: '0px',
-  marginBottom: '0px',
-  textDecoration: 'none',
 }))
 
 export default NoSolWarning
