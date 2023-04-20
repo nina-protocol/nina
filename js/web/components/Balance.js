@@ -74,42 +74,31 @@ const Balance = ({ profilePublishedReleases }) => {
               Your Balances
             </Typography>
 
-            <Box  sx={{ display: 'flex', flexDirection: 'row', }}>
-                <Typography
-                  variant="string"
-                  sx={{ pr: 1 }}
-                >
-                  {`SOL: ${userSolBalance}`}
-                </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+              <Typography variant="string" sx={{ pr: 1 }}>
+                {`SOL: ${userSolBalance}`}
+              </Typography>
 
-              <Divider orientation="vertical" flexItem sx={{mr: 1}}/>
+              <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
 
+              <Typography variant="string" sx={{ pr: 1 }}>
+                {`USDC: ${userUsdcBalance}`}
+              </Typography>
 
-                <Typography
-                  variant="string"
-                  sx={{pr: 1}}
-                >
-                  {`USDC: ${userUsdcBalance}`}
-                </Typography>
-                
-              <Divider orientation="vertical" flexItem sx={{mr: 1}} />
+              <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
 
-
-              <Typography
-                variant="string"
-                sx={{pr: 1}}
-
-                >{`Availble To Collect: $${revenueSumForArtist > 0
-                  ? ninaClient
-                    .nativeToUi(
-                      revenueSumForArtist,
-                      ninaClient.ids.mints.usdc
-                    )
-                    .toFixed(2)
-                  : '0'
-                  }`}
-                </Typography>
-
+              <Typography variant="string" sx={{ pr: 1 }}>
+                {`Availble To Collect: $${
+                  revenueSumForArtist > 0
+                    ? ninaClient
+                        .nativeToUi(
+                          revenueSumForArtist,
+                          ninaClient.ids.mints.usdc
+                        )
+                        .toFixed(2)
+                    : '0'
+                }`}
+              </Typography>
             </Box>
             <Divider sx={{ margin: '30px 0 30px' }} />
             <Swap />

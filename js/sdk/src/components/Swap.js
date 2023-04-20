@@ -9,10 +9,13 @@ import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
 
 import Box from '@mui/material/Box'
-import AutorenewIcon from '@mui/icons-material/Autorenew'
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import {useSnackbar} from 'notistack'
+
 
 const Swap = ({ refreshBalances }) => {
+  const {enqueueSnackbar} = useSnackbar()
+
   const { ninaClient, usdcBalance, solBalance } = useContext(Nina.Context)
   const { wallet, connection } = useContext(Wallet.Context)
   const [inputAmount, setInputAmount] = useState(0)
@@ -87,8 +90,20 @@ const Swap = ({ refreshBalances }) => {
   }
 
   const handleSwap = async () => {
-    await swap(quote, wallet, connection)
-    refreshBalances()
+    try {
+      await swap(quote, wallet, connection)
+      await refreshBalances()
+      setInputAmount(0)
+      setOutputCurrency(0)
+      enqueueSnackbar('Swap Successful', {
+        variant: 'success',
+      })
+    } catch (e) {
+      enqueueSnackbar('Swap Failed', {
+        variant: 'failure',
+      })
+      console.log(e)
+    }
   }
 
   return (
