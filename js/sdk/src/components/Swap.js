@@ -9,12 +9,11 @@ import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
 
 import Box from '@mui/material/Box'
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import {useSnackbar} from 'notistack'
-
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
+import { useSnackbar } from 'notistack'
 
 const Swap = ({ refreshBalances }) => {
-  const {enqueueSnackbar} = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
 
   const { ninaClient, usdcBalance, solBalance } = useContext(Nina.Context)
   const { wallet, connection } = useContext(Wallet.Context)
@@ -109,16 +108,20 @@ const Swap = ({ refreshBalances }) => {
   return (
     <>
       <InputWrapper>
-
         <Typography
-          variant='h3'
+          variant="h3"
           sx={{ alignItems: 'baseline', textDecoration: 'underline', mb: 1 }}
         >
           Swap
         </Typography>
         <Typography
           variant="h3"
-          sx={{ mb:3,  display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          sx={{
+            mb: 3,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
           {isSolToUsdc ? 'SOL to USDC' : 'USDC to SOL'}
           <SwapHorizIcon
