@@ -28,7 +28,7 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
-import AddToHubModal from './AddToHubModal'
+import AddToHubModal from '@nina-protocol/nina-internal-sdk/esm/AddToHubModal'
 const Gates = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/Gates')
 )
@@ -378,7 +378,6 @@ const ReleasePurchase = (props) => {
             </Button>
           </form>
         </Box>
-
         <Gates
           release={release}
           metadata={metadata}

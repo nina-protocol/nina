@@ -13,7 +13,7 @@ import Image from 'next/image'
 import DownloadIcon from '@mui/icons-material/Download'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import axios from 'axios'
-import AddToHubModal from './AddToHubModal.js'
+import AddToHubModal from '@nina-protocol/nina-internal-sdk/esm/AddToHubModal'
 // import ReleaseSettingsModal from './ReleaseSettingsModal.js'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
 
@@ -100,7 +100,7 @@ const ReleaseCard = (props) => {
                     updateTrack(releasePubkey, true, true)
                   }
                 }}
-                sx={{ height: '22px', width: '28px' }}
+                sx={{ height: '22px', width: '22px' }}
               >
                 {isPlaying && track.releasePubkey === releasePubkey ? (
                   <PauseCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
