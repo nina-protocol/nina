@@ -431,6 +431,9 @@ const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({
   '&::-webkit-scrollbar': {
     display: 'none',
   },
+  '& pre': {
+    whiteSpace: 'pre-wrap',
+  },
   [theme.breakpoints.up('md')]: {
     maxHeight: releaseGates ? '182px' : '256px',
     overflowY: 'scroll',
