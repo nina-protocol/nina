@@ -7,17 +7,13 @@ import { swap, swapQuote } from '../utils/swap.js'
 import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
-import Modal from '@mui/material/Modal'
-import Paper from '@mui/material/Paper'
-import Fade from '@mui/material/Fade'
+
 import Box from '@mui/material/Box'
-import Backdrop from '@mui/material/Backdrop'
 import AutorenewIcon from '@mui/icons-material/Autorenew'
 
 const SwapModal = ({ refreshBalances }) => {
   const { ninaClient, usdcBalance, solBalance } = useContext(Nina.Context)
   const { wallet, connection } = useContext(Wallet.Context)
-  const [open, setOpen] = useState(false)
   const [inputAmount, setInputAmount] = useState(0)
   const [quote, setQuote] = useState()
   const [isSolToUsdc, setIsSolToUsdc] = useState(false)
@@ -75,10 +71,6 @@ const SwapModal = ({ refreshBalances }) => {
     handleInputAmountChange(defaultInputAmount, newBaseCurrency)
   }
 
-  const handleClose = () => {
-    setOpen(false)
-  }
-
   const handleInputAmountChange = async (amount, currency = baseCurrency) => {
     setInputAmount(amount)
     if (amount > 0) {
@@ -96,129 +88,74 @@ const SwapModal = ({ refreshBalances }) => {
   const handleSwap = async () => {
     await swap(quote, wallet, connection)
     refreshBalances()
-    handleClose()
   }
 
   return (
-    <Root>
-      <StyledSmallToggle
-        align={'right'}
-        variant="subtitle1"
-        textTransform={'none'}
-        onClick={() => setOpen(true)}
-      >
-        Swap
-      </StyledSmallToggle>
-      <StyledModal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={open}>
-          <StyledPaper>
-            <InputWrapper>
-              <Typography
-                variant="h3"
-                sx={{ textAlign: 'center' }}
-                onClick={() => setIsSolToUsdc(!isSolToUsdc)}
-              >
-                {isSolToUsdc ? 'Swap SOL to USDC' : 'Swap USDC to SOL'}
-                <AutorenewIcon sx={{ marginLeft: '8px' }} fontSize="10px" />
-              </Typography>
-              <SwapWrapper>
-                <TextField
-                  sx={{ width: '20%' }}
-                  id={'swapInput'}
-                  name={'swapInput'}
-                  onChange={(e) => handleInputAmountChange(e.target.value)}
-                  value={inputAmount}
-                  type="number"
-                  variant="standard"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="start">
-                        {isSolToUsdc ? 'SOL' : 'USDC'}
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                <Typography sx={{ margin: '0 10px' }}>For</Typography>
-                <TextField
-                  sx={{ width: '20%' }}
-                  id={'swapOutput'}
-                  name={'swapOutput'}
-                  value={outputAmount}
-                  type="number"
-                  variant="standard"
-                  disabled
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="start">
-                        {!isSolToUsdc ? 'SOL' : 'USDC'}
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </SwapWrapper>
-              <Button
-                style={{ marginTop: '15px' }}
-                color="primary"
-                variant="outlined"
-                onClick={() => handleSwap()}
-              >
-                Swap
-              </Button>
-            </InputWrapper>
-          </StyledPaper>
-        </Fade>
-      </StyledModal>
-    </Root>
+    <>
+      <InputWrapper>
+        <Typography
+          mb={0.5}
+          variant="body1"
+          noWrap
+          sx={{ alignItems: 'baseline', textDecoration: 'underline' }}
+        >
+          {isSolToUsdc ? 'Swap SOL to USDC' : 'Swap USDC to SOL'}
+          <AutorenewIcon
+            sx={{ marginLeft: '8px', marginBotton: '0px' }}
+            fontSize="10px"
+            onClick={() => setIsSolToUsdc(!isSolToUsdc)}
+          />
+        </Typography>
+        <SwapWrapper>
+          <TextField
+            id={'swapInput'}
+            name={'swapInput'}
+            onChange={(e) => handleInputAmountChange(e.target.value)}
+            value={inputAmount}
+            type="number"
+            variant="standard"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  {isSolToUsdc ? 'SOL' : 'USDC'}
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Typography sx={{ margin: '0 10px' }}>For</Typography>
+          <TextField
+            id={'swapOutput'}
+            name={'swapOutput'}
+            value={outputAmount}
+            type="number"
+            variant="standard"
+            disabled
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  {!isSolToUsdc ? 'SOL' : 'USDC'}
+                </InputAdornment>
+              ),
+            }}
+          />
+        </SwapWrapper>
+        <Button
+          color="primary"
+          variant="outlined"
+          fullWidth
+          onClick={() => handleSwap()}
+        >
+          <Typography>Swap</Typography>
+        </Button>
+      </InputWrapper>
+    </>
   )
 }
-
-const Root = styled('div')(({ displaySmall }) => ({
-  display: 'flex',
-  alignItems: displaySmall ? 'right' : 'center',
-  width: displaySmall ? '' : '100%',
-}))
 
 const SwapWrapper = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
-  margin: '40px 0',
-}))
-
-const StyledSmallToggle = styled(Typography)(() => ({
-  cursor: 'pointer',
-  margin: '5px 0',
-  textDecoration: 'underline',
-  '&:hover': {
-    opacity: '50%',
-  },
-}))
-
-const StyledModal = styled(Modal)(() => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}))
-
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-  border: '2px solid #000',
-  boxShadow: theme.shadows[5],
-  padding: theme.spacing(2, 4, 3),
-  width: '40vw',
-  maxHeight: '90vh',
-  overflowY: 'auto',
-  zIndex: '10',
+  marginBottom: '15px',
 }))
 
 const InputWrapper = styled(Box)(() => ({
