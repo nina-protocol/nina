@@ -168,7 +168,7 @@ const ReleasePurchase = (props) => {
       return
     }
 
-    if (solBalance === 0) {
+    if (release.price > 0 && solBalance === 0) {
       setShowNoSolModal(true)
       return
     }
@@ -241,15 +241,17 @@ const ReleasePurchase = (props) => {
 
   return (
     <Box sx={{ position: 'relative', height: '100%' }}>
-      <NoSolWarning
-        requiredSol={ninaClient.nativeToUiString(
-          release.price,
-          release.paymentMint
-        )}
-        action={'purchase'}
-        open={showNoSolModal}
-        setOpen={setShowNoSolModal}
-      />
+      {release.price > 0 && (
+        <NoSolWarning
+          requiredSol={ninaClient.nativeToUiString(
+            release.price,
+            release.paymentMint
+          )}
+          action={'purchase'}
+          open={showNoSolModal}
+          setOpen={setShowNoSolModal}
+        />
+      )}
 
       <Box>
         <AmountRemaining variant="body2" align="left">
