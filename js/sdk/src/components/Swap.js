@@ -9,9 +9,12 @@ import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
 
 import Box from '@mui/material/Box'
-import AutorenewIcon from '@mui/icons-material/Autorenew'
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
+import { useSnackbar } from 'notistack'
 
-const SwapModal = ({ refreshBalances }) => {
+const Swap = ({ refreshBalances }) => {
+  const { enqueueSnackbar } = useSnackbar()
+
   const { ninaClient, usdcBalance, solBalance } = useContext(Nina.Context)
   const { wallet, connection } = useContext(Wallet.Context)
   const [inputAmount, setInputAmount] = useState(0)
@@ -86,23 +89,44 @@ const SwapModal = ({ refreshBalances }) => {
   }
 
   const handleSwap = async () => {
-    await swap(quote, wallet, connection)
-    refreshBalances()
+    try {
+      await swap(quote, wallet, connection)
+      await refreshBalances()
+      setInputAmount(0)
+      setOutputCurrency(0)
+      enqueueSnackbar('Swap Successful', {
+        variant: 'success',
+      })
+    } catch (e) {
+      enqueueSnackbar('Swap Failed', {
+        variant: 'failure',
+      })
+      console.warn(e)
+    }
   }
 
   return (
     <>
       <InputWrapper>
         <Typography
-          mb={0.5}
-          variant="body1"
-          noWrap
-          sx={{ alignItems: 'baseline', textDecoration: 'underline' }}
+          variant="h3"
+          sx={{ alignItems: 'baseline', textDecoration: 'underline', mb: 1 }}
         >
-          {isSolToUsdc ? 'Swap SOL to USDC' : 'Swap USDC to SOL'}
-          <AutorenewIcon
+          Swap
+        </Typography>
+        <Typography
+          variant="h3"
+          sx={{
+            mb: 3,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {isSolToUsdc ? 'SOL to USDC' : 'USDC to SOL'}
+          <SwapHorizIcon
             sx={{ marginLeft: '8px', marginBotton: '0px' }}
-            fontSize="10px"
+            fontSize="large"
             onClick={() => setIsSolToUsdc(!isSolToUsdc)}
           />
         </Typography>
@@ -155,7 +179,8 @@ const SwapModal = ({ refreshBalances }) => {
 const SwapWrapper = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
-  marginBottom: '15px',
+  marginBottom: '30px',
+  justifyContent: 'space-around',
 }))
 
 const InputWrapper = styled(Box)(() => ({
@@ -163,4 +188,4 @@ const InputWrapper = styled(Box)(() => ({
   flexDirection: 'column',
 }))
 
-export default SwapModal
+export default Swap

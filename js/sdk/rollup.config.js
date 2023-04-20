@@ -56,7 +56,7 @@ export default [
       WalletConnectModal: 'src/components/WalletConnectModal.js',
       WalletButton: 'src/components/WalletButton.js',
       NoSolWarning: 'src/components/NoSolWarning.js',
-      SwapModal: 'src/components/SwapModal.js',
+      Swap: 'src/components/Swap.js',
       IdentityVerification: 'src/components/IdentityVerification.js',
       AddToHubModal: 'src/components/AddToHubModal.js',
       HubPostCreate: 'src/components/HubPostCreate',

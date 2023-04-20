@@ -91,20 +91,27 @@ const MediaDropzone = ({
 
   const handleChangeStatus = useMemo(() => {
     return ({ meta, file, remove }, status) => {
+      if (status === 'rejected_file_type') {
+        return
+      }
       if (meta.status === 'error_validation') {
         const size = meta.size / 1000000
         if (file.type.includes('audio')) {
           if (file.type !== 'audio/mpeg') {
             alert(`Your track is not an MP3. \nPlease upload an MP3.`)
+            setTrack(undefined)
+            return
           } else if (size > MAX_AUDIO_FILE_UPLOAD_SIZE) {
             alert(
               `Your track is ${size} mb... \nPlease upload a file smaller than ${MAX_AUDIO_FILE_UPLOAD_SIZE} mbs`
             )
+            return
           }
         } else if (type === 'artwork') {
           alert(
             `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} mbs`
           )
+          return
         }
       }
 
@@ -114,15 +121,13 @@ const MediaDropzone = ({
           setUncroppedImage(undefined)
           setCroppedImage(undefined)
         } else if (status === 'done') {
-          if (!artwork) {
-            try {
-              setArtwork({
-                file,
-                meta,
-              })
-            } catch (error) {
-              console.warn('error :>> ', error)
-            }
+          try {
+            setArtwork({
+              file,
+              meta,
+            })
+          } catch (error) {
+            console.warn('error :>> ', error)
           }
         }
       } else if (type === 'cropper') {
@@ -177,6 +182,9 @@ const MediaDropzone = ({
 
   const validateImage = (fileWithMeta) => {
     const size = fileWithMeta.file.size / 1000000
+    if (fileWithMeta.file.type !== 'image/png') {
+      return true
+    }
 
     if (size > MAX_IMAGE_FILE_UPLOAD_SIZE) {
       return true
@@ -268,7 +276,7 @@ const MediaDropzone = ({
     <>
       <Dropzone
         onChangeStatus={handleChangeStatus}
-        accept={type === 'track' ? 'audio/*' : 'image/*'}
+        accept={type === 'track' ? 'audio/mpeg' : 'image/jpeg,image/png'}
         maxFiles={1}
         validate={
           type === 'track'
@@ -289,6 +297,7 @@ const MediaDropzone = ({
         PreviewComponent={Preview}
         initialFiles={croppedImage ? [croppedImage] : []}
         styles={styles}
+        multiple={false}
       />
 
       {inHubCreate && (
