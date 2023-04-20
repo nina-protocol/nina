@@ -88,6 +88,7 @@ const WalletConnectModal = (props) => {
         .on('settled', () => {
           setOtpLogin()
           setShowOtpUI(false)
+          handleClose()
         })
         .catch((err) => {
           console.error('magic login error: ', err)
