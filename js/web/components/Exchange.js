@@ -25,6 +25,10 @@ import dynamic from 'next/dynamic'
 const NoSolWarning = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/NoSolWarning')
 )
+const WalletConnectModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
+)
+
 const { getImageFromCDN, loader } = imageManager
 
 const ExchangeComponent = (props) => {
@@ -67,6 +71,8 @@ const ExchangeComponent = (props) => {
   const [updateTime, setUpdateTime] = useState(Date.now())
   const [openNoSolModal, setOpenNoSolModal] = useState(false)
   const [noSolModalAction, setNoSolModalAction] = useState(undefined)
+  const [showWalletModal, setShowWalletModal] = useState(false)
+
   useEffect(() => {
     const handleGetExchanges = async () => {
       await getRelease(releasePubkey)
@@ -93,6 +99,10 @@ const ExchangeComponent = (props) => {
   const handleExchangeAction = async (exchange) => {
     let result
     setNoSolModalAction('buyOffer')
+    if (!wallet.connected) {
+      setShowWalletModal(true)
+      return
+    }
     if (solBalance === 0) {
       setOpenNoSolModal(true)
       return
@@ -359,6 +369,15 @@ const ExchangeComponent = (props) => {
           open={openNoSolModal}
           setOpen={setOpenNoSolModal}
         />
+        {showWalletModal && (
+          <WalletConnectModal
+            inOnboardingFlow={false}
+            walletConnectPrompt={true}
+            open={showWalletModal}
+            setOpen={setShowWalletModal}
+            action={noSolModalAction}
+          />
+        )}
       </ExchangeWrapper>
     </>
   )

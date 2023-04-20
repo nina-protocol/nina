@@ -17,9 +17,14 @@ import InputLabel from '@mui/material/InputLabel'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 import HubPostCreate from './HubPostCreate'
-
+import dynamic from 'next/dynamic'
+const WalletConnectModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
+)
 const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
-  const [open, setOpen] = useState(false)
+  const [showRepostModal, setShowRepostModal] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
+
   const { enqueueSnackbar } = useSnackbar()
   const { wallet } = useContext(Wallet.Context)
   const { hubAddRelease, getHubsForRelease, hubCollaboratorsState } =
@@ -58,7 +63,6 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
     const error = await checkIfHasBalanceToCompleteAction(
       NinaProgramAction.HUB_ADD_RELEASE
     )
-
     if (error) {
       enqueueSnackbar(error.msg, { variant: 'failure' })
       return
@@ -85,23 +89,40 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   }
 
   const handleClose = () => {
-    setOpen(false)
+    setShowRepostModal(false)
     setSelectedHubId()
+  }
+
+  const handleOpen = () => {
+    if (!wallet?.connected) {
+      setShowWalletModal(true)
+      return
+    } else {
+      setShowRepostModal(true)
+    }
   }
 
   return (
     <Root>
       <ModalToggleButton
-        onClick={() => setOpen(true)}
+        onClick={() => handleOpen()}
         sx={{ height: '22px', width: '22px' }}
       >
         <AutorenewIcon sx={{ color: 'white' }} />
       </ModalToggleButton>
-
+      {showWalletModal && (
+        <WalletConnectModal
+          inOnboardingFlow={false}
+          walletConnectPrompt={true}
+          open={showWalletModal}
+          setShowRepostModal={setShowWalletModal}
+          action={'repost'}
+        />
+      )}
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
-        open={open}
+        open={showRepostModal}
         onClose={() => handleClose()}
         closeAfterTransition
         BackdropComponent={Backdrop}
@@ -109,7 +130,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
           timeout: 500,
         }}
       >
-        <Fade in={open}>
+        <Fade in={showRepostModal}>
           <StyledPaper>
             {!userHasHubs && (
               <>

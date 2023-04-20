@@ -8,7 +8,11 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Dots from './Dots'
+import dynamic from 'next/dynamic'
 
+const WalletConnectModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
+)
 const BuySellForm = (props) => {
   const { onSubmit, isBuy, release, amount, setAmount } = props
 
@@ -18,6 +22,7 @@ const BuySellForm = (props) => {
   const [pending, setPending] = useState(false)
   const [buyPending, setBuyPending] = useState(false)
   const [sellPending, setSellPending] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
 
   useEffect(() => {
     setPending(exchangeInitPending[release.publicKey])
@@ -36,7 +41,10 @@ const BuySellForm = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
+    if (!wallet.connected) {
+      setShowWalletModal(true)
+      return
+    }
     await onSubmit(e, isBuy, amount)
     setAmount()
   }
@@ -71,7 +79,6 @@ const BuySellForm = (props) => {
         <Button
           variant="contained"
           type="submit"
-          disabled={!wallet?.connected}
           disableRipple={true}
           sx={{ width: '20%' }}
         >
@@ -82,6 +89,15 @@ const BuySellForm = (props) => {
           {!isBuy && !sellPending && 'Submit'}
         </Button>
       </InputWrapper>
+      {showWalletModal && (
+        <WalletConnectModal
+          inOnboardingFlow={false}
+          walletConnectPrompt={true}
+          open={showWalletModal}
+          setOpen={setShowWalletModal}
+          action={isBuy ? 'createOffer' : 'sell'}
+        />
+      )}
     </StyledForm>
   )
 }

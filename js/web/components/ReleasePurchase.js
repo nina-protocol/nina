@@ -28,7 +28,7 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
-
+import AddToHubModal from './AddToHubModal'
 const Gates = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/Gates')
 )
@@ -38,6 +38,10 @@ const RedeemReleaseCode = dynamic(() =>
 
 const NoSolWarning = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/NoSolWarning')
+)
+
+const WalletConnectModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
 )
 
 const ReleasePurchase = (props) => {
@@ -82,6 +86,7 @@ const ReleasePurchase = (props) => {
   const [publishedHub, setPublishedHub] = useState()
   const [description, setDescription] = useState()
   const [showNoSolModal, setShowNoSolModal] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
     [releasePubkey, releasePurchaseTransactionPending]
@@ -159,9 +164,7 @@ const ReleasePurchase = (props) => {
     e.preventDefault()
 
     if (!wallet?.connected) {
-      enqueueSnackbar('Please connect your wallet to purchase', {
-        variant: 'error',
-      })
+      setShowWalletModal(true)
       logEvent('release_purchase_failure_not_connected', 'engagement', {
         publicKey: releasePubkey,
       })
@@ -252,7 +255,15 @@ const ReleasePurchase = (props) => {
           setOpen={setShowNoSolModal}
         />
       )}
-
+      {showWalletModal && (
+        <WalletConnectModal
+          inOnboardingFlow={false}
+          walletConnectPrompt={true}
+          open={showWalletModal}
+          setOpen={setShowWalletModal}
+          action={release.price > 0 ? 'purchase' : 'collect'}
+        />
+      )}
       <Box>
         <AmountRemaining variant="body2" align="left">
           {release.editionType === 'open' ? (
