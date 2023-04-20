@@ -135,7 +135,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
   )
-
   useEffect(() => {
     refreshBundlr()
     getUserBalances()
@@ -311,6 +310,20 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         const error = await checkIfHasBalanceToCompleteAction(
           NinaProgramAction.RELEASE_INIT_WITH_CREDIT
         )
+
+        const fileTypesValid =
+          track.file.type === 'audio/mpeg' && artwork.file.type === 'image/png'
+
+        if (!fileTypesValid) {
+          enqueueSnackbar(
+            'File types incorrect, please try again with an .mp3 and .png',
+            { variant: 'failure' }
+          )
+          setTrack(undefined)
+          setArtwork(undefined)
+          return
+        }
+
         if (error) {
           enqueueSnackbar(error.msg, { variant: 'failure' })
           return

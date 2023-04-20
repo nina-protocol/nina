@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import { styled } from '@mui/system'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
-import SwapModal from '@nina-protocol/nina-internal-sdk/esm/SwapModal'
+import Swap from '@nina-protocol/nina-internal-sdk/esm/Swap'
 import Divider from '@mui/material/Divider'
 
 const Balance = ({ profilePublishedReleases }) => {
@@ -27,7 +27,7 @@ const Balance = ({ profilePublishedReleases }) => {
 
   useEffect(() => {
     setUserSolBalance(
-      ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol).toFixed(4)
+      ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol).toFixed(3)
     )
   }, [solBalance])
 
@@ -67,45 +67,28 @@ const Balance = ({ profilePublishedReleases }) => {
         <Fade in={open}>
           <StyledPaper>
             <Typography
-              variant="h4"
+              variant="h3"
               mb={1}
               sx={{ textDecoration: 'underline' }}
-              gutterBottom
             >
               Your Balances
             </Typography>
-            <Box mb={1} sx={{ display: 'flex', flexDirection: 'row' }}>
-              <Typography
-                variant="body1"
-                gutterBottom
-                sx={{ textDecoration: 'underline' }}
-              >{`SOL:`}</Typography>
-              &nbsp;
-              <Typography variant="body1" gutterBottom>
-                {userSolBalance}
-              </Typography>
-            </Box>
-            <Box mb={1} sx={{ display: 'flex', flexDirection: 'row' }}>
-              <Typography
-                variant="body1"
-                gutterBottom
-                sx={{ textDecoration: 'underline' }}
-              >{`USDC:`}</Typography>
-              &nbsp;
-              <Typography variant="body1" gutterBottom>
-                {userUsdcBalance}
-              </Typography>
-            </Box>
 
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-              <Typography
-                variant="body1"
-                gutterBottom
-                sx={{ textDecoration: 'underline' }}
-              >{`To Collect:`}</Typography>
-              &nbsp;
-              <Typography variant="body1" gutterBottom>
-                {`$${
+              <Typography variant="string" sx={{ pr: 1 }}>
+                {`SOL: ${userSolBalance}`}
+              </Typography>
+
+              <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
+
+              <Typography variant="string" sx={{ pr: 1 }}>
+                {`USDC: ${userUsdcBalance}`}
+              </Typography>
+
+              <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
+
+              <Typography variant="string" sx={{ pr: 1 }}>
+                {`Availble To Collect: $${
                   revenueSumForArtist > 0
                     ? ninaClient
                         .nativeToUi(
@@ -117,21 +100,14 @@ const Balance = ({ profilePublishedReleases }) => {
                 }`}
               </Typography>
             </Box>
-            <Divider sx={{ margin: '15px 0' }} />
-            <SwapModal />
+            <Divider sx={{ margin: '30px 0 30px' }} />
+            <Swap />
           </StyledPaper>
         </Fade>
       </StyledModal>
     </Root>
   )
 }
-
-const StyledTypography = styled(Typography)(() => ({
-  textTransform: 'uppercase',
-  padding: '0px',
-  display: 'flex',
-  alignItems: 'center',
-}))
 
 const Root = styled('div')(({ theme }) => ({
   display: 'flex',
