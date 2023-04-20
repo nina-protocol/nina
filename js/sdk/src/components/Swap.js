@@ -102,7 +102,7 @@ const Swap = ({ refreshBalances }) => {
       enqueueSnackbar('Swap Failed', {
         variant: 'failure',
       })
-      console.log(e)
+      console.warn(e)
     }
   }
 
@@ -118,7 +118,7 @@ const Swap = ({ refreshBalances }) => {
         </Typography>
         <Typography
           variant="h3"
-          sx={{ alignItems: 'baseline',  mb:3,  display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          sx={{ mb:3,  display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
           {isSolToUsdc ? 'SOL to USDC' : 'USDC to SOL'}
           <SwapHorizIcon
