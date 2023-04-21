@@ -16,6 +16,7 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import axios from 'axios'
 import Dots from './Dots'
+
 const RedeemReleaseCode = (props) => {
   const { releasePubkey } = props
   const { enqueueSnackbar } = useSnackbar()
@@ -55,7 +56,6 @@ const RedeemReleaseCode = (props) => {
       }
     } catch (error) {
       setPending(false)
-      console.log('error', error)
       enqueueSnackbar('Code is either invalid or already claimed.', {
         variant: 'error',
       })
@@ -98,7 +98,9 @@ const RedeemReleaseCode = (props) => {
               fullWidth
               onClick={(e) => handleCodeSubmit(e)}
             >
-              <Typography variant="body2">{pending ? <Dots size="40px" /> : 'Redeem'}</Typography>
+              <Typography variant="body2">
+                {pending ? <Dots size="40px" /> : 'Redeem'}
+              </Typography>
             </Button>
           </StyledPaper>
         </Fade>
