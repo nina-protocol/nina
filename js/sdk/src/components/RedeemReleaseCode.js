@@ -14,17 +14,27 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import axios from 'axios'
+import dynamic from 'next/dynamic'
+
+const WalletConnectModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
+)
 
 const RedeemReleaseCode = (props) => {
   const { releasePubkey } = props
   const { enqueueSnackbar } = useSnackbar()
   const wallet = useWallet()
-  const [open, setOpen] = useState(false)
+  const [showReleaseRedeemModal, setShowReleaseRedeemModal] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
   const [code, setCode] = useState()
-
   const { getRelease } = useContext(Release.Context)
+
   const handleCodeSubmit = async (e) => {
     e.preventDefault()
+    if (!wallet?.connected) {
+      setShowWalletModal(true)
+      return
+    }
     try {
       if (wallet?.connected) {
         const message = new TextEncoder().encode(releasePubkey)
@@ -53,26 +63,35 @@ const RedeemReleaseCode = (props) => {
       })
     }
   }
+
   return (
     <Root>
-      <StyledButton onClick={() => setOpen(true)}>
+      <StyledButton onClick={() => setShowReleaseRedeemModal(true)}>
         Redeem Release Code
       </StyledButton>
-
+      {showWalletModal && (
+        <WalletConnectModal
+          inOnboardingFlow={false}
+          walletConnectPrompt={true}
+          open={showWalletModal}
+          setOpen={setShowWalletModal}
+          action={'redeemRelease'}
+        />
+      )}
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
-        open={open}
-        onClose={() => setOpen(false)}
+        open={showReleaseRedeemModal}
+        onClose={() => setShowReleaseRedeemModal(false)}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
         }}
       >
-        <Fade in={open}>
+        <Fade in={showReleaseRedeemModal}>
           <StyledPaper>
-            <StyledCloseIcon onClick={() => setOpen(false)} />
+            <StyledCloseIcon onClick={() => setShowReleaseRedeemModal(false)} />
             <StyledTypography variant="body1" mb={1}>
               Enter your code below:
             </StyledTypography>

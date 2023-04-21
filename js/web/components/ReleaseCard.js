@@ -111,7 +111,7 @@ const ReleaseCard = (props) => {
                 onClick={() => {
                   addTrackToQueue(releasePubkey)
                 }}
-                sx={{ height: '22px', width: '28px', marginRight: '8px' }}
+                sx={{ height: '22px', width: '28px' }}
               >
                 <ControlPointIcon sx={{ color: 'white' }} />
               </Button>
@@ -236,6 +236,10 @@ const CtaWrapper = styled(Box)(() => ({
   '& .MuiButton-root:not(:last-child)': {
     width: '21px',
     marginRight: '10px',
+  },
+  '& .MuiButton-root:not(:nth-last-child(3))': {
+    width: '21px',
+    marginRight: '8px',
   },
   svg: {
     color: 'white',

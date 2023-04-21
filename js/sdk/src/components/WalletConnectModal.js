@@ -65,6 +65,8 @@ const WalletConnectModal = (props) => {
         return setActionText('create this buy offer')
       case 'acceptOffer':
         return setActionText('complete this exchange')
+      case 'redeemRelease':
+        return setActionText('redeem this Release code')
       default:
         break
     }
