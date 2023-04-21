@@ -10,12 +10,13 @@ import CloseIcon from '@mui/icons-material/Close'
 import { styled } from '@mui/material/styles'
 import Input from '@mui/material/Input'
 import { encodeBase64 } from 'tweetnacl-util'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import axios from 'axios'
 import dynamic from 'next/dynamic'
-
+import Dots from './Dots'
 const WalletConnectModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
 )
@@ -23,11 +24,13 @@ const WalletConnectModal = dynamic(() =>
 const RedeemReleaseCode = (props) => {
   const { releasePubkey } = props
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
+  const { getRelease } = useContext(Release.Context)
+  const { addReleaseToCollection } = useContext(Nina.Context)
+  const { wallet } = useContext(Wallet.Context)
   const [showReleaseRedeemModal, setShowReleaseRedeemModal] = useState(false)
   const [showWalletModal, setShowWalletModal] = useState(false)
   const [code, setCode] = useState()
-  const { getRelease } = useContext(Release.Context)
+  const [pending, setPending] = useState(false)
 
   const handleCodeSubmit = async (e) => {
     e.preventDefault()
@@ -37,11 +40,11 @@ const RedeemReleaseCode = (props) => {
     }
     try {
       if (wallet?.connected) {
+        setPending(true)
         const message = new TextEncoder().encode(releasePubkey)
         const messageBase64 = encodeBase64(message)
         const signature = await wallet.signMessage(message)
         const signatureBase64 = encodeBase64(signature)
-
         await axios.post(
           `${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes/${code}/claim`,
           {
@@ -52,12 +55,16 @@ const RedeemReleaseCode = (props) => {
           }
         )
         await getRelease(releasePubkey)
-        enqueueSnackbar('Code claimed successfully', {
+        await addReleaseToCollection(releasePubkey)
+        enqueueSnackbar('Release code redeemed!', {
           variant: 'success',
         })
+        setShowReleaseRedeemModal(false)
         setCode('')
+        setPending(false)
       }
     } catch (error) {
+      setPending(false)
       enqueueSnackbar('Code is either invalid or already claimed.', {
         variant: 'error',
       })
@@ -109,7 +116,9 @@ const RedeemReleaseCode = (props) => {
               fullWidth
               onClick={(e) => handleCodeSubmit(e)}
             >
-              <Typography variant="body2">Redeem</Typography>
+              <Typography variant="body2">
+                {pending ? <Dots size="40px" /> : 'Redeem'}
+              </Typography>
             </Button>
           </StyledPaper>
         </Fade>
