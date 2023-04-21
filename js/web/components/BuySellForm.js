@@ -22,7 +22,7 @@ const BuySellForm = (props) => {
   const [pending, setPending] = useState(false)
   const [buyPending, setBuyPending] = useState(false)
   const [sellPending, setSellPending] = useState(false)
-  const [showWalletModal, setShowWalletModal] = useState(false)
+  const [forceOpen, setForceOpen] = useState(false)
 
   useEffect(() => {
     setPending(exchangeInitPending[release.publicKey])
@@ -42,7 +42,7 @@ const BuySellForm = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!wallet.connected) {
-      setShowWalletModal(true)
+      setForceOpen(true)
       return
     }
     await onSubmit(e, isBuy, amount)
@@ -89,15 +89,13 @@ const BuySellForm = (props) => {
           {!isBuy && !sellPending && 'Submit'}
         </Button>
       </InputWrapper>
-      {showWalletModal && (
-        <WalletConnectModal
-          inOnboardingFlow={false}
-          walletConnectPrompt={true}
-          open={showWalletModal}
-          setOpen={setShowWalletModal}
-          action={isBuy ? 'buyOffer' : 'sellOffer'}
-        />
-      )}
+      <WalletConnectModal
+        inOnboardingFlow={false}
+        walletConnectPrompt={true}
+        forceOpen={forceOpen}
+        setForceOpen={setForceOpen}
+        action={isBuy ? 'buyOffer' : 'sellOffer'}
+      />
     </StyledForm>
   )
 }

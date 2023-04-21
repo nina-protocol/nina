@@ -28,14 +28,14 @@ const RedeemReleaseCode = (props) => {
   const { addReleaseToCollection } = useContext(Nina.Context)
   const { wallet } = useContext(Wallet.Context)
   const [showReleaseRedeemModal, setShowReleaseRedeemModal] = useState(false)
-  const [showWalletModal, setShowWalletModal] = useState(false)
+  const [forceOpen, setForceOpen] = useState(false)
   const [code, setCode] = useState()
   const [pending, setPending] = useState(false)
 
   const handleCodeSubmit = async (e) => {
     e.preventDefault()
     if (!wallet?.connected) {
-      setShowWalletModal(true)
+      setForceOpen(true)
       return
     }
     try {
@@ -76,15 +76,13 @@ const RedeemReleaseCode = (props) => {
       <StyledButton onClick={() => setShowReleaseRedeemModal(true)}>
         Redeem Release Code
       </StyledButton>
-      {showWalletModal && (
-        <WalletConnectModal
-          inOnboardingFlow={false}
-          walletConnectPrompt={true}
-          open={showWalletModal}
-          setOpen={setShowWalletModal}
-          action={'redeemRelease'}
-        />
-      )}
+      <WalletConnectModal
+        inOnboardingFlow={false}
+        walletConnectPrompt={true}
+        forceOpen={forceOpen}
+        setForceOpen={setForceOpen}
+        action={'redeemRelease'}
+      />
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

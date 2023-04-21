@@ -18,9 +18,9 @@ const WalletConnectModal = (props) => {
     children,
     inOnboardingFlow,
     walletConnectPrompt,
-    open,
-    setOpen,
     action,
+    forceOpen,
+    setForceOpen,
   } = props
   const { wallet, walletExtension, connectMagicWallet, useMagic } = useContext(
     Wallet.Context
@@ -31,6 +31,7 @@ const WalletConnectModal = (props) => {
   const [showWallets, setShowWallets] = useState(false)
   const [pending, setPending] = useState(false)
   const [actionText, setActionText] = useState('')
+  const [open, setOpen] = useState(false)
   const walletText = useMemo(() => {
     return signingUp
       ? 'I want to sign up with a wallet'
@@ -72,6 +73,12 @@ const WalletConnectModal = (props) => {
     }
   }, [action])
 
+  useEffect(() => {
+    if (forceOpen) {
+      setOpen(true)
+    }
+  }, [forceOpen])
+
   const handleLogin = async (email) => {
     setPending(true)
     const magic = await useMagic()
@@ -102,6 +109,7 @@ const WalletConnectModal = (props) => {
 
   const handleClose = () => {
     setOpen(false)
+    setForceOpen(false)
     setShowOtpUI(false)
     setSigningUp(false)
     setEmail()

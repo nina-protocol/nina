@@ -71,8 +71,7 @@ const ExchangeComponent = (props) => {
   const [updateTime, setUpdateTime] = useState(Date.now())
   const [openNoSolModal, setOpenNoSolModal] = useState(false)
   const [noSolModalAction, setNoSolModalAction] = useState(undefined)
-  const [showWalletModal, setShowWalletModal] = useState(false)
-
+  const [forceOpen, setForceOpen] = useState(false)
   useEffect(() => {
     const handleGetExchanges = async () => {
       await getRelease(releasePubkey)
@@ -100,7 +99,7 @@ const ExchangeComponent = (props) => {
     let result
     setNoSolModalAction('acceptOffer')
     if (!wallet.connected) {
-      setShowWalletModal(true)
+      setForceOpen(true)
       return
     }
     if (solBalance === 0) {
@@ -369,15 +368,14 @@ const ExchangeComponent = (props) => {
           open={openNoSolModal}
           setOpen={setOpenNoSolModal}
         />
-        {showWalletModal && (
-          <WalletConnectModal
-            inOnboardingFlow={false}
-            walletConnectPrompt={true}
-            open={showWalletModal}
-            setOpen={setShowWalletModal}
-            action={noSolModalAction}
-          />
-        )}
+
+        <WalletConnectModal
+          inOnboardingFlow={false}
+          walletConnectPrompt={true}
+          forceOpen={forceOpen}
+          setForceOpen={setForceOpen}
+          action={noSolModalAction}
+        />
       </ExchangeWrapper>
     </>
   )

@@ -39,6 +39,8 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   const [inProgress, setInProgress] = useState(false)
   const [filteredHubs, setFilteredHubs] = useState()
   const [canAddContent] = useState(false)
+  const [forceOpen, setForceOpen] = useState(false)
+
   const userHasHubs = useMemo(() => userHubs && userHubs.length > 0, [userHubs])
 
   useEffect(() => {
@@ -98,7 +100,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   }
   const handleOpen = () => {
     if (!wallet?.connected) {
-      setShowWalletModal(true)
+      setForceOpen(true)
       return
     } else {
       setShowRepostModal(true)
@@ -107,15 +109,14 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
 
   return (
     <Root>
-      {showWalletModal && (
-        <WalletConnectModal
-          inOnboardingFlow={false}
-          walletConnectPrompt={true}
-          open={showWalletModal}
-          setOpen={setShowWalletModal}
-          action={'repost'}
-        />
-      )}
+      <WalletConnectModal
+        inOnboardingFlow={false}
+        walletConnectPrompt={true}
+        forceOpen={forceOpen}
+        setForceOpen={setForceOpen}
+        action={'repost'}
+      />
+
       <ModalToggle
         variant="contained"
         color="primary"
