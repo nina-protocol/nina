@@ -30,6 +30,9 @@ const NoSolWarning = (props) => {
     }
   }, [action])
 
+  console.log('action :>> ', action);
+  console.log('action ===  :>> ', action === 'upload');
+
   const handleClose = () => {
     setOpen(false)
   }
@@ -49,13 +52,24 @@ const NoSolWarning = (props) => {
         <Fade in={open}>
           <StyledPaper>
             <>
-              <Typography component="p" gutterBottom>
+              <Typography variant="h4" sx={{mb:1}}>
                 {`You do not have any SOL.`}
               </Typography>
-              <Typography component="p" gutterBottom>
-                {`Please add Sol to ${actionText}.`}
+              
+              <Typography component="p" sx={{mb: 1}}>
+                {`Please add SOL to your wallet to ${actionText}.`}
               </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+
+
+              {action === 'upload' && (
+                <Box sx={{display: 'flex', flexDirection: 'row'}} >
+                  <Button variant="outlined">
+                    Request some SOL to get Started
+                  </Button>
+                </Box>
+              )}
+
+              <Box sx={{display: 'flex', flexDirection: 'row'}} >
                 <Typography component="p" gutterBottom>
                   {`For any questions, please reach out at`}{' '}
                   <a
