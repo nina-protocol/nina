@@ -81,7 +81,6 @@ const walletContextHelper = ({
     const isLoggedIn = await magic.user.isLoggedIn()
     if (isLoggedIn) {
       const user = await magic.user.getMetadata()
-      console.log('user :>> ', user);
       const wallet = {
         connected: true,
         connecting: false,
@@ -124,6 +123,7 @@ const walletContextHelper = ({
           adapter: {
             name: 'Nina',
             url: 'https://ninaprotocol.com',
+            user
           },
         },
         wallets: [],

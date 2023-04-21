@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -7,10 +7,12 @@ import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
+import OnboardClaimRequest from '@nina-protocol/nina-internal-sdk/esm/OnboardClaimRequest'
 
 const NoSolWarning = (props) => {
   const { action, open, setOpen } = props
   const [actionText, setActionText] = useState('')
+
   useEffect(() => {
     switch (action) {
       case 'upload':
@@ -30,8 +32,6 @@ const NoSolWarning = (props) => {
     }
   }, [action])
 
-  console.log('action :>> ', action);
-  console.log('action ===  :>> ', action === 'upload');
 
   const handleClose = () => {
     setOpen(false)
@@ -62,11 +62,7 @@ const NoSolWarning = (props) => {
 
 
               {action === 'upload' && (
-                <Box sx={{display: 'flex', flexDirection: 'row'}} >
-                  <Button variant="outlined">
-                    Request some SOL to get Started
-                  </Button>
-                </Box>
+                <OnboardClaimRequest />
               )}
 
               <Box sx={{display: 'flex', flexDirection: 'row'}} >

@@ -12,14 +12,15 @@ import CloseIcon from '@mui/icons-material/Close'
 import { logEvent } from '../utils/event'
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: { xs: '88vw', md: 400 },
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: '60px',
+  // position: 'absolute',
+  // top: '50%',
+  // left: '50%',
+  // transform: 'translate(-50%, -50%)',
+  width: { xs: '88vw', md: '100%' },
+  border: '2px solid red',
+  // bgcolor: 'background.paper',
+  // boxShadow: 24,
+  // p: '60px',
   boxSizing: 'content-box',
 }
 const requiredString = 'A Soundcloud, Twitter, or Instagram is required'
@@ -59,12 +60,12 @@ const EmailCaptureSchema = Yup.object().shape(
 
 const EmailCapture = ({ size }) => {
   const { wallet } = useContext(Wallet.Context)
+  const [usingMagicWallet, setUsingMagicWallet] = useState(false)
+  const [user, setUser] = useState(undefined)
   const { publicKey, connected } = wallet
   const { submitEmailRequest } = useContext(Nina.Context)
   const [open, setOpen] = useState(false)
   const [showSuccessInfo, setShowSuccessInfo] = useState(false)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
   const [formValues, setFormValues] = useState({})
   const [formIsValid, setFormIsValid] = useState(false)
   const [submitButtonText, setSubmitButtonText] = useState('Submit')
@@ -80,6 +81,15 @@ const EmailCapture = ({ size }) => {
       setFormValues({ ...formValues, wallet: publicKey?.toString() })
     }
   }, [connected, publicKey])
+
+  useEffect(() => {
+    if (wallet.wallet.adapter.name === 'Nina') {
+      setUsingMagicWallet(true)
+      console.log('wallet.wallet.user :>> ', wallet.wallet.user);
+      console.log('wallet.wallet :>> ', wallet.wallet);
+      setUser(wallet.wallet.adapter.user)
+    }
+  }, [wallet])
 
   useEffect(() => {
     if (formIsValid) {
@@ -143,64 +153,16 @@ const EmailCapture = ({ size }) => {
 
   return (
     <>
-      {size === 'large' && (
-        <BlueTypography
-          onClick={handleOpen}
-          variant="h1"
-          sx={{ display: 'inline' }}
-        >
-          Sign Up
-        </BlueTypography>
-      )}
-      {size === 'medium' && (
-        <BlueTypography
-          onClick={handleOpen}
-          variant="h3"
-          sx={{
-            padding: { md: '10px 0 ', xs: '0px 0px' },
-            border: '1px solid #2D81FF',
-            width: '100%',
-            textAlign: 'center',
-          }}
-        >
-          Please fill out this form to apply
-        </BlueTypography>
-      )}
-      {size === 'small' && <SmallCta onClick={handleOpen}>Sign Up</SmallCta>}
-      {size === 'getStarted' && (
-        <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-          <Typography variant="h3">
-            If this is your first time using Nina, you can{' '}
-          </Typography>
-          <BlueTypography variant="h3" onClick={handleOpen} ml={0.5}>
-            Sign Up here.
-          </BlueTypography>
-        </Box>
-      )}
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
         <Box sx={style}>
-          <CloseIconWrapper onClick={handleClose}>
-            <CloseIcon />
-          </CloseIconWrapper>
-
           {!showSuccessInfo && (
             <>
-              <Typography variant="h4" gutterBottom>
-                Nina is currently in closed beta.
-              </Typography>
-              <Typography variant="h4" sx={{ mb: '16px' }}>
-                Please sign up below.
-              </Typography>
-
               <EmailCaptureForm
                 onChange={handleFormChange}
                 values={formValues}
                 EmailCaptureSchema={EmailCaptureSchema}
+                usingMagicWallet={usingMagicWallet}
+                wallet={wallet}
+                user={user}
               />
               <Button
                 variant="outlined"
@@ -235,15 +197,10 @@ const EmailCapture = ({ size }) => {
             </>
           )}
         </Box>
-      </Modal>
     </>
   )
 }
 
-const BlueTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
-  cursor: 'pointer',
-}))
 
 const CloseIconWrapper = styled(Box)(({ theme }) => ({
   display: 'none',
@@ -254,20 +211,5 @@ const CloseIconWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
-const SmallCta = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
-  cursor: 'pointer',
-  padding: '2px',
-  border: '1px solid #2D81FF',
-  width: '100%',
-  textAlign: 'center',
-  [theme.breakpoints.down('md')]: {
-    position: 'absolute',
-    top: '75%',
-    right: '15px',
-    padding: '5px 0px',
-    width: '95px',
-  },
-}))
 
 export default EmailCapture

@@ -33,4 +33,6 @@ export { default as WalletConnectModal } from './components/WalletConnectModal'
 export { default as WalletButton } from './components/WalletButton'
 export { default as NoSolWarning } from './components/NoSolWarning'
 export { default as Swap } from './components/Swap'
+export { default as OnboardClaimRequest } from './components/OnboardClaimRequest'
 export { default as IdentityVerification } from './components/IdentityVerification'
+

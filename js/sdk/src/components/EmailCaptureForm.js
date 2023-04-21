@@ -15,12 +15,16 @@ const EmailCaptureForm = ({
   errors,
   touched,
   setFieldValue,
+  wallet,
+  user
 }) => {
   useEffect(() => {
     if (onChange) {
       onChange(values)
     }
   }, [values])
+
+  console.log('user inside :>> ', user);
 
   return (
     <Root>
@@ -98,47 +102,7 @@ const EmailCaptureForm = ({
             </Box>
           )}
         </Field>
-        <Box sx={{ mt: 2 }}>
-          <FormLabel>I want to use Nina as:</FormLabel>
-          <RadioGroup
-            sx={{
-              mt: 1,
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-            }}
-            defaultValue="artist"
-            name="type"
-            onChange={(e) => setFieldValue('type', e.target.value)}
-            row
-          >
-            <FormControlLabel
-              value="artist"
-              control={<Radio />}
-              label="An Artist"
-            />
-            <FormControlLabel
-              value="label"
-              control={<Radio />}
-              label="A Label"
-            />
-            <FormControlLabel
-              value="writer"
-              control={<Radio />}
-              label="A Writer"
-            />
-            <FormControlLabel
-              value="curator"
-              control={<Radio />}
-              label="A Curator"
-            />
-            <FormControlLabel
-              value="listener"
-              control={<Radio />}
-              label="A Listener"
-            />
-            <FormControlLabel value="other" control={<Radio />} label="Other" />
-          </RadioGroup>
-        </Box>
+   
       </Form>
     </Root>
   )
@@ -174,13 +138,13 @@ export default withFormik({
   validationSchema: (props) => {
     return props.EmailCaptureSchema
   },
-  mapPropsToValues: () => {
+  mapPropsToValues: ({user}) => {
     return {
-      email: '',
+      email: user ?  user.email : '',
       soundcloud: '',
       twitter: '',
       instagram: '',
-      wallet: undefined,
+      wallet: user ? user.publicAddress : undefined,
       type: 'artist',
     }
   },
