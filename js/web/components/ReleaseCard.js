@@ -99,7 +99,7 @@ const ReleaseCard = (props) => {
                     updateTrack(releasePubkey, true, true)
                   }
                 }}
-                sx={{ height: '22px', width: '22px' }}
+                sx={{ height: '22px', width: '28px' }}
               >
                 {isPlaying && track.releasePubkey === releasePubkey ? (
                   <PauseCircleOutlineOutlinedIcon sx={{ color: 'white' }} />
