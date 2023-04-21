@@ -25,8 +25,6 @@ const WalletConnectModal = dynamic(() =>
 )
 const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   const [showRepostModal, setShowRepostModal] = useState(false)
-  const [showWalletModal, setShowWalletModal] = useState(false)
-
   const { enqueueSnackbar } = useSnackbar()
   const { wallet } = useContext(Wallet.Context)
 
