@@ -15,6 +15,9 @@ import FormControl from '@mui/material/FormControl'
 import FormLabel from '@mui/material/FormLabel'
 import { useWallet } from '@solana/wallet-adapter-react'
 const QuillEditor = dynamic(() => import('./QuillEditor'), { ssr: false })
+import Checkbox from '@mui/material/Checkbox'
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked'
 
 const SOL_DENOMINATED_WALLETS = [
   'HesfTj24Eatwy8vvra5UdhX1xJWLeqRM7QdDwjX1xmmk',
@@ -34,6 +37,7 @@ const ReleaseCreateForm = ({
   const wallet = useWallet()
   const [isOpen, setIsOpen] = useState(false)
   const [isUsdc, setIsUsdc] = useState(true)
+  const [isFree, setIsFree] = useState(false)
   const [inputValue, setInputValue] = useState(undefined)
   const editionRef = useRef(isOpen)
 
@@ -81,6 +85,16 @@ const ReleaseCreateForm = ({
     if (editionRef.current === 'limited') {
       setIsOpen(false)
       setFieldValue('amount', inputValue)
+    }
+  }
+
+  const handleFreeSelect = (event) => {
+    if (event.target.checked) {
+      setFieldValue('retailPrice', 0)
+      setIsFree(true)
+    } else {
+      setFieldValue('retailPrice', '')
+      setIsFree(false)
     }
   }
 
@@ -240,15 +254,40 @@ const ReleaseCreateForm = ({
                   !isUsdc ? ' (SOL)' : ''
                 }`}
                 size="small"
-                InputLabelProps={touched.retailPrice ? { shrink: true } : ''}
+                InputLabelProps={
+                  touched.retailPrice || isFree ? { shrink: true } : ''
+                }
                 placeholder={
                   errors.retailPrice && touched.retailPrice
                     ? errors.retailPrice
                     : null
                 }
                 type="number"
-                disabled={disabled}
+                value={'tesfadfasdfasdft'}
+                disabled={disabled || isFree}
                 {...field}
+              />
+              <StyledFormControlLabel
+                value="start"
+                disableRipple
+                disable
+                control={
+                  <Checkbox
+                    disableRipple
+                    disableFocusRipple
+                    icon={<RadioButtonUncheckedIcon />}
+                    checkedIcon={<RadioButtonCheckedIcon />}
+                  />
+                }
+                label="Free"
+                labelPlacement="end"
+                style={{
+                  position: 'absolute',
+                  right: '0',
+                  bottom: '8px',
+                  height: '32px',
+                }}
+                onClick={handleFreeSelect}
               />
             </Box>
           )}
@@ -387,6 +426,11 @@ const StyledFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
   },
   '& .MuiSvgIcon-root + .MuiSvgIcon-root': {
     color: theme.palette.black,
+  },
+  '.MuiCheckbox-root': {
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   },
 }))
 
