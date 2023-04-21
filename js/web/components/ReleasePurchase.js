@@ -50,7 +50,7 @@ const ReleasePurchase = (props) => {
     isAuthority,
   } = props
   const { enqueueSnackbar } = useSnackbar()
-  const { wallet } = useContext(Wallet.Context)
+  const { wallet, pendingTransactionMessage } = useContext(Wallet.Context)
   const {
     releasePurchase,
     releasePurchasePending,
