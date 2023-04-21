@@ -59,7 +59,7 @@ const WalletConnectModal = (props) => {
         return setActionText('purchase this Release')
       case 'repost':
         return setActionText('repost this Release')
-      case 'sell':
+      case 'sellOffer':
         return setActionText('create this listing')
       case 'buyOffer':
         return setActionText('create this buy offer')
