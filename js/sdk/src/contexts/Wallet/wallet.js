@@ -13,7 +13,7 @@ const WalletContextProvider = ({ children }) => {
   const walletExtension = useWalletWalletAdapter()
   const [magicWallet, setMagicWallet] = useState(null)
   const [magic, setMagic] = useState(null)
-
+  const [pendingTransaction, setPendingTransaction] = useState()
   const { connectMagicWallet, useMagic } = walletContextHelper({
     setMagicWallet,
     connection,
@@ -89,8 +89,6 @@ const walletContextHelper = ({
           await magic.user.logout()
           setMagicWallet(null)
         },
-        pendingTransactionMessage: 'Completing transaction...',
-        pendingTransactionMessageShort: 'Completing...',
         publicKey: new anchor.web3.PublicKey(user.publicAddress),
         signMessage: async (message) => {
           return await magic.solana.signMessage(message)
