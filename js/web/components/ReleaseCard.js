@@ -14,7 +14,6 @@ import DownloadIcon from '@mui/icons-material/Download'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import axios from 'axios'
 import AddToHubModal from '@nina-protocol/nina-internal-sdk/esm/AddToHubModal'
-// import ReleaseSettingsModal from './ReleaseSettingsModal.js'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
 
 import Link from 'next/link'
