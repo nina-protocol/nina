@@ -63,7 +63,7 @@ const WalletConnectModal = (props) => {
         return setActionText('create this listing')
       case 'buyOffer':
         return setActionText('create this buy offer')
-      case 'createOffer':
+      case 'acceptOffer':
         return setActionText('complete this exchange')
       default:
         break

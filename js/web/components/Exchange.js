@@ -98,7 +98,7 @@ const ExchangeComponent = (props) => {
 
   const handleExchangeAction = async (exchange) => {
     let result
-    setNoSolModalAction('createOffer')
+    setNoSolModalAction('acceptOffer')
     if (!wallet.connected) {
       setShowWalletModal(true)
       return
@@ -158,7 +158,7 @@ const ExchangeComponent = (props) => {
       isSelling: !isBuy,
       isInit: true,
     }
-    isBuy ? setNoSolModalAction('createOffer') : setNoSolModalAction('sell')
+    isBuy ? setNoSolModalAction('buyOffer') : setNoSolModalAction('sellOffer')
     if (solBalance === 0) {
       setOpenNoSolModal(true)
       return
