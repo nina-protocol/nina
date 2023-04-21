@@ -14,10 +14,8 @@ const WalletContextProvider = ({ children }) => {
   const [magicWallet, setMagicWallet] = useState(null)
   const [magic, setMagic] = useState(null)
   const [pendingTransactionMessage, setPendingTransactionMessage] = useState()
-  const [
-    abridgedPendingTransactionMessage,
-    setAbridgedPendingTransactionMessage,
-  ] = useState()
+  const [shortPendingTransactionMessage, setShortPendingTransactionMessage] =
+    useState()
 
   const { connectMagicWallet, useMagic } = walletContextHelper({
     setMagicWallet,
@@ -45,12 +43,12 @@ const WalletContextProvider = ({ children }) => {
   }, [])
 
   useEffect(() => {
-    if (wallet?.wallet?.adapter?.name === 'Nina') {
+    if (wallet?.wallet?.adapter.name === 'Nina') {
       setPendingTransactionMessage('Completing transaction...')
-      setAbridgedPendingTransactionMessage('Completing...')
+      setShortPendingTransactionMessage('Completing...')
     } else {
       setPendingTransactionMessage('Please approve transaction in wallet...')
-      setAbridgedPendingTransactionMessage('Approve in wallet...')
+      setShortPendingTransactionMessage('Approve in wallet...')
     }
   }, [wallet])
 
@@ -63,7 +61,7 @@ const WalletContextProvider = ({ children }) => {
         connectMagicWallet,
         useMagic,
         pendingTransactionMessage,
-        abridgedPendingTransactionMessage,
+        shortPendingTransactionMessage,
       }}
     >
       {children}
