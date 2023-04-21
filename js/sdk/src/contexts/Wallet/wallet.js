@@ -89,6 +89,8 @@ const walletContextHelper = ({
           await magic.user.logout()
           setMagicWallet(null)
         },
+        pendingTransactionMessage: 'Completing transaction...',
+        pendingTransactionMessageShort: 'Completing...',
         publicKey: new anchor.web3.PublicKey(user.publicAddress),
         signMessage: async (message) => {
           return await magic.solana.signMessage(message)
