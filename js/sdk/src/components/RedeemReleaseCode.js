@@ -28,14 +28,14 @@ const RedeemReleaseCode = (props) => {
   const { addReleaseToCollection } = useContext(Nina.Context)
   const { wallet } = useContext(Wallet.Context)
   const [showReleaseRedeemModal, setShowReleaseRedeemModal] = useState(false)
-  const [forceOpen, setForceOpen] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
   const [code, setCode] = useState()
   const [pending, setPending] = useState(false)
 
   const handleCodeSubmit = async (e) => {
     e.preventDefault()
     if (!wallet?.connected) {
-      setForceOpen(true)
+      setShowWalletModal(true)
       return
     }
     try {
@@ -79,8 +79,8 @@ const RedeemReleaseCode = (props) => {
       <WalletConnectModal
         inOnboardingFlow={false}
         walletConnectPrompt={true}
-        forceOpen={forceOpen}
-        setForceOpen={setForceOpen}
+        forceOpen={showWalletModal}
+        setForceOpen={setShowWalletModal}
         action={'redeemRelease'}
       />
       <StyledModal

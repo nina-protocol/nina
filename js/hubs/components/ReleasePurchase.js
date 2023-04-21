@@ -62,7 +62,7 @@ const ReleasePurchase = (props) => {
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [publishedHub, setPublishedHub] = useState()
   const [showNoSolModal, setShowNoSolModal] = useState(false)
-  const [forceOpen, setForceOpen] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
 
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
@@ -112,7 +112,7 @@ const ReleasePurchase = (props) => {
     e.preventDefault()
 
     if (!wallet?.connected) {
-      setForceOpen(true)
+      setShowWalletModal(true)
       logEvent('release_purchase_failure_not_connected', 'engagement', {
         publicKey: releasePubkey,
         hub: hubPubkey,
@@ -199,8 +199,8 @@ const ReleasePurchase = (props) => {
       <WalletConnectModal
         inOnboardingFlow={false}
         walletConnectPrompt={true}
-        forceOpen={forceOpen}
-        setForceOpen={setForceOpen}
+        forceOpen={showWalletModal}
+        setForceOpen={setShowWalletModal}
         action={release.price > 0 ? 'purchase' : 'collect'}
       />
 

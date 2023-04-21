@@ -48,7 +48,7 @@ const Onboard = () => {
   const profilePubkey = wallet?.publicKey?.toBase58()
   const [profileVerifications, setProfileVerifications] = useState([])
   const [pending, setPending] = useState(false)
-  const [forceOpen, setForceOpen] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
   const bundlrUsdBalance = useMemo(
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
@@ -104,8 +104,8 @@ const Onboard = () => {
         <WalletConnectModal
           inOnboardingFlow={true}
           walletConnectPrompt={false}
-          forceOpen={forceOpen}
-          setForceOpen={setForceOpen}
+          forceOpen={showWalletModal}
+          setForceOpen={setShowWalletModal}
         >
           <Typography variant="body2">Login / Sign Up</Typography>
           Login / Sign Up
@@ -242,8 +242,8 @@ const Onboard = () => {
           <WalletConnectModal
             inOnboardingFlow={true}
             walletConnectPrompt={false}
-            forceOpen={forceOpen}
-            setForceOpen={setForceOpen}
+            forceOpen={showWalletModal}
+            setForceOpen={setShowWalletModal}
           >
             <Typography variant="body2">Create an Account</Typography>
           </WalletConnectModal>

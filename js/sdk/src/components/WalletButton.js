@@ -49,7 +49,7 @@ const WalletButton = ({
 }) => {
   const { wallet } = useContext(Wallet.Context)
   const [anchor, setAnchor] = useState()
-  const [forceOpen, setForceOpen] = useState()
+  const [showWalletModal, setShowWalletModal] = useState(false)
   const base58 = useMemo(() => wallet.publicKey?.toBase58(), [wallet.publicKey])
   const content = useMemo(() => {
     if (children) return children
@@ -62,8 +62,8 @@ const WalletButton = ({
       <WalletConnectModal
         inOnboardingFlow={false}
         walletConnectPrompt={false}
-        forceOpen={forceOpen}
-        setForceOpen={setForceOpen}
+        forceOpen={showWalletModal}
+        setForceOpen={setShowWalletModal}
       >
         {children}
       </WalletConnectModal>
