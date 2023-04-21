@@ -121,7 +121,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
         color="primary"
         type="submit"
         onClick={() => handleOpen()}
-        sx={{ height: '22px', width: '28px', m: 0 }}
+        sx={{ height: '22px', width: '18px', m: 0 }}
       >
         <AutorenewIcon />
       </ModalToggle>

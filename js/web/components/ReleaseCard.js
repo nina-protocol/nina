@@ -111,7 +111,7 @@ const ReleaseCard = (props) => {
                 onClick={() => {
                   addTrackToQueue(releasePubkey)
                 }}
-                sx={{ height: '22px', width: '28px' }}
+                sx={{ height: '22px', width: '28px', marginRight: '8px' }}
               >
                 <ControlPointIcon sx={{ color: 'white' }} />
               </Button>
