@@ -95,7 +95,7 @@ const BuySellForm = (props) => {
           walletConnectPrompt={true}
           open={showWalletModal}
           setOpen={setShowWalletModal}
-          action={isBuy ? 'createOffer' : 'sell'}
+          action={isBuy ? 'buyOffer' : 'sell'}
         />
       )}
     </StyledForm>
