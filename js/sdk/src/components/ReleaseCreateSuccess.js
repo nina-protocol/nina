@@ -88,7 +88,12 @@ const ReleaseCreateSuccess = (props) => {
                 </Typography>
               </a>
             </Button>
-            <ShareToTwitter artist={artist} title={title} url={url} />
+            <ShareToTwitter
+              artist={artist}
+              title={title}
+              url={url}
+              releasePubkey={releasePubkey}
+            />
           </CtaBox>
         </ReleaseSuccessBox>
       </ReleaseSuccessContainer>
