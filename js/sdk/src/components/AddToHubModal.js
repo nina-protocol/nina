@@ -107,14 +107,6 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
 
   return (
     <Root>
-      <WalletConnectModal
-        inOnboardingFlow={false}
-        showWalletModal={showWalletModal}
-        forceOpen={showWalletModal}
-        setForceOpen={setShowWalletModal}
-        action={'repost'}
-      />
-
       <ModalToggle
         variant="contained"
         color="primary"
@@ -222,6 +214,13 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
           </StyledPaper>
         </Fade>
       </StyledModal>
+      <WalletConnectModal
+        inOnboardingFlow={false}
+        showWalletModal={showWalletModal}
+        forceOpen={showWalletModal}
+        setForceOpen={setShowWalletModal}
+        action={'repost'}
+      />
     </Root>
   )
 }
