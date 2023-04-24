@@ -27,7 +27,7 @@ const RedeemReleaseCode = (props) => {
   const { getRelease } = useContext(Release.Context)
   const { addReleaseToCollection } = useContext(Nina.Context)
   const { wallet } = useContext(Wallet.Context)
-  const [showReleaseRedeemModal, setShowReleaseRedeemModal] = useState(false)
+  const [open, setOpen] = useState(false)
   const [showWalletModal, setShowWalletModal] = useState(false)
   const [code, setCode] = useState()
   const [pending, setPending] = useState(false)
@@ -59,7 +59,7 @@ const RedeemReleaseCode = (props) => {
         enqueueSnackbar('Release code redeemed!', {
           variant: 'success',
         })
-        setShowReleaseRedeemModal(false)
+        setOpen(false)
         setCode('')
         setPending(false)
       }
@@ -73,7 +73,7 @@ const RedeemReleaseCode = (props) => {
 
   return (
     <Root>
-      <StyledButton onClick={() => setShowReleaseRedeemModal(true)}>
+      <StyledButton onClick={() => setOpen(true)}>
         Redeem Release Code
       </StyledButton>
       <WalletConnectModal
@@ -85,17 +85,17 @@ const RedeemReleaseCode = (props) => {
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
-        open={showReleaseRedeemModal}
-        onClose={() => setShowReleaseRedeemModal(false)}
+        open={open}
+        onClose={() => setOpen(false)}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
         }}
       >
-        <Fade in={showReleaseRedeemModal}>
+        <Fade in={open}>
           <StyledPaper>
-            <StyledCloseIcon onClick={() => setShowReleaseRedeemModal(false)} />
+            <StyledCloseIcon onClick={() => setOpen(false)} />
             <StyledTypography variant="body1" mb={1}>
               Enter your code below:
             </StyledTypography>
