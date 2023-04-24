@@ -263,7 +263,6 @@ const ReleaseCreateForm = ({
                     : null
                 }
                 type="number"
-                value={'tesfadfasdfasdft'}
                 disabled={disabled || isFree}
                 {...field}
               />
