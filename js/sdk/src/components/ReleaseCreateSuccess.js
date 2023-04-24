@@ -91,7 +91,6 @@ const ReleaseCreateSuccess = (props) => {
             <ShareToTwitter
               artist={artist}
               title={title}
-              url={url}
               releasePubkey={releasePubkey}
             />
           </CtaBox>
