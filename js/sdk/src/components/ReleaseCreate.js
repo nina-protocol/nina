@@ -53,7 +53,7 @@ const ReleaseCreateSchema = Yup.object().shape({
 
 const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const { enqueueSnackbar } = useSnackbar()
-  const { wallet } = useContext(Wallet.Context)
+  const { wallet, pendingTransactionMessage } = useContext(Wallet.Context)
   const {
     releaseState,
     initializeReleaseAndMint,
@@ -220,19 +220,19 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     if (isPublishing) {
       if (!artworkTx) {
         setPublishingStepText(
-          '1/4 Uploading Artwork.  Please confirm in wallet and do not close this window.'
+          `1/4 Uploading Artwork. ${pendingTransactionMessage} do not close this window.`
         )
       } else if (!trackTx) {
         setPublishingStepText(
-          '2/4 Uploading Track.  Please confirm in wallet and do not close this window.  This may take a while.'
+          `2/4 Uploading Track. ${pendingTransactionMessage} do not close this window. This may take a while.`
         )
       } else if (!metadataTx) {
         setPublishingStepText(
-          '3/4 Uploading Metadata.  Please confirm in wallet and do not close this window.'
+          `1/4 Uploading Metadata. ${pendingTransactionMessage} do not close this window.`
         )
       } else {
         setPublishingStepText(
-          '4/4 Finalizing Release.  Please confirm in wallet and do not close this window.'
+          `4/4 Finalizing Release. ${pendingTransactionMessage} do not close this window.`
         )
       }
     } else {

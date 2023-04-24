@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import Fade from '@mui/material/Fade'
 import Modal from '@mui/material/Modal'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-
+import Wallet from '@nina-protocol/nina-internal-sdk'
 const ExchangeModal = (props) => {
   const {
     toggleOverlay,
@@ -18,7 +18,7 @@ const ExchangeModal = (props) => {
   } = props
   const { ninaClient } = useContext(Nina.Context)
   const [pendingConfirm, setPendingConfirm] = useState(false)
-
+  const { pendingTransactionMessage } = useContext(Wallet.Context)
   const nativeAmount = isAccept
     ? amount
     : ninaClient.uiToNative(amount, release.paymentMint)
@@ -81,7 +81,7 @@ const ExchangeModal = (props) => {
             className={classes.confirm}
             disabled={pendingConfirm}
           >
-            {pendingConfirm ? 'Please approve in your wallet' : 'Confirm'}
+            {pendingConfirm ? pendingTransactionMessage : 'Confirm'}
           </Button>
           <Typography
             variant="body1"

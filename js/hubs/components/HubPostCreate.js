@@ -20,6 +20,7 @@ import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import { useWallet } from '@solana/wallet-adapter-react'
 import HubPostCreateForm from './HubPostCreateForm'
+import Wallet from '@nina-protocol/nina-internal-sdk/src/contexts/Wallet'
 
 import Dots from './Dots'
 import Grid from '@mui/material/Grid'
@@ -65,6 +66,7 @@ const HubPostCreate = ({
     NinaProgramAction,
     checkIfHasBalanceToCompleteAction,
   } = useContext(Nina.Context)
+  const { pendingTransactionMessage } = useContext(Wallet.Context)
   const hubData = useMemo(
     () => hubState[selectedHubId || hubPubkey],
     [hubState, hubPubkey, selectedHubId]
@@ -111,11 +113,11 @@ const HubPostCreate = ({
       if (!update) {
         if (!metadataTx) {
           setPublishingStepText(
-            '1/2 Uploading Metadata.  Please confirm in wallet and do not close this window.'
+            `1/2 Uploading Metadata.  ${pendingTransactionMessage} do not close this window.`
           )
         } else {
           setPublishingStepText(
-            '2/2 Finalizing Post.  Please confirm in wallet and do not close this window.'
+            `2/2 Finalizing Post.  ${pendingTransactionMessage} do not close this window.`
           )
         }
       } else {
@@ -185,7 +187,7 @@ const HubPostCreate = ({
         if (!uploadId) {
           setIsPublishing(true)
           enqueueSnackbar(
-            'Uploading Post to Arweave.  Please confirm in wallet.',
+            `Uploading Post to Arweave. ${pendingTransactionMessage}`,
             {
               variant: 'info',
             }

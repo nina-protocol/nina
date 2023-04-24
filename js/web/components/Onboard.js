@@ -114,7 +114,11 @@ const Onboard = () => {
       cta: (
         <>
           <Button variant="outlined" onClick={() => handleClaimCode(code)}>
-            {pending ? <Dots size="40px" /> : 'Claim Code'}
+            {pending ? (
+              <Dots size="40px" msg={pendingTransactionMessage} />
+            ) : (
+              'Claim Code'
+            )}
           </Button>
           {claimedError && (
             <Typography mt={1} mb={1}>

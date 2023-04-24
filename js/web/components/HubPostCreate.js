@@ -48,7 +48,7 @@ const HubPostCreate = ({
   userHasHubs,
 }) => {
   const { enqueueSnackbar } = useSnackbar()
-  const { wallet } = useContext(Wallet.Context)
+  const { wallet, pendingTransactionMessage } = useContext(Wallet.Context)
   const { postInitViaHub, hubState, getHub, getHubsForRelease } = useContext(
     Hub.Context
   )
@@ -110,11 +110,11 @@ const HubPostCreate = ({
       if (!update) {
         if (!metadataTx) {
           setPublishingStepText(
-            '1/2 Uploading Metadata.  Please confirm in wallet and do not close this window.'
+            `1/2 Uploading Metadata.  ${pendingTransactionMessage} do not close this window.`
           )
         } else {
           setPublishingStepText(
-            '2/2 Finalizing Post.  Please confirm in wallet and do not close this window.'
+            `2/2 Finalizing Post.  ${pendingTransactionMessage} do not close this window.`
           )
         }
       } else {

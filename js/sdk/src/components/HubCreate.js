@@ -45,7 +45,7 @@ const HubCreateSchema = Yup.object().shape({
 
 const HubCreate = ({ update, hubData, inHubs }) => {
   const { enqueueSnackbar } = useSnackbar()
-  const { wallet } = useContext(Wallet.Context)
+  const { wallet, pendingTransactionMessage } = useContext(Wallet.Context)
   const { hubInit, hubUpdateConfig, validateHubHandle } = useContext(
     Hub.Context
   )
@@ -103,15 +103,15 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     if (isPublishing) {
       if (!artworkTx) {
         setPublishingStepText(
-          '1/3 Uploading Artwork.  Please confirm in wallet and do not close this window.'
+          `1/3 Uploading Artwork.  ${pendingTransactionMessage} do not close this window.`
         )
       } else if (!metadataTx) {
         setPublishingStepText(
-          '2/3 Uploading Metadata.  Please confirm in wallet and do not close this window.'
+          `2/3 Uploading Metadata.  ${pendingTransactionMessage} do not close this window.`
         )
       } else {
         setPublishingStepText(
-          '3/3 Finalizing Hub.  Please confirm in wallet and do not close this window.'
+          `3/3 Finalizing Hub.  ${pendingTransactionMessage} do not close this window.`
         )
       }
     } else {
@@ -191,7 +191,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
           let artworkResult = artworkTx
           setIsPublishing(true)
           enqueueSnackbar(
-            'Uploading artwork to Arweave.  Please confirm in wallet.',
+            `Uploading artwork to Arweave.  ${pendingTransactionMessage}`,
             {
               variant: 'info',
             }
@@ -219,7 +219,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
         if (!uploadHasItemForType(upload, UploadType.metadataJson)) {
           setIsPublishing(true)
           enqueueSnackbar(
-            'Uploading Hub Info to Arweave.  Please confirm in wallet.',
+            `Uploading Hub Info to Arweave.  ${pendingTransactionMessage}`,
             {
               variant: 'info',
             }
@@ -259,7 +259,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
           metadataResult
         ) {
           setIsPublishing(true)
-          enqueueSnackbar('Finalizing Hub.  Please confirm in wallet.', {
+          enqueueSnackbar(`Finalizing Hub.  ${pendingTransactionMessage}`, {
             variant: 'info',
           })
 
@@ -297,7 +297,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
           if (!uploadId) {
             setIsPublishing(true)
             enqueueSnackbar(
-              'Uploading Hub Image to Arweave.  Please confirm in wallet.',
+              `Uploading Hub Image to Arweave.  ${pendingTransactionMessage}`,
               {
                 variant: 'info',
               }
