@@ -126,48 +126,48 @@ const WalletConnectModal = (props) => {
 
   return (
     <Box>
-      {!actionText && (
-        <>
-          {inOnboardingFlow ? (
+      {/* {!actionText && ( */}
+      <>
+        {inOnboardingFlow ? (
+          <Button
+            onClick={() => {
+              if (wallet?.connected) {
+                wallet.disconnect()
+              } else {
+                setOpen(true)
+                setSigningUp(true)
+              }
+            }}
+            variant="outlined"
+            style={{ width: '100%' }}
+          >
+            {children}
+          </Button>
+        ) : (
+          <Box>
             <Button
               onClick={() => {
                 if (wallet?.connected) {
                   wallet.disconnect()
                 } else {
                   setOpen(true)
-                  setSigningUp(true)
                 }
               }}
-              variant="outlined"
-              style={{ width: '100%' }}
+              sx={{
+                padding: '0px',
+                textTransform: 'none',
+                fontSize: '14px',
+                '&:hover': {
+                  opacity: '50%',
+                },
+              }}
             >
               {children}
             </Button>
-          ) : (
-            <Box>
-              <Button
-                onClick={() => {
-                  if (wallet?.connected) {
-                    wallet.disconnect()
-                  } else {
-                    setOpen(true)
-                  }
-                }}
-                sx={{
-                  padding: '0px',
-                  textTransform: 'none',
-                  fontSize: '14px',
-                  '&:hover': {
-                    opacity: '50%',
-                  },
-                }}
-              >
-                {children}
-              </Button>
-            </Box>
-          )}
-        </>
-      )}
+          </Box>
+        )}
+      </>
+      {/* )} */}
 
       <StyledModal
         aria-labelledby="transition-modal-title"

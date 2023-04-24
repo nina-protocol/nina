@@ -24,7 +24,7 @@ const WalletConnectModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
 )
 const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
-  const [showRepostModal, setShowRepostModal] = useState(false)
+  const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const { wallet } = useContext(Wallet.Context)
 
@@ -93,7 +93,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
     handleClose()
   }
   const handleClose = () => {
-    setShowRepostModal(false)
+    setOpen(false)
     setSelectedHubId(null)
   }
   const handleOpen = () => {
@@ -101,7 +101,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
       setShowWalletModal(true)
       return
     } else {
-      setShowRepostModal(true)
+      setOpen(true)
     }
   }
 
@@ -128,7 +128,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
-        open={showRepostModal}
+        open={open}
         onClose={() => handleClose()}
         closeAfterTransition
         BackdropComponent={Backdrop}
@@ -136,7 +136,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
           timeout: 500,
         }}
       >
-        <Fade in={showRepostModal}>
+        <Fade in={open}>
           <StyledPaper>
             {!userHasHubs && (
               <>
