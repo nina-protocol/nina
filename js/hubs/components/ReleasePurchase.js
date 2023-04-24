@@ -198,7 +198,6 @@ const ReleasePurchase = (props) => {
 
       <WalletConnectModal
         inOnboardingFlow={false}
-        walletConnectPrompt={true}
         forceOpen={showWalletModal}
         setForceOpen={setShowWalletModal}
         action={release.price > 0 ? 'purchase' : 'collect'}

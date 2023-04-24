@@ -14,14 +14,7 @@ import EmailLoginForm from './EmailLoginForm'
 import EmailOTPForm from './EmailOTPForm'
 
 const WalletConnectModal = (props) => {
-  const {
-    children,
-    inOnboardingFlow,
-    walletConnectPrompt,
-    action,
-    forceOpen,
-    setForceOpen,
-  } = props
+  const { children, inOnboardingFlow, action, forceOpen, setForceOpen } = props
   const { wallet, walletExtension, connectMagicWallet, useMagic } = useContext(
     Wallet.Context
   )
@@ -133,7 +126,7 @@ const WalletConnectModal = (props) => {
 
   return (
     <Box>
-      {!walletConnectPrompt && (
+      {!actionText && (
         <>
           {inOnboardingFlow ? (
             <Button
@@ -189,7 +182,7 @@ const WalletConnectModal = (props) => {
       >
         <Fade in={open}>
           <StyledPaper>
-            {walletConnectPrompt && (
+            {actionText && (
               <Typography mb={1}>{`Please Login to ${actionText}.`}</Typography>
             )}
             {showOtpUI ? (

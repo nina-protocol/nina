@@ -91,7 +91,6 @@ const BuySellForm = (props) => {
       </InputWrapper>
       <WalletConnectModal
         inOnboardingFlow={false}
-        walletConnectPrompt={true}
         forceOpen={showWalletModal}
         setForceOpen={setShowWalletModal}
         action={isBuy ? 'buyOffer' : 'sellOffer'}

@@ -371,7 +371,6 @@ const ExchangeComponent = (props) => {
 
         <WalletConnectModal
           inOnboardingFlow={false}
-          walletConnectPrompt={true}
           forceOpen={showWalletModal}
           setForceOpen={setShowWalletModal}
           action={noSolModalAction}

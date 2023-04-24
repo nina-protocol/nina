@@ -61,7 +61,6 @@ const WalletButton = ({
     return (
       <WalletConnectModal
         inOnboardingFlow={false}
-        walletConnectPrompt={false}
         forceOpen={showWalletModal}
         setForceOpen={setShowWalletModal}
       >

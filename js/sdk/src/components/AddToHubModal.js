@@ -109,7 +109,6 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
     <Root>
       <WalletConnectModal
         inOnboardingFlow={false}
-        walletConnectPrompt={true}
         showWalletModal={showWalletModal}
         forceOpen={showWalletModal}
         setForceOpen={setShowWalletModal}

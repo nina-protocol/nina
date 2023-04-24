@@ -103,7 +103,6 @@ const Onboard = () => {
       cta: (
         <WalletConnectModal
           inOnboardingFlow={true}
-          walletConnectPrompt={false}
           forceOpen={showWalletModal}
           setForceOpen={setShowWalletModal}
         >
@@ -241,7 +240,6 @@ const Onboard = () => {
         <>
           <WalletConnectModal
             inOnboardingFlow={true}
-            walletConnectPrompt={false}
             forceOpen={showWalletModal}
             setForceOpen={setShowWalletModal}
           >

@@ -78,7 +78,6 @@ const RedeemReleaseCode = (props) => {
       </StyledButton>
       <WalletConnectModal
         inOnboardingFlow={false}
-        walletConnectPrompt={true}
         forceOpen={showWalletModal}
         setForceOpen={setShowWalletModal}
         action={'redeemRelease'}
