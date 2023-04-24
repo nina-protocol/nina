@@ -66,7 +66,8 @@ const HubPostCreate = ({
     NinaProgramAction,
     checkIfHasBalanceToCompleteAction,
   } = useContext(Nina.Context)
-  const { pendingTransactionMessage } = useContext(Wallet.Context)
+  const { pendingTransactionMessage, shortPendingTransactionMessage } =
+    useContext(Wallet.Context)
   const hubData = useMemo(
     () => hubState[selectedHubId || hubPubkey],
     [hubState, hubPubkey, selectedHubId]
@@ -187,7 +188,7 @@ const HubPostCreate = ({
         if (!uploadId) {
           setIsPublishing(true)
           enqueueSnackbar(
-            `Uploading Post to Arweave. ${pendingTransactionMessage}`,
+            `Uploading Post to Arweave. ${shortPendingTransactionMessage}`,
             {
               variant: 'info',
             }

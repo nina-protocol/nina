@@ -9,7 +9,6 @@ const BundlrModal = ({
   inCreate,
   displaySmall,
   showLowUploadModal,
-  handleLowUploadModalClose,
   uploadSize,
   availableSol,
   inOnboardFlow,
@@ -24,9 +23,6 @@ const BundlrModal = ({
 
   const handleClose = () => {
     setOpen(false)
-    if (handleLowUploadModalClose) {
-      handleLowUploadModalClose()
-    }
   }
 
   const renderCtas = () => {

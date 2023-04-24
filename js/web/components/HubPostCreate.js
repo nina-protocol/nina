@@ -48,7 +48,8 @@ const HubPostCreate = ({
   userHasHubs,
 }) => {
   const { enqueueSnackbar } = useSnackbar()
-  const { wallet, pendingTransactionMessage } = useContext(Wallet.Context)
+  const { wallet, pendingTransactionMessage, shortPendingTransactionMessage } =
+    useContext(Wallet.Context)
   const { postInitViaHub, hubState, getHub, getHubsForRelease } = useContext(
     Hub.Context
   )
@@ -184,7 +185,7 @@ const HubPostCreate = ({
         if (!uploadId) {
           setIsPublishing(true)
           enqueueSnackbar(
-            'Uploading Post to Arweave.  Please confirm in wallet.',
+            `Uploading Post to Arweave. ${shortPendingTransactionMessage}`,
             {
               variant: 'info',
             }

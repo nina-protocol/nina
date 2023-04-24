@@ -111,7 +111,9 @@ const CloseRelease = (props) => {
               >
                 <StyledModalButtonTypography>
                   {pendingTx && (
-                    <Dots msg={`Closing release. ${pendingTransactionMessage} `} />
+                    <Dots
+                      msg={`Closing release. ${pendingTransactionMessage} `}
+                    />
                   )}
                   {!pendingTx && 'Close Release'}
                 </StyledModalButtonTypography>
