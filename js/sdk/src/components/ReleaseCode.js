@@ -12,16 +12,18 @@ import Backdrop from '@mui/material/Backdrop'
 import { styled } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
-
+import Dots from './Dots'
 const ReleaseCode = ({ release }) => {
   const [codes, setCodes] = useState()
   const [amount, setAmount] = useState()
   const wallet = useWallet()
   const [open, setOpen] = useState(false)
-
+  const [pendingCodes, setPendingCodes] = useState(false)
+  const [pendingFetchCodes, setPendingFetchCodes] = useState(false)
   // const [claimedStatus, setClaimedStatus] = useState(false)
 
   const handleGenerateCodes = async () => {
+    setPendingCodes(true)
     const message = new TextEncoder().encode(release)
     const messageBase64 = encodeBase64(message)
     const signature = await wallet.signMessage(message)
@@ -40,10 +42,12 @@ const ReleaseCode = ({ release }) => {
 
     if (response.data) {
       setCodes(response.data.codes)
+      setPendingCodes(false)
     }
   }
 
   const handleGetExistingCodes = async () => {
+    setPendingFetchCodes(true)
     const message = new TextEncoder().encode(release)
     const messageBase64 = encodeBase64(message)
     const signature = await wallet.signMessage(message)
@@ -62,6 +66,7 @@ const ReleaseCode = ({ release }) => {
     if (response.data) {
       setCodes(response.data.codes)
     }
+    setPendingFetchCodes(false)
   }
 
   // const handleClaimCode = async (code) => {
@@ -137,20 +142,25 @@ const ReleaseCode = ({ release }) => {
                     inputMode: 'numeric',
                     min: 1,
                   }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
                   variant="standard"
                 />
                 <Box></Box>
                 <Button
                   variant="outlined"
                   fullWidth
-                  disabled={!amount}
+                  disabled={!amount || amount == 0}
                   onClick={() => handleGenerateCodes()}
                   sx={{ marginTop: '8px' }}
                 >
-                  Generate Codes
+                  {pendingCodes && (
+                    <Dots
+                      msg={amount > 1 ? 'Generating codes' : 'Generating code'}
+                    />
+                  )}
+                  {!pendingCodes &&
+                    (amount > 1 || !amount || amount == 0
+                      ? 'Generate Codes'
+                      : 'Generate Code')}
                 </Button>
                 <Box></Box>
                 <Button
@@ -159,7 +169,8 @@ const ReleaseCode = ({ release }) => {
                   onClick={() => handleGetExistingCodes()}
                   sx={{ marginTop: '8px' }}
                 >
-                  Get Existing Codes
+                  {pendingFetchCodes && <Dots msg="Getting existing codes" />}
+                  {!pendingFetchCodes && 'Get Existing Codes'}
                 </Button>
                 <ul>
                   {codes &&
