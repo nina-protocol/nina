@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import Fade from '@mui/material/Fade'
 import Modal from '@mui/material/Modal'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import Wallet from '@nina-protocol/nina-internal-sdk/Wallet'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 const ExchangeModal = (props) => {
   const {
     toggleOverlay,
