@@ -12,6 +12,7 @@ import Backdrop from '@mui/material/Backdrop'
 import { styled } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
 import Input from '@mui/material/Input'
+import TextField from '@mui/material/TextField'
 const ReleaseCode = ({ release }) => {
   const [codes, setCodes] = useState()
   const [amount, setAmount] = useState(1)
@@ -126,6 +127,9 @@ const ReleaseCode = ({ release }) => {
                   padding: '16px 0px',
                 }}
               >
+                <Typography gutterBottom>
+                  Number of codes to generate:
+                </Typography>
                 <Input
                   label="ReleaseCode"
                   type="number"
