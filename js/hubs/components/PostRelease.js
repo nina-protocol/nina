@@ -16,7 +16,9 @@ import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 const { getImageFromCDN, loader } = imageManager
 const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
-const AddToHubModal = dynamic(() => import('./AddToHubModal'))
+const AddToHubModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/AddToHubModal')
+)
 
 const PostRelease = ({ metadata, releasePubkey, hubPubkey }) => {
   const router = useRouter()

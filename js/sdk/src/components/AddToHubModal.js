@@ -1,27 +1,33 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react'
-import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import Hub from '../contexts/Hub'
+import Nina from '../contexts/Nina'
+import Wallet from '../contexts/Wallet'
 import { styled } from '@mui/material/styles'
-import Paper from '@mui/material/Paper'
-import Modal from '@mui/material/Modal'
-import Backdrop from '@mui/material/Backdrop'
-import Fade from '@mui/material/Fade'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
+import {
+  Paper,
+  Modal,
+  Backdrop,
+  Fade,
+  Button,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from '@mui/material'
 import AutorenewIcon from '@mui/icons-material/Autorenew'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
+import HubPostCreate from './HubPostCreate'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
-import HubPostCreate from './HubPostCreate'
-
-const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
+import dynamic from 'next/dynamic'
+const WalletConnectModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
+)
+const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const { wallet } = useContext(Wallet.Context)
+
   const { hubAddRelease, getHubsForRelease, hubCollaboratorsState } =
     useContext(Hub.Context)
   const { checkIfHasBalanceToCompleteAction, NinaProgramAction } = useContext(
@@ -30,7 +36,10 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
   const [filteredHubs, setFilteredHubs] = useState()
-  const userHasHubs = useMemo(() => userHubs?.length > 0, [userHubs])
+  const [canAddContent] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
+
+  const userHasHubs = useMemo(() => userHubs && userHubs.length > 0, [userHubs])
 
   useEffect(() => {
     if (wallet.connected) {
@@ -54,11 +63,10 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
     }
   }, [wallet?.connected, userHubs])
 
-  const handleRepost = async (e) => {
+  const handleRepost = async () => {
     const error = await checkIfHasBalanceToCompleteAction(
       NinaProgramAction.HUB_ADD_RELEASE
     )
-
     if (error) {
       enqueueSnackbar(error.msg, { variant: 'failure' })
       return
@@ -68,8 +76,9 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
     enqueueSnackbar('Adding Release to Hub', {
       variant: 'info',
     })
+
     handleClose()
-    const result = await hubAddRelease(selectedHubId, releasePubkey)
+    const result = await hubAddRelease(selectedHubId, releasePubkey, hubPubkey)
     if (result?.success) {
       await getHubsForRelease(releasePubkey)
       enqueueSnackbar(result.msg, {
@@ -83,20 +92,30 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
     setInProgress(false)
     handleClose()
   }
-
   const handleClose = () => {
     setOpen(false)
-    setSelectedHubId()
+    setSelectedHubId(null)
+  }
+  const handleOpen = () => {
+    if (!wallet?.connected) {
+      setShowWalletModal(true)
+      return
+    } else {
+      setOpen(true)
+    }
   }
 
   return (
     <Root>
-      <ModalToggleButton
-        onClick={() => setOpen(true)}
-        sx={{ height: '22px', width: '22px' }}
+      <ModalToggle
+        variant="contained"
+        color="primary"
+        type="submit"
+        onClick={() => handleOpen()}
+        sx={{ height: '22px', width: '18px', m: 0 }}
       >
-        <AutorenewIcon sx={{ color: 'white' }} />
-      </ModalToggleButton>
+        <AutorenewIcon />
+      </ModalToggle>
 
       <StyledModal
         aria-labelledby="transition-modal-title"
@@ -113,17 +132,15 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
           <StyledPaper>
             {!userHasHubs && (
               <>
-                <Typography gutterBottom>
-                  {wallet?.connected
-                    ? 'The connected wallet is not a collaborator on any hub.'
-                    : 'Connect your wallet to see your hubs'}
+                <Typography gutterBottom color="black">
+                  The connected wallet is not a collaborator on any hub.
                 </Typography>
                 <Typography>
                   <a
                     href="https://docs.google.com/forms/d/1JOgbVh-5SbA4mCwSWAiSolPCAHCjx6baSiJGh0J7N1g"
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ textDecoration: 'underline' }}
+                    style={{ color: 'black' }}
                   >
                     Click here to get started setting up your hub.
                   </a>
@@ -137,18 +154,17 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
                   variant="h4"
                   id="transition-modal-title"
                   gutterBottom
+                  color={'black'}
                 >
                   Add {metadata.name} to{' '}
-                  {userHubs?.length > 1
+                  {userHubs.length > 1
                     ? 'one of your hubs'
                     : 'your hub: ' + userHubs[0]?.data?.displayName}
                 </Typography>
 
                 {filteredHubs?.length > 1 && (
                   <FormControl sx={{ mt: 1 }}>
-                    <InputLabel disabled value="">
-                      Select a hub to add to
-                    </InputLabel>
+                    <InputLabel disabled>Select a hub to add to</InputLabel>
 
                     <Select
                       className="formField"
@@ -157,8 +173,8 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
                       label="Select hub"
                       fullWidth
                       variant="standard"
-                      onChange={(e, filteredHubs) => {
-                        setSelectedHubId(e.target.value)
+                      onChange={(e) => {
+                        setSelectedHubId(e.target.value, filteredHubs)
                       }}
                     >
                       {filteredHubs?.map((hub) => {
@@ -173,39 +189,57 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata }) => {
                 )}
               </>
             )}
-
             <Button
-              style={{ marginTop: '15px' }}
-              color="primary"
+              style={{ marginTop: '15px', textTransform: 'uppercase' }}
               variant="outlined"
               disabled={inProgress || !selectedHubId || !userHasHubs}
               onClick={(e) => handleRepost(e)}
             >
-              <Typography>
-                {!inProgress && 'Repost'}
-                {inProgress && (
-                  <Dots msg={'Please approve transaction in wallet'} />
-                )}
-              </Typography>
+              {!inProgress && 'Repost release to your hub'}
+              {inProgress && (
+                <Dots msg={'Please approve transaction in wallet'} />
+              )}
             </Button>
 
             <HubPostCreate
+              userHubs={userHubs}
               preloadedRelease={releasePubkey}
+              hubPubkey={hubPubkey}
               selectedHubId={selectedHubId}
               setParentOpen={handleClose}
               userHasHubs={userHasHubs}
+              canAddContent={canAddContent}
+              update={false}
             />
           </StyledPaper>
         </Fade>
       </StyledModal>
+      <WalletConnectModal
+        inOnboardingFlow={false}
+        showWalletModal={showWalletModal}
+        forceOpen={showWalletModal}
+        setForceOpen={setShowWalletModal}
+        action={'repost'}
+      />
     </Root>
   )
 }
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
-  width: '100%',
+  width: 'min-content',
+}))
+
+const ModalToggle = styled(Button)(({ theme }) => ({
+  color: `${theme.palette.text.primary} !important`,
+  ':disabled': {
+    color: theme.palette.text.primary + 'a0',
+  },
+  '&:hover': {
+    opacity: '50%',
+    backgroundColor: `${theme.palette.transparent} !important`,
+  },
 }))
 
 const StyledModal = styled(Modal)(() => ({
@@ -214,28 +248,18 @@ const StyledModal = styled(Modal)(() => ({
   justifyContent: 'center',
 }))
 
-const ModalToggleButton = styled(Button)(() => ({
-  height: '22px',
-  width: '28px',
-  margin: '0px',
-}))
-
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   border: '2px solid #000',
   boxShadow: theme.shadows[5],
-  padding: theme.spacing(2, 4, 3),
+  padding: `30px 60px 45px`,
   width: '40vw',
   maxHeight: '90vh',
   overflowY: 'auto',
   zIndex: '10',
   display: 'flex',
   flexDirection: 'column',
-  [theme.breakpoints.down('md')]: {
-    width: 'unset',
-    margin: '15px',
-    padding: theme.spacing(2),
-  },
+  minWidth: '600px',
 }))
 
 export default AddToHubModal

@@ -15,7 +15,11 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import axios from 'axios'
+import dynamic from 'next/dynamic'
 import Dots from './Dots'
+const WalletConnectModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
+)
 
 const RedeemReleaseCode = (props) => {
   const { releasePubkey } = props
@@ -24,11 +28,16 @@ const RedeemReleaseCode = (props) => {
   const { addReleaseToCollection } = useContext(Nina.Context)
   const { wallet } = useContext(Wallet.Context)
   const [open, setOpen] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
   const [code, setCode] = useState()
   const [pending, setPending] = useState(false)
 
   const handleCodeSubmit = async (e) => {
     e.preventDefault()
+    if (!wallet?.connected) {
+      setShowWalletModal(true)
+      return
+    }
     try {
       if (wallet?.connected) {
         setPending(true)
@@ -61,12 +70,18 @@ const RedeemReleaseCode = (props) => {
       })
     }
   }
+
   return (
     <Root>
       <StyledButton onClick={() => setOpen(true)}>
         Redeem Release Code
       </StyledButton>
-
+      <WalletConnectModal
+        inOnboardingFlow={false}
+        forceOpen={showWalletModal}
+        setForceOpen={setShowWalletModal}
+        action={'redeemRelease'}
+      />
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

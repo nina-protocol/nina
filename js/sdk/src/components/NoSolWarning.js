@@ -19,12 +19,12 @@ const NoSolWarning = (props) => {
         return setActionText('create a Hub')
       case 'purchase':
         return setActionText('purchase this Release')
-      case 'sell':
+      case 'sellOffer':
         return setActionText('create this listing')
       case 'buyOffer':
-        return setActionText('complete this exchange')
-      case 'createOffer':
         return setActionText('create this buy offer')
+      case 'acceptOffer':
+        return setActionText('complete this exchange')
       default:
         break
     }

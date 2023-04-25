@@ -14,17 +14,17 @@ import EmailLoginForm from './EmailLoginForm'
 import EmailOTPForm from './EmailOTPForm'
 
 const WalletConnectModal = (props) => {
-  const { children, inOnboardingFlow } = props
+  const { children, inOnboardingFlow, action, forceOpen, setForceOpen } = props
   const { wallet, walletExtension, connectMagicWallet, useMagic } = useContext(
     Wallet.Context
   )
-
-  const [open, setOpen] = useState(false)
   const [signingUp, setSigningUp] = useState(false)
   const [showOtpUI, setShowOtpUI] = useState(false)
   const [otpLogin, setOtpLogin] = useState(undefined)
   const [showWallets, setShowWallets] = useState(false)
   const [pending, setPending] = useState(false)
+  const [actionText, setActionText] = useState('')
+  const [open, setOpen] = useState(false)
   const walletText = useMemo(() => {
     return signingUp
       ? 'I want to sign up with a wallet'
@@ -45,6 +45,32 @@ const WalletConnectModal = (props) => {
       }
     }
   }, [])
+  useEffect(() => {
+    switch (action) {
+      case 'collect':
+        return setActionText('collect this Release')
+      case 'purchase':
+        return setActionText('purchase this Release')
+      case 'repost':
+        return setActionText('repost this Release')
+      case 'sellOffer':
+        return setActionText('create this listing')
+      case 'buyOffer':
+        return setActionText('create this buy offer')
+      case 'acceptOffer':
+        return setActionText('complete this exchange')
+      case 'redeemRelease':
+        return setActionText('redeem this Release code')
+      default:
+        break
+    }
+  }, [action])
+
+  useEffect(() => {
+    if (forceOpen) {
+      setOpen(true)
+    }
+  }, [forceOpen])
 
   const handleLogin = async (email) => {
     setPending(true)
@@ -64,6 +90,7 @@ const WalletConnectModal = (props) => {
         .on('settled', () => {
           setOtpLogin()
           setShowOtpUI(false)
+          handleClose()
         })
         .catch((err) => {
           console.error('magic login error: ', err)
@@ -75,6 +102,7 @@ const WalletConnectModal = (props) => {
 
   const handleClose = () => {
     setOpen(false)
+    setForceOpen(false)
     setShowOtpUI(false)
     setSigningUp(false)
     setEmail()
@@ -136,6 +164,7 @@ const WalletConnectModal = (props) => {
           </Button>
         </Box>
       )}
+
       <StyledModal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -149,6 +178,9 @@ const WalletConnectModal = (props) => {
       >
         <Fade in={open}>
           <StyledPaper>
+            {actionText && (
+              <Typography mb={1}>{`Please Login to ${actionText}.`}</Typography>
+            )}
             {showOtpUI ? (
               <EmailOTPForm
                 login={otpLogin}

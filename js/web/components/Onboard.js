@@ -48,6 +48,7 @@ const Onboard = () => {
   const profilePubkey = wallet?.publicKey?.toBase58()
   const [profileVerifications, setProfileVerifications] = useState([])
   const [pending, setPending] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
   const bundlrUsdBalance = useMemo(
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
@@ -100,7 +101,11 @@ const Onboard = () => {
       title: 'Login or Sign Up',
       content: `To get started, please login or sign up below.`,
       cta: (
-        <WalletConnectModal inOnboardingFlow={true}>
+        <WalletConnectModal
+          inOnboardingFlow={true}
+          forceOpen={showWalletModal}
+          setForceOpen={setShowWalletModal}
+        >
           <Typography variant="body2">Login / Sign Up</Typography>
           Login / Sign Up
         </WalletConnectModal>
@@ -233,7 +238,11 @@ const Onboard = () => {
       content: `To get started, please sign up below.`,
       cta: (
         <>
-          <WalletConnectModal inOnboardingFlow={true}>
+          <WalletConnectModal
+            inOnboardingFlow={true}
+            forceOpen={showWalletModal}
+            setForceOpen={setShowWalletModal}
+          >
             <Typography variant="body2">Create an Account</Typography>
           </WalletConnectModal>
         </>

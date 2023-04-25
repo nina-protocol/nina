@@ -7,7 +7,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { useSnackbar } from 'notistack'
-import HubPostCreate from './HubPostCreate'
+import HubPostCreate from '@nina-protocol/nina-internal-sdk/esm/HubPostCreate'
 import {
   DashboardWrapper,
   DashboardContent,
@@ -78,7 +78,6 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
       variant: result.success ? 'info' : 'failure',
     })
   }
-
   return (
     <>
       <DashboardWrapper
