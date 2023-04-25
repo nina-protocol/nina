@@ -265,9 +265,9 @@ const ReleasePurchase = (props) => {
             inHubs={true}
           />
           <Box sx={{ paddingTop: '8px' }}>
-            {amountHeld === 0 && release.remainingSupply > 0 && (
+            {amountHeld === 0 && release.remainingSupply !== 0 && (
               <>
-                {releaseGates && (
+                {releaseGates?.length > 0 && (
                   <StyledTypographyButtonSub>
                     {`There ${releaseGates?.length > 1 ? 'are' : 'is'} ${
                       releaseGates?.length
