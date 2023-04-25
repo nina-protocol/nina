@@ -135,13 +135,18 @@ export default withFormik({
   validationSchema: (props) => {
     return props.EmailCaptureSchema
   },
-  mapPropsToValues: ({ user, soundcloudAccount, twitterAccount }) => {
+  mapPropsToValues: ({
+    user,
+    soundcloudAccount,
+    twitterAccount,
+    publicKey,
+  }) => {
     return {
       email: user ? user.email : '',
       soundcloud: soundcloudAccount ? soundcloudAccount : soundcloudAccount,
       twitter: twitterAccount ? twitterAccount : '',
       instagram: '',
-      wallet: user ? user.publicAddress : undefined,
+      wallet: user ? user.publicAddress : publicKey.toString(),
       type: 'artist',
     }
   },

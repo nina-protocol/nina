@@ -201,6 +201,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
                 user={user}
                 soundcloudAccount={soundcloudAccount}
                 twitterAccount={twitterAccount}
+                publicKey={publicKey}
               />
               <Button
                 variant="outlined"
