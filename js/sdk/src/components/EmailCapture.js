@@ -11,6 +11,7 @@ import Wallet from '../contexts/Wallet'
 import CloseIcon from '@mui/icons-material/Close'
 import Collapse from '@mui/material/Collapse'
 
+
 import { logEvent } from '../utils/event'
 
 const style = {
@@ -65,24 +66,30 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
   const [usingMagicWallet, setUsingMagicWallet] = useState(false)
   const [user, setUser] = useState(undefined)
   const { publicKey, connected } = wallet
-  const { submitEmailRequest } = useContext(Nina.Context)
+  const { submitEmailRequest, getVerificationsForUser, verificationState } = useContext(Nina.Context)
   const [open, setOpen] = useState(false)
   const [showSuccessInfo, setShowSuccessInfo] = useState(false)
   const [formValues, setFormValues] = useState({})
   const [formIsValid, setFormIsValid] = useState(false)
   const [submitButtonText, setSubmitButtonText] = useState('Submit')
-
-  // useEffect(() => {
-  //   if (open) {
-  //     logEvent('email_request_initiated', 'engagement')
-  //   }
-  // }, [open])
+  const [userVerifications, setUserVerifications] = useState(undefined)
+  const [soundcloudAccount, setSoundcloudAccount] = useState(undefined)
+  const [twitterAccount, settwitterAccount] = useState(undefined)
 
   useEffect(() => {
     if (connected) {
       setFormValues({ ...formValues, wallet: publicKey?.toString() })
+
+      getVerificationsForUser(publicKey?.toString())
     }
   }, [connected, publicKey])
+
+  useEffect(() => {
+    if (verificationState[publicKey?.toString()]) {
+      setUserVerifications(verificationState[publicKey?.toString()])
+    }
+  }, [verificationState, publicKey])
+
 
   useEffect(() => {
     if (wallet.wallet.adapter.name === 'Nina') {
@@ -96,6 +103,16 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
       setSubmitButtonText('Submit')
     }
   }, [formValues])
+
+  useEffect(() => {
+    if (userVerifications) {
+      setSoundcloudAccount(getVerificationValue(userVerifications, 'soundcloud'))
+      settwitterAccount(getVerificationValue(userVerifications, 'twitter'))
+      console.log('soundcloudAccount :>> ', soundcloudAccount);
+    }
+  }, [userVerifications])
+
+
 
   const handleOpen = () => {
     setOpen(true)
@@ -164,6 +181,14 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
     [formValues]
   )
 
+  const getVerificationValue = (verifications, type) => {
+    const verification =  verifications?.find((verification) => {
+      return verification.type === type
+    })
+    return verification?.value
+  }
+
+
   return (
     <>
       {!open && (
@@ -192,6 +217,8 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
                 usingMagicWallet={usingMagicWallet}
                 wallet={wallet}
                 user={user}
+                soundcloudAccount={soundcloudAccount}
+                twitterAccount={twitterAccount}
               />
               <Button
                 variant="outlined"

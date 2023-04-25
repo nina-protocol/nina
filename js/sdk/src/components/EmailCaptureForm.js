@@ -1,13 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import { withFormik, Form, Field } from 'formik'
 import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
-import FormLabel from '@mui/material/FormLabel'
-import RadioGroup from '@mui/material/RadioGroup'
-import Radio from '@mui/material/Radio'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import { formatPlaceholder } from '../utils/index.js'
+
 
 const EmailCaptureForm = ({
   values,
@@ -16,14 +13,16 @@ const EmailCaptureForm = ({
   touched,
   setFieldValue,
   wallet,
-  user
+  user,
+  soundcloudAccount,
+  twitterAccount
 }) => {
+
   useEffect(() => {
     if (onChange) {
       onChange(values)
     }
   }, [values])
-
 
   return (
     <Root>
@@ -131,17 +130,17 @@ const Root = styled('div')(({ theme }) => ({
     },
   },
 }))
-
 export default withFormik({
   enableReinitialize: true,
   validationSchema: (props) => {
     return props.EmailCaptureSchema
   },
-  mapPropsToValues: ({user}) => {
+  mapPropsToValues: ({user, soundcloudAccount, twitterAccount}) => {
+    console.log('soundcloudAccount inside:>> ', soundcloudAccount);
     return {
       email: user ?  user.email : '',
-      soundcloud: '',
-      twitter: '',
+      soundcloud: soundcloudAccount ?  soundcloudAccount : soundcloudAccount,
+      twitter: twitterAccount ? twitterAccount : '',
       instagram: '',
       wallet: user ? user.publicAddress : undefined,
       type: 'artist',

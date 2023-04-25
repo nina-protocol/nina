@@ -1135,6 +1135,7 @@ const ninaContextHelper = ({
 
   const getVerificationsForUser = async (accountPubkey) => {
     try {
+      console.log('Getting Verifications');
       const { verifications } = await NinaSdk.Account.fetchVerifications(
         accountPubkey
       )
