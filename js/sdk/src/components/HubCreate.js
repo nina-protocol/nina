@@ -416,7 +416,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
           Updating {hubData.data.displayName}
         </Typography>
       )}
-      {!update && (
+      {!update && wallet.connected && (
         <Typography variant="h3" gutterBottom>
           Create Hub
         </Typography>

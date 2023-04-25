@@ -57,6 +57,8 @@ export default [
       NoSolWarning: 'src/components/NoSolWarning.js',
       Swap: 'src/components/Swap.js',
       IdentityVerification: 'src/components/IdentityVerification.js',
+      AddToHubModal: 'src/components/AddToHubModal.js',
+      HubPostCreate: 'src/components/HubPostCreate',
     },
     output: [
       {

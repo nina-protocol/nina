@@ -23,6 +23,10 @@ const RedeemReleaseCode = dynamic(() =>
 )
 const HubsModal = dynamic(() => import('./HubsModal'))
 
+const WalletConnectModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
+)
+
 import dynamic from 'next/dynamic'
 
 const BUTTON_WIDTH = '155px'
@@ -58,6 +62,8 @@ const ReleasePurchase = (props) => {
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [publishedHub, setPublishedHub] = useState()
   const [showNoSolModal, setShowNoSolModal] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
+
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
     [releasePubkey, releasePurchaseTransactionPending]
@@ -106,9 +112,7 @@ const ReleasePurchase = (props) => {
     e.preventDefault()
 
     if (!wallet?.connected) {
-      enqueueSnackbar('Please connect your wallet to purchase', {
-        variant: 'error',
-      })
+      setShowWalletModal(true)
       logEvent('release_purchase_failure_not_connected', 'engagement', {
         publicKey: releasePubkey,
         hub: hubPubkey,
@@ -191,6 +195,14 @@ const ReleasePurchase = (props) => {
         open={showNoSolModal}
         setOpen={setShowNoSolModal}
       />
+
+      <WalletConnectModal
+        inOnboardingFlow={false}
+        forceOpen={showWalletModal}
+        setForceOpen={setShowWalletModal}
+        action={release.price > 0 ? 'purchase' : 'collect'}
+      />
+
       <AmountRemaining variant="body2" align="left">
         {release.editionType === 'open' ? (
           <Typography variant="body2" align="left">

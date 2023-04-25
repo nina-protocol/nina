@@ -11,6 +11,11 @@ import { useRouter } from 'next/router'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import onboardingCodeWhitelist from '@nina-protocol/nina-internal-sdk/src/utils/onboardingCodeWhitelist'
 import { useSnackbar } from 'notistack'
+
+const ONBOARDING_ACCOUNT = 'B9TUbCJV5mpmgBzuqNBpsAnSTqzXZ4S6FxpPtcFPMps3'
+const ID_ACCOUNT = 'idHukURpSwMbvcRER9pN97tBSsH4pdLSUhnHYwHftd5'
+const DISPATCHER_ACCOUNT = 'BnhxwsrY5aaeMehsTRoJzX2X4w5sKMhMfBs2MCKUqMC'
+
 const Admin = () => {
   const wallet = useWallet()
   const { enqueueSnackbar } = useSnackbar()
@@ -22,23 +27,16 @@ const Admin = () => {
   const { getSolBalanceForPublicKey } = useContext(Nina.Context)
   const [verificationBalance, setVerificationBalance] = useState(0)
   const [dispatcherBalance, setDispatcherBalance] = useState(0)
+  const [onboardingBalance, setOnboardingBalance] = useState(0)
 
   useEffect(() => {
-    fetchWalletBalance(
-      'idHukURpSwMbvcRER9pN97tBSsH4pdLSUhnHYwHftd5',
-      setVerificationBalance
-    )
-    fetchWalletBalance(
-      'BnhxwsrY5aaeMehsTRoJzX2X4w5sKMhMfBs2MCKUqMC',
-      setDispatcherBalance
-    )
-  }, [verificationBalance, dispatcherBalance])
-
-  const fetchWalletBalance = async (publicKey, setBalance) => {
-    await getSolBalanceForPublicKey(publicKey).then((balance) => {
-      setBalance(balance)
-    })
-  }
+    const fetchBalances = async () => {
+      setVerificationBalance(await getSolBalanceForPublicKey(ID_ACCOUNT))
+      setDispatcherBalance(await getSolBalanceForPublicKey(DISPATCHER_ACCOUNT))
+      setOnboardingBalance(await getSolBalanceForPublicKey(ONBOARDING_ACCOUNT))
+    }
+    fetchBalances()
+  }, [])
 
   const handleGenerateCode = async () => {
     const message = new TextEncoder().encode(wallet.publicKey.toBase58())
@@ -99,14 +97,13 @@ const Admin = () => {
         <Box>
           <Box>
             <Typography variant="h4" mb={2}>
-              {verificationBalance > 0
-                ? `Verification Wallet Balance: ${verificationBalance} SOL`
-                : 'Verification Wallet Balance: 0 SOL'}
+              {`Onboarding Account Balance: ${onboardingBalance} SOL`}
+            </Typography>
+            <Typography variant="h4" mb={2}>
+              {`Verification Account Balance: ${verificationBalance} SOL`}
             </Typography>
             <Typography variant="h4" mb={4}>
-              {dispatcherBalance > 0
-                ? `Dispatcher Wallet Balance: ${dispatcherBalance} SOL`
-                : 'Dispatcher Wallet Balance: 0 SOL'}
+              {`Dispatcher Account Balance: ${dispatcherBalance} SOL`}
             </Typography>
           </Box>
           <Box mb={2}>

@@ -35,7 +35,9 @@ import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSe
 
 const Button = dynamic(() => import('@mui/material/Button'))
 const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
-const AddToHubModal = dynamic(() => import('./AddToHubModal'))
+const AddToHubModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/AddToHubModal')
+)
 
 const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const { wallet } = useContext(Wallet.Context)
