@@ -16,7 +16,6 @@ const ReleaseCreateSuccess = (props) => {
     hubReleasePubkey,
     artist,
     title,
-    url,
     image,
     handleReload,
   } = props
