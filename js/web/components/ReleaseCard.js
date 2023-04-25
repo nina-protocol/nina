@@ -13,8 +13,7 @@ import Image from 'next/image'
 import DownloadIcon from '@mui/icons-material/Download'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import axios from 'axios'
-import AddToHubModal from './AddToHubModal.js'
-// import ReleaseSettingsModal from './ReleaseSettingsModal.js'
+import AddToHubModal from '@nina-protocol/nina-internal-sdk/esm/AddToHubModal'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
 
 import Link from 'next/link'
@@ -237,6 +236,10 @@ const CtaWrapper = styled(Box)(() => ({
   '& .MuiButton-root:not(:last-child)': {
     width: '21px',
     marginRight: '10px',
+  },
+  '& .MuiButton-root:not(:nth-last-child(3))': {
+    width: '21px',
+    marginRight: '8px',
   },
   svg: {
     color: 'white',

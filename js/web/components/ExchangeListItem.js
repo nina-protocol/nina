@@ -116,7 +116,7 @@ const ExchangeListButton = (props) => {
         className={classes.exchangeListButton}
         variant="outlined"
         color="primary"
-        disabled
+        onClick={() => onExchangeButtonAction(props)}
       >
         {buttonText}
       </Button>
