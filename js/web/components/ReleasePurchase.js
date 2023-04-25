@@ -370,7 +370,7 @@ const ReleasePurchase = (props) => {
               <Typography variant="body2">
                 {txPending && <Dots msg={pendingTransactionMessage} />}
                 {!txPending && pending && (
-                  <Dots msg="awaiting wallet approval" />
+                  <Dots msg={pendingTransactionMessage} />
                 )}
                 {!txPending && !pending && buttonText}
               </Typography>

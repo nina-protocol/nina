@@ -43,7 +43,7 @@ const HubPostCreate = ({
   const { enqueueSnackbar } = useSnackbar()
   const { wallet, pendingTransactionMessage, shortPendingTransactionMessage } =
     useContext(Wallet.Context)
-  const { postInitViaHub, hubState, getHub, getHubsForRelease } = useContext(
+  const { postInitViaHub, hubState, getHubsForRelease } = useContext(
     Hub.Context
   )
   const hubData = useMemo(
