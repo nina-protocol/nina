@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
@@ -10,13 +10,9 @@ export default function EmailForm({
   handleEmailLoginCustom,
   email,
   setEmail,
-  signingUp,
   pending,
 }) {
   const [placeholder, setPlaceholder] = useState('Enter your email')
-  const buttonText = useMemo(() => {
-    return signingUp ? 'Create Account' : 'Continue'
-  }, [signingUp])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -43,7 +39,7 @@ export default function EmailForm({
 
         <Button variant="outlined" type="submit">
           <Typography variant="body1" style={{ fontSize: '14px !important' }}>
-            {pending ? <Dots size="30px" /> : buttonText}
+            {pending ? <Dots size="30px" /> : 'Continue'}
           </Typography>
         </Button>
       </form>
