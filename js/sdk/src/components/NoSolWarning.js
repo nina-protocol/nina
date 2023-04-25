@@ -8,8 +8,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
-import {Collapse} from '@mui/material'
-
+import { Collapse } from '@mui/material'
 
 const NoSolWarning = (props) => {
   const { action, open, setOpen } = props
@@ -35,7 +34,6 @@ const NoSolWarning = (props) => {
     }
   }, [action])
 
-
   const handleClose = () => {
     setOpen(false)
     setChildFormOpen(false)
@@ -56,41 +54,44 @@ const NoSolWarning = (props) => {
         <Fade in={open}>
           <StyledPaper>
             <>
-
               <Collapse in={!childFormOpen}>
-                <Typography variant="h4" sx={{mb:1}}>
+                <Typography variant="h4" sx={{ mb: 1 }}>
                   {`You do not have any SOL.`}
                 </Typography>
-                
-                <Typography component="p" sx={{mb: 1}}>
+
+                <Typography component="p" sx={{ mb: 1 }}>
                   {`Please add SOL to your wallet to ${actionText}.`}
                 </Typography>
-              <Box sx={{display: 'flex', flexDirection: 'row'}} >
-                <Typography component="p" gutterBottom>
-                  {`For any questions, please reach out at`}{' '}
-                  <a
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ margin: '0px', textDecoration: 'none' }}
-                    href="mailto:contact@ninaprotocol.com"
-                  >
-                    {`contact@ninaprotocol.com`}
-                  </a>{' '}
-                  {`or our`}{' '}
-                  <a
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ margin: '0px', textDecoration: 'none' }}
-                    href="https://discord.gg/ePkqJqSBgj"
-                  >
-                    {`Discord`}
-                  </a>
-                  {'.'}
-                </Typography>
-              </Box>
+                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                  <Typography component="p" gutterBottom>
+                    {`For any questions, please reach out at`}{' '}
+                    <a
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ margin: '0px', textDecoration: 'none' }}
+                      href="mailto:contact@ninaprotocol.com"
+                    >
+                      {`contact@ninaprotocol.com`}
+                    </a>{' '}
+                    {`or our`}{' '}
+                    <a
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ margin: '0px', textDecoration: 'none' }}
+                      href="https://discord.gg/ePkqJqSBgj"
+                    >
+                      {`Discord`}
+                    </a>
+                    {'.'}
+                  </Typography>
+                </Box>
 
                 <Button
-                  style={{ marginTop: '15px', marginBottom: '15px', width: '100%' }}
+                  style={{
+                    marginTop: '15px',
+                    marginBottom: '15px',
+                    width: '100%',
+                  }}
                   color="primary"
                   variant="outlined"
                   onClick={handleClose}
@@ -98,12 +99,15 @@ const NoSolWarning = (props) => {
                   <Typography>Okay</Typography>
                 </Button>
               </Collapse>
-  
-                {(action === 'upload' || action === 'hub') &&  (
-                  <>
-                    <EmailCapture setChildFormOpen={setChildFormOpen} setParentOpen={setOpen}/>
-                  </>
-                )}
+
+              {(action === 'upload' || action === 'hub') && (
+                <>
+                  <EmailCapture
+                    setChildFormOpen={setChildFormOpen}
+                    setParentOpen={setOpen}
+                  />
+                </>
+              )}
             </>
           </StyledPaper>
         </Fade>

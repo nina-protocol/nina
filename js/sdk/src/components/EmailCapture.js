@@ -9,7 +9,6 @@ import Nina from '../contexts/Nina'
 import Wallet from '../contexts/Wallet'
 import Collapse from '@mui/material/Collapse'
 
-
 import { logEvent } from '../utils/event'
 
 const style = {
@@ -56,7 +55,8 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
   const [usingMagicWallet, setUsingMagicWallet] = useState(false)
   const [user, setUser] = useState(undefined)
   const { publicKey, connected } = wallet
-  const { submitEmailRequest, getVerificationsForUser, verificationState } = useContext(Nina.Context)
+  const { submitEmailRequest, getVerificationsForUser, verificationState } =
+    useContext(Nina.Context)
   const [open, setOpen] = useState(false)
   const [showSuccessInfo, setShowSuccessInfo] = useState(false)
   const [formValues, setFormValues] = useState({})
@@ -80,7 +80,6 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
     }
   }, [verificationState, publicKey])
 
-
   useEffect(() => {
     if (wallet.wallet.adapter.name === 'Nina') {
       setUsingMagicWallet(true)
@@ -96,12 +95,12 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
 
   useEffect(() => {
     if (userVerifications) {
-      setSoundcloudAccount(getVerificationValue(userVerifications, 'soundcloud'))
+      setSoundcloudAccount(
+        getVerificationValue(userVerifications, 'soundcloud')
+      )
       settwitterAccount(getVerificationValue(userVerifications, 'twitter'))
     }
   }, [userVerifications])
-
-
 
   const handleOpen = () => {
     setOpen(true)
@@ -170,22 +169,17 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
   )
 
   const getVerificationValue = (verifications, type) => {
-    const verification =  verifications?.find((verification) => {
+    const verification = verifications?.find((verification) => {
       return verification.type === type
     })
     return verification?.value
   }
 
-
   return (
     <>
       {!open && (
-        <Button 
-          onClick={handleOpen}
-          variant="outlined"
-          sx={{mb: 1}}
-        >
-          <Typography variant="body1" >
+        <Button onClick={handleOpen} variant="outlined" sx={{ mb: 1 }}>
+          <Typography variant="body1">
             Request some SOL to get started
           </Typography>
         </Button>
@@ -196,7 +190,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
             <>
               <Typography variant="h4" sx={{ mb: 1 }}>
                 Please provide a Social account to submit a request a Sol grant.
-               </Typography> 
+              </Typography>
 
               <EmailCaptureForm
                 onChange={handleFormChange}
@@ -243,11 +237,10 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
             </>
           )}
         </Box>
-        </Collapse>
+      </Collapse>
     </>
   )
 }
-
 
 // const CloseIconWrapper = styled(Box)(({ theme }) => ({
 //   display: 'none',
@@ -257,6 +250,5 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
 //     display: 'block',
 //   },
 // }))
-
 
 export default EmailCapture

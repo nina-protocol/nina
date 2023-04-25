@@ -123,7 +123,7 @@ const walletContextHelper = ({
           adapter: {
             name: 'Nina',
             url: 'https://ninaprotocol.com',
-            user
+            user,
           },
         },
         wallets: [],

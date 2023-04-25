@@ -5,14 +5,7 @@ import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 import { formatPlaceholder } from '../utils/index.js'
 
-
-const EmailCaptureForm = ({
-  values,
-  onChange,
-  errors,
-  touched,  
-}) => {
-
+const EmailCaptureForm = ({ values, onChange, errors, touched }) => {
   useEffect(() => {
     if (onChange) {
       onChange(values)
@@ -95,7 +88,6 @@ const EmailCaptureForm = ({
             </Box>
           )}
         </Field>
-   
       </Form>
     </Root>
   )
@@ -130,10 +122,10 @@ export default withFormik({
   validationSchema: (props) => {
     return props.EmailCaptureSchema
   },
-  mapPropsToValues: ({user, soundcloudAccount, twitterAccount}) => {
+  mapPropsToValues: ({ user, soundcloudAccount, twitterAccount }) => {
     return {
-      email: user ?  user.email : '',
-      soundcloud: soundcloudAccount ?  soundcloudAccount : soundcloudAccount,
+      email: user ? user.email : '',
+      soundcloud: soundcloudAccount ? soundcloudAccount : soundcloudAccount,
       twitter: twitterAccount ? twitterAccount : '',
       instagram: '',
       wallet: user ? user.publicAddress : undefined,
