@@ -13,60 +13,77 @@ import { styled } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
 import Dots from './Dots'
+import { useSnackbar } from 'notistack'
 const ReleaseCode = ({ release, releasePubkey }) => {
   const [codes, setCodes] = useState()
   const [amount, setAmount] = useState()
   const wallet = useWallet()
+  const { enqueueSnackbar } = useSnackbar()
   const [open, setOpen] = useState(false)
   const [pendingCodes, setPendingCodes] = useState(false)
   const [pendingFetchCodes, setPendingFetchCodes] = useState(false)
   // const [claimedStatus, setClaimedStatus] = useState(false)
 
   const handleGenerateCodes = async () => {
-    setPendingCodes(true)
-    const message = new TextEncoder().encode(releasePubkey)
-    const messageBase64 = encodeBase64(message)
-    const signature = await wallet.signMessage(message)
-    const signatureBase64 = encodeBase64(signature)
+    try {
+      setPendingCodes(true)
+      const message = new TextEncoder().encode(releasePubkey)
+      const messageBase64 = encodeBase64(message)
+      const signature = await wallet.signMessage(message)
+      const signatureBase64 = encodeBase64(signature)
 
-    const response = await axios.post(
-      `${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes`,
-      {
-        message: messageBase64,
-        signature: signatureBase64,
-        publicKey: wallet.publicKey.toBase58(),
-        releasePubkey,
-        amount,
+      const response = await axios.post(
+        `${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes`,
+        {
+          message: messageBase64,
+          signature: signatureBase64,
+          publicKey: wallet.publicKey.toBase58(),
+          releasePubkey,
+          amount,
+        }
+      )
+
+      if (response.data) {
+        setCodes(response.data.codes)
+        setPendingCodes(false)
       }
-    )
-
-    if (response.data) {
-      setCodes(response.data.codes)
+    } catch (error) {
+      enqueueSnackbar('Error generating codes', {
+        variant: 'error',
+      })
       setPendingCodes(false)
+      console.error(error)
     }
   }
 
   const handleGetExistingCodes = async () => {
-    setPendingFetchCodes(true)
-    const message = new TextEncoder().encode(releasePubkey)
-    const messageBase64 = encodeBase64(message)
-    const signature = await wallet.signMessage(message)
-    const signatureBase64 = encodeBase64(signature)
+    try {
+      setPendingFetchCodes(true)
+      const message = new TextEncoder().encode(releasePubkey)
+      const messageBase64 = encodeBase64(message)
+      const signature = await wallet.signMessage(message)
+      const signatureBase64 = encodeBase64(signature)
 
-    const response = await axios.get(
-      `${process.env.NINA_IDENTITY_ENDPOINT}/releases/${encodeURIComponent(
-        releasePubkey
-      )}/releaseCodes?message=${encodeURIComponent(
-        messageBase64
-      )}&signature=${encodeURIComponent(
-        signatureBase64
-      )}&publicKey=${encodeURIComponent(wallet.publicKey.toBase58())}`
-    )
-
-    if (response.data) {
-      setCodes(response.data.codes)
+      const response = await axios.get(
+        `${process.env.NINA_IDENTITY_ENDPOINT}/releases/${encodeURIComponent(
+          releasePubkey
+        )}/releaseCodes?message=${encodeURIComponent(
+          messageBase64
+        )}&signature=${encodeURIComponent(
+          signatureBase64
+        )}&publicKey=${encodeURIComponent(wallet.publicKey.toBase58())}`
+      )
+      if (response.data) {
+        setCodes(response.data.codes)
+        setPendingFetchCodes(false)
+      }
+    } catch (error) {
+      enqueueSnackbar('Error fetching codes', {
+        variant: 'error',
+      })
+      setPendingFetchCodes(false)
+      console.error(error)
     }
-    setPendingFetchCodes(false)
   }
 
   // const handleClaimCode = async (code) => {
@@ -175,9 +192,14 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                     'Get Existing Codes'
                   )}
                 </Button>
-                <ul>
-                  {codes &&
-                    codes.map((code) => {
+                {codes?.length == 0 && (
+                  <Typography mt={1} mb={0}>
+                    You have not generated any codes yet.
+                  </Typography>
+                )}
+                {codes?.length > 0 && (
+                  <ul>
+                    {codes.map((code) => {
                       return (
                         <StyledListItem
                           key={code.code}
@@ -187,7 +209,8 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                         </StyledListItem>
                       )
                     })}
-                </ul>
+                  </ul>
+                )}
               </Box>
             </StyledPaper>
           </Fade>
