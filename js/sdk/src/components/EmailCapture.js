@@ -1,29 +1,19 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Modal from '@mui/material/Modal'
-import { styled } from '@mui/material/styles'
+
 import * as Yup from 'yup'
 import EmailCaptureForm from './EmailCaptureForm'
 import { Box } from '@mui/material'
 import Nina from '../contexts/Nina'
 import Wallet from '../contexts/Wallet'
-import CloseIcon from '@mui/icons-material/Close'
 import Collapse from '@mui/material/Collapse'
 
 
 import { logEvent } from '../utils/event'
 
 const style = {
-  // position: 'absolute',
-  // top: '50%',
-  // left: '50%',
-  // transform: 'translate(-50%, -50%)',
   width: { xs: '88vw', md: '100%' },
-  // border: '2px solid blue',
-  // bgcolor: 'background.paper',
-  // boxShadow: 24,
-  // p: '60px',
   boxSizing: 'content-box',
 }
 const requiredString = 'A Soundcloud, Twitter, or Instagram is required'
@@ -108,7 +98,6 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
     if (userVerifications) {
       setSoundcloudAccount(getVerificationValue(userVerifications, 'soundcloud'))
       settwitterAccount(getVerificationValue(userVerifications, 'twitter'))
-      console.log('soundcloudAccount :>> ', soundcloudAccount);
     }
   }, [userVerifications])
 
@@ -134,7 +123,6 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
         logEvent('email_request_success', 'engagement', {
           email: formValues.email,
         })
-        console.log('SUCCESS');
         setShowSuccessInfo(true)
       } catch (error) {
         console.warn('email form error', error)
@@ -207,7 +195,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
           {!showSuccessInfo && (
             <>
               <Typography variant="h4" sx={{ mb: 1 }}>
-                Please provide one Social account to submit a request for a Sol grant.
+                Please provide a Social account to submit a request a Sol grant.
                </Typography> 
 
               <EmailCaptureForm
@@ -224,10 +212,12 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
                 variant="outlined"
                 color="primary"
                 fullWidth
-                onClick={handleSubmit}
+                onClick={async () => await handleSubmit()}
                 sx={{ width: '100%', mt: '30px' }}
               >
-                {submitButtonText}
+                <Typography graphy variant="body1">
+                  {submitButtonText}
+                </Typography>
               </Button>
             </>
           )}

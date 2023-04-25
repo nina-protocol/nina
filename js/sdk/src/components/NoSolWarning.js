@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -7,7 +7,6 @@ import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import OnboardClaimRequest from '@nina-protocol/nina-internal-sdk/esm/OnboardClaimRequest'
 import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 import {Collapse} from '@mui/material'
 

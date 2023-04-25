@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import { withFormik, Form, Field } from 'formik'
 import TextField from '@mui/material/TextField'
@@ -10,12 +10,7 @@ const EmailCaptureForm = ({
   values,
   onChange,
   errors,
-  touched,
-  setFieldValue,
-  wallet,
-  user,
-  soundcloudAccount,
-  twitterAccount
+  touched,  
 }) => {
 
   useEffect(() => {
@@ -136,7 +131,6 @@ export default withFormik({
     return props.EmailCaptureSchema
   },
   mapPropsToValues: ({user, soundcloudAccount, twitterAccount}) => {
-    console.log('soundcloudAccount inside:>> ', soundcloudAccount);
     return {
       email: user ?  user.email : '',
       soundcloud: soundcloudAccount ?  soundcloudAccount : soundcloudAccount,

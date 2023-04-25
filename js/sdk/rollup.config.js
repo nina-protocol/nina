@@ -57,7 +57,6 @@ export default [
       NoSolWarning: 'src/components/NoSolWarning.js',
       Swap: 'src/components/Swap.js',
       IdentityVerification: 'src/components/IdentityVerification.js',
-      OnboardClaimRequest: 'src/components/OnboardClaimRequest.js',
     },
     output: [
       {
