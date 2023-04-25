@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 import { formatPlaceholder } from '../utils/index.js'
 
-const EmailCaptureForm = ({ values, onChange, errors, touched }) => {
+const EmailCaptureForm = ({ values, onChange, errors, touched, twitterAccount, soundcloudAccount }) => {
   useEffect(() => {
     if (onChange) {
       onChange(values)
@@ -41,7 +41,7 @@ const EmailCaptureForm = ({ values, onChange, errors, touched }) => {
                 variant="standard"
                 label={formatPlaceholder(props.field.name)}
                 size="small"
-                InputLabelProps={touched.soundcloud ? { shrink: true } : ''}
+                InputLabelProps={(touched.soundcloud || soundcloudAccount )? { shrink: true } : ''}
                 placeholder={
                   errors.soundcloud && touched.soundcloud
                     ? errors.soundcloud
@@ -60,7 +60,7 @@ const EmailCaptureForm = ({ values, onChange, errors, touched }) => {
                 variant="standard"
                 label={formatPlaceholder(props.field.name)}
                 size="small"
-                InputLabelProps={touched.twitter ? { shrink: true } : ''}
+                InputLabelProps={(touched.twitter || soundcloudAccount) ? { shrink: true } : ''}
                 placeholder={
                   errors.twitter && touched.twitter ? errors.twitter : null
                 }
