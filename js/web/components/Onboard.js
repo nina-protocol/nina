@@ -98,26 +98,30 @@ const Onboard = () => {
 
   const onboardingSteps = [
     {
-      title: 'Login or Sign Up',
-      content: `To get started, please login or sign up below.`,
+      title: 'Sign In / Sign Up',
+      content: `To get started, please sing in or sign up below.`,
       cta: (
         <WalletConnectModal
           inOnboardingFlow={true}
           forceOpen={showWalletModal}
           setForceOpen={setShowWalletModal}
         >
-          <Typography variant="body2">Login / Sign Up</Typography>
-          Login / Sign Up
+          <Typography variant="body2">Continue</Typography>
         </WalletConnectModal>
       ),
     },
     {
       title: 'Claim your onboarding code',
-      content: `Once you've connected your wallet, you'll be able to claim your
-          onboarding code. This code will give you access to the Nina ecosystem. Your onboarding code is: ${code}`,
+      content: `By claiming this code you'll receive 0.15 SOL to get started in the Nina ecosystem.`,
 
       cta: (
         <>
+          <Typography mb={1}>
+            Your onboarding code is:
+            <Typography mb={1} mt={1} sx={{ fontFamily: 'monospace' }}>
+              {code}
+            </Typography>
+          </Typography>
           <Button variant="outlined" onClick={() => handleClaimCode(code)}>
             {pending ? (
               <Dots size="40px" msg={pendingTransactionMessage} />
@@ -144,7 +148,7 @@ const Onboard = () => {
     },
     {
       title: 'Fund your Upload Account',
-      content: `  You now have .2 SOL into your account. SOL is used to pay storage and transaction fees on Nina. Once you've claimed your code, you'll need to fund your Upload
+      content: `  You now have 0.15 SOL into your account. SOL is used to pay storage and transaction fees on Nina. Once you've claimed your code, you'll need to fund your Upload
           Account. This account is used to pay for storage and transaction fees
           on Nina.`,
       cta: <BundlrModal inOnboardFlow={true} />,
@@ -238,7 +242,7 @@ const Onboard = () => {
 
   const signUpSteps = [
     {
-      title: 'Create Account',
+      title: 'Sign in / Sign up',
       content: `To get started, please sign up below.`,
       cta: (
         <>
@@ -247,7 +251,7 @@ const Onboard = () => {
             forceOpen={showWalletModal}
             setForceOpen={setShowWalletModal}
           >
-            <Typography variant="body2">Create an Account</Typography>
+            <Typography variant="body2">Continue</Typography>
           </WalletConnectModal>
         </>
       ),
@@ -426,8 +430,10 @@ const Onboard = () => {
                   <>
                     <Typography variant="h3" mb={1}>
                       You are receiving complimentary SOL to create your Hub and
-                      start uploading your music. Please follow the steps below
-                      to get started.
+                      start uploading your music.
+                    </Typography>
+                    <Typography variant="h3" mb={1}>
+                      Please follow the steps below to get started.
                     </Typography>
                     {renderSteps(onboardingSteps)}
                   </>

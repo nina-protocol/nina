@@ -133,7 +133,7 @@ const releasePurchaseHelper = async (
     const response = await axios.get(
       `${
         process.env.NINA_IDENTITY_ENDPOINT
-      }/claim/${releasePubkey.toBase58()}?message=${encodeURIComponent(
+      }/collect/${releasePubkey.toBase58()}?message=${encodeURIComponent(
         messageBase64
       )}&signature=${encodeURIComponent(
         signatureBase64

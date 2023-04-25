@@ -28,7 +28,7 @@ const WalletConnectModal = (props) => {
   const walletText = useMemo(() => {
     return signingUp
       ? 'I want to sign up with a wallet'
-      : 'I want to Login with a wallet'
+      : 'I want to sign in with a wallet'
   }, [signingUp])
   const [email, setEmail] = useState()
 
@@ -179,7 +179,9 @@ const WalletConnectModal = (props) => {
         <Fade in={open}>
           <StyledPaper>
             {actionText && (
-              <Typography mb={1}>{`Please Login to ${actionText}.`}</Typography>
+              <Typography
+                mb={1}
+              >{`Please sign in to ${actionText}.`}</Typography>
             )}
             {showOtpUI ? (
               <EmailOTPForm
