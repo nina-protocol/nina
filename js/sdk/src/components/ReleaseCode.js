@@ -13,7 +13,7 @@ import { styled } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
 import Dots from './Dots'
-const ReleaseCode = ({ release }) => {
+const ReleaseCode = ({ release, releasePubkey }) => {
   const [codes, setCodes] = useState()
   const [amount, setAmount] = useState()
   const wallet = useWallet()
@@ -24,7 +24,7 @@ const ReleaseCode = ({ release }) => {
 
   const handleGenerateCodes = async () => {
     setPendingCodes(true)
-    const message = new TextEncoder().encode(release)
+    const message = new TextEncoder().encode(releasePubkey)
     const messageBase64 = encodeBase64(message)
     const signature = await wallet.signMessage(message)
     const signatureBase64 = encodeBase64(signature)
@@ -35,7 +35,7 @@ const ReleaseCode = ({ release }) => {
         message: messageBase64,
         signature: signatureBase64,
         publicKey: wallet.publicKey.toBase58(),
-        release,
+        releasePubkey,
         amount,
       }
     )
@@ -48,14 +48,14 @@ const ReleaseCode = ({ release }) => {
 
   const handleGetExistingCodes = async () => {
     setPendingFetchCodes(true)
-    const message = new TextEncoder().encode(release)
+    const message = new TextEncoder().encode(releasePubkey)
     const messageBase64 = encodeBase64(message)
     const signature = await wallet.signMessage(message)
     const signatureBase64 = encodeBase64(signature)
 
     const response = await axios.get(
       `${process.env.NINA_IDENTITY_ENDPOINT}/releases/${encodeURIComponent(
-        release
+        releasePubkey
       )}/releaseCodes?message=${encodeURIComponent(
         messageBase64
       )}&signature=${encodeURIComponent(
@@ -152,15 +152,15 @@ const ReleaseCode = ({ release }) => {
                   onClick={() => handleGenerateCodes()}
                   sx={{ marginTop: '8px' }}
                 >
-                  {pendingCodes && (
+                  {pendingCodes ? (
                     <Dots
                       msg={amount > 1 ? 'Generating codes' : 'Generating code'}
                     />
+                  ) : amount > 1 || !amount || amount == 0 ? (
+                    'Generate Codes'
+                  ) : (
+                    'Generate Code'
                   )}
-                  {!pendingCodes &&
-                    (amount > 1 || !amount || amount == 0
-                      ? 'Generate Codes'
-                      : 'Generate Code')}
                 </Button>
                 <Box></Box>
                 <Button
@@ -169,8 +169,11 @@ const ReleaseCode = ({ release }) => {
                   onClick={() => handleGetExistingCodes()}
                   sx={{ marginTop: '8px' }}
                 >
-                  {pendingFetchCodes && <Dots msg="Getting existing codes" />}
-                  {!pendingFetchCodes && 'Get Existing Codes'}
+                  {pendingFetchCodes ? (
+                    <Dots msg="Getting existing codes" />
+                  ) : (
+                    'Get Existing Codes'
+                  )}
                 </Button>
                 <ul>
                   {codes &&

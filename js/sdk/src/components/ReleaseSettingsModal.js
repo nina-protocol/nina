@@ -24,7 +24,6 @@ const ReleaseSettingsModal = ({
   releaseGates,
 }) => {
   const [open, setOpen] = useState(false)
-
   const handleClose = () => {
     setOpen(false)
   }
@@ -73,7 +72,7 @@ const ReleaseSettingsModal = ({
             />
             {isAuthority && (
               <>
-                <ReleaseCode release={releasePubkey} />
+                <ReleaseCode releasePubkey={releasePubkey} release={release} />
                 <Gates
                   release={release}
                   metadata={metadata}
