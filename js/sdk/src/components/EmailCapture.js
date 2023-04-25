@@ -206,7 +206,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
                 variant="outlined"
                 color="primary"
                 fullWidth
-                onClick={async () => await handleSubmit()}
+                onClick={handleSubmit}
                 sx={{ width: '100%', mt: '30px' }}
               >
                 <Typography graphy variant="body1">
@@ -241,14 +241,4 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
     </>
   )
 }
-
-// const CloseIconWrapper = styled(Box)(({ theme }) => ({
-//   display: 'none',
-//   [theme.breakpoints.down('md')]: {
-//     position: 'absolute',
-//     top: '15px',
-//     display: 'block',
-//   },
-// }))
-
 export default EmailCapture
