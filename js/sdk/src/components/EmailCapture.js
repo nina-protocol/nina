@@ -118,11 +118,15 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
     if (formIsValid) {
       setSubmitButtonText('Submitting...')
       try {
-        await submitEmailRequest(formValues)
+        const request = await submitEmailRequest(formValues)
+
+        console.log('request :>> ', request);
+        if (request) {
+          setShowSuccessInfo(true)
+        }
         logEvent('email_request_success', 'engagement', {
           email: formValues.email,
-        })
-        setShowSuccessInfo(true)
+        })        
       } catch (error) {
         console.warn('email form error', error)
         logEvent('email_request_success', 'engagement', {
@@ -207,7 +211,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
                 variant="outlined"
                 color="primary"
                 fullWidth
-                onClick={handleSubmit}
+                onClick={async () => await handleSubmit()}
                 sx={{ width: '100%', mt: '30px' }}
               >
                 <Typography graphy variant="body1">
@@ -219,7 +223,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
 
           {showSuccessInfo && (
             <>
-              <Typography variant="h4" sx={{ mb: '' }}>
+              <Typography variant="h4" sx={{ mb: 1 }}>
                 You have succesfully signed up to Nina (Beta).
               </Typography>
 
