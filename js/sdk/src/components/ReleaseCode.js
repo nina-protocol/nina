@@ -15,7 +15,7 @@ import TextField from '@mui/material/TextField'
 
 const ReleaseCode = ({ release }) => {
   const [codes, setCodes] = useState()
-  const [amount, setAmount] = useState(1)
+  const [amount, setAmount] = useState()
   const wallet = useWallet()
   const [open, setOpen] = useState(false)
 
@@ -146,6 +146,7 @@ const ReleaseCode = ({ release }) => {
                 <Button
                   variant="outlined"
                   fullWidth
+                  disabled={!amount}
                   onClick={() => handleGenerateCodes()}
                   sx={{ marginTop: '8px' }}
                 >
