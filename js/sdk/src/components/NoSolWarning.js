@@ -8,10 +8,14 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import OnboardClaimRequest from '@nina-protocol/nina-internal-sdk/esm/OnboardClaimRequest'
+import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
+import {Collapse} from '@mui/material'
+
 
 const NoSolWarning = (props) => {
   const { action, open, setOpen } = props
   const [actionText, setActionText] = useState('')
+  const [childFormOpen, setChildFormOpen] = useState(false)
 
   useEffect(() => {
     switch (action) {
@@ -35,6 +39,7 @@ const NoSolWarning = (props) => {
 
   const handleClose = () => {
     setOpen(false)
+    setChildFormOpen(false)
   }
   return (
     <Root>
@@ -52,19 +57,15 @@ const NoSolWarning = (props) => {
         <Fade in={open}>
           <StyledPaper>
             <>
-              <Typography variant="h4" sx={{mb:1}}>
-                {`You do not have any SOL.`}
-              </Typography>
-              
-              <Typography component="p" sx={{mb: 1}}>
-                {`Please add SOL to your wallet to ${actionText}.`}
-              </Typography>
 
-
-              {action === 'upload' && (
-                <OnboardClaimRequest />
-              )}
-
+              <Collapse in={!childFormOpen}>
+                <Typography variant="h4" sx={{mb:1}}>
+                  {`You do not have any SOL.`}
+                </Typography>
+                
+                <Typography component="p" sx={{mb: 1}}>
+                  {`Please add SOL to your wallet to ${actionText}.`}
+                </Typography>
               <Box sx={{display: 'flex', flexDirection: 'row'}} >
                 <Typography component="p" gutterBottom>
                   {`For any questions, please reach out at`}{' '}
@@ -88,14 +89,22 @@ const NoSolWarning = (props) => {
                   {'.'}
                 </Typography>
               </Box>
-              <Button
-                style={{ marginTop: '15px' }}
-                color="primary"
-                variant="outlined"
-                onClick={handleClose}
-              >
-                <Typography>Got it</Typography>
-              </Button>
+
+                <Button
+                  style={{ marginTop: '15px', marginBottom: '15px', width: '100%' }}
+                  color="primary"
+                  variant="outlined"
+                  onClick={handleClose}
+                >
+                  <Typography>Okay</Typography>
+                </Button>
+              </Collapse>
+  
+                {(action === 'upload' || action === 'hub') &&  (
+                  <>
+                    <EmailCapture setChildFormOpen={setChildFormOpen} setParentOpen={setOpen}/>
+                  </>
+                )}
             </>
           </StyledPaper>
         </Fade>

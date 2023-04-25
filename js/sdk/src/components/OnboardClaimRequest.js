@@ -16,12 +16,7 @@ import Collapse from '@mui/material/Collapse'
 const OnboardClaimRequest = (props) => {
   const {wallet} = useContext(Wallet.Context)
   const {submitEmailRequest} = useContext(Nina.Context)
-  const [open, setOpen] = useState(true)
-  const [magicWallet, setMagicWallet] = useState(false)
-
-
-  console.log('wallet here:>> ', wallet);
-  
+  const [open, setOpen] = useState(true)  
 
   const handleOpen = () => {
     setOpen(!open)
@@ -41,7 +36,7 @@ const OnboardClaimRequest = (props) => {
       </Button>
 
       <Collapse in={open}>
-        <EmailCapture size={'large'}/>
+        <EmailCapture size={'large'} handleClose={handleClose}/>
        </Collapse> 
     </Root>
   )

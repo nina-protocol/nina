@@ -24,7 +24,6 @@ const EmailCaptureForm = ({
     }
   }, [values])
 
-  console.log('user inside :>> ', user);
 
   return (
     <Root>

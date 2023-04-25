@@ -9,6 +9,8 @@ import { Box } from '@mui/material'
 import Nina from '../contexts/Nina'
 import Wallet from '../contexts/Wallet'
 import CloseIcon from '@mui/icons-material/Close'
+import Collapse from '@mui/material/Collapse'
+
 import { logEvent } from '../utils/event'
 
 const style = {
@@ -17,7 +19,7 @@ const style = {
   // left: '50%',
   // transform: 'translate(-50%, -50%)',
   width: { xs: '88vw', md: '100%' },
-  border: '2px solid red',
+  // border: '2px solid blue',
   // bgcolor: 'background.paper',
   // boxShadow: 24,
   // p: '60px',
@@ -58,7 +60,7 @@ const EmailCaptureSchema = Yup.object().shape(
   [['soundcloud', 'twitter', 'instagram']]
 )
 
-const EmailCapture = ({ size }) => {
+const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
   const { wallet } = useContext(Wallet.Context)
   const [usingMagicWallet, setUsingMagicWallet] = useState(false)
   const [user, setUser] = useState(undefined)
@@ -70,11 +72,11 @@ const EmailCapture = ({ size }) => {
   const [formIsValid, setFormIsValid] = useState(false)
   const [submitButtonText, setSubmitButtonText] = useState('Submit')
 
-  useEffect(() => {
-    if (open) {
-      logEvent('email_request_initiated', 'engagement')
-    }
-  }, [open])
+  // useEffect(() => {
+  //   if (open) {
+  //     logEvent('email_request_initiated', 'engagement')
+  //   }
+  // }, [open])
 
   useEffect(() => {
     if (connected) {
@@ -85,8 +87,6 @@ const EmailCapture = ({ size }) => {
   useEffect(() => {
     if (wallet.wallet.adapter.name === 'Nina') {
       setUsingMagicWallet(true)
-      console.log('wallet.wallet.user :>> ', wallet.wallet.user);
-      console.log('wallet.wallet :>> ', wallet.wallet);
       setUser(wallet.wallet.adapter.user)
     }
   }, [wallet])
@@ -97,6 +97,18 @@ const EmailCapture = ({ size }) => {
     }
   }, [formValues])
 
+  const handleOpen = () => {
+    setOpen(true)
+    logEvent('email_request_initiated', 'engagement')
+    setChildFormOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+    setChildFormOpen(false)
+    setParentOpen(false)
+  }
+
   const handleSubmit = async () => {
     if (formIsValid) {
       setSubmitButtonText('Submitting...')
@@ -105,6 +117,7 @@ const EmailCapture = ({ size }) => {
         logEvent('email_request_success', 'engagement', {
           email: formValues.email,
         })
+        console.log('SUCCESS');
         setShowSuccessInfo(true)
       } catch (error) {
         console.warn('email form error', error)
@@ -153,9 +166,25 @@ const EmailCapture = ({ size }) => {
 
   return (
     <>
+      {!open && (
+        <Button 
+          onClick={handleOpen}
+          variant="outlined"
+          sx={{mb: 1}}
+        >
+          <Typography variant="body1" >
+            Request some SOL to get started
+          </Typography>
+        </Button>
+      )}
+      <Collapse in={open}>
         <Box sx={style}>
           {!showSuccessInfo && (
             <>
+              <Typography variant="h4" sx={{ mb: 1 }}>
+                Please provide one Social account to submit a request for a Sol grant.
+               </Typography> 
+
               <EmailCaptureForm
                 onChange={handleFormChange}
                 values={formValues}
@@ -197,19 +226,20 @@ const EmailCapture = ({ size }) => {
             </>
           )}
         </Box>
+        </Collapse>
     </>
   )
 }
 
 
-const CloseIconWrapper = styled(Box)(({ theme }) => ({
-  display: 'none',
-  [theme.breakpoints.down('md')]: {
-    position: 'absolute',
-    top: '15px',
-    display: 'block',
-  },
-}))
+// const CloseIconWrapper = styled(Box)(({ theme }) => ({
+//   display: 'none',
+//   [theme.breakpoints.down('md')]: {
+//     position: 'absolute',
+//     top: '15px',
+//     display: 'block',
+//   },
+// }))
 
 
 export default EmailCapture
