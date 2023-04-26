@@ -121,12 +121,12 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
       setPending(true)
       try {
         const request = await submitEmailRequest(formValues)
-          if (request) {
+        if (request) {
           setShowSuccessInfo(true)
         }
         logEvent('email_request_success', 'engagement', {
           email: formValues.email,
-        })        
+        })
       } catch (error) {
         console.warn('email form error', error)
         logEvent('email_request_success', 'engagement', {
@@ -220,9 +220,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
                     {submitButtonText}
                   </Typography>
                 )}
-                {pending && (
-                  <Dots size="40px"/>  
-                )}
+                {pending && <Dots size="40px" />}
               </Button>
             </>
           )}

@@ -1172,21 +1172,19 @@ const ninaContextHelper = ({
     const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
       'appm1DgEVpMWUjeJ8'
     )
-    
-   return await base('Requests').create(
-      [
-        {
-          fields: {
-            email,
-            soundcloud,
-            twitter,
-            instagram,
-            wallet,
-            type,
-          },
+
+    return await base('Requests').create([
+      {
+        fields: {
+          email,
+          soundcloud,
+          twitter,
+          instagram,
+          wallet,
+          type,
         },
-      ]
-    )
+      },
+    ])
   }
 
   return {
