@@ -116,19 +116,12 @@ pub fn handler (
     let buyer;
 
     if exchange.is_selling {
-        amount_to_vault = u64::from(params.expected_amount)
-            .checked_mul(vault_fee_percentage)
-            .unwrap()
-            .checked_div(1000000)
-            .unwrap();
         amount_to_royalties = u64::from(params.expected_amount)
             .checked_mul(params.resale_percentage)
             .unwrap()
             .checked_div(1000000)
             .unwrap();
         amount_to_initializer = u64::from(params.expected_amount)
-            .checked_sub(amount_to_vault)
-            .unwrap()
             .checked_sub(amount_to_royalties)
             .unwrap();
         amount_to_taker = params.initializer_amount;
@@ -136,11 +129,6 @@ pub fn handler (
         buyer = ctx.accounts.taker.to_account_info().key;
         price = params.expected_amount;
     } else {
-        amount_to_vault = u64::from(params.initializer_amount)
-            .checked_mul(vault_fee_percentage)
-            .unwrap()
-            .checked_div(1000000)
-            .unwrap();
         amount_to_royalties = u64::from(params.initializer_amount)
             .checked_mul(params.resale_percentage)
             .unwrap()
@@ -148,8 +136,6 @@ pub fn handler (
             .unwrap();
         amount_to_initializer = params.expected_amount;
         amount_to_taker = u64::from(params.initializer_amount)
-            .checked_sub(amount_to_vault)
-            .unwrap()
             .checked_sub(amount_to_royalties)
             .unwrap();
         seller = ctx.accounts.taker.to_account_info().key;
@@ -192,30 +178,12 @@ pub fn handler (
         let cpi_program = ctx.accounts.token_program.to_account_info().clone();
         let cpi_accounts = Transfer {
             from: ctx.accounts.taker_sending_token_account.to_account_info(),
-            to: ctx.accounts.vault_token_account.to_account_info(),
-            authority: ctx.accounts.taker.to_account_info().clone(),
-        };
-        let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
-        token::transfer(cpi_ctx, amount_to_vault)?;
-
-        let cpi_program = ctx.accounts.token_program.to_account_info().clone();
-        let cpi_accounts = Transfer {
-            from: ctx.accounts.taker_sending_token_account.to_account_info(),
             to: ctx.accounts.royalty_token_account.to_account_info(),
             authority: ctx.accounts.taker.to_account_info().clone(),
         };
         let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
         token::transfer(cpi_ctx, amount_to_royalties)?;
     } else {
-        let cpi_program = ctx.accounts.token_program.to_account_info().clone();
-        let cpi_accounts = Transfer {
-            from: ctx.accounts.exchange_escrow_token_account.to_account_info(),
-            to: ctx.accounts.vault_token_account.to_account_info(),
-            authority: ctx.accounts.exchange_signer.to_account_info().clone(),
-        };
-        let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);
-        token::transfer(cpi_ctx, amount_to_vault)?;
-
         let cpi_program = ctx.accounts.token_program.to_account_info().clone();
         let cpi_accounts = Transfer {
             from: ctx.accounts.exchange_escrow_token_account.to_account_info(),
