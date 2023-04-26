@@ -31,15 +31,14 @@ const ReleaseCode = ({ release, releasePubkey }) => {
       const messageBase64 = encodeBase64(message)
       const signature = await wallet.signMessage(message)
       const signatureBase64 = encodeBase64(signature)
-
       const response = await axios.post(
         `${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes`,
         {
           message: messageBase64,
           signature: signatureBase64,
           publicKey: wallet.publicKey.toBase58(),
-          releasePubkey,
-          amount,
+          release: releasePubkey,
+          amount: Number(amount),
         }
       )
 
@@ -154,11 +153,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                   label="Number of codes to generate:"
                   type="number"
                   value={amount}
-                  inputProps={{
-                    onChange: (event) => setAmount(event.target.value),
-                    inputMode: 'numeric',
-                    min: 1,
-                  }}
+                  onChange={(event) => setAmount(event.target.value)}
                   variant="standard"
                 />
                 <Box></Box>
@@ -167,7 +162,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                   fullWidth
                   disabled={!amount || amount == 0}
                   onClick={() => handleGenerateCodes()}
-                  sx={{ marginTop: '8px' }}
+                  sx={{ marginTop: '15px' }}
                 >
                   {pendingCodes ? (
                     <Dots
@@ -184,7 +179,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                   variant="outlined"
                   fullWidth
                   onClick={() => handleGetExistingCodes()}
-                  sx={{ marginTop: '8px' }}
+                  sx={{ marginTop: '15px' }}
                 >
                   {pendingFetchCodes ? (
                     <Dots msg="Getting existing codes" />
@@ -197,19 +192,28 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                     You have not generated any codes yet.
                   </Typography>
                 )}
+                {/* {
+                  pendingFetchCodes && (
+                    <Dots />
+                  )
+                } */}
                 {codes?.length > 0 && (
-                  <ul>
+                  <>
+                    <Typography mt={1} mb={1}>
+                      You have generated the following codes:
+                    </Typography>
                     {codes.map((code) => {
                       return (
                         <StyledListItem
                           key={code.code}
                           className={code.claimedBy ? 'claimed' : ''}
+                          gutterBottom
                         >
                           {code.code}
                         </StyledListItem>
                       )
                     })}
-                  </ul>
+                  </>
                 )}
               </Box>
             </StyledPaper>
@@ -228,6 +232,7 @@ const Root = styled(Box)(() => ({
 }))
 
 const StyledListItem = styled('li')(() => ({
+  listStyle: 'none',
   '&.claimed': {
     textDecoration: 'line-through',
   },
