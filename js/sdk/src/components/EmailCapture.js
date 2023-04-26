@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
+import {useSnackbar} from 'notistack'
+
 
 import * as Yup from 'yup'
 import EmailCaptureForm from './EmailCaptureForm'
@@ -53,6 +55,7 @@ const EmailCaptureSchema = Yup.object().shape(
 
 const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
   const { wallet } = useContext(Wallet.Context)
+  const {enqueueSnackbar} = useSnackbar()
   const [usingMagicWallet, setUsingMagicWallet] = useState(false)
   const [user, setUser] = useState(undefined)
   const { publicKey, connected } = wallet
@@ -123,6 +126,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
         const request = await submitEmailRequest(formValues)
         if (request) {
           setShowSuccessInfo(true)
+          enqueueSnackbar('Email request submitted', { variant: 'success' })
         }
         logEvent('email_request_success', 'engagement', {
           email: formValues.email,
@@ -194,7 +198,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
           {!showSuccessInfo && (
             <>
               <Typography variant="h4" sx={{ mb: 1 }}>
-                Please provide a Social account to submit a request a Sol grant.
+                Please provide a Social account to submit a request for SOL.
               </Typography>
 
               <EmailCaptureForm
