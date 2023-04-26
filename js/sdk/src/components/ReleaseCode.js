@@ -22,7 +22,6 @@ const ReleaseCode = ({ release, releasePubkey }) => {
   const [open, setOpen] = useState(false)
   const [pendingCodes, setPendingCodes] = useState(false)
   const [pendingFetchCodes, setPendingFetchCodes] = useState(false)
-  // const [claimedStatus, setClaimedStatus] = useState(false)
 
   const handleGenerateCodes = async () => {
     try {
@@ -85,24 +84,6 @@ const ReleaseCode = ({ release, releasePubkey }) => {
     }
   }
 
-  // const handleClaimCode = async (code) => {
-  //   const message = new TextEncoder().encode(wallet.publicKey.toBase58())
-  //   const messageBase64 = encodeBase64(message)
-  //   const signature = await wallet.signMessage(message)
-  //   const signatureBase64 = encodeBase64(signature)
-
-  //   const response = await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/onboardingCodes/${code}`, {
-  //     message: messageBase64,
-  //     signature: signatureBase64,
-  //     publicKey: wallet.publicKey.toBase58(),
-  //   })
-
-  //   if (response.data.success) {
-  //     console.log('success')
-  //     setClaimedStatus(true)
-  //   }
-  // }
-
   return (
     <>
       <Root>
@@ -112,7 +93,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
           disabled={release.remainingSupply === 0}
           fullWidth
           sx={{
-            mt: 1,
+            marginTop: '15px',
             '&:hover': {
               opacity: '50%',
             },
@@ -156,7 +137,6 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                   onChange={(event) => setAmount(event.target.value)}
                   variant="standard"
                 />
-                <Box></Box>
                 <Button
                   variant="outlined"
                   fullWidth
@@ -188,18 +168,15 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                   )}
                 </Button>
                 {codes?.length == 0 && (
-                  <Typography mt={1} mb={0}>
+                  <Typography sx={{ marginTop: '15px' }}>
                     You have not generated any codes yet.
                   </Typography>
                 )}
-                {/* {
-                  pendingFetchCodes && (
-                    <Dots />
-                  )
-                } */}
                 {codes?.length > 0 && (
                   <>
-                    <Typography mt={1} mb={1}>
+                    <Typography
+                      sx={{ marginTop: '15px', marginBottom: '15px' }}
+                    >
                       You have generated the following codes:
                     </Typography>
                     {codes.map((code) => {
