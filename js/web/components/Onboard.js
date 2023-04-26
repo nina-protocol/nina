@@ -99,7 +99,7 @@ const Onboard = () => {
   const onboardingSteps = [
     {
       title: 'Sign In / Sign Up',
-      content: `To get started, please sing in or sign up below.`,
+      content: `To get started, please sign in or sign up below.`,
       cta: (
         <WalletConnectModal
           inOnboardingFlow={true}
