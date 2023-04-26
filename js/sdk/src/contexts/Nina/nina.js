@@ -1169,11 +1169,11 @@ const ninaContextHelper = ({
     wallet,
     type,
   }) => {
-    var base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
+    const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
       'appm1DgEVpMWUjeJ8'
     )
     
-    return base('Requests').create(
+   return await base('Requests').create(
       [
         {
           fields: {
@@ -1185,23 +1185,8 @@ const ninaContextHelper = ({
             type,
           },
         },
-      ],
-      (err, records) => {
-        if (err) {
-          console.error(err)
-          return
-        }
-        // records.forEach( function (record) {
-        //   console.warn('Email request submitted: ',record.getId())
-        // })
-        console.log('records :>> ', records);
-        return records
-      }
+      ]
     )
-    // try {
-    // } catch (error) {
-    //   console.warn('email request error: ', error)
-    // }
   }
 
   return {

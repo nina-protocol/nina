@@ -8,6 +8,7 @@ import { Box } from '@mui/material'
 import Nina from '../contexts/Nina'
 import Wallet from '../contexts/Wallet'
 import Collapse from '@mui/material/Collapse'
+import Dots from './Dots'
 
 import { logEvent } from '../utils/event'
 
@@ -62,6 +63,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
   const [formValues, setFormValues] = useState({})
   const [formIsValid, setFormIsValid] = useState(false)
   const [submitButtonText, setSubmitButtonText] = useState('Submit')
+  const [pending, setPending] = useState(false)
   const [userVerifications, setUserVerifications] = useState(undefined)
   const [soundcloudAccount, setSoundcloudAccount] = useState(undefined)
   const [twitterAccount, settwitterAccount] = useState(undefined)
@@ -116,12 +118,10 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
 
   const handleSubmit = async () => {
     if (formIsValid) {
-      setSubmitButtonText('Submitting...')
+      setPending(true)
       try {
         const request = await submitEmailRequest(formValues)
-
-        console.log('request :>> ', request);
-        if (request) {
+          if (request) {
           setShowSuccessInfo(true)
         }
         logEvent('email_request_success', 'engagement', {
@@ -133,6 +133,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
           email: formValues.email,
         })
       }
+      setPending(false)
     }
     if (!formIsValid) {
       if (
@@ -214,9 +215,14 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
                 onClick={async () => await handleSubmit()}
                 sx={{ width: '100%', mt: '30px' }}
               >
-                <Typography graphy variant="body1">
-                  {submitButtonText}
-                </Typography>
+                {!pending && (
+                  <Typography graphy variant="body1">
+                    {submitButtonText}
+                  </Typography>
+                )}
+                {pending && (
+                  <Dots size="40px"/>  
+                )}
               </Button>
             </>
           )}
