@@ -1,8 +1,7 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import {useSnackbar} from 'notistack'
-
+import { useSnackbar } from 'notistack'
 
 import * as Yup from 'yup'
 import EmailCaptureForm from './EmailCaptureForm'
@@ -55,7 +54,7 @@ const EmailCaptureSchema = Yup.object().shape(
 
 const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
   const { wallet } = useContext(Wallet.Context)
-  const {enqueueSnackbar} = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
   const [usingMagicWallet, setUsingMagicWallet] = useState(false)
   const [user, setUser] = useState(undefined)
   const { publicKey, connected } = wallet
