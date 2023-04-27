@@ -55,17 +55,6 @@ pub struct ExchangeAccept<'info> {
     pub exchange_signer: UncheckedAccount<'info>,
     #[account(
         mut,
-        constraint = vault_token_account.owner == vault.vault_signer,
-        constraint = vault_token_account.mint == release.load()?.payment_mint,
-    )]
-    pub vault_token_account: Box<Account<'info, TokenAccount>>,
-    #[account(
-        seeds = [b"nina-vault".as_ref()],
-        bump,
-    )]
-    pub vault: Account<'info, Vault>,
-    #[account(
-        mut,
         constraint = royalty_token_account.owner == release.load()?.release_signer,
         constraint = royalty_token_account.mint == release.load()?.payment_mint,
     )]
@@ -88,7 +77,6 @@ pub fn handler (
     ctx: Context<ExchangeAccept>,
     params: ExchangeAcceptParams,
 ) -> Result<()> {
-    let vault_fee_percentage = 12500;
     let exchange = &mut ctx.accounts.exchange;
     let release = &mut ctx.accounts.release.load_mut()?;
 
@@ -109,7 +97,6 @@ pub fn handler (
     // Calculate amounts for transfers
     let amount_to_initializer;
     let amount_to_taker;
-    let amount_to_vault;
     let amount_to_royalties;
     let price;
     let seller;
