@@ -12,6 +12,8 @@ import Backdrop from '@mui/material/Backdrop'
 import { styled } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
 import Dots from './Dots'
 import { useSnackbar } from 'notistack'
 const ReleaseCode = ({ release, releasePubkey }) => {
@@ -174,22 +176,22 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                 )}
                 {codes?.length > 0 && (
                   <>
-                    <Typography
-                      sx={{ marginTop: '15px', marginBottom: '15px' }}
-                    >
+                    <Typography sx={{ marginTop: '15px' }}>
                       You have generated the following codes:
                     </Typography>
-                    {codes.map((code) => {
-                      return (
-                        <StyledListItem
-                          key={code.code}
-                          className={code.claimedBy ? 'claimed' : ''}
-                          gutterBottom
-                        >
-                          {code.code}
-                        </StyledListItem>
-                      )
-                    })}
+                    <StyledList>
+                      {codes.map((code) => {
+                        return (
+                          <StyledListItem
+                            key={code.code}
+                            className={code.claimedBy ? 'claimed' : ''}
+                            gutterBottom
+                          >
+                            {code.code}
+                          </StyledListItem>
+                        )
+                      })}
+                    </StyledList>
                   </>
                 )}
               </Box>
@@ -208,11 +210,19 @@ const Root = styled(Box)(() => ({
   width: '100%',
 }))
 
-const StyledListItem = styled('li')(() => ({
+const StyledListItem = styled(ListItem)(() => ({
   listStyle: 'none',
+  padding: '0px',
+  marginTop: '15px',
   '&.claimed': {
     textDecoration: 'line-through',
   },
+}))
+
+const StyledList = styled(List)(() => ({
+  width: '100%',
+  height: '50%',
+  overflow: 'auto',
 }))
 
 const StyledModal = styled(Modal)(() => ({
