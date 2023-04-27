@@ -68,7 +68,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
   const [pending, setPending] = useState(false)
   const [userVerifications, setUserVerifications] = useState(undefined)
   const [soundcloudAccount, setSoundcloudAccount] = useState(undefined)
-  const [twitterAccount, settwitterAccount] = useState(undefined)
+  const [twitterAccount, setTwitterAccount] = useState(undefined)
 
   useEffect(() => {
     if (connected) {
@@ -102,7 +102,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
       setSoundcloudAccount(
         getVerificationValue(userVerifications, 'soundcloud')
       )
-      settwitterAccount(getVerificationValue(userVerifications, 'twitter'))
+      setTwitterAccount(getVerificationValue(userVerifications, 'twitter'))
     }
   }, [userVerifications])
 
@@ -113,9 +113,9 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
   }
 
   const handleClose = () => {
-    setOpen(false)
     setChildFormOpen(false)
     setParentOpen(false)
+    setOpen(false)
   }
 
   const handleSubmit = async () => {
@@ -132,7 +132,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
         })
       } catch (error) {
         console.warn('email form error', error)
-        logEvent('email_request_success', 'engagement', {
+        logEvent('email_request_error', 'engagement', {
           email: formValues.email,
         })
       }
