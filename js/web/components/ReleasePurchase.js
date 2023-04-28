@@ -398,7 +398,9 @@ const ReleasePurchase = (props) => {
               </StyledTypographyButtonSub>
             )}
 
-            <RedeemReleaseCode releasePubkey={releasePubkey} />
+            {release.price > 0 && (
+              <RedeemReleaseCode releasePubkey={releasePubkey} />
+            )}
           </GatesNotification>
         )}
       </Box>

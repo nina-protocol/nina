@@ -134,7 +134,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
               >
                 <form onSubmit={(e) => handleGenerateCodes(e)}>
                   <TextField
-                    id="standard-number"
+                    id="release-code"
                     label="Number of codes to generate:"
                     type="number"
                     value={amount}
