@@ -88,14 +88,13 @@ const ReleaseCode = ({ release, releasePubkey }) => {
       console.error(error)
     }
   }
-
   return (
     <>
       <Root>
         <Button
           variant="outlined"
           onClick={() => setOpen(true)}
-          disabled={release.remainingSupply === 0}
+          disabled={release.remainingSupply === 0 || release.price === 0}
           fullWidth
           sx={{
             marginTop: '15px',
