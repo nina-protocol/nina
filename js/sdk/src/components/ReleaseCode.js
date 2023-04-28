@@ -11,86 +11,92 @@ import Paper from '@mui/material/Paper'
 import Backdrop from '@mui/material/Backdrop'
 import { styled } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
-import Input from '@mui/material/Input'
-const ReleaseCode = ({ release }) => {
+import TextField from '@mui/material/TextField'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import Dots from './Dots'
+import { useSnackbar } from 'notistack'
+const ReleaseCode = ({ release, releasePubkey }) => {
   const [codes, setCodes] = useState()
-  const [amount, setAmount] = useState(1)
+  const [amount, setAmount] = useState()
   const wallet = useWallet()
+  const { enqueueSnackbar } = useSnackbar()
   const [open, setOpen] = useState(false)
+  const [pendingCodes, setPendingCodes] = useState(false)
+  const [pendingFetchCodes, setPendingFetchCodes] = useState(false)
 
-  // const [claimedStatus, setClaimedStatus] = useState(false)
+  const handleGenerateCodes = async (e) => {
+    e.preventDefault()
+    try {
+      setPendingCodes(true)
+      const message = new TextEncoder().encode(releasePubkey)
+      const messageBase64 = encodeBase64(message)
+      const signature = await wallet.signMessage(message)
+      const signatureBase64 = encodeBase64(signature)
+      const response = await axios.post(
+        `${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes`,
+        {
+          message: messageBase64,
+          signature: signatureBase64,
+          publicKey: wallet.publicKey.toBase58(),
+          release: releasePubkey,
+          amount: Number(amount),
+        }
+      )
 
-  const handleGenerateCodes = async () => {
-    const message = new TextEncoder().encode(release)
-    const messageBase64 = encodeBase64(message)
-    const signature = await wallet.signMessage(message)
-    const signatureBase64 = encodeBase64(signature)
-
-    const response = await axios.post(
-      `${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes`,
-      {
-        message: messageBase64,
-        signature: signatureBase64,
-        publicKey: wallet.publicKey.toBase58(),
-        release,
-        amount,
+      if (response.data) {
+        setCodes(response.data.codes)
+        setPendingCodes(false)
+        setAmount('')
       }
-    )
-
-    if (response.data) {
-      setCodes(response.data.codes)
+    } catch (error) {
+      enqueueSnackbar('Error generating codes', {
+        variant: 'error',
+      })
+      setPendingCodes(false)
+      console.error(error)
     }
   }
 
   const handleGetExistingCodes = async () => {
-    const message = new TextEncoder().encode(release)
-    const messageBase64 = encodeBase64(message)
-    const signature = await wallet.signMessage(message)
-    const signatureBase64 = encodeBase64(signature)
+    try {
+      setPendingFetchCodes(true)
+      const message = new TextEncoder().encode(releasePubkey)
+      const messageBase64 = encodeBase64(message)
+      const signature = await wallet.signMessage(message)
+      const signatureBase64 = encodeBase64(signature)
 
-    const response = await axios.get(
-      `${process.env.NINA_IDENTITY_ENDPOINT}/releases/${encodeURIComponent(
-        release
-      )}/releaseCodes?message=${encodeURIComponent(
-        messageBase64
-      )}&signature=${encodeURIComponent(
-        signatureBase64
-      )}&publicKey=${encodeURIComponent(wallet.publicKey.toBase58())}`
-    )
-
-    if (response.data) {
-      setCodes(response.data.codes)
+      const response = await axios.get(
+        `${process.env.NINA_IDENTITY_ENDPOINT}/releases/${encodeURIComponent(
+          releasePubkey
+        )}/releaseCodes?message=${encodeURIComponent(
+          messageBase64
+        )}&signature=${encodeURIComponent(
+          signatureBase64
+        )}&publicKey=${encodeURIComponent(wallet.publicKey.toBase58())}`
+      )
+      if (response.data) {
+        setCodes(response.data.codes)
+        setPendingFetchCodes(false)
+      }
+    } catch (error) {
+      enqueueSnackbar('Error fetching codes', {
+        variant: 'error',
+      })
+      setPendingFetchCodes(false)
+      console.error(error)
     }
   }
-
-  // const handleClaimCode = async (code) => {
-  //   const message = new TextEncoder().encode(wallet.publicKey.toBase58())
-  //   const messageBase64 = encodeBase64(message)
-  //   const signature = await wallet.signMessage(message)
-  //   const signatureBase64 = encodeBase64(signature)
-
-  //   const response = await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/onboardingCodes/${code}`, {
-  //     message: messageBase64,
-  //     signature: signatureBase64,
-  //     publicKey: wallet.publicKey.toBase58(),
-  //   })
-
-  //   if (response.data.success) {
-  //     console.log('success')
-  //     setClaimedStatus(true)
-  //   }
-  // }
-
   return (
     <>
       <Root>
         <Button
           variant="outlined"
           onClick={() => setOpen(true)}
-          disabled={release.remainingSupply === 0}
+          disabled={release.remainingSupply === 0 || release.price === 0}
           fullWidth
           sx={{
-            mt: 1,
+            marginTop: '15px',
             '&:hover': {
               opacity: '50%',
             },
@@ -126,45 +132,74 @@ const ReleaseCode = ({ release }) => {
                   padding: '16px 0px',
                 }}
               >
-                <Input
-                  label="ReleaseCode"
-                  type="number"
-                  id="releaseCode"
-                  name="releaseCode"
-                  value={amount}
-                  onChange={(event) => setAmount(event.target.value)}
-                />
-                <Box></Box>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  onClick={() => handleGenerateCodes()}
-                  sx={{ marginTop: '8px' }}
-                >
-                  Generate Codes
-                </Button>
-                <Box></Box>
+                <form onSubmit={(e) => handleGenerateCodes(e)}>
+                  <TextField
+                    id="release-code"
+                    label="Number of codes to generate:"
+                    type="number"
+                    value={amount}
+                    onChange={(event) => setAmount(event.target.value)}
+                    variant="standard"
+                    fullWidth
+                  />
+                  <Button
+                    variant="outlined"
+                    type="submit"
+                    fullWidth
+                    disabled={!amount || amount == 0}
+                    onClick={(e) => handleGenerateCodes(e)}
+                    sx={{ marginTop: '15px' }}
+                  >
+                    {pendingCodes ? (
+                      <Dots
+                        msg={
+                          amount > 1 ? 'Generating codes' : 'Generating code'
+                        }
+                      />
+                    ) : amount > 1 || !amount || amount == 0 ? (
+                      'Generate Codes'
+                    ) : (
+                      'Generate Code'
+                    )}
+                  </Button>
+                </form>
                 <Button
                   variant="outlined"
                   fullWidth
                   onClick={() => handleGetExistingCodes()}
-                  sx={{ marginTop: '8px' }}
+                  sx={{ marginTop: '15px' }}
                 >
-                  Get Existing Codes
+                  {pendingFetchCodes ? (
+                    <Dots msg="Getting existing codes" />
+                  ) : (
+                    'Get Existing Codes'
+                  )}
                 </Button>
-                <ul>
-                  {codes &&
-                    codes.map((code) => {
-                      return (
-                        <StyledListItem
-                          key={code.code}
-                          className={code.claimedBy ? 'claimed' : ''}
-                        >
-                          {code.code}
-                        </StyledListItem>
-                      )
-                    })}
-                </ul>
+                {codes?.length == 0 && (
+                  <Typography sx={{ marginTop: '15px' }}>
+                    You have not generated any codes yet.
+                  </Typography>
+                )}
+                {codes?.length > 0 && (
+                  <>
+                    <Typography sx={{ marginTop: '15px' }}>
+                      You have generated the following codes:
+                    </Typography>
+                    <StyledList>
+                      {codes.map((code) => {
+                        return (
+                          <StyledListItem
+                            key={code.code}
+                            className={code.claimedBy ? 'claimed' : ''}
+                            gutterBottom
+                          >
+                            {code.code}
+                          </StyledListItem>
+                        )
+                      })}
+                    </StyledList>
+                  </>
+                )}
               </Box>
             </StyledPaper>
           </Fade>
@@ -181,10 +216,19 @@ const Root = styled(Box)(() => ({
   width: '100%',
 }))
 
-const StyledListItem = styled('li')(() => ({
+const StyledListItem = styled(ListItem)(() => ({
+  listStyle: 'none',
+  padding: '0px',
+  marginTop: '15px',
   '&.claimed': {
     textDecoration: 'line-through',
   },
+}))
+
+const StyledList = styled(List)(() => ({
+  width: '100%',
+  maxHeight: '30vh',
+  overflow: 'auto',
 }))
 
 const StyledModal = styled(Modal)(() => ({
