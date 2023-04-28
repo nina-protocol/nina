@@ -27,7 +27,6 @@ const ReleaseCode = ({ release, releasePubkey }) => {
 
   const handleGenerateCodes = async (e) => {
     e.preventDefault()
-    e.stopPropagation()
     try {
       setPendingCodes(true)
       const message = new TextEncoder().encode(releasePubkey)
