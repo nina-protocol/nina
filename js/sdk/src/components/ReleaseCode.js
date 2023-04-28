@@ -25,7 +25,9 @@ const ReleaseCode = ({ release, releasePubkey }) => {
   const [pendingCodes, setPendingCodes] = useState(false)
   const [pendingFetchCodes, setPendingFetchCodes] = useState(false)
 
-  const handleGenerateCodes = async () => {
+  const handleGenerateCodes = async (e) => {
+    e.preventDefault()
+    e.stopPropagation()
     try {
       setPendingCodes(true)
       const message = new TextEncoder().encode(releasePubkey)
@@ -46,6 +48,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
       if (response.data) {
         setCodes(response.data.codes)
         setPendingCodes(false)
+        setAmount('')
       }
     } catch (error) {
       enqueueSnackbar('Error generating codes', {
@@ -131,32 +134,37 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                   padding: '16px 0px',
                 }}
               >
-                <TextField
-                  id="standard-number"
-                  label="Number of codes to generate:"
-                  type="number"
-                  value={amount}
-                  onChange={(event) => setAmount(event.target.value)}
-                  variant="standard"
-                />
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  disabled={!amount || amount == 0}
-                  onClick={() => handleGenerateCodes()}
-                  sx={{ marginTop: '15px' }}
-                >
-                  {pendingCodes ? (
-                    <Dots
-                      msg={amount > 1 ? 'Generating codes' : 'Generating code'}
-                    />
-                  ) : amount > 1 || !amount || amount == 0 ? (
-                    'Generate Codes'
-                  ) : (
-                    'Generate Code'
-                  )}
-                </Button>
-                <Box></Box>
+                <form onSubmit={(e) => handleGenerateCodes(e)}>
+                  <TextField
+                    id="standard-number"
+                    label="Number of codes to generate:"
+                    type="number"
+                    value={amount}
+                    onChange={(event) => setAmount(event.target.value)}
+                    variant="standard"
+                    fullWidth
+                  />
+                  <Button
+                    variant="outlined"
+                    type="submit"
+                    fullWidth
+                    disabled={!amount || amount == 0}
+                    onClick={(e) => handleGenerateCodes(e)}
+                    sx={{ marginTop: '15px' }}
+                  >
+                    {pendingCodes ? (
+                      <Dots
+                        msg={
+                          amount > 1 ? 'Generating codes' : 'Generating code'
+                        }
+                      />
+                    ) : amount > 1 || !amount || amount == 0 ? (
+                      'Generate Codes'
+                    ) : (
+                      'Generate Code'
+                    )}
+                  </Button>
+                </form>
                 <Button
                   variant="outlined"
                   fullWidth
@@ -221,7 +229,7 @@ const StyledListItem = styled(ListItem)(() => ({
 
 const StyledList = styled(List)(() => ({
   width: '100%',
-  height: '50%',
+  maxHeight: '30vh',
   overflow: 'auto',
 }))
 
