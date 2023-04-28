@@ -47,7 +47,6 @@ const NinaClient = function (provider, network) {
   obj.network = network
   obj.ids = NINA_CLIENT_IDS[network]
   obj.provider = provider
-  obj.NINA_VAULT_FEE = 12500
   obj.ENDPOINT_ARWEAVE = 'https://arweave.net' //'https://h6chwwrsde.medianet.work'
   obj.endpoints = {
     arweave: obj.ENDPOINT_ARWEAVE,

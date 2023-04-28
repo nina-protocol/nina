@@ -59,7 +59,12 @@ pub fn handler(
     }
 
     // Update Counters
-    release.remaining_supply -= 1;
+    release.remaining_supply = u64::from(release.remaining_supply)
+        .checked_sub(1)
+        .unwrap();
+    release.sale_counter = u64::from(release.sale_counter)
+        .checked_add(1)
+        .unwrap();  
 
     //MintTo RecipientReleaseTokenAccount
     let cpi_accounts = MintTo {

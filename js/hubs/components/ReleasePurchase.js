@@ -279,17 +279,22 @@ const ReleasePurchase = (props) => {
             inHubs={true}
           />
           <Box sx={{ paddingTop: '8px' }}>
-            {releaseGates?.length > 0 && amountHeld === 0 && (
-              <StyledTypographyButtonSub>
-                {`There ${releaseGates?.length > 1 ? 'are' : 'is'} ${
-                  releaseGates?.length
-                } ${
-                  releaseGates?.length > 1 ? 'files' : 'file'
-                } available for download exclusively to owners of this release.`}
-              </StyledTypographyButtonSub>
+            {amountHeld === 0 && release.remainingSupply !== 0 && (
+              <>
+                {releaseGates?.length > 0 && (
+                  <StyledTypographyButtonSub>
+                    {`There ${releaseGates?.length > 1 ? 'are' : 'is'} ${
+                      releaseGates?.length
+                    } ${
+                      releaseGates?.length > 1 ? 'files' : 'file'
+                    } available for download exclusively to owners of this release.`}
+                  </StyledTypographyButtonSub>
+                )}
+                {release.price > 0 && (
+                  <RedeemReleaseCode releasePubkey={releasePubkey} />
+                )}
+              </>
             )}
-
-            <RedeemReleaseCode releasePubkey={releasePubkey} />
           </Box>
         </Box>
       </Box>

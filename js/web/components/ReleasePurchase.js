@@ -386,7 +386,7 @@ const ReleasePurchase = (props) => {
           inSettings={false}
           releaseGates={releaseGates}
         />
-        {amountHeld === 0 && (
+        {amountHeld === 0 && release.remainingSupply !== 0 && (
           <GatesNotification gates={releaseGates?.length}>
             {releaseGates && (
               <StyledTypographyButtonSub>
@@ -398,7 +398,9 @@ const ReleasePurchase = (props) => {
               </StyledTypographyButtonSub>
             )}
 
-            <RedeemReleaseCode releasePubkey={releasePubkey} />
+            {release.price > 0 && (
+              <RedeemReleaseCode releasePubkey={releasePubkey} />
+            )}
           </GatesNotification>
         )}
       </Box>
