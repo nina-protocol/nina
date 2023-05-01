@@ -229,7 +229,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         )
       } else if (!metadataTx) {
         setPublishingStepText(
-          `1/4 Uploading Metadata. ${pendingTransactionMessage} do not close this window.`
+          `3/4 Uploading Metadata. ${pendingTransactionMessage} do not close this window.`
         )
       } else {
         setPublishingStepText(
