@@ -1,8 +1,8 @@
 import React from 'react'
 import Head from 'next/head'
 import Onboard from '../components/Onboard'
-import dynamic from 'next/dynamic'
-const GetStartedPage = () => {
+
+const StartPage = () => {
   return (
     <>
       <Head>
@@ -42,4 +42,4 @@ const GetStartedPage = () => {
   )
 }
 
-export default GetStartedPage
+export default StartPage
