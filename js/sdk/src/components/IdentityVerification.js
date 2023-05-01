@@ -7,15 +7,18 @@ import Typography from '@mui/material/Typography'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import axios from 'axios'
+import CloseIcon from '@mui/icons-material/Close'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateManager'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { useSnackbar } from 'notistack'
 import IdentityVerificationModal from './IdentityVerificationModal'
+import IdentityDisconnectModal from './IdentityDisconnectModal'
 import {
   verifyEthereum,
   verifyTwitter,
   verifySoundcloud,
   verifyInstagram,
+  deleteTwitterVerification
 } from '../utils/identityVerification'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -38,6 +41,7 @@ const IdentityVerification = ({
   const { provider } = ninaClient
 
   const [open, setOpen] = useState(false)
+  const [openDisconnectModal, setOpenDisconnectModal] = useState(false)
   const [ethAddress, setEthAddress] = useState(undefined)
   const [soundcloudHandle, setSoundcloudHandle] = useState(undefined)
   const [soundcloudToken, setSoundcloudToken] = useState(undefined)
@@ -189,7 +193,7 @@ const IdentityVerification = ({
   const handleIdentityButtonAction = async (type) => {
     if (accountVerifiedForType(type)) {
       const value = valueForType(type)
-
+      console.log('value :>> ', value);
       const params = {
         type,
         value,
@@ -302,6 +306,44 @@ const IdentityVerification = ({
         break
     }
   }
+
+  const handleDisconnectFlow = async (e, type) => {
+    e.stopPropagation()
+    console.log('type :>> ', type);
+    localStorage.setItem('codeSource', type)
+    setOpenDisconnectModal(true)
+    setActiveValue(valueForType(type))
+  }
+
+
+
+  // const handleDisconnectAccount = async (e, type) => {
+  //   e.stopPropagation()
+  //   console.log('type :>> ', type);
+  //   let success = false
+  //   switch (type){
+  //     case 'twitter':
+  //       success = await deleteTwitterVerification(
+  //         provider,
+  //         twitterHandle,
+  //         twitterToken,
+  //         publicKey,
+  //         signTransaction
+  //       )
+  //       console.log('success :>> ', success);
+  //       return success
+  //       default:
+  //         break
+  //       }
+
+  //     if (success) {
+  //       await getVerificationsForUser(profilePubkey)
+  //       enqueueSnackbar('Account verified.', {
+  //         variant: 'success',
+  //       })
+  //     }
+  // }
+
   return (
     <>
       <CtaWrapper inOnboardingFlow={inOnboardingFlow}>
@@ -324,6 +366,10 @@ const IdentityVerification = ({
                     <Typography ml={1} variant="body2">
                       {buttonTextForType(buttonType)}
                     </Typography>
+
+                    {accountVerifiedForType(buttonType) && (
+                      <CloseIcon  sx={{ml: 1, border: '2px solid red'}} onClick={e => handleDisconnectFlow(e, buttonType)}/>
+                    )}
                   </Box>
                 </StyledCta>
               )
@@ -340,6 +386,14 @@ const IdentityVerification = ({
           />
         </Box>
       )}
+      {openDisconnectModal && (
+        <IdentityDisconnectModal 
+          setOpen={setOpenDisconnectModal}
+          open={openDisconnectModal}
+          value={activeValue}
+          type={localStorage.getItem('codeSource')}
+        />
+      ) }
     </>
   )
 }
