@@ -297,7 +297,7 @@ export const NinaTheme = createTheme({
         "*, *::before, *::after": {
           boxSizing: "content-box",
         },
-        "a, p, h1, h2, h3, h4, h5, h6. figure, blockquote, dl, dd": {
+        "a, p, h1, h2, h3, h4, h5, h6. figure, blockquote, dl, dd,": {
           margin: "8px 0",
         },
         ".ql-toolbar": {
@@ -317,6 +317,9 @@ export const NinaTheme = createTheme({
           "&:hover": {
             opacity: 0.5,
           },
+        },
+        pre: {
+          fontFamily: ["Helvetica", "Arial", "sans-serif"].join(","),
         },
         "#wallet-menu": {
           "&.MuiPopover-root": {

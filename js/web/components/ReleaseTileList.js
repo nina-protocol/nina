@@ -37,7 +37,8 @@ const ReleaseTileList = (props) => {
                   <a>
                     <CardCta>
                       <Button
-                        onClick={(e) => {
+                        onClickCapture={(e) => {
+                          e.preventDefault()
                           e.stopPropagation()
                           if (
                             isPlaying &&
@@ -62,7 +63,8 @@ const ReleaseTileList = (props) => {
                       </Button>
 
                       <Button
-                        onClick={(e) => {
+                        onClickCapture={(e) => {
+                          e.preventDefault()
                           e.stopPropagation()
                           addTrackToQueue(release.releasePubkey)
                         }}
@@ -70,6 +72,7 @@ const ReleaseTileList = (props) => {
                         <ControlPointIcon sx={{ color: 'white' }} />
                       </Button>
                     </CardCta>
+
                     {release.metadata.image && (
                       <Image
                         width={100}
