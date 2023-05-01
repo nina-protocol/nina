@@ -227,6 +227,7 @@ const IdentityVerification = ({
     let success = false
     switch (localStorage.getItem('codeSource')) {
       case 'soundcloud':
+        console.log('signTransation :>> ', signTransation);
         success = await verifySoundcloud(
           provider,
           soundcloudHandle,
@@ -317,32 +318,36 @@ const IdentityVerification = ({
 
 
 
-  // const handleDisconnectAccount = async (e, type) => {
-  //   e.stopPropagation()
-  //   console.log('type :>> ', type);
-  //   let success = false
-  //   switch (type){
-  //     case 'twitter':
-  //       success = await deleteTwitterVerification(
-  //         provider,
-  //         twitterHandle,
-  //         twitterToken,
-  //         publicKey,
-  //         signTransaction
-  //       )
-  //       console.log('success :>> ', success);
-  //       return success
-  //       default:
-  //         break
-  //       }
+  const handleDisconnectAccount = async (type) => {
+    console.log('type :>> ', type);
 
-  //     if (success) {
-  //       await getVerificationsForUser(profilePubkey)
-  //       enqueueSnackbar('Account verified.', {
-  //         variant: 'success',
-  //       })
-  //     }
-  // }
+    let success = false
+    switch (type){
+      case 'twitter':
+        console.log('provider :>> ', provider);
+        console.log('twitterHandle :>> ', twitterHandle);
+        console.log('twitterToken :>> ', twitterToken);
+        console.log('publicKey :>> ', publicKey);
+        success = await deleteTwitterVerification(
+          provider,
+          twitterHandle,
+          twitterToken,
+          publicKey,
+          signTransaction
+        )
+        console.log('success :>> ', success);
+        return success
+        default:
+          break
+        }
+
+      if (success) {
+        await getVerificationsForUser(profilePubkey)
+        enqueueSnackbar('Account verified.', {
+          variant: 'success',
+        })
+      }
+  }
 
   return (
     <>
@@ -392,6 +397,7 @@ const IdentityVerification = ({
           open={openDisconnectModal}
           value={activeValue}
           type={localStorage.getItem('codeSource')}
+          action={handleDisconnectAccount}
         />
       ) }
     </>
