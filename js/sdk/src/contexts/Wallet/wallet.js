@@ -13,6 +13,9 @@ const WalletContextProvider = ({ children }) => {
   const walletExtension = useWalletWalletAdapter()
   const [magicWallet, setMagicWallet] = useState(null)
   const [magic, setMagic] = useState(null)
+  const [pendingTransactionMessage, setPendingTransactionMessage] = useState()
+  const [shortPendingTransactionMessage, setShortPendingTransactionMessage] =
+    useState()
 
   const { connectMagicWallet, useMagic } = walletContextHelper({
     setMagicWallet,
@@ -20,6 +23,9 @@ const WalletContextProvider = ({ children }) => {
     magic,
     setMagic,
   })
+  const wallet = useMemo(() => {
+    return magicWallet || walletExtension || {}
+  }, [walletExtension, magicWallet])
 
   useEffect(() => {
     const checkIfMagicWalletIsLoggedIn = async () => {
@@ -36,9 +42,18 @@ const WalletContextProvider = ({ children }) => {
     checkIfMagicWalletIsLoggedIn()
   }, [])
 
-  const wallet = useMemo(() => {
-    return magicWallet || walletExtension || {}
-  }, [walletExtension, magicWallet])
+  useEffect(() => {
+    const transactionMessage = () => {
+      if (wallet?.wallet?.adapter.name === 'Nina') {
+        setPendingTransactionMessage('Completing transaction...')
+        setShortPendingTransactionMessage('Completing...')
+      } else {
+        setPendingTransactionMessage('Please approve transaction in wallet...')
+        setShortPendingTransactionMessage('Approve in wallet...')
+      }
+    }
+    transactionMessage()
+  }, [wallet])
 
   return (
     <WalletContext.Provider
@@ -48,6 +63,8 @@ const WalletContextProvider = ({ children }) => {
         walletExtension,
         connectMagicWallet,
         useMagic,
+        pendingTransactionMessage,
+        shortPendingTransactionMessage,
       }}
     >
       {children}

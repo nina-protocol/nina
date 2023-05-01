@@ -26,7 +26,7 @@ const WalletConnectModal = dynamic(() =>
 const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
-  const { wallet } = useContext(Wallet.Context)
+  const { wallet, pendingTransactionMessage } = useContext(Wallet.Context)
 
   const { hubAddRelease, getHubsForRelease, hubCollaboratorsState } =
     useContext(Hub.Context)
@@ -196,9 +196,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
               onClick={(e) => handleRepost(e)}
             >
               {!inProgress && 'Repost release to your hub'}
-              {inProgress && (
-                <Dots msg={'Please approve transaction in wallet'} />
-              )}
+              {inProgress && <Dots msg={pendingTransactionMessage} />}
             </Button>
 
             <HubPostCreate

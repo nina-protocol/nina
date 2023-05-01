@@ -99,7 +99,7 @@ const Onboard = () => {
   const onboardingSteps = [
     {
       title: 'Sign In / Sign Up',
-      content: `To get started, please sing in or sign up below.`,
+      content: `To get started, please sign in or sign up below.`,
       cta: (
         <WalletConnectModal
           inOnboardingFlow={true}
@@ -123,7 +123,11 @@ const Onboard = () => {
             </Typography>
           </Typography>
           <Button variant="outlined" onClick={() => handleClaimCode(code)}>
-            {pending ? <Dots size="40px" /> : 'Claim Code'}
+            {pending ? (
+              <Dots size="40px" msg={pendingTransactionMessage} />
+            ) : (
+              'Claim Code'
+            )}
           </Button>
           {claimedError && (
             <Typography mt={1} mb={1}>

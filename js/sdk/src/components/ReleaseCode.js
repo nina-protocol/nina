@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import axios from 'axios'
 import { encodeBase64 } from 'tweetnacl-util'
@@ -16,7 +16,11 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Dots from './Dots'
 import { useSnackbar } from 'notistack'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+
 const ReleaseCode = ({ release, releasePubkey }) => {
+  const { pendingTransactionMessage } = useContext(Wallet.Context)
+
   const [codes, setCodes] = useState()
   const [amount, setAmount] = useState()
   const wallet = useWallet()
@@ -151,11 +155,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                     sx={{ marginTop: '15px' }}
                   >
                     {pendingCodes ? (
-                      <Dots
-                        msg={
-                          amount > 1 ? 'Generating codes' : 'Generating code'
-                        }
-                      />
+                      <Dots msg={pendingTransactionMessage} />
                     ) : amount > 1 || !amount || amount == 0 ? (
                       'Generate Codes'
                     ) : (
@@ -170,7 +170,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                   sx={{ marginTop: '15px' }}
                 >
                   {pendingFetchCodes ? (
-                    <Dots msg="Getting existing codes" />
+                    <Dots msg={pendingTransactionMessage} />
                   ) : (
                     'Get Existing Codes'
                   )}

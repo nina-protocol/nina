@@ -54,7 +54,7 @@ const ReleasePurchase = (props) => {
     isAuthority,
   } = props
   const { enqueueSnackbar } = useSnackbar()
-  const { wallet } = useContext(Wallet.Context)
+  const { wallet, pendingTransactionMessage } = useContext(Wallet.Context)
   const {
     releasePurchase,
     releasePurchasePending,
@@ -368,9 +368,8 @@ const ReleasePurchase = (props) => {
               disabled={release.remainingSupply === 0 ? true : false}
             >
               <Typography variant="body2">
-                {txPending && <Dots msg="preparing transaction" />}
-                {!txPending && pending && (
-                  <Dots msg="awaiting wallet approval" />
+                {(txPending || pending) && (
+                  <Dots msg={pendingTransactionMessage} />
                 )}
                 {!txPending && !pending && buttonText}
               </Typography>

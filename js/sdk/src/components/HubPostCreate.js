@@ -41,7 +41,8 @@ const HubPostCreate = ({
   userHasHubs,
 }) => {
   const { enqueueSnackbar } = useSnackbar()
-  const { wallet } = useContext(Wallet.Context)
+  const { wallet, pendingTransactionMessage, shortPendingTransactionMessage } =
+    useContext(Wallet.Context)
   const { postInitViaHub, hubState, getHubsForRelease } = useContext(
     Hub.Context
   )
@@ -102,11 +103,11 @@ const HubPostCreate = ({
       if (!update) {
         if (!metadataTx) {
           setPublishingStepText(
-            '1/2 Uploading Metadata.  Please confirm in wallet and do not close this window.'
+            `1/2 Uploading Metadata.  ${pendingTransactionMessage} do not close this window.`
           )
         } else {
           setPublishingStepText(
-            '2/2 Finalizing Post.  Please confirm in wallet and do not close this window.'
+            `2/2 Finalizing Post.  ${pendingTransactionMessage} do not close this window.`
           )
         }
       }
@@ -177,7 +178,7 @@ const HubPostCreate = ({
         if (!uploadId) {
           setIsPublishing(true)
           enqueueSnackbar(
-            'Uploading Post to Arweave.  Please confirm in wallet.',
+            `Uploading Post to Arweave. ${shortPendingTransactionMessage}`,
             {
               variant: 'info',
             }

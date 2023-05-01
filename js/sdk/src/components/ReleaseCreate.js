@@ -53,7 +53,8 @@ const ReleaseCreateSchema = Yup.object().shape({
 
 const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const { enqueueSnackbar } = useSnackbar()
-  const { wallet } = useContext(Wallet.Context)
+  const { wallet, pendingTransactionMessage, shortPendingTransactionMessage } =
+    useContext(Wallet.Context)
   const {
     releaseState,
     initializeReleaseAndMint,
@@ -220,19 +221,19 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     if (isPublishing) {
       if (!artworkTx) {
         setPublishingStepText(
-          '1/4 Uploading Artwork.  Please confirm in wallet and do not close this window.'
+          `1/4 Uploading Artwork. ${pendingTransactionMessage} do not close this window.`
         )
       } else if (!trackTx) {
         setPublishingStepText(
-          '2/4 Uploading Track.  Please confirm in wallet and do not close this window.  This may take a while.'
+          `2/4 Uploading Track. ${pendingTransactionMessage} do not close this window. This may take a while.`
         )
       } else if (!metadataTx) {
         setPublishingStepText(
-          '3/4 Uploading Metadata.  Please confirm in wallet and do not close this window.'
+          `1/4 Uploading Metadata. ${pendingTransactionMessage} do not close this window.`
         )
       } else {
         setPublishingStepText(
-          '4/4 Finalizing Release.  Please confirm in wallet and do not close this window.'
+          `4/4 Finalizing Release. ${pendingTransactionMessage} do not close this window.`
         )
       }
     } else {
@@ -342,7 +343,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         if (!uploadId) {
           setIsPublishing(true)
           enqueueSnackbar(
-            'Uploading artwork to Arweave.  Please confirm in wallet.',
+            `Uploading artwork to Arweave.  ${shortPendingTransactionMessage}`,
             {
               variant: 'info',
             }
@@ -361,7 +362,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
           setIsPublishing(true)
           if (!uploadHasItemForType(upload, UploadType.track)) {
             enqueueSnackbar(
-              'Uploading track to Arweave.  Please confirm in wallet.',
+              `Uploading track to Arweave.  ${shortPendingTransactionMessage}`,
               {
                 variant: 'info',
               }
@@ -383,7 +384,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
             setReleasePubkey(info.release)
             if (!uploadHasItemForType(upload, UploadType.metadataJson)) {
               enqueueSnackbar(
-                'Uploading Metadata to Arweave.  Please confirm in wallet.',
+                `Uploading Metadata to Arweave.  ${shortPendingTransactionMessage}`,
                 {
                   variant: 'info',
                 }
@@ -418,7 +419,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
               metadataResult
             ) {
               enqueueSnackbar(
-                'Finalizing Release.  Please confirm in wallet.',
+                `Finalizing Release.  ${shortPendingTransactionMessage}`,
                 {
                   variant: 'info',
                 }
@@ -507,16 +508,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
         variant: 'error',
       })
     }
-  }
-
-  const handleLowUploadModalClose = () => {
-    // setShowLowUploadModal(false)
-    // if (artwork) {
-    //   artwork.remove()
-    // }
-    // if (track) {
-    //   track.remove()
-    // }
   }
 
   const handleReload = () => {
@@ -753,7 +744,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                   uploadSize={uploadSize}
                   inCreate={false}
                   displaySmall={true}
-                  handleLowUploadModalClose={handleLowUploadModalClose}
                 />
               </Box>
             </CreateCta>
