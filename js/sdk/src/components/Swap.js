@@ -7,7 +7,7 @@ import { swap, swapQuote } from '../utils/swap.js'
 import Button from '@mui/material/Button'
 import InputAdornment from '@mui/material/InputAdornment'
 import TextField from '@mui/material/TextField'
-
+import Dots from './Dots'
 import Box from '@mui/material/Box'
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
 import { useSnackbar } from 'notistack'
@@ -16,7 +16,9 @@ const Swap = ({ refreshBalances }) => {
   const { enqueueSnackbar } = useSnackbar()
 
   const { ninaClient, usdcBalance, solBalance } = useContext(Nina.Context)
-  const { wallet, connection } = useContext(Wallet.Context)
+  const { wallet, connection, pendingTransactionMessage } = useContext(
+    Wallet.Context
+  )
   const [inputAmount, setInputAmount] = useState(0)
   const [quote, setQuote] = useState()
   const [isSolToUsdc, setIsSolToUsdc] = useState(false)
@@ -24,7 +26,7 @@ const Swap = ({ refreshBalances }) => {
   const [outputCurrency, setOutputCurrency] = useState(
     ninaClient.ids.mints.wsol
   )
-
+  const [pending, setPending] = useState(false)
   const multiplier = useMemo(() => (isSolToUsdc ? 100 : 10000), [isSolToUsdc])
 
   const outputAmount = useMemo(() => {
@@ -89,6 +91,7 @@ const Swap = ({ refreshBalances }) => {
   }
 
   const handleSwap = async () => {
+    setPending(true)
     try {
       await swap(quote, wallet, connection)
       await refreshBalances()
@@ -103,6 +106,7 @@ const Swap = ({ refreshBalances }) => {
       })
       console.warn(e)
     }
+    setPending(false)
   }
 
   return (
@@ -169,7 +173,11 @@ const Swap = ({ refreshBalances }) => {
           fullWidth
           onClick={() => handleSwap()}
         >
-          <Typography>Swap</Typography>
+          {pending ? (
+            <Dots msg={pendingTransactionMessage} />
+          ) : (
+            <Typography>Swap</Typography>
+          )}
         </Button>
       </InputWrapper>
     </>
