@@ -255,10 +255,8 @@ const ReleasePurchase = (props) => {
               variant="body2"
               align="left"
             >
-              {txPending && <Dots msg={pendingTransactionMessage} />}
-              {!txPending && pending && (
-                <Dots msg={pendingTransactionMessage} />
-              )}
+              {txPending ||
+                (pending && <Dots msg={pendingTransactionMessage} />)}
               {!txPending && !pending && buttonText}
             </BuyButtonTypography>
           </BuyButton>

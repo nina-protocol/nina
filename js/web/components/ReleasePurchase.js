@@ -368,10 +368,8 @@ const ReleasePurchase = (props) => {
               disabled={release.remainingSupply === 0 ? true : false}
             >
               <Typography variant="body2">
-                {txPending && <Dots msg={pendingTransactionMessage} />}
-                {!txPending && pending && (
-                  <Dots msg={pendingTransactionMessage} />
-                )}
+                {txPending ||
+                  (pending && <Dots msg={pendingTransactionMessage} />)}
                 {!txPending && !pending && buttonText}
               </Typography>
             </Button>
