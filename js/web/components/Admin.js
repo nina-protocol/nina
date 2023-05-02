@@ -56,7 +56,7 @@ const Admin = () => {
 
     if (response.data) {
       setCode(
-        `https://ninaprotocol.com/getStarted?code=${response.data.onboardingCode.code}/`
+        `https://ninaprotocol.com/start?claim=${response.data.onboardingCode.code}/`
       )
     }
   }
