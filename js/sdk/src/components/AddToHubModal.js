@@ -18,7 +18,6 @@ import {
 import AutorenewIcon from '@mui/icons-material/Autorenew'
 import HubPostCreate from './HubPostCreate'
 import { useSnackbar } from 'notistack'
-import Dots from './Dots'
 import dynamic from 'next/dynamic'
 const WalletConnectModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')

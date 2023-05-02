@@ -19,7 +19,6 @@ import dynamic from 'next/dynamic'
 import HubCreateForm from './HubCreateForm'
 import HubCreateConfirm from './HubCreateConfirm'
 import NinaBox from './NinaBox'
-import Dots from './Dots'
 import ImageMediaDropzone from './ImageMediaDropzone'
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
 const ColorModal = dynamic(() => import('./ColorModal'), { ssr: false })
@@ -513,8 +512,8 @@ const HubCreate = ({ update, hubData, inHubs }) => {
                   sx={{ height: '54px' }}
                 >
                   {isPublishing && (
-                    <MessageTypography>
-                      {pendingTransactionMessage}
+                    <MessageTypography variant="body2">
+                      {`${publishingStepText} ${pendingTransactionMessage}`}
                     </MessageTypography>
                   )}
                   {!isPublishing && (

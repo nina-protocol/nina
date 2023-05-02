@@ -14,7 +14,6 @@ import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
-import Dots from './Dots'
 import { useSnackbar } from 'notistack'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 

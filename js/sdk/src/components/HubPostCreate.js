@@ -20,7 +20,6 @@ import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import HubPostCreateForm from './HubPostCreateForm'
-import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import Grid from '@mui/material/Grid'
 import BundlrModal from '@nina-protocol/nina-internal-sdk/esm/BundlrModal'
 import { createUpload, removeUpload, UploadType } from '../utils/uploadManager'
@@ -315,8 +314,8 @@ const HubPostCreate = ({
                         sx={{ height: '54px' }}
                       >
                         {isPublishing ? (
-                          <MessageTypography>
-                            {pendingTransactionMessage}
+                          <MessageTypography variant="body2">
+                            {`${publishingStepText} ${pendingTransactionMessage}`}
                           </MessageTypography>
                         ) : (
                           <Typography variant="body2">{buttonText}</Typography>
