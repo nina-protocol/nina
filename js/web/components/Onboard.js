@@ -40,7 +40,7 @@ const Onboard = () => {
   } = useContext(Nina.Context)
   const { query } = router
   const [code, setCode] = useState()
-  const { wallet } = useContext(Wallet.Context)
+  const { wallet, pendingTransactionMessage } = useContext(Wallet.Context)
   const [claimedError, setClaimedError] = useState(false)
   const [claimedCodeSuccess, setClaimedCodeSuccess] = useState(false)
   const [activeStep, setActiveStep] = useState(0)
