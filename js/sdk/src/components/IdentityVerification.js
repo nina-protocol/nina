@@ -36,12 +36,13 @@ const IdentityVerification = ({
   const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
   const { wallet } = useContext(Wallet.Context)
-  const { publicKey, signTransaction } = wallet
+  const { publicKey, signTransaction, sendTransaction } = wallet
   const { ninaClient, getVerificationsForUser } = useContext(Nina.Context)
   const { provider } = ninaClient
 
   const [open, setOpen] = useState(false)
   const [openDisconnectModal, setOpenDisconnectModal] = useState(false)
+  const [disconnecting, setDisconencting] = useState(false)
   const [ethAddress, setEthAddress] = useState(undefined)
   const [soundcloudHandle, setSoundcloudHandle] = useState(undefined)
   const [soundcloudToken, setSoundcloudToken] = useState(undefined)
@@ -310,6 +311,7 @@ const IdentityVerification = ({
 
   const handleDisconnectFlow = async (e, type) => {
     e.stopPropagation()
+    setDisconencting(true)
     console.log('type :>> ', type);
     localStorage.setItem('codeSource', type)
     setOpenDisconnectModal(true)
@@ -318,24 +320,25 @@ const IdentityVerification = ({
 
 
 
-  const handleDisconnectAccount = async (type) => {
-    console.log('type :>> ', type);
-
+  const handleDisconnectAccount = async () => {
     let success = false
-    switch (type){
+    switch (localStorage.getItem('codeSource')) {
       case 'twitter':
-        console.log('provider :>> ', provider);
-        console.log('twitterHandle :>> ', twitterHandle);
-        console.log('twitterToken :>> ', twitterToken);
-        console.log('publicKey :>> ', publicKey);
         success = await deleteTwitterVerification(
           provider,
           twitterHandle,
-          twitterToken,
           publicKey,
-          signTransaction
+          signTransaction,
+          sendTransaction
         )
-        console.log('success :>> ', success);
+      case 'ethereum':
+        success = await deleteEthereumVerification(
+          provider,
+          ethAddress,
+          publicKey,
+          signTransaction,
+          sendTransaction
+          )
         return success
         default:
           break
@@ -373,14 +376,14 @@ const IdentityVerification = ({
                     </Typography>
 
                     {accountVerifiedForType(buttonType) && (
-                      <CloseIcon  sx={{ml: 1, border: '2px solid red'}} onClick={e => handleDisconnectFlow(e, buttonType)}/>
+                      <CloseIcon  sx={{ml: 1}} onClick={e => handleDisconnectFlow(e, buttonType)}/>
                     )}
                   </Box>
                 </StyledCta>
               )
             })}
       </CtaWrapper>
-      {activeValue && (
+      {activeValue && !disconnecting && (
         <Box>
           <IdentityVerificationModal
             action={handleVerify}
@@ -388,18 +391,18 @@ const IdentityVerification = ({
             value={activeValue}
             open={open}
             setOpen={setOpen}
-            disconnecting={false}
+            disconnecting={disconnecting}
           />
         </Box>
       )}
-      {openDisconnectModal && (
-        <IdentityVerificationtModal 
+      {openDisconnectModal && disconnecting && (
+        <IdentityDisconnectModal 
           setOpen={setOpenDisconnectModal}
           open={openDisconnectModal}
           value={activeValue}
           type={localStorage.getItem('codeSource')}
           action={handleDisconnectAccount}
-          disconneting={true}
+          disconneting={disconnecting}
         />
       ) }
     </>

@@ -21,9 +21,9 @@ const IdentityVerificationModal = ({ action, type, value, open, setOpen }) => {
     } Verification for: ${value}`
   }
 
-  const handleAction = async () => {
+  const handleAction = async (type) => {
     setInProgress(true)
-    await action()
+    await action(type)
     handleClose()
     setInProgress(false)
   }
