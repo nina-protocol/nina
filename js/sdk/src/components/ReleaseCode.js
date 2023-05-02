@@ -158,10 +158,12 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                       <MessageTypography variant="body2">
                         {pendingTransactionMessage}
                       </MessageTypography>
-                    ) : amount > 1 || !amount || amount == 0 ? (
-                      <Typography variant="body2">Generate Codes</Typography>
                     ) : (
-                      <Typography variant="body2">Generate Code</Typography>
+                      <Typography variant="body2">
+                        {amount > 1 || !amount || amount == 0
+                          ? 'Generate Codes'
+                          : 'Generate Code'}
+                      </Typography>
                     )}
                   </Button>
                 </form>
