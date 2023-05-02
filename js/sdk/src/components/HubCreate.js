@@ -511,12 +511,11 @@ const HubCreate = ({ update, hubData, inHubs }) => {
                   }
                   sx={{ height: '54px' }}
                 >
-                  {isPublishing && (
+                  {isPublishing ? (
                     <MessageTypography variant="body2">
                       {`${publishingStepText} ${pendingTransactionMessage}`}
                     </MessageTypography>
-                  )}
-                  {!isPublishing && (
+                  ) : (
                     <Typography variant="body2">{buttonText}</Typography>
                   )}
                 </Button>

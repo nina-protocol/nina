@@ -195,7 +195,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
               onClick={(e) => handleRepost(e)}
             >
               {inProgress ? (
-                <MessageTypography>
+                <MessageTypography variant="body2">
                   {pendingTransactionMessage}
                 </MessageTypography>
               ) : (

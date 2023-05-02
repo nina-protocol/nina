@@ -224,7 +224,7 @@ const BundlrModalBody = ({
               disabled={inProgress || !amount}
             >
               {inProgress ? (
-                <MessageTypography>
+                <MessageTypography variant="body2">
                   {pendingTransactionMessage}
                 </MessageTypography>
               ) : (
