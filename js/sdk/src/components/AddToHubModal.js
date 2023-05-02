@@ -195,11 +195,12 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
               disabled={inProgress || !selectedHubId || !userHasHubs}
               onClick={(e) => handleRepost(e)}
             >
-              {!inProgress && 'Repost release to your hub'}
-              {inProgress && (
+              {inProgress ? (
                 <MessageTypography>
                   {pendingTransactionMessage}
                 </MessageTypography>
+              ) : (
+                <Typography>Repost release to your hub</Typography>
               )}
             </Button>
 

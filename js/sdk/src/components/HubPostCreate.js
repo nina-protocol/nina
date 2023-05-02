@@ -314,12 +314,13 @@ const HubPostCreate = ({
                         }
                         sx={{ height: '54px' }}
                       >
-                        {isPublishing && (
+                        {isPublishing ? (
                           <MessageTypography>
                             {pendingTransactionMessage}
                           </MessageTypography>
+                        ) : (
+                          buttonText
                         )}
-                        {!isPublishing && buttonText}
                       </Button>
                     )}
 
