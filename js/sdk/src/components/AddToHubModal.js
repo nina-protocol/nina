@@ -18,8 +18,9 @@ import {
 import AutorenewIcon from '@mui/icons-material/Autorenew'
 import HubPostCreate from './HubPostCreate'
 import { useSnackbar } from 'notistack'
-import Dots from './Dots'
 import dynamic from 'next/dynamic'
+import Dots from './Dots'
+
 const WalletConnectModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
 )
@@ -195,8 +196,13 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
               disabled={inProgress || !selectedHubId || !userHasHubs}
               onClick={(e) => handleRepost(e)}
             >
-              {!inProgress && 'Repost release to your hub'}
-              {inProgress && <Dots msg={pendingTransactionMessage} />}
+              {inProgress ? (
+                <Dots msg={pendingTransactionMessage} />
+              ) : (
+                <Typography variant="body2">
+                  Repost release to your hub
+                </Typography>
+              )}
             </Button>
 
             <HubPostCreate

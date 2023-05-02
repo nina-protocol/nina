@@ -9,12 +9,12 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import IdentityVerification from '@nina-protocol/nina-internal-sdk/esm/IdentityVerification'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Balance from './Balance'
 const { getImageFromCDN, loader } = imageManager
 
-const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 const Subscribe = dynamic(() => import('./Subscribe'))

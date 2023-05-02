@@ -13,7 +13,6 @@ import RecentlyPublished from './RecentlyPublished'
 import Link from 'next/link'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import HubSlider from './HubSlider'
-import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 
 const HomePage = ({ loading }) => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)

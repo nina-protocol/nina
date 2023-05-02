@@ -3,10 +3,6 @@ import { styled } from '@mui/material/styles'
 import { withFormik, Form, Field } from 'formik'
 import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
-import FormLabel from '@mui/material/FormLabel'
-import RadioGroup from '@mui/material/RadioGroup'
-import Radio from '@mui/material/Radio'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import { formatPlaceholder } from '../utils/index.js'
 
 const EmailCaptureForm = ({
@@ -14,7 +10,8 @@ const EmailCaptureForm = ({
   onChange,
   errors,
   touched,
-  setFieldValue,
+  twitterAccount,
+  soundcloudAccount,
 }) => {
   useEffect(() => {
     if (onChange) {
@@ -51,7 +48,11 @@ const EmailCaptureForm = ({
                 variant="standard"
                 label={formatPlaceholder(props.field.name)}
                 size="small"
-                InputLabelProps={touched.soundcloud ? { shrink: true } : ''}
+                InputLabelProps={
+                  touched.soundcloud || soundcloudAccount
+                    ? { shrink: true }
+                    : ''
+                }
                 placeholder={
                   errors.soundcloud && touched.soundcloud
                     ? errors.soundcloud
@@ -70,7 +71,9 @@ const EmailCaptureForm = ({
                 variant="standard"
                 label={formatPlaceholder(props.field.name)}
                 size="small"
-                InputLabelProps={touched.twitter ? { shrink: true } : ''}
+                InputLabelProps={
+                  touched.twitter || twitterAccount ? { shrink: true } : ''
+                }
                 placeholder={
                   errors.twitter && touched.twitter ? errors.twitter : null
                 }
@@ -98,47 +101,6 @@ const EmailCaptureForm = ({
             </Box>
           )}
         </Field>
-        <Box sx={{ mt: 2 }}>
-          <FormLabel>I want to use Nina as:</FormLabel>
-          <RadioGroup
-            sx={{
-              mt: 1,
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-            }}
-            defaultValue="artist"
-            name="type"
-            onChange={(e) => setFieldValue('type', e.target.value)}
-            row
-          >
-            <FormControlLabel
-              value="artist"
-              control={<Radio />}
-              label="An Artist"
-            />
-            <FormControlLabel
-              value="label"
-              control={<Radio />}
-              label="A Label"
-            />
-            <FormControlLabel
-              value="writer"
-              control={<Radio />}
-              label="A Writer"
-            />
-            <FormControlLabel
-              value="curator"
-              control={<Radio />}
-              label="A Curator"
-            />
-            <FormControlLabel
-              value="listener"
-              control={<Radio />}
-              label="A Listener"
-            />
-            <FormControlLabel value="other" control={<Radio />} label="Other" />
-          </RadioGroup>
-        </Box>
       </Form>
     </Root>
   )
@@ -168,19 +130,23 @@ const Root = styled('div')(({ theme }) => ({
     },
   },
 }))
-
 export default withFormik({
   enableReinitialize: true,
   validationSchema: (props) => {
     return props.EmailCaptureSchema
   },
-  mapPropsToValues: () => {
+  mapPropsToValues: ({
+    user,
+    soundcloudAccount,
+    twitterAccount,
+    publicKey,
+  }) => {
     return {
-      email: '',
-      soundcloud: '',
-      twitter: '',
+      email: user ? user.email : '',
+      soundcloud: soundcloudAccount ? soundcloudAccount : soundcloudAccount,
+      twitter: twitterAccount ? twitterAccount : '',
       instagram: '',
-      wallet: undefined,
+      wallet: user ? user.publicAddress : publicKey.toString(),
       type: 'artist',
     }
   },

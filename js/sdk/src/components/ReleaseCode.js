@@ -14,9 +14,9 @@ import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
-import Dots from './Dots'
 import { useSnackbar } from 'notistack'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import Dots from './Dots'
 
 const ReleaseCode = ({ release, releasePubkey }) => {
   const { pendingTransactionMessage } = useContext(Wallet.Context)
@@ -157,10 +157,12 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                   >
                     {pendingCodes ? (
                       <Dots msg={pendingTransactionMessage} />
-                    ) : amount > 1 || !amount || amount == 0 ? (
-                      'Generate Codes'
                     ) : (
-                      'Generate Code'
+                      <Typography variant="body2">
+                        {amount > 1 || !amount || amount < 1
+                          ? 'Generate Codes'
+                          : 'Generate Code'}
+                      </Typography>
                     )}
                   </Button>
                 </form>
@@ -173,7 +175,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                   {pendingFetchCodes ? (
                     <Dots msg={pendingTransactionMessage} />
                   ) : (
-                    'Get Existing Codes'
+                    <Typography variant="body2">Get Existing Codes</Typography>
                   )}
                 </Button>
                 {codes?.length == 0 && (

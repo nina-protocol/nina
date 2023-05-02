@@ -7,7 +7,7 @@ import Box from '@mui/material/Box'
 import { isMobile } from 'react-device-detect'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import ReleaseTileList from './ReleaseTileList'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 
 const Releases = () => {
   const {

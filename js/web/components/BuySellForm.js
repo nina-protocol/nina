@@ -7,7 +7,7 @@ import Box from '@mui/material/Box'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import dynamic from 'next/dynamic'
 
 const WalletConnectModal = dynamic(() =>

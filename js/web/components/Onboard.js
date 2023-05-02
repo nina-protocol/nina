@@ -18,7 +18,7 @@ import StepLabel from '@mui/material/StepLabel'
 import StepContent from '@mui/material/StepContent'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import IdentityVerification from '@nina-protocol/nina-internal-sdk/esm/IdentityVerification'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 
 import dynamic from 'next/dynamic'
 
@@ -40,7 +40,7 @@ const Onboard = () => {
   } = useContext(Nina.Context)
   const { query } = router
   const [code, setCode] = useState()
-  const { wallet } = useContext(Wallet.Context)
+  const { wallet, pendingTransactionMessage } = useContext(Wallet.Context)
   const [claimedError, setClaimedError] = useState(false)
   const [claimedCodeSuccess, setClaimedCodeSuccess] = useState(false)
   const [activeStep, setActiveStep] = useState(0)

@@ -19,7 +19,7 @@ import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
@@ -371,7 +371,9 @@ const ReleasePurchase = (props) => {
                 {(txPending || pending) && (
                   <Dots msg={pendingTransactionMessage} />
                 )}
-                {!txPending && !pending && buttonText}
+                {!txPending && !pending && (
+                  <Typography variant="body2">{buttonText}</Typography>
+                )}
               </Typography>
             </Button>
           </form>

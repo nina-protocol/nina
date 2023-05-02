@@ -7,10 +7,14 @@ import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
+import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
+import { Collapse } from '@mui/material'
 
 const NoSolWarning = (props) => {
   const { action, open, setOpen } = props
   const [actionText, setActionText] = useState('')
+  const [childFormOpen, setChildFormOpen] = useState(false)
+
   useEffect(() => {
     switch (action) {
       case 'upload':
@@ -32,6 +36,7 @@ const NoSolWarning = (props) => {
 
   const handleClose = () => {
     setOpen(false)
+    setChildFormOpen(false)
   }
   return (
     <Root>
@@ -49,43 +54,60 @@ const NoSolWarning = (props) => {
         <Fade in={open}>
           <StyledPaper>
             <>
-              <Typography component="p" gutterBottom>
-                {`You do not have any SOL.`}
-              </Typography>
-              <Typography component="p" gutterBottom>
-                {`Please add Sol to ${actionText}.`}
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                <Typography component="p" gutterBottom>
-                  {`For any questions, please reach out at`}{' '}
-                  <a
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ margin: '0px', textDecoration: 'none' }}
-                    href="mailto:contact@ninaprotocol.com"
-                  >
-                    {`contact@ninaprotocol.com`}
-                  </a>{' '}
-                  {`or our`}{' '}
-                  <a
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ margin: '0px', textDecoration: 'none' }}
-                    href="https://discord.gg/ePkqJqSBgj"
-                  >
-                    {`Discord`}
-                  </a>
-                  {'.'}
+              <Collapse in={!childFormOpen}>
+                <Typography variant="h4" sx={{ mb: 1 }}>
+                  {`You do not have any SOL.`}
                 </Typography>
-              </Box>
-              <Button
-                style={{ marginTop: '15px' }}
-                color="primary"
-                variant="outlined"
-                onClick={handleClose}
-              >
-                <Typography>Got it</Typography>
-              </Button>
+
+                <Typography component="p" sx={{ mb: 1 }}>
+                  {`Please add SOL to your wallet to ${actionText}.`}
+                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                  <Typography component="p" gutterBottom>
+                    {`For any questions, please reach out at`}{' '}
+                    <a
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ margin: '0px', textDecoration: 'none' }}
+                      href="mailto:contact@ninaprotocol.com"
+                    >
+                      {`contact@ninaprotocol.com`}
+                    </a>{' '}
+                    {`or our`}{' '}
+                    <a
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ margin: '0px', textDecoration: 'none' }}
+                      href="https://discord.gg/ePkqJqSBgj"
+                    >
+                      {`Discord`}
+                    </a>
+                    {'.'}
+                  </Typography>
+                </Box>
+
+                <Button
+                  style={{
+                    marginTop: '15px',
+                    marginBottom: '15px',
+                    width: '100%',
+                  }}
+                  color="primary"
+                  variant="outlined"
+                  onClick={handleClose}
+                >
+                  <Typography>Okay</Typography>
+                </Button>
+              </Collapse>
+
+              {(action === 'upload' || action === 'hub') && (
+                <>
+                  <EmailCapture
+                    setChildFormOpen={setChildFormOpen}
+                    setParentOpen={setOpen}
+                  />
+                </>
+              )}
             </>
           </StyledPaper>
         </Fade>

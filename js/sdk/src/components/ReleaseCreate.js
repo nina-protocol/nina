@@ -221,19 +221,19 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     if (isPublishing) {
       if (!artworkTx) {
         setPublishingStepText(
-          `1/4 Uploading Artwork. ${pendingTransactionMessage} do not close this window.`
+          `1/4 Uploading Artwork. ${pendingTransactionMessage}, do not close this window.`
         )
       } else if (!trackTx) {
         setPublishingStepText(
-          `2/4 Uploading Track. ${pendingTransactionMessage} do not close this window. This may take a while.`
+          `2/4 Uploading Track. ${pendingTransactionMessage}, do not close this window. This may take a while.`
         )
       } else if (!metadataTx) {
         setPublishingStepText(
-          `1/4 Uploading Metadata. ${pendingTransactionMessage} do not close this window.`
+          `3/4 Uploading Metadata. ${pendingTransactionMessage}, do not close this window.`
         )
       } else {
         setPublishingStepText(
-          `4/4 Finalizing Release. ${pendingTransactionMessage} do not close this window.`
+          `4/4 Finalizing Release. ${pendingTransactionMessage}, do not close this window.`
         )
       }
     } else {
@@ -652,7 +652,9 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                     {isPublishing && !releaseCreated && (
                       <Dots msg={publishingStepText} />
                     )}
-                    {!isPublishing && buttonText}
+                    {!isPublishing && (
+                      <Typography variant="body2">{buttonText}</Typography>
+                    )}
                   </Button>
                 )}
 

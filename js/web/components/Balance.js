@@ -88,7 +88,7 @@ const Balance = ({ profilePublishedReleases }) => {
               <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
 
               <Typography variant="string" sx={{ pr: 1 }}>
-                {`Availble To Collect: $${
+                {`Available To Collect: $${
                   revenueSumForArtist > 0
                     ? ninaClient
                         .nativeToUi(

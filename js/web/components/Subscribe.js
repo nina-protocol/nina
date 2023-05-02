@@ -5,7 +5,7 @@ import { Box, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/router'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import Link from 'next/link'
 
 const Subscribe = ({
