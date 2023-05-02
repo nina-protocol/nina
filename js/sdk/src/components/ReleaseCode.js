@@ -16,6 +16,7 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import { useSnackbar } from 'notistack'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import Dots from './Dots'
 
 const ReleaseCode = ({ release, releasePubkey }) => {
   const { pendingTransactionMessage } = useContext(Wallet.Context)
@@ -154,9 +155,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                     sx={{ marginTop: '15px' }}
                   >
                     {pendingCodes ? (
-                      <MessageTypography variant="body2">
-                        {pendingTransactionMessage}
-                      </MessageTypography>
+                      <Dots msg={pendingTransactionMessage} />
                     ) : (
                       <Typography variant="body2">
                         {amount > 1 || !amount || amount < 1
@@ -173,9 +172,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                   sx={{ marginTop: '15px' }}
                 >
                   {pendingFetchCodes ? (
-                    <MessageTypography variant="body2">
-                      {pendingTransactionMessage}
-                    </MessageTypography>
+                    <Dots msg={pendingTransactionMessage} />
                   ) : (
                     <Typography variant="body2">Get Existing Codes</Typography>
                   )}
@@ -228,10 +225,6 @@ const StyledListItem = styled(ListItem)(() => ({
   '&.claimed': {
     textDecoration: 'line-through',
   },
-}))
-
-const MessageTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
 }))
 
 const StyledList = styled(List)(() => ({

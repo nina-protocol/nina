@@ -14,6 +14,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Nina from '../contexts/Nina'
 import { useSnackbar } from 'notistack'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import Dots from './Dots'
 
 const BundlrModalBody = ({
   open,
@@ -224,9 +225,7 @@ const BundlrModalBody = ({
               disabled={inProgress || !amount}
             >
               {inProgress ? (
-                <MessageTypography variant="body2">
-                  {pendingTransactionMessage}
-                </MessageTypography>
+                <Dots msg={pendingTransactionMessage} />
               ) : (
                 <Typography variant="body2">
                   {mode === 'deposit' ? 'Deposit' : 'Withdraw'}
@@ -260,10 +259,6 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const InputWrapper = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
-}))
-
-const MessageTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
 }))
 
 export default BundlrModalBody

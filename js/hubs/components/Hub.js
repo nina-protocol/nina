@@ -19,7 +19,7 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { useRouter } from 'next/router'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'

@@ -4,7 +4,7 @@ import { styled } from '@mui/system'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
-import Dots from '../../../components/Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 const HubView = dynamic(() => import('../../../components/Hub'))
 
 const HubPage = ({ hub, hubPubkey, loading }) => {

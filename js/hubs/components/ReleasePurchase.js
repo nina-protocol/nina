@@ -11,7 +11,7 @@ import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/router'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 
@@ -256,9 +256,7 @@ const ReleasePurchase = (props) => {
               align="left"
             >
               {(txPending || pending) && (
-                <MessageTypography variant="body2">
-                  {pendingTransactionMessage}
-                </MessageTypography>
+                <Dots msg={pendingTransactionMessage} />
               )}
               {!txPending && !pending && (
                 <Typography variant="body2">{buttonText}</Typography>
@@ -317,10 +315,6 @@ const BuyButton = styled(Button)(({ theme, soldOut }) => ({
       opacity: '50%',
     },
   },
-}))
-
-const MessageTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
 }))
 
 const BuyButtonTypography = styled(Typography)(({ theme, soldOut }) => ({

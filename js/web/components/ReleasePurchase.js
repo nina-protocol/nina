@@ -19,7 +19,7 @@ import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
@@ -369,9 +369,7 @@ const ReleasePurchase = (props) => {
             >
               <Typography variant="body2">
                 {(txPending || pending) && (
-                  <MessageTypography variant="body2">
-                    {pendingTransactionMessage}
-                  </MessageTypography>
+                  <Dots msg={pendingTransactionMessage} />
                 )}
                 {!txPending && !pending && (
                   <Typography variant="body2">{buttonText}</Typography>
@@ -436,10 +434,6 @@ const StyledTypographyButtonSub = styled(Typography)(({ theme }) => ({
   color: theme.palette.grey[500],
   textAlign: 'center',
   fontSize: '12px',
-}))
-
-const MessageTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
 }))
 
 const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({

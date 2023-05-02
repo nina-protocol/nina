@@ -19,6 +19,8 @@ import AutorenewIcon from '@mui/icons-material/Autorenew'
 import HubPostCreate from './HubPostCreate'
 import { useSnackbar } from 'notistack'
 import dynamic from 'next/dynamic'
+import Dots from './Dots'
+
 const WalletConnectModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
 )
@@ -195,9 +197,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
               onClick={(e) => handleRepost(e)}
             >
               {inProgress ? (
-                <MessageTypography variant="body2">
-                  {pendingTransactionMessage}
-                </MessageTypography>
+                <Dots msg={pendingTransactionMessage} />
               ) : (
                 <Typography variant="body2">
                   Repost release to your hub
@@ -250,10 +250,6 @@ const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-}))
-
-const MessageTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

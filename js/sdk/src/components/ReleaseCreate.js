@@ -221,19 +221,19 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     if (isPublishing) {
       if (!artworkTx) {
         setPublishingStepText(
-          `1/4 Uploading Artwork. ${pendingTransactionMessage} do not close this window.`
+          `1/4 Uploading Artwork. ${pendingTransactionMessage}, do not close this window.`
         )
       } else if (!trackTx) {
         setPublishingStepText(
-          `2/4 Uploading Track. ${pendingTransactionMessage} do not close this window. This may take a while.`
+          `2/4 Uploading Track. ${pendingTransactionMessage}, do not close this window. This may take a while.`
         )
       } else if (!metadataTx) {
         setPublishingStepText(
-          `3/4 Uploading Metadata. ${pendingTransactionMessage} do not close this window.`
+          `3/4 Uploading Metadata. ${pendingTransactionMessage}, do not close this window.`
         )
       } else {
         setPublishingStepText(
-          `4/4 Finalizing Release. ${pendingTransactionMessage} do not close this window.`
+          `4/4 Finalizing Release. ${pendingTransactionMessage}, do not close this window.`
         )
       }
     } else {
@@ -650,9 +650,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                     sx={{ height: '54px' }}
                   >
                     {isPublishing && !releaseCreated && (
-                      <MessageTypography variant="body2">
-                        {`${publishingStepText} ${pendingTransactionMessage}`}
-                      </MessageTypography>
+                      <Dots msg={publishingStepText} />
                     )}
                     {!isPublishing && (
                       <Typography variant="body2">{buttonText}</Typography>
@@ -771,10 +769,6 @@ const CreateFormWrapper = styled(Box)(({ theme, disabled }) => ({
   flexDirection: 'column',
   border: `1px solid ${theme.palette.grey.primary}`,
   cursor: disabled ? 'not-allowed' : 'auto',
-}))
-
-const MessageTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
 }))
 
 const CreateCta = styled(Box)(({ theme }) => ({

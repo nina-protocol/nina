@@ -33,6 +33,7 @@ import {
   uploadHasItemForType,
 } from '../utils/uploadManager'
 import NoSolWarning from './NoSolWarning'
+import Dots from './Dots'
 
 const HubCreateSchema = Yup.object().shape({
   handle: Yup.string().required('Hub Handle is Required'),
@@ -103,15 +104,15 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     if (isPublishing) {
       if (!artworkTx) {
         setPublishingStepText(
-          `1/3 Uploading Artwork.  ${pendingTransactionMessage} do not close this window.`
+          `1/3 Uploading Artwork.  ${pendingTransactionMessage}, do not close this window.`
         )
       } else if (!metadataTx) {
         setPublishingStepText(
-          `2/3 Uploading Metadata.  ${pendingTransactionMessage} do not close this window.`
+          `2/3 Uploading Metadata.  ${pendingTransactionMessage}, do not close this window.`
         )
       } else {
         setPublishingStepText(
-          `3/3 Finalizing Hub.  ${pendingTransactionMessage} do not close this window.`
+          `3/3 Finalizing Hub.  ${pendingTransactionMessage}, do not close this window.`
         )
       }
     } else {
@@ -512,9 +513,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
                   sx={{ height: '54px' }}
                 >
                   {isPublishing ? (
-                    <MessageTypography variant="body2">
-                      {`${publishingStepText} ${pendingTransactionMessage}`}
-                    </MessageTypography>
+                    <Dots msg={publishingStepText} />
                   ) : (
                     <Typography variant="body2">{buttonText}</Typography>
                   )}
@@ -591,10 +590,6 @@ const CreateCta = styled(Box)(({ theme }) => ({
   '& .MuiButton-root': {
     ...theme.helpers.baseFont,
   },
-}))
-
-const MessageTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
 }))
 
 const DropzoneWrapper = styled(Box)(() => ({

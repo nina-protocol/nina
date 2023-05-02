@@ -10,7 +10,7 @@ import TextField from '@mui/material/TextField'
 import Box from '@mui/material/Box'
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
 import { useSnackbar } from 'notistack'
-
+import Dots from './Dots'
 const Swap = ({ refreshBalances }) => {
   const { enqueueSnackbar } = useSnackbar()
 
@@ -173,9 +173,7 @@ const Swap = ({ refreshBalances }) => {
           onClick={() => handleSwap()}
         >
           {pending ? (
-            <MessageTypography variant="body2">
-              {pendingTransactionMessage}
-            </MessageTypography>
+            <Dots msg={pendingTransactionMessage} />
           ) : (
             <Typography variant="body2">Swap</Typography>
           )}
@@ -195,10 +193,6 @@ const SwapWrapper = styled(Box)(() => ({
 const InputWrapper = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
-}))
-
-const MessageTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
 }))
 
 export default Swap

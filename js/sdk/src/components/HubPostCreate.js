@@ -23,6 +23,7 @@ import HubPostCreateForm from './HubPostCreateForm'
 import Grid from '@mui/material/Grid'
 import BundlrModal from '@nina-protocol/nina-internal-sdk/esm/BundlrModal'
 import { createUpload, removeUpload, UploadType } from '../utils/uploadManager'
+import Dots from './Dots'
 
 const PostCreateSchema = Yup.object().shape({
   title: Yup.string().required('Title is Required'),
@@ -102,11 +103,11 @@ const HubPostCreate = ({
       if (!update) {
         if (!metadataTx) {
           setPublishingStepText(
-            `1/2 Uploading Metadata.  ${pendingTransactionMessage} do not close this window.`
+            `1/2 Uploading Metadata.  ${pendingTransactionMessage}, do not close this window.`
           )
         } else {
           setPublishingStepText(
-            `2/2 Finalizing Post.  ${pendingTransactionMessage} do not close this window.`
+            `2/2 Finalizing Post.  ${pendingTransactionMessage}, do not close this window.`
           )
         }
       }
@@ -314,9 +315,7 @@ const HubPostCreate = ({
                         sx={{ height: '54px' }}
                       >
                         {isPublishing ? (
-                          <MessageTypography variant="body2">
-                            {`${publishingStepText} ${pendingTransactionMessage}`}
-                          </MessageTypography>
+                          <Dots msg={publishingStepText} />
                         ) : (
                           <Typography variant="body2">{buttonText}</Typography>
                         )}
@@ -386,10 +385,6 @@ const CreateCta = styled(Box)(({ theme }) => ({
   '& .MuiButton-root': {
     ...theme.helpers.baseFont,
   },
-}))
-
-const MessageTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
 }))
 
 const BundlrBalanceInfo = styled(Typography)(() => ({
