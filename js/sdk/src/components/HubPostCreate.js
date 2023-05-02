@@ -319,7 +319,7 @@ const HubPostCreate = ({
                             {pendingTransactionMessage}
                           </MessageTypography>
                         ) : (
-                          buttonText
+                          <Typography variant="body2">{buttonText}</Typography>
                         )}
                       </Button>
                     )}

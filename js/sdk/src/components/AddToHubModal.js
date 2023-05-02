@@ -200,7 +200,9 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                   {pendingTransactionMessage}
                 </MessageTypography>
               ) : (
-                <Typography>Repost release to your hub</Typography>
+                <Typography variant="body2">
+                  Repost release to your hub
+                </Typography>
               )}
             </Button>
 

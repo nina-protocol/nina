@@ -159,9 +159,9 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                         {pendingTransactionMessage}
                       </MessageTypography>
                     ) : amount > 1 || !amount || amount == 0 ? (
-                      'Generate Codes'
+                      <Typography variant="body2">Generate Codes</Typography>
                     ) : (
-                      'Generate Code'
+                      <Typography variant="body2">Generate Code</Typography>
                     )}
                   </Button>
                 </form>
@@ -176,7 +176,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                       {pendingTransactionMessage}
                     </MessageTypography>
                   ) : (
-                    'Get Existing Codes'
+                    <Typography variant="body2">Get Existing Codes</Typography>
                   )}
                 </Button>
                 {codes?.length == 0 && (

@@ -654,7 +654,9 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                         {pendingTransactionMessage}
                       </MessageTypography>
                     )}
-                    {!isPublishing && buttonText}
+                    {!isPublishing && (
+                      <Typography variant="body2">{buttonText}</Typography>
+                    )}
                   </Button>
                 )}
 

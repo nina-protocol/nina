@@ -373,7 +373,9 @@ const ReleasePurchase = (props) => {
                     {pendingTransactionMessage}
                   </MessageTypography>
                 )}
-                {!txPending && !pending && buttonText}
+                {!txPending && !pending && (
+                  <Typography variant="body2">{buttonText}</Typography>
+                )}
               </Typography>
             </Button>
           </form>

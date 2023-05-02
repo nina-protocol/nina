@@ -517,7 +517,9 @@ const HubCreate = ({ update, hubData, inHubs }) => {
                       {pendingTransactionMessage}
                     </MessageTypography>
                   )}
-                  {!isPublishing && buttonText}
+                  {!isPublishing && (
+                    <Typography variant="body2">{buttonText}</Typography>
+                  )}
                 </Button>
               )}
 

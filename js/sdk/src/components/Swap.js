@@ -178,7 +178,7 @@ const Swap = ({ refreshBalances }) => {
               {pendingTransactionMessage}
             </MessageTypography>
           ) : (
-            <Typography>Swap</Typography>
+            <Typography variant="body2">Swap</Typography>
           )}
         </Button>
       </InputWrapper>
