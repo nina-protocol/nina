@@ -1169,36 +1169,22 @@ const ninaContextHelper = ({
     wallet,
     type,
   }) => {
-    try {
-      var base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
-        'appm1DgEVpMWUjeJ8'
-      )
-      base('Requests').create(
-        [
-          {
-            fields: {
-              email,
-              soundcloud,
-              twitter,
-              instagram,
-              wallet,
-              type,
-            },
-          },
-        ],
-        function (err, records) {
-          if (err) {
-            console.error(err)
-            return
-          }
-          records.forEach(function (record) {
-            console.warn('Email request submitted: ', record.getId())
-          })
-        }
-      )
-    } catch (error) {
-      console.warn('email request error: ', error)
-    }
+    const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
+      'appm1DgEVpMWUjeJ8'
+    )
+
+    return await base('Requests').create([
+      {
+        fields: {
+          email,
+          soundcloud,
+          twitter,
+          instagram,
+          wallet,
+          type,
+        },
+      },
+    ])
   }
 
   return {
