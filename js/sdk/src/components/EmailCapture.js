@@ -231,7 +231,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
           {showSuccessInfo && (
             <>
               <Typography variant="h4" sx={{ mb: 1 }}>
-                You have succesfully signed up to Nina (Beta).
+                Thank you for requesting SOL to get started uploading on Nina.
               </Typography>
 
               <Typography variant="h4" sx={{ mb: 1 }}>
