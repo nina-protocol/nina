@@ -159,7 +159,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                       </MessageTypography>
                     ) : (
                       <Typography variant="body2">
-                        {amount > 1 || !amount || amount == 0
+                        {amount > 1 || !amount || amount < 1
                           ? 'Generate Codes'
                           : 'Generate Code'}
                       </Typography>
