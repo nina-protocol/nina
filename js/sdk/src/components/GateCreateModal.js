@@ -21,7 +21,6 @@ const GateCreateModal = ({
   name,
   releasePubkey,
   gates,
-  release,
 }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
@@ -121,7 +120,6 @@ const GateCreateModal = ({
         variant="outlined"
         color="primary"
         type="submit"
-        disabled={release.remainingSupply === 0}
         onClick={() => setOpen(true)}
         sx={{
           height: '55px',
@@ -132,10 +130,7 @@ const GateCreateModal = ({
           },
         }}
       >
-        <StyledTypography
-          variant="body2"
-          disabled={release.remainingSupply === 0}
-        >
+        <StyledTypography variant="body2">
           {`Create ${
             gates?.length > 0 ? 'another' : 'a'
           } Gate for this Release`}
@@ -299,8 +294,8 @@ const Root = styled('div')(() => ({
   width: '100%',
 }))
 
-const StyledTypography = styled(Typography)(({ theme, disabled }) => ({
-  color: disabled ? theme.palette.grey.primary : theme.palette.black,
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.black,
 }))
 
 const StyledModal = styled(Modal)(() => ({

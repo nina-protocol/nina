@@ -115,7 +115,6 @@ const Gates = ({
             fetchGatesForRelease={fetchGatesForRelease}
             name={metadata?.name}
             gates={releaseGates}
-            release={release}
           />
         </>
       )}
