@@ -388,16 +388,18 @@ const IdentityVerification = ({
             value={activeValue}
             open={open}
             setOpen={setOpen}
+            disconnecting={false}
           />
         </Box>
       )}
       {openDisconnectModal && (
-        <IdentityDisconnectModal 
+        <IdentityVerificationtModal 
           setOpen={setOpenDisconnectModal}
           open={openDisconnectModal}
           value={activeValue}
           type={localStorage.getItem('codeSource')}
           action={handleDisconnectAccount}
+          disconneting={true}
         />
       ) }
     </>

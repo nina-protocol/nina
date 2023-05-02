@@ -8,7 +8,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Dots from './Dots'
 
-const IdentityVerificationModal = ({ action, type, value, open, setOpen }) => {
+const IdentityVerificationModal = ({ action, type, value, open, setOpen, disconnecting }) => {
   const [inProgress, setInProgress] = useState(false)
 
   const handleClose = () => {
