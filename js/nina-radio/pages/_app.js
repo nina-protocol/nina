@@ -10,7 +10,7 @@ import { CacheProvider } from "@emotion/react";
 import createCache from '@emotion/cache';
 import { NinaTheme } from "../../NinaTheme";
 import Layout from "../components/Layout";
-import Dots from '../components/Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import WalletWrapper from '@nina-protocol/nina-internal-sdk/esm/WalletWrapper'
 import { useConnection } from '@solana/wallet-adapter-react'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'

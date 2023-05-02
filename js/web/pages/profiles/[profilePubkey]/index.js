@@ -6,7 +6,7 @@ import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
-import Dots from '../../../components/Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import { useRouter } from 'next/router'
 
 const Profile = dynamic(() => import('../../../components/Profile'))

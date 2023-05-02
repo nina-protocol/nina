@@ -14,7 +14,7 @@ import Image from 'next/image'
 import Typography from '@mui/material/Typography'
 
 import { useSnackbar } from 'notistack'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 
 const UserReleasesPrompt = ({

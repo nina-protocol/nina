@@ -20,10 +20,10 @@ import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import HubPostCreateForm from './HubPostCreateForm'
-import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import Grid from '@mui/material/Grid'
 import BundlrModal from '@nina-protocol/nina-internal-sdk/esm/BundlrModal'
 import { createUpload, removeUpload, UploadType } from '../utils/uploadManager'
+import Dots from './Dots'
 
 const PostCreateSchema = Yup.object().shape({
   title: Yup.string().required('Title is Required'),
@@ -103,11 +103,11 @@ const HubPostCreate = ({
       if (!update) {
         if (!metadataTx) {
           setPublishingStepText(
-            `1/2 Uploading Metadata.  ${pendingTransactionMessage} do not close this window.`
+            `1/2 Uploading Metadata.  ${pendingTransactionMessage}, do not close this window.`
           )
         } else {
           setPublishingStepText(
-            `2/2 Finalizing Post.  ${pendingTransactionMessage} do not close this window.`
+            `2/2 Finalizing Post.  ${pendingTransactionMessage}, do not close this window.`
           )
         }
       }
@@ -314,8 +314,11 @@ const HubPostCreate = ({
                         }
                         sx={{ height: '54px' }}
                       >
-                        {isPublishing && <Dots msg={publishingStepText} />}
-                        {!isPublishing && buttonText}
+                        {isPublishing ? (
+                          <Dots msg={publishingStepText} />
+                        ) : (
+                          <Typography variant="body2">{buttonText}</Typography>
+                        )}
                       </Button>
                     )}
 
