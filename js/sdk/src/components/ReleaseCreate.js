@@ -650,7 +650,9 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                     sx={{ height: '54px' }}
                   >
                     {isPublishing && !releaseCreated && (
-                      <Dots msg={publishingStepText} />
+                      <MessageTypography variant="body2">
+                        {pendingTransactionMessage}
+                      </MessageTypography>
                     )}
                     {!isPublishing && buttonText}
                   </Button>
@@ -767,6 +769,10 @@ const CreateFormWrapper = styled(Box)(({ theme, disabled }) => ({
   flexDirection: 'column',
   border: `1px solid ${theme.palette.grey.primary}`,
   cursor: disabled ? 'not-allowed' : 'auto',
+}))
+
+const MessageTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.blue,
 }))
 
 const CreateCta = styled(Box)(({ theme }) => ({

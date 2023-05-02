@@ -196,7 +196,11 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
               onClick={(e) => handleRepost(e)}
             >
               {!inProgress && 'Repost release to your hub'}
-              {inProgress && <Dots msg={pendingTransactionMessage} />}
+              {inProgress && (
+                <MessageTypography>
+                  {pendingTransactionMessage}
+                </MessageTypography>
+              )}
             </Button>
 
             <HubPostCreate
@@ -244,6 +248,10 @@ const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+}))
+
+const MessageTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.blue,
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({

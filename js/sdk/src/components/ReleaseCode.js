@@ -155,7 +155,9 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                     sx={{ marginTop: '15px' }}
                   >
                     {pendingCodes ? (
-                      <Dots msg={pendingTransactionMessage} />
+                      <MessageTypography variant="body2">
+                        {pendingTransactionMessage}
+                      </MessageTypography>
                     ) : amount > 1 || !amount || amount == 0 ? (
                       'Generate Codes'
                     ) : (
@@ -170,7 +172,9 @@ const ReleaseCode = ({ release, releasePubkey }) => {
                   sx={{ marginTop: '15px' }}
                 >
                   {pendingFetchCodes ? (
-                    <Dots msg={pendingTransactionMessage} />
+                    <MessageTypography variant="body2">
+                      {pendingTransactionMessage}
+                    </MessageTypography>
                   ) : (
                     'Get Existing Codes'
                   )}
@@ -223,6 +227,10 @@ const StyledListItem = styled(ListItem)(() => ({
   '&.claimed': {
     textDecoration: 'line-through',
   },
+}))
+
+const MessageTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.blue,
 }))
 
 const StyledList = styled(List)(() => ({

@@ -174,7 +174,9 @@ const Swap = ({ refreshBalances }) => {
           onClick={() => handleSwap()}
         >
           {pending ? (
-            <Dots msg={pendingTransactionMessage} />
+            <MessageTypography variant="body2">
+              {pendingTransactionMessage}
+            </MessageTypography>
           ) : (
             <Typography>Swap</Typography>
           )}
@@ -194,6 +196,10 @@ const SwapWrapper = styled(Box)(() => ({
 const InputWrapper = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
+}))
+
+const MessageTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.blue,
 }))
 
 export default Swap

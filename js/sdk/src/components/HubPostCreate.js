@@ -314,7 +314,11 @@ const HubPostCreate = ({
                         }
                         sx={{ height: '54px' }}
                       >
-                        {isPublishing && <Dots msg={publishingStepText} />}
+                        {isPublishing && (
+                          <MessageTypography>
+                            {pendingTransactionMessage}
+                          </MessageTypography>
+                        )}
                         {!isPublishing && buttonText}
                       </Button>
                     )}
@@ -382,6 +386,10 @@ const CreateCta = styled(Box)(({ theme }) => ({
   '& .MuiButton-root': {
     ...theme.helpers.baseFont,
   },
+}))
+
+const MessageTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.blue,
 }))
 
 const BundlrBalanceInfo = styled(Typography)(() => ({

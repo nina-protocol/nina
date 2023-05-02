@@ -227,7 +227,11 @@ const BundlrModalBody = ({
               <Typography variant="body1">
                 {!inProgress && (mode === 'deposit' ? 'Deposit' : 'Withdraw')}
               </Typography>
-              {inProgress && <Dots msg={pendingTransactionMessage} />}
+              {inProgress && (
+                <MessageTypography>
+                  {pendingTransactionMessage}
+                </MessageTypography>
+              )}
             </Button>
           </InputWrapper>
         </StyledPaper>
@@ -256,6 +260,10 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const InputWrapper = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
+}))
+
+const MessageTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.blue,
 }))
 
 export default BundlrModalBody

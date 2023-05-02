@@ -256,7 +256,9 @@ const ReleasePurchase = (props) => {
               align="left"
             >
               {(txPending || pending) && (
-                <Dots msg={pendingTransactionMessage} />
+                <MessageTypography variant="body2">
+                  {pendingTransactionMessage}
+                </MessageTypography>
               )}
               {!txPending && !pending && buttonText}
             </BuyButtonTypography>
@@ -313,6 +315,10 @@ const BuyButton = styled(Button)(({ theme, soldOut }) => ({
       opacity: '50%',
     },
   },
+}))
+
+const MessageTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.blue,
 }))
 
 const BuyButtonTypography = styled(Typography)(({ theme, soldOut }) => ({
