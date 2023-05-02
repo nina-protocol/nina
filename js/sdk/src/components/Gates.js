@@ -17,7 +17,6 @@ const Gates = ({
   metadata,
   inSettings,
   inHubs,
-  release,
 }) => {
   const { wallet } = useContext(Wallet.Context)
   const { enqueueSnackbar } = useSnackbar()
