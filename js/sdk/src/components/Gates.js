@@ -17,6 +17,7 @@ const Gates = ({
   metadata,
   inSettings,
   inHubs,
+  release,
 }) => {
   const { wallet } = useContext(Wallet.Context)
   const { enqueueSnackbar } = useSnackbar()
@@ -114,6 +115,7 @@ const Gates = ({
             fetchGatesForRelease={fetchGatesForRelease}
             name={metadata?.name}
             gates={releaseGates}
+            release={release}
           />
         </>
       )}
