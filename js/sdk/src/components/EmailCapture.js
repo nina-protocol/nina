@@ -1,25 +1,20 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Modal from '@mui/material/Modal'
-import { styled } from '@mui/material/styles'
+import { useSnackbar } from 'notistack'
+
 import * as Yup from 'yup'
 import EmailCaptureForm from './EmailCaptureForm'
 import { Box } from '@mui/material'
 import Nina from '../contexts/Nina'
 import Wallet from '../contexts/Wallet'
-import CloseIcon from '@mui/icons-material/Close'
+import Collapse from '@mui/material/Collapse'
+import Dots from './Dots'
+
 import { logEvent } from '../utils/event'
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: { xs: '88vw', md: 400 },
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: '60px',
+  width: { xs: '88vw', md: '100%' },
   boxSizing: 'content-box',
 }
 const requiredString = 'A Soundcloud, Twitter, or Instagram is required'
@@ -57,29 +52,44 @@ const EmailCaptureSchema = Yup.object().shape(
   [['soundcloud', 'twitter', 'instagram']]
 )
 
-const EmailCapture = ({ size }) => {
+const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
   const { wallet } = useContext(Wallet.Context)
+  const { enqueueSnackbar } = useSnackbar()
+  const [usingMagicWallet, setUsingMagicWallet] = useState(false)
+  const [user, setUser] = useState(undefined)
   const { publicKey, connected } = wallet
-  const { submitEmailRequest } = useContext(Nina.Context)
+  const { submitEmailRequest, getVerificationsForUser, verificationState } =
+    useContext(Nina.Context)
   const [open, setOpen] = useState(false)
   const [showSuccessInfo, setShowSuccessInfo] = useState(false)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
   const [formValues, setFormValues] = useState({})
   const [formIsValid, setFormIsValid] = useState(false)
   const [submitButtonText, setSubmitButtonText] = useState('Submit')
-
-  useEffect(() => {
-    if (open) {
-      logEvent('email_request_initiated', 'engagement')
-    }
-  }, [open])
+  const [pending, setPending] = useState(false)
+  const [userVerifications, setUserVerifications] = useState(undefined)
+  const [soundcloudAccount, setSoundcloudAccount] = useState(undefined)
+  const [twitterAccount, setTwitterAccount] = useState(undefined)
 
   useEffect(() => {
     if (connected) {
       setFormValues({ ...formValues, wallet: publicKey?.toString() })
+
+      getVerificationsForUser(publicKey?.toString())
     }
   }, [connected, publicKey])
+
+  useEffect(() => {
+    if (verificationState[publicKey?.toString()]) {
+      setUserVerifications(verificationState[publicKey?.toString()])
+    }
+  }, [verificationState, publicKey])
+
+  useEffect(() => {
+    if (wallet.wallet.adapter.name === 'Nina') {
+      setUsingMagicWallet(true)
+      setUser(wallet.wallet.adapter.user)
+    }
+  }, [wallet])
 
   useEffect(() => {
     if (formIsValid) {
@@ -87,21 +97,46 @@ const EmailCapture = ({ size }) => {
     }
   }, [formValues])
 
+  useEffect(() => {
+    if (userVerifications) {
+      setSoundcloudAccount(
+        getVerificationValue(userVerifications, 'soundcloud')
+      )
+      setTwitterAccount(getVerificationValue(userVerifications, 'twitter'))
+    }
+  }, [userVerifications])
+
+  const handleOpen = () => {
+    setOpen(true)
+    logEvent('email_request_initiated', 'engagement')
+    setChildFormOpen(true)
+  }
+
+  const handleClose = () => {
+    setChildFormOpen(false)
+    setParentOpen(false)
+    setOpen(false)
+  }
+
   const handleSubmit = async () => {
     if (formIsValid) {
-      setSubmitButtonText('Submitting...')
+      setPending(true)
       try {
-        await submitEmailRequest(formValues)
+        const request = await submitEmailRequest(formValues)
+        if (request) {
+          setShowSuccessInfo(true)
+          enqueueSnackbar('Email request submitted', { variant: 'success' })
+        }
         logEvent('email_request_success', 'engagement', {
           email: formValues.email,
         })
-        setShowSuccessInfo(true)
       } catch (error) {
         console.warn('email form error', error)
-        logEvent('email_request_success', 'engagement', {
+        logEvent('email_request_error', 'engagement', {
           email: formValues.email,
         })
       }
+      setPending(false)
     }
     if (!formIsValid) {
       if (
@@ -141,83 +176,62 @@ const EmailCapture = ({ size }) => {
     [formValues]
   )
 
+  const getVerificationValue = (verifications, type) => {
+    const verification = verifications?.find((verification) => {
+      return verification.type === type
+    })
+    return verification?.value
+  }
+
   return (
     <>
-      {size === 'large' && (
-        <BlueTypography
-          onClick={handleOpen}
-          variant="h1"
-          sx={{ display: 'inline' }}
-        >
-          Sign Up
-        </BlueTypography>
-      )}
-      {size === 'medium' && (
-        <BlueTypography
-          onClick={handleOpen}
-          variant="h3"
-          sx={{
-            padding: { md: '10px 0 ', xs: '0px 0px' },
-            border: '1px solid #2D81FF',
-            width: '100%',
-            textAlign: 'center',
-          }}
-        >
-          Please fill out this form to apply
-        </BlueTypography>
-      )}
-      {size === 'small' && <SmallCta onClick={handleOpen}>Sign Up</SmallCta>}
-      {size === 'getStarted' && (
-        <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-          <Typography variant="h3">
-            If this is your first time using Nina, you can{' '}
+      {!open && (
+        <Button onClick={handleOpen} variant="outlined" sx={{ mb: 1 }}>
+          <Typography variant="body1">
+            Request some SOL to get started
           </Typography>
-          <BlueTypography variant="h3" onClick={handleOpen} ml={0.5}>
-            Sign Up here.
-          </BlueTypography>
-        </Box>
+        </Button>
       )}
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+      <Collapse in={open}>
         <Box sx={style}>
-          <CloseIconWrapper onClick={handleClose}>
-            <CloseIcon />
-          </CloseIconWrapper>
-
           {!showSuccessInfo && (
             <>
-              <Typography variant="h4" gutterBottom>
-                Nina is currently in closed beta.
-              </Typography>
-              <Typography variant="h4" sx={{ mb: '16px' }}>
-                Please sign up below.
+              <Typography variant="h4" sx={{ mb: 1 }}>
+                Please provide a Social account to submit a request for SOL.
               </Typography>
 
               <EmailCaptureForm
                 onChange={handleFormChange}
                 values={formValues}
                 EmailCaptureSchema={EmailCaptureSchema}
+                usingMagicWallet={usingMagicWallet}
+                wallet={wallet}
+                user={user}
+                soundcloudAccount={soundcloudAccount}
+                twitterAccount={twitterAccount}
+                publicKey={publicKey}
               />
               <Button
                 variant="outlined"
                 color="primary"
                 fullWidth
-                onClick={handleSubmit}
+                onClick={async () => await handleSubmit()}
                 sx={{ width: '100%', mt: '30px' }}
               >
-                {submitButtonText}
+                {!pending && (
+                  <Typography graphy variant="body1">
+                    {submitButtonText}
+                  </Typography>
+                )}
+                {pending && <Dots size="40px" />}
               </Button>
             </>
           )}
 
           {showSuccessInfo && (
             <>
-              <Typography variant="h4" sx={{ mb: '' }}>
-                You have succesfully signed up to Nina (Beta).
+              <Typography variant="h4" sx={{ mb: 1 }}>
+                Thank you for requesting SOL to get started uploading on Nina.
               </Typography>
 
               <Typography variant="h4" sx={{ mb: 1 }}>
@@ -235,39 +249,8 @@ const EmailCapture = ({ size }) => {
             </>
           )}
         </Box>
-      </Modal>
+      </Collapse>
     </>
   )
 }
-
-const BlueTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
-  cursor: 'pointer',
-}))
-
-const CloseIconWrapper = styled(Box)(({ theme }) => ({
-  display: 'none',
-  [theme.breakpoints.down('md')]: {
-    position: 'absolute',
-    top: '15px',
-    display: 'block',
-  },
-}))
-
-const SmallCta = styled(Typography)(({ theme }) => ({
-  color: theme.palette.blue,
-  cursor: 'pointer',
-  padding: '2px',
-  border: '1px solid #2D81FF',
-  width: '100%',
-  textAlign: 'center',
-  [theme.breakpoints.down('md')]: {
-    position: 'absolute',
-    top: '75%',
-    right: '15px',
-    padding: '5px 0px',
-    width: '95px',
-  },
-}))
-
 export default EmailCapture
