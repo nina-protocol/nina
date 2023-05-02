@@ -100,7 +100,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
           disabled={release.remainingSupply === 0 || release.price === 0}
           fullWidth
           sx={{
-            marginTop: '15px',
+            mt: 1,
             '&:hover': {
               opacity: '50%',
             },
@@ -109,8 +109,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
           <StyledTypography
             variant="body2"
             align="left"
-            closed={release.remainingSupply === 0}
-            disabled={release.remainingSupply === 0}
+            disabled={release.remainingSupply === 0 || release.price === 0}
           >
             Manage Release Codes
           </StyledTypography>
