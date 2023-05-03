@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { MuiOtpInput } from 'mui-one-time-password-input'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
