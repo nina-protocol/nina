@@ -111,7 +111,6 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen, forceOpen, inArtistProg
   useEffect(() => {
     if (forceOpen) {
       setOpen(true)
-      // setChildFormOpen(true)
     }
   }, [forceOpen])
 
@@ -126,8 +125,8 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen, forceOpen, inArtistProg
   const handleClose = () => {
     setOpen(false)
     if(!inArtistProgram) {
-      // setChildFormOpen(false)
-      // setParentOpen(false)
+      setChildFormOpen(false)
+      setParentOpen(false)
     }
   }
 
