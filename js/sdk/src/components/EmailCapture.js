@@ -2,6 +2,9 @@ import React, { useState, useCallback, useEffect, useContext } from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useSnackbar } from 'notistack'
+import Link from 'next/link'
+import {styled} from '@mui/system'
+
 
 import * as Yup from 'yup'
 import EmailCaptureForm from './EmailCaptureForm'
@@ -52,7 +55,7 @@ const EmailCaptureSchema = Yup.object().shape(
   [['soundcloud', 'twitter', 'instagram']]
 )
 
-const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
+const EmailCapture = ({ setChildFormOpen, setParentOpen, forceOpen, inArtistProgram }) => {
   const { wallet } = useContext(Wallet.Context)
   const { enqueueSnackbar } = useSnackbar()
   const [usingMagicWallet, setUsingMagicWallet] = useState(false)
@@ -73,7 +76,6 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
   useEffect(() => {
     if (connected) {
       setFormValues({ ...formValues, wallet: publicKey?.toString() })
-
       getVerificationsForUser(publicKey?.toString())
     }
   }, [connected, publicKey])
@@ -106,16 +108,27 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
     }
   }, [userVerifications])
 
+  useEffect(() => {
+    if (forceOpen) {
+      setOpen(true)
+      // setChildFormOpen(true)
+    }
+  }, [forceOpen])
+
   const handleOpen = () => {
     setOpen(true)
     logEvent('email_request_initiated', 'engagement')
-    setChildFormOpen(true)
+    if(!inArtistProgram) {
+      setChildFormOpen(true)
+    }
   }
 
   const handleClose = () => {
-    setChildFormOpen(false)
-    setParentOpen(false)
     setOpen(false)
+    if(!inArtistProgram) {
+      // setChildFormOpen(false)
+      // setParentOpen(false)
+    }
   }
 
   const handleSubmit = async () => {
@@ -197,7 +210,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
           {!showSuccessInfo && (
             <>
               <Typography variant="h4" sx={{ mb: 1 }}>
-                Please provide a Social account to submit a request for SOL.
+                Please provide a social account to submit a request for SOL.
               </Typography>
 
               <EmailCaptureForm
@@ -239,13 +252,24 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
                 next 2 - 3 days.
               </Typography>
 
-              <Button
-                variant="outlined"
-                style={{ width: '100%', marginTop: '5px' }}
-                onClick={handleClose}
-              >
-                <Typography variant="body1">Okay</Typography>
-              </Button>
+              {!inArtistProgram && (
+                <Button
+                  variant="outlined"
+                  style={{ width: '100%', marginTop: '5px' }}
+                  onClick={handleClose}
+                >
+                  <Typography variant="body1">Okay</Typography>
+                </Button>
+              )}
+
+              {inArtistProgram && (
+                <Link href='/'>
+                  <StyledLink>
+                    <Typography variant="h4" sx={{textDecoration: 'underline', }}>Back to Home</Typography>
+
+                  </StyledLink>
+                </Link>
+              )}
             </>
           )}
         </Box>
@@ -253,4 +277,10 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen }) => {
     </>
   )
 }
+
+const StyledLink = styled('a')(({theme}) => ({
+  textDecoration: 'underline',
+  color: theme.palette.blue,
+  width: 'fit-content'
+}))
 export default EmailCapture
