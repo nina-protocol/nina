@@ -3,8 +3,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import { useSnackbar } from 'notistack'
 import Link from 'next/link'
-import {styled} from '@mui/system'
-
+import { styled } from '@mui/system'
 
 import * as Yup from 'yup'
 import EmailCaptureForm from './EmailCaptureForm'
@@ -55,7 +54,12 @@ const EmailCaptureSchema = Yup.object().shape(
   [['soundcloud', 'twitter', 'instagram']]
 )
 
-const EmailCapture = ({ setChildFormOpen, setParentOpen, forceOpen, inArtistProgram }) => {
+const EmailCapture = ({
+  setChildFormOpen,
+  setParentOpen,
+  forceOpen,
+  inArtistProgram,
+}) => {
   const { wallet } = useContext(Wallet.Context)
   const { enqueueSnackbar } = useSnackbar()
   const [usingMagicWallet, setUsingMagicWallet] = useState(false)
@@ -117,14 +121,14 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen, forceOpen, inArtistProg
   const handleOpen = () => {
     setOpen(true)
     logEvent('email_request_initiated', 'engagement')
-    if(!inArtistProgram) {
+    if (!inArtistProgram) {
       setChildFormOpen(true)
     }
   }
 
   const handleClose = () => {
     setOpen(false)
-    if(!inArtistProgram) {
+    if (!inArtistProgram) {
       setChildFormOpen(false)
       setParentOpen(false)
     }
@@ -262,10 +266,14 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen, forceOpen, inArtistProg
               )}
 
               {inArtistProgram && (
-                <Link href='/'>
+                <Link href="/">
                   <StyledLink>
-                    <Typography variant="h4" sx={{textDecoration: 'underline', }}>Back to Home</Typography>
-
+                    <Typography
+                      variant="h4"
+                      sx={{ textDecoration: 'underline' }}
+                    >
+                      Back to Home
+                    </Typography>
                   </StyledLink>
                 </Link>
               )}
@@ -277,9 +285,9 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen, forceOpen, inArtistProg
   )
 }
 
-const StyledLink = styled('a')(({theme}) => ({
+const StyledLink = styled('a')(({ theme }) => ({
   textDecoration: 'underline',
   color: theme.palette.blue,
-  width: 'fit-content'
+  width: 'fit-content',
 }))
 export default EmailCapture
