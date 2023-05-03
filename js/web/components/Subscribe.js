@@ -91,7 +91,7 @@ const Subscribe = ({
           <Dots />
         </Box>
       )}
-      {wallet.connected && wallet.publicKey.toBase58() !== accountAddress && (
+      {wallet?.connected && wallet?.publicKey?.toBase58() !== accountAddress && (
         <>
           {!isFollowing && !pending && (
             <Button

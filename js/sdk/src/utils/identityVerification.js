@@ -11,6 +11,8 @@ const {
   Numberu64,
 } = require('@bonfida/spl-name-service')
 const { deserializeUnchecked, serialize } = require('borsh')
+const { encodeBase64 } = require('tweetnacl-util')
+
 const Web3 = require('web3')
 const axios = require('axios')
 const { logEvent } = require('@nina-protocol/nina-internal-sdk/src/utils/event')
@@ -415,7 +417,18 @@ const verifyEthereum = async (
       feePayer: NINA_ID,
     })
     tx.add(ix, createIx, reverseRegistryIx)
-    await signTransaction(tx)
+
+    const signedTx = await signTransaction(tx)
+    if (signedTx.signature) {
+      tx.addSignature(publicKey, signedTx.signature[1].signature)
+    } else {
+      tx = signedTx
+    }
+
+    const message = new TextEncoder().encode(publicKey)
+    const messageBase64 = encodeBase64(message)
+    const solSignature = await provider.wallet.signMessage(message)
+    const signatureBase64 = encodeBase64(solSignature)
 
     // Send Transaction To Server To Verify Signatures
     await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/eth`, {
@@ -423,6 +436,8 @@ const verifyEthereum = async (
       ethSignature: signature,
       tx: tx.serialize({ verifySignatures: false }).toString('base64'),
       solPublicKey: publicKey.toBase58(),
+      message: messageBase64,
+      signature: signatureBase64,
     })
     logEvent('connection_eth_success', 'engagement', {
       ethAddress,
@@ -443,7 +458,6 @@ const verifySoundcloud = async (
   provider,
   soundcloudHandle,
   publicKey,
-  signTransaction,
   soundcloudToken
 ) => {
   try {
@@ -478,13 +492,19 @@ const verifySoundcloud = async (
       feePayer: NINA_ID,
     })
     tx.add(ix, createIx, reverseRegistryIx)
-    await signTransaction(tx)
+    
+    const message = new TextEncoder().encode(publicKey)
+    const messageBase64 = encodeBase64(message)
+    const signature = await provider.wallet.signMessage(message)
+    const signatureBase64 = encodeBase64(signature)
 
     await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/sc/register`, {
       handle: soundcloudHandle,
       token: soundcloudToken,
       tx: tx.serialize({ verifySignatures: false }).toString('base64'),
       publicKey: publicKey.toBase58(),
+      message: messageBase64,
+      signature: signatureBase64,
     })
     logEvent('connection_sc_success', 'engagement', {
       soundcloudHandle,
@@ -508,7 +528,6 @@ const verifyTwitter = async (
   twitterHandle,
   twitterToken,
   publicKey,
-  signTransaction
 ) => {
   try {
     logEvent('connection_tw_initiated', 'engagement', {
@@ -540,7 +559,11 @@ const verifyTwitter = async (
       feePayer: NINA_ID,
     })
     tx.add(ix, createIx, reverseRegistryIx)
-    await signTransaction(tx)
+
+    const message = new TextEncoder().encode(publicKey)
+    const messageBase64 = encodeBase64(message)
+    const signature = await provider.wallet.signMessage(message)
+    const signatureBase64 = encodeBase64(signature)
 
     // Send Transaction To Server To Verify Signatures
     await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/tw/register`, {
@@ -548,6 +571,8 @@ const verifyTwitter = async (
       token: twitterToken,
       tx: tx.serialize({ verifySignatures: false }).toString('base64'),
       publicKey: publicKey.toBase58(),
+      message: messageBase64,
+      signature: signatureBase64,
     })
     logEvent('connection_tw_success', 'engagement', {
       twitterHandle,
@@ -692,19 +717,21 @@ const deleteSoundcloudVerification = async (
   signTransaction
 ) => {
   try {
+    console.log('soundcloudHandle,', soundcloudHandle)
     const hashedSoundcloudHandle = await getHashedName(soundcloudHandle)
     const soundcloudRegistryKey = await getNameAccountKey(
       hashedSoundcloudHandle,
       NINA_ID,
       NINA_ID_SC_TLD
     )
-
+    console.log('soundcloudRegistryKey,', soundcloudRegistryKey.toBase58())
     const hashedVerifiedPubkey = await getHashedName(publicKey.toString())
     const reverseRegistryKey = await getNameAccountKey(
       hashedVerifiedPubkey,
       NINA_ID,
       NINA_ID_SC_TLD
     )
+    console.log('reverseRegistryKey,', reverseRegistryKey.toBase58())
 
     const instructions = [
       // Delete the user facing registry

@@ -18,7 +18,9 @@ import {
   verifyTwitter,
   verifySoundcloud,
   verifyInstagram,
-  deleteTwitterVerification
+  deleteTwitterVerification,
+  deleteEthereumVerification,
+  deleteSoundcloudVerification,
 } from '../utils/identityVerification'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -228,12 +230,10 @@ const IdentityVerification = ({
     let success = false
     switch (localStorage.getItem('codeSource')) {
       case 'soundcloud':
-        console.log('signTransation :>> ', signTransation);
         success = await verifySoundcloud(
           provider,
           soundcloudHandle,
           publicKey,
-          signTransaction,
           soundcloudToken
         )
         break
@@ -318,15 +318,13 @@ const IdentityVerification = ({
     setActiveValue(valueForType(type))
   }
 
-
-
   const handleDisconnectAccount = async () => {
     let success = false
     switch (localStorage.getItem('codeSource')) {
       case 'twitter':
         success = await deleteTwitterVerification(
           provider,
-          twitterHandle,
+          valueForType("twitter"),
           publicKey,
           signTransaction,
           sendTransaction
@@ -334,19 +332,27 @@ const IdentityVerification = ({
       case 'ethereum':
         success = await deleteEthereumVerification(
           provider,
-          ethAddress,
+          valueForType("ethereum"),
           publicKey,
           signTransaction,
           sendTransaction
-          )
+        )
         return success
-        default:
-          break
-        }
+      case 'soundcloud':
+        success = await deleteSoundcloudVerification(
+          provider,
+          valueForType("soundcloud"),
+          publicKey,
+          signTransaction,
+          sendTransaction
+        )
+      default:
+        break
+      }
 
       if (success) {
         await getVerificationsForUser(profilePubkey)
-        enqueueSnackbar('Account verified.', {
+        enqueueSnackbar('Account disconnected.', {
           variant: 'success',
         })
       }

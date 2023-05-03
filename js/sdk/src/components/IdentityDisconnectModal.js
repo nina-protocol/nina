@@ -8,7 +8,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Dots from './Dots'
 
-const IdentityVerificationModal = ({ action, type, value, open, setOpen }) => {
+const IdentityDisconnectModal = ({ action, type, value, open, setOpen }) => {
   const [inProgress, setInProgress] = useState(false)
 
   const handleClose = () => {
@@ -50,9 +50,6 @@ const IdentityVerificationModal = ({ action, type, value, open, setOpen }) => {
               gutterBottom
             >
               {titleForType(type)}
-            </Typography>
-            <Typography align="center" id="transition-modal-title" gutterBottom>
-              I'M THE DISCONNECT MODAL  
             </Typography>
             <Button
               style={{ marginTop: '15px' }}
@@ -107,4 +104,4 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   },
 }))
 
-export default IdentityVerificationModal
+export default IdentityDisconnectModal

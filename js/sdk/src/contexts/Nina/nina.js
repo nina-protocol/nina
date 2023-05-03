@@ -1138,6 +1138,7 @@ const ninaContextHelper = ({
       const { verifications } = await NinaSdk.Account.fetchVerifications(
         accountPubkey
       )
+      console.log('verifications: ', verifications)
       setVerificationState((prevState) => ({
         ...prevState,
         [accountPubkey]: verifications,
