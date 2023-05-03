@@ -467,22 +467,17 @@ const releaseContextHelper = ({
         instructions,
       }
 
-      const tx = await program.transaction.releaseInitViaHub(
-        config,
-        bumps,
-        metadataData,
-        decodeNonEncryptedByteArray(hub.handle),
-        request
-      )
+      const tx = await program.methods
+        .releaseInitViaHub(config, bumps, metadataData, decodeNonEncryptedByteArray(hub.handle))
+        .accounts(request.accounts)
+        .preInstructions(request.instructions)
+        .transaction()
 
       tx.recentBlockhash = (
         await provider.connection.getRecentBlockhash()
       ).blockhash
       tx.feePayer = provider.wallet.publicKey
-
-      for await (let signer of request.signers) {
-        tx.partialSign(signer)
-      }
+      tx.partialSign(releaseMint)
 
       const txid = await provider.wallet.sendTransaction(
         tx,
@@ -713,9 +708,9 @@ const releaseContextHelper = ({
         publicKey: release.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
       })
-
-      const tx = await program.rpc.releaseInit(config, bumps, metadataData, {
-        accounts: {
+      const tx = await program.methods
+        .releaseInit(config, bumps, metadataData)
+        .accounts({
           release,
           releaseSigner,
           releaseMint: releaseMint.publicKey,
@@ -728,15 +723,18 @@ const releaseContextHelper = ({
           metadataProgram,
           systemProgram: anchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        },
-        signers: [releaseMint],
-        instructions,
-      })
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY
+        })
+        .preInstructions(instructions)
+        .transaction()
+
       tx.recentBlockhash = (
         await provider.connection.getRecentBlockhash()
       ).blockhash
       tx.feePayer = provider.wallet.publicKey
+
+      tx.partialSign(releaseMint)
+
       const txid = await provider.wallet.sendTransaction(
         tx,
         provider.connection

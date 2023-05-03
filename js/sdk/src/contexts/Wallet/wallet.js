@@ -122,6 +122,7 @@ const walletContextHelper = ({
           return signedTransaction
         },
         sendTransaction: async (transaction) => {
+          console.log('sendTransaction: ', transaction)
           const serializeConfig = {
             requireAllSignatures: false,
             verifySignatures: true,
@@ -131,6 +132,26 @@ const walletContextHelper = ({
             transaction,
             serializeConfig
           )
+          
+          if (transaction.signatures.length > 1) {
+            console.log('transaction.signatures.length', transaction.signatures.length)
+            let deserializedTransaction = anchor.web3.Transaction.from(
+              signedTransaction.rawTransaction
+            )
+
+            transaction.signatures.forEach((signature) => {
+              if (signature.signature) {
+                deserializedTransaction.addSignature(
+                  signature.publicKey,
+                  signature.signature
+                )
+              }
+            })
+            console.log('deserializedTransaction', deserializedTransaction)
+            signedTransaction.rawTransaction = deserializedTransaction.serialize()
+          }
+
+
           const txid = await connection.sendRawTransaction(
             signedTransaction.rawTransaction
           )
