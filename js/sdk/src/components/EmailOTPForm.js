@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { MuiOtpInput } from 'mui-one-time-password-input'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
@@ -15,11 +15,9 @@ export default function EmailOTP({ login, email, setPending, pending }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setPending(true)
-    // await autoSubmit(passcode);
 
     setDisabled(true)
     setRetries((r) => r - 1)
-    // setPasscode("");
 
     // Send OTP for verification
     await login.emit('verify-email-otp', passcode)
@@ -49,7 +47,6 @@ export default function EmailOTP({ login, email, setPending, pending }) {
     setPending(true)
     setDisabled(true)
     setRetries((r) => r - 1)
-    // setPasscode("");
     const trimmedPasscode = value.replaceAll(/\s/g, '')
     // Send OTP for verification
     await login.emit('verify-email-otp', trimmedPasscode)
@@ -96,7 +93,7 @@ export default function EmailOTP({ login, email, setPending, pending }) {
       <form onSubmit={handleSubmit}>
         <MuiOtpInput
           value={passcode}
-          length={7}
+          length={6}
           onChange={(e) => handleChange(e)}
           TextFieldsProps={{ type: 'number' }}
           type="number"
@@ -135,9 +132,9 @@ const Root = styled(Box)(({ theme }) => ({
       },
     },
   },
-  '.MuiOtpInput-TextField:last-of-type': {
-    display: 'none',
-  },
+  // '.MuiOtpInput-TextField:last-of-type': {
+  //   display: 'none',
+  // },
   [theme.breakpoints.down('md')]: {
     '.MuiOtpInput-TextField': {
       '& input': {
