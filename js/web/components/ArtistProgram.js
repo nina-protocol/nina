@@ -22,10 +22,15 @@ return(
 
 }
 
-const Root = styled(Box)(() => ({
+const Root = styled(Box)(({theme}) => ({
   textAlign: 'left',
   minHeight: '50vh',
-  width: '550px'
+  width: '550px',
+  [theme.breakpoints.down('md')]: {
+    width: '90vw',
+    // border: '2px solid blue'
+    margin: '0 auto'
+  },
 }))
 
 export default ArtistProgram

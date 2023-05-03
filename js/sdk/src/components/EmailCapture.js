@@ -87,7 +87,7 @@ const EmailCapture = ({ setChildFormOpen, setParentOpen, forceOpen, inArtistProg
   }, [verificationState, publicKey])
 
   useEffect(() => {
-    if (wallet.wallet.adapter.name === 'Nina') {
+    if (wallet?.connected && wallet.wallet.adapter.name === 'Nina') {
       setUsingMagicWallet(true)
       setUser(wallet.wallet.adapter.user)
     }
