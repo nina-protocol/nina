@@ -219,6 +219,8 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
 
   useEffect(() => {
     if (isPublishing) {
+      setShowLowUploadModal(false)
+
       if (!artworkTx) {
         setPublishingStepText(
           `1/4 Uploading Artwork. ${pendingTransactionMessage}, do not close this window.`
@@ -271,7 +273,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   }, [pendingReleases])
 
   useEffect(() => {
-    if (availableStorage < uploadSize && !showLowUploadModal) {
+    if (availableStorage < uploadSize && !showLowUploadModal && !isPublishing) {
       setShowLowUploadModal(true)
     }
   }, [availableStorage, uploadSize])
