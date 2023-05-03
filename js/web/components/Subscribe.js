@@ -91,37 +91,38 @@ const Subscribe = ({
           <Dots />
         </Box>
       )}
-      {wallet.connected && wallet.publicKey.toBase58() !== accountAddress && (
-        <>
-          {!isFollowing && !pending && (
-            <Button
-              color="primary"
-              sx={{ padding: `${inFeed ? '0px' : '0 15px'}` }}
-              className="disableClickCapture"
-              onClick={(e) => handleSubscribe(e, accountAddress, hubHandle)}
-            >
-              Follow
-            </Button>
-          )}
+      {wallet?.connected &&
+        wallet?.publicKey?.toBase58() !== accountAddress && (
+          <>
+            {!isFollowing && !pending && (
+              <Button
+                color="primary"
+                sx={{ padding: `${inFeed ? '0px' : '0 15px'}` }}
+                className="disableClickCapture"
+                onClick={(e) => handleSubscribe(e, accountAddress, hubHandle)}
+              >
+                Follow
+              </Button>
+            )}
 
-          {isFollowing && !pending && (
-            <Button
-              color="primary"
-              sx={{ padding: `${inFeed ? '0px' : '0 15px'}` }}
-              className="disableClickCapture"
-              onClick={(e) => handleUnsubscribe(e, accountAddress, hubHandle)}
-            >
-              Unfollow
-            </Button>
-          )}
+            {isFollowing && !pending && (
+              <Button
+                color="primary"
+                sx={{ padding: `${inFeed ? '0px' : '0 15px'}` }}
+                className="disableClickCapture"
+                onClick={(e) => handleUnsubscribe(e, accountAddress, hubHandle)}
+              >
+                Unfollow
+              </Button>
+            )}
 
-          {followsYou && (
-            <Typography variant="body2" sx={{ padding: '0 15px' }}>
-              Follows You
-            </Typography>
-          )}
-        </>
-      )}
+            {followsYou && (
+              <Typography variant="body2" sx={{ padding: '0 15px' }}>
+                Follows You
+              </Typography>
+            )}
+          </>
+        )}
     </Box>
   )
 }

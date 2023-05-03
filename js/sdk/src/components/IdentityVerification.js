@@ -7,15 +7,20 @@ import Typography from '@mui/material/Typography'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import axios from 'axios'
+import CloseIcon from '@mui/icons-material/Close'
 import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateManager'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { useSnackbar } from 'notistack'
 import IdentityVerificationModal from './IdentityVerificationModal'
+import IdentityDisconnectModal from './IdentityDisconnectModal'
 import {
   verifyEthereum,
   verifyTwitter,
   verifySoundcloud,
   verifyInstagram,
+  deleteTwitterVerification,
+  deleteEthereumVerification,
+  deleteSoundcloudVerification,
 } from '../utils/identityVerification'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -33,11 +38,13 @@ const IdentityVerification = ({
   const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
   const { wallet } = useContext(Wallet.Context)
-  const { publicKey, signTransaction } = wallet
+  const { publicKey, signTransaction, sendTransaction } = wallet
   const { ninaClient, getVerificationsForUser } = useContext(Nina.Context)
   const { provider } = ninaClient
 
   const [open, setOpen] = useState(false)
+  const [openDisconnectModal, setOpenDisconnectModal] = useState(false)
+  const [disconnecting, setDisconencting] = useState(false)
   const [ethAddress, setEthAddress] = useState(undefined)
   const [soundcloudHandle, setSoundcloudHandle] = useState(undefined)
   const [soundcloudToken, setSoundcloudToken] = useState(undefined)
@@ -189,7 +196,6 @@ const IdentityVerification = ({
   const handleIdentityButtonAction = async (type) => {
     if (accountVerifiedForType(type)) {
       const value = valueForType(type)
-
       const params = {
         type,
         value,
@@ -227,7 +233,6 @@ const IdentityVerification = ({
           provider,
           soundcloudHandle,
           publicKey,
-          signTransaction,
           soundcloudToken
         )
         break
@@ -302,6 +307,57 @@ const IdentityVerification = ({
         break
     }
   }
+
+  const handleDisconnectFlow = async (e, type) => {
+    e.stopPropagation()
+    setDisconencting(true)
+    localStorage.setItem('codeSource', type)
+    setOpenDisconnectModal(true)
+    setActiveValue(valueForType(type))
+  }
+
+  const handleDisconnectAccount = async () => {
+    let success = false
+    switch (localStorage.getItem('codeSource')) {
+      case 'twitter':
+        success = await deleteTwitterVerification(
+          provider,
+          valueForType('twitter'),
+          publicKey,
+          signTransaction,
+          sendTransaction
+        )
+        break
+      case 'ethereum':
+        success = await deleteEthereumVerification(
+          provider,
+          valueForType('ethereum'),
+          publicKey,
+          signTransaction,
+          sendTransaction
+        )
+        break
+      case 'soundcloud':
+        success = await deleteSoundcloudVerification(
+          provider,
+          valueForType('soundcloud'),
+          publicKey,
+          signTransaction,
+          sendTransaction
+        )
+        break
+      default:
+        break
+    }
+
+    if (success) {
+      await getVerificationsForUser(profilePubkey)
+      enqueueSnackbar('Account disconnected.', {
+        variant: 'success',
+      })
+    }
+  }
+
   return (
     <>
       <CtaWrapper inOnboardingFlow={inOnboardingFlow}>
@@ -324,12 +380,18 @@ const IdentityVerification = ({
                     <Typography ml={1} variant="body2">
                       {buttonTextForType(buttonType)}
                     </Typography>
+                    {accountVerifiedForType(buttonType) && (
+                      <CloseIcon
+                        sx={{ ml: 1 }}
+                        onClick={(e) => handleDisconnectFlow(e, buttonType)}
+                      />
+                    )}
                   </Box>
                 </StyledCta>
               )
             })}
       </CtaWrapper>
-      {activeValue && (
+      {activeValue && !disconnecting && (
         <Box>
           <IdentityVerificationModal
             action={handleVerify}
@@ -337,8 +399,19 @@ const IdentityVerification = ({
             value={activeValue}
             open={open}
             setOpen={setOpen}
+            disconnecting={disconnecting}
           />
         </Box>
+      )}
+      {openDisconnectModal && disconnecting && (
+        <IdentityDisconnectModal
+          setOpen={setOpenDisconnectModal}
+          open={openDisconnectModal}
+          value={activeValue}
+          type={localStorage.getItem('codeSource')}
+          action={handleDisconnectAccount}
+          disconneting={disconnecting}
+        />
       )}
     </>
   )
