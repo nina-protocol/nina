@@ -374,12 +374,7 @@ class ReverseInstagramRegistryState {
   }
 }
 
-const verifyEthereum = async (
-  provider,
-  ethAddress,
-  publicKey,
-  signTransaction
-) => {
+const verifyEthereum = async (provider, ethAddress, publicKey) => {
   try {
     logEvent('connection_eth_initiated', 'engagement', {
       ethAddress,
@@ -417,13 +412,6 @@ const verifyEthereum = async (
       feePayer: NINA_ID,
     })
     tx.add(ix, createIx, reverseRegistryIx)
-
-    const signedTx = await signTransaction(tx)
-    if (signedTx.signature) {
-      tx.addSignature(publicKey, signedTx.signature[1].signature)
-    } else {
-      tx = signedTx
-    }
 
     const message = new TextEncoder().encode(publicKey)
     const messageBase64 = encodeBase64(message)
@@ -492,7 +480,7 @@ const verifySoundcloud = async (
       feePayer: NINA_ID,
     })
     tx.add(ix, createIx, reverseRegistryIx)
-    
+
     const message = new TextEncoder().encode(publicKey)
     const messageBase64 = encodeBase64(message)
     const signature = await provider.wallet.signMessage(message)
@@ -527,7 +515,7 @@ const verifyTwitter = async (
   provider,
   twitterHandle,
   twitterToken,
-  publicKey,
+  publicKey
 ) => {
   try {
     logEvent('connection_tw_initiated', 'engagement', {
@@ -717,21 +705,18 @@ const deleteSoundcloudVerification = async (
   signTransaction
 ) => {
   try {
-    console.log('soundcloudHandle,', soundcloudHandle)
     const hashedSoundcloudHandle = await getHashedName(soundcloudHandle)
     const soundcloudRegistryKey = await getNameAccountKey(
       hashedSoundcloudHandle,
       NINA_ID,
       NINA_ID_SC_TLD
     )
-    console.log('soundcloudRegistryKey,', soundcloudRegistryKey.toBase58())
     const hashedVerifiedPubkey = await getHashedName(publicKey.toString())
     const reverseRegistryKey = await getNameAccountKey(
       hashedVerifiedPubkey,
       NINA_ID,
       NINA_ID_SC_TLD
     )
-    console.log('reverseRegistryKey,', reverseRegistryKey.toBase58())
 
     const instructions = [
       // Delete the user facing registry

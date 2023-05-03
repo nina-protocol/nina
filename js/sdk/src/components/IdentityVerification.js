@@ -196,7 +196,6 @@ const IdentityVerification = ({
   const handleIdentityButtonAction = async (type) => {
     if (accountVerifiedForType(type)) {
       const value = valueForType(type)
-      console.log('value :>> ', value);
       const params = {
         type,
         value,
@@ -312,7 +311,6 @@ const IdentityVerification = ({
   const handleDisconnectFlow = async (e, type) => {
     e.stopPropagation()
     setDisconencting(true)
-    console.log('type :>> ', type);
     localStorage.setItem('codeSource', type)
     setOpenDisconnectModal(true)
     setActiveValue(valueForType(type))
@@ -324,38 +322,40 @@ const IdentityVerification = ({
       case 'twitter':
         success = await deleteTwitterVerification(
           provider,
-          valueForType("twitter"),
+          valueForType('twitter'),
           publicKey,
           signTransaction,
           sendTransaction
         )
+        break
       case 'ethereum':
         success = await deleteEthereumVerification(
           provider,
-          valueForType("ethereum"),
+          valueForType('ethereum'),
           publicKey,
           signTransaction,
           sendTransaction
         )
-        return success
+        break
       case 'soundcloud':
         success = await deleteSoundcloudVerification(
           provider,
-          valueForType("soundcloud"),
+          valueForType('soundcloud'),
           publicKey,
           signTransaction,
           sendTransaction
         )
+        break
       default:
         break
-      }
+    }
 
-      if (success) {
-        await getVerificationsForUser(profilePubkey)
-        enqueueSnackbar('Account disconnected.', {
-          variant: 'success',
-        })
-      }
+    if (success) {
+      await getVerificationsForUser(profilePubkey)
+      enqueueSnackbar('Account disconnected.', {
+        variant: 'success',
+      })
+    }
   }
 
   return (
@@ -380,9 +380,11 @@ const IdentityVerification = ({
                     <Typography ml={1} variant="body2">
                       {buttonTextForType(buttonType)}
                     </Typography>
-
                     {accountVerifiedForType(buttonType) && (
-                      <CloseIcon  sx={{ml: 1}} onClick={e => handleDisconnectFlow(e, buttonType)}/>
+                      <CloseIcon
+                        sx={{ ml: 1 }}
+                        onClick={(e) => handleDisconnectFlow(e, buttonType)}
+                      />
                     )}
                   </Box>
                 </StyledCta>
@@ -402,7 +404,7 @@ const IdentityVerification = ({
         </Box>
       )}
       {openDisconnectModal && disconnecting && (
-        <IdentityDisconnectModal 
+        <IdentityDisconnectModal
           setOpen={setOpenDisconnectModal}
           open={openDisconnectModal}
           value={activeValue}
@@ -410,7 +412,7 @@ const IdentityVerification = ({
           action={handleDisconnectAccount}
           disconneting={disconnecting}
         />
-      ) }
+      )}
     </>
   )
 }
