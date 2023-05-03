@@ -100,19 +100,19 @@ const ReleaseCode = ({ release, releasePubkey }) => {
           disabled={release.remainingSupply === 0 || release.price === 0}
           fullWidth
           sx={{
-            marginTop: '15px',
+            mt: 1,
             '&:hover': {
               opacity: '50%',
             },
           }}
         >
-          <Typography
+          <StyledTypography
             variant="body2"
             align="left"
-            closed={release.remainingSupply === 0}
+            disabled={release.remainingSupply === 0 || release.price === 0}
           >
             Manage Release Codes
-          </Typography>
+          </StyledTypography>
         </Button>
         <StyledModal
           aria-labelledby="transition-modal-title"
@@ -216,6 +216,10 @@ const Root = styled(Box)(() => ({
   alignItems: 'center',
   justifyContent: 'center',
   width: '100%',
+}))
+
+const StyledTypography = styled(Typography)(({ theme, disabled }) => ({
+  color: disabled ? theme.palette.grey.primary : theme.palette.black,
 }))
 
 const StyledListItem = styled(ListItem)(() => ({
