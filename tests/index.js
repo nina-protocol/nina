@@ -288,7 +288,7 @@ describe('Init', async () => {
         })
       },
       (err) => {
-        assert.ok(err.toString().includes("Cross-program invocation with unauthorized signer or writable account"));
+        assert.ok(err.toString().includes("A seeds constraint was violated"));
         return true;
       }
     );

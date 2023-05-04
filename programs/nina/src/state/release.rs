@@ -5,7 +5,7 @@ use anchor_lang::solana_program::{
 use mpl_token_metadata::{
     self,
     state::{Creator, DataV2},
-    instruction::{create_metadata_accounts_v2, update_metadata_accounts_v2},
+    instruction::{create_metadata_accounts_v3, update_metadata_accounts_v2},
 };
 use anchor_spl::token::{self, TokenAccount, MintTo, Transfer, Token, Mint, SetAuthority};
 use spl_token::instruction::{close_account};
@@ -13,7 +13,7 @@ use crate::utils::{wrapped_sol};
 
 use crate::errors::ErrorCode;
 
-#[account(zero_copy)]
+#[account(zero_copy(unsafe))]
 #[repr(packed)]
 #[derive(Default)]
 pub struct Release {
@@ -298,7 +298,7 @@ impl Release {
         ];
     
         invoke_signed(
-            &create_metadata_accounts_v2(
+            &create_metadata_accounts_v3(
                 metadata_program.key(),
                 metadata.key(),
                 release_mint.key(),
@@ -312,6 +312,7 @@ impl Release {
                 metadata_data.seller_fee_basis_points,
                 true,
                 true,
+                None,
                 None,
                 None
             ),
@@ -336,6 +337,13 @@ impl Release {
         metadata_data: ReleaseMetadataData,
         bumps: ReleaseBumps,
     ) -> Result<()> {
+        let creators: Vec<Creator> =
+        vec![Creator {
+            address: *release_signer.to_account_info().key,
+            verified: true,
+            share: 100,
+        }];
+
         let metadata_infos = vec![
             metadata.clone(),
             release_mint.to_account_info().clone(),
@@ -364,7 +372,7 @@ impl Release {
                     symbol: metadata_data.symbol,
                     uri: metadata_data.uri.clone(),
                     seller_fee_basis_points: metadata_data.seller_fee_basis_points,
-                    creators: None,
+                    creators: Some(creators),
                     collection: None,
                     uses: None
                 }),
@@ -524,7 +532,7 @@ impl Release {
     } 
 }
 
-#[zero_copy]
+#[zero_copy(unsafe)]
 #[repr(packed)]
 #[derive(Default)]
 pub struct RoyaltyRecipient {

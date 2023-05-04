@@ -3,7 +3,7 @@ use std::default::Default;
 use crate::state::*;
 use crate::errors::ErrorCode;
 
-#[account(zero_copy)]
+#[account(zero_copy(unsafe))]
 #[repr(packed)]
 // size = 8 + 32 + 32 + 100 + 100 + 8 + 8 + 8 + 1 + 8 (+ 32 extra) = 337
 pub struct Hub {
@@ -119,7 +119,7 @@ pub struct HubContent {
 	pub reposted_from_hub: Pubkey
 }
 
-#[account(zero_copy)]
+#[account(zero_copy(unsafe))]
 #[repr(packed)]
 // size = 8 + 32 + 32 + 32 + 100 + 1 (+ 39) = 244
 pub struct HubPost {
