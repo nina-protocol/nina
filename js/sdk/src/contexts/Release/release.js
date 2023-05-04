@@ -468,7 +468,12 @@ const releaseContextHelper = ({
       }
 
       const tx = await program.methods
-        .releaseInitViaHub(config, bumps, metadataData, decodeNonEncryptedByteArray(hub.handle))
+        .releaseInitViaHub(
+          config,
+          bumps,
+          metadataData,
+          decodeNonEncryptedByteArray(hub.handle)
+        )
         .accounts(request.accounts)
         .preInstructions(request.instructions)
         .transaction()
@@ -655,8 +660,8 @@ const releaseContextHelper = ({
           releaseSigner,
           anchor.web3.SystemProgram.programId,
           anchor.web3.SYSVAR_RENT_PUBKEY,
-          paymentMint,
-          true
+          paymentMint
+          // true
         )
 
       let instructions = [...releaseMintIx, royaltyTokenAccountIx]
@@ -708,6 +713,8 @@ const releaseContextHelper = ({
         publicKey: release.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
       })
+
+      console.log('instructions :>> ', instructions)
       const tx = await program.methods
         .releaseInit(config, bumps, metadataData)
         .accounts({
@@ -723,7 +730,7 @@ const releaseContextHelper = ({
           metadataProgram,
           systemProgram: anchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         })
         .preInstructions(instructions)
         .transaction()

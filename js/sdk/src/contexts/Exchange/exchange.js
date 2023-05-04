@@ -359,7 +359,7 @@ const exchangeContextHelper = ({
         await provider.connection.getRecentBlockhash()
       ).blockhash
       tx.feePayer = provider.wallet.publicKey
-
+      console.log('request.signers :>> ', request.signers)
       for await (let signer of request.signers) {
         tx.partialSign(signer)
       }
@@ -422,6 +422,7 @@ const exchangeContextHelper = ({
           tokenProgram: TOKEN_PROGRAM_ID,
         },
       }
+
       if (initializerReturnTokenAccountIx) {
         request.instructions = [initializerReturnTokenAccountIx]
       }
@@ -450,10 +451,6 @@ const exchangeContextHelper = ({
         await provider.connection.getRecentBlockhash()
       ).blockhash
       tx.feePayer = provider.wallet.publicKey
-
-      for await (let signer of request.signers) {
-        tx.partialSign(signer)
-      }
 
       const txid = await provider.wallet.sendTransaction(
         tx,
