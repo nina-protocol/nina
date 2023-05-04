@@ -5,7 +5,7 @@ use anchor_lang::solana_program::{
 use mpl_token_metadata::{
     self,
     state::{Creator, DataV2},
-    instruction::{create_metadata_accounts_v2, update_metadata_accounts_v2},
+    instruction::{create_metadata_accounts_v3, update_metadata_accounts_v2},
 };
 use anchor_spl::token::{self, TokenAccount, MintTo, Transfer, Token, Mint, SetAuthority};
 use spl_token::instruction::{close_account};
@@ -298,7 +298,7 @@ impl Release {
         ];
     
         invoke_signed(
-            &create_metadata_accounts_v2(
+            &create_metadata_accounts_v3(
                 metadata_program.key(),
                 metadata.key(),
                 release_mint.key(),
@@ -312,6 +312,7 @@ impl Release {
                 metadata_data.seller_fee_basis_points,
                 true,
                 true,
+                None,
                 None,
                 None
             ),
