@@ -54,7 +54,7 @@ const WalletContextProvider = ({ children }) => {
     }
     transactionMessage()
   }, [wallet])
-
+  
   return (
     <WalletContext.Provider
       value={{

@@ -320,6 +320,8 @@ const releaseContextHelper = ({
       const paymentMint = new anchor.web3.PublicKey(
         isUsdc ? ids.mints.usdc : ids.mints.wsol
       )
+      console.log('isUsdc', isUsdc)
+      console.log('paymentMint', paymentMint.toBase58())
       const [releaseSigner, releaseSignerBump] =
         await anchor.web3.PublicKey.findProgramAddress(
           [release.toBuffer()],
@@ -387,7 +389,7 @@ const releaseContextHelper = ({
         program.programId
       )
 
-      let [hubWallet] = await findOrCreateAssociatedTokenAccount(
+      let [hubWallet, hubWalletIx] = await findOrCreateAssociatedTokenAccount(
         provider.connection,
         provider.wallet.publicKey,
         hubSigner,
@@ -400,6 +402,10 @@ const releaseContextHelper = ({
 
       if (authorityTokenAccountIx) {
         instructions.push(authorityTokenAccountIx)
+      }
+
+      if (hubWalletIx) {
+        instructions.push(hubWalletIx)
       }
 
       const editionAmount = isOpen ? MAX_INT : amount

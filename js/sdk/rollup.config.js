@@ -59,6 +59,7 @@ export default [
       IdentityVerification: 'src/components/IdentityVerification.js',
       AddToHubModal: 'src/components/AddToHubModal.js',
       HubPostCreate: 'src/components/HubPostCreate',
+      CoinflowModal: 'src/components/CoinflowModal',
     },
     output: [
       {

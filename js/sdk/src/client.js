@@ -31,7 +31,7 @@ export const NINA_CLIENT_IDS = {
       vaultWrappedSol: 'H35oumnDdCu5VGXvp24puqYvUQ3Go1JXCGum7L2J3CSP',
     },
     mints: {
-      usdc: 'J8Kvy9Kjot83DEgnnbK55BYbAK9pZuyYt4NBGkEJ9W1K',
+      usdc: '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU',
       wsol: 'So11111111111111111111111111111111111111112',
       publishingCredit: 'NpCbciSYfzrSk9aQ2gkr17TX2fjkm6XGRYhkZ811QDE',
       hubCredit: 'NpCbciSYfzrSk9aQ2gkr17TX2fjkm6XGRYhkZ811QDE',

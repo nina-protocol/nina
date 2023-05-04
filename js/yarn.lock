@@ -1109,6 +1109,14 @@
     "@chainsafe/persistent-merkle-tree" "^0.4.2"
     case "^1.6.3"
 
+"@coinflowlabs/react@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@coinflowlabs/react/-/react-2.1.1.tgz#51768e06941851fb598295aff246e7dd0b723b05"
+  integrity sha512-KWP8fVxZHj6Prl7wxwvPcrX+vwPN5A7kbB3iqLYjg0RJ381ICxMUo70Yb4cPHI7Fa7aJmk4e1nlTAx87z03w1g==
+  dependencies:
+    bn.js "^5.2.1"
+    bs58 "^5.0.0"
+
 "@emotion/babel-plugin@^11.10.6":
   version "11.10.6"
   resolved "https://registry.yarnpkg.com/@emotion/babel-plugin/-/babel-plugin-11.10.6.tgz#a68ee4b019d661d6f37dec4b8903255766925ead"
