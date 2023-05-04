@@ -271,7 +271,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   }, [pendingReleases])
 
   useEffect(() => {
-    if (availableStorage < uploadSize && !showLowUploadModal) {
+    if (availableStorage < uploadSize && !showLowUploadModal && !isPublishing) {
       setShowLowUploadModal(true)
     }
   }, [availableStorage, uploadSize])
