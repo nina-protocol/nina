@@ -131,6 +131,24 @@ const walletContextHelper = ({
             transaction,
             serializeConfig
           )
+
+          if (transaction.signatures.length > 1) {
+            let deserializedTransaction = anchor.web3.Transaction.from(
+              signedTransaction.rawTransaction
+            )
+
+            transaction.signatures.forEach((signature) => {
+              if (signature.signature) {
+                deserializedTransaction.addSignature(
+                  signature.publicKey,
+                  signature.signature
+                )
+              }
+            })
+            signedTransaction.rawTransaction =
+              deserializedTransaction.serialize()
+          }
+
           const txid = await connection.sendRawTransaction(
             signedTransaction.rawTransaction
           )
