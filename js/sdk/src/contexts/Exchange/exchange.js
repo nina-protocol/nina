@@ -359,7 +359,6 @@ const exchangeContextHelper = ({
         await provider.connection.getRecentBlockhash()
       ).blockhash
       tx.feePayer = provider.wallet.publicKey
-      console.log('request.signers :>> ', request.signers)
       for await (let signer of request.signers) {
         tx.partialSign(signer)
       }

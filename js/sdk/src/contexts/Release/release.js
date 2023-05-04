@@ -660,8 +660,8 @@ const releaseContextHelper = ({
           releaseSigner,
           anchor.web3.SystemProgram.programId,
           anchor.web3.SYSVAR_RENT_PUBKEY,
-          paymentMint
-          // true
+          paymentMint,
+          true
         )
 
       let instructions = [...releaseMintIx, royaltyTokenAccountIx]
@@ -714,7 +714,6 @@ const releaseContextHelper = ({
         wallet: provider.wallet.publicKey.toBase58(),
       })
 
-      console.log('instructions :>> ', instructions)
       const tx = await program.methods
         .releaseInit(config, bumps, metadataData)
         .accounts({
