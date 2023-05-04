@@ -134,7 +134,7 @@ const NavDrawer = () => {
                 <ListItem button key={link}>
                   <StyledListItemText>
                     <a
-                      href="https://nina-protocol.notion.site/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612"
+                      href="https://help.ninaprotocol.com"
                       target="_blank"
                       rel="noreferrer"
                       className={`${classes.drawerLink}`}
