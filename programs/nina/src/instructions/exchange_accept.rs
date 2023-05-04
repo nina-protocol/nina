@@ -298,11 +298,5 @@ pub fn handler (
     exchange_history.datetime = params.datetime;
     exchange_history.price = price;
 
-    emit!(ExchangeCompleted {
-        public_key: *ctx.accounts.exchange.to_account_info().key,
-        taker: *ctx.accounts.taker.to_account_info().key,
-        datetime: params.datetime
-    });
-
     Ok(())
 }

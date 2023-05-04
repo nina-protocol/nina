@@ -208,12 +208,6 @@ impl Release {
 
         // Make sure royalty shares of all recipients does not exceed 1000000
         if release.royalty_equals_1000000() {
-            if !is_init {
-                emit!(RoyaltyRecipientAdded {
-                    authority: new_royalty_recipient,
-                    public_key: release_loader.key(),
-                });
-            }
             Ok(())
         } else {
             return Err(error!(ErrorCode::RoyaltyExceeds100Percent));
@@ -589,39 +583,3 @@ impl From<AuthorityType> for spl_token::instruction::AuthorityType {
         }
     }
 }
-
-#[event]
-pub struct ReleaseCreated {
-    pub authority: Pubkey,
-    pub datetime: i64,
-    pub mint: Pubkey,
-    #[index]
-    pub public_key: Pubkey,
-    pub metadata_public_key: Pubkey,
-    pub uri: String,
-}
-
-#[event]
-pub struct RoyaltyRecipientAdded {
-    pub authority: Pubkey,
-    pub public_key: Pubkey,
-}
-
-#[event]
-pub struct ReleaseSold {
-    pub public_key: Pubkey,
-    pub purchaser: Pubkey,
-    #[index]
-    pub date: i64,
-}
-
-#[event]
-pub struct ReleaseSoldViaHub {
-    pub public_key: Pubkey,
-    pub purchaser: Pubkey,
-    pub hub: Pubkey,
-    #[index]
-    pub date: i64,
-}
-
-

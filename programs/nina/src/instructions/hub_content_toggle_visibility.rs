@@ -39,11 +39,5 @@ pub fn handler (
 
     hub_content.visible = !hub_content.visible;
 
-    emit!(HubContentToggled {
-        public_key: hub_content.key(),
-        content_type: hub_content.content_type,
-        visible: hub_content.visible,
-    });
-
     Ok(())
 }

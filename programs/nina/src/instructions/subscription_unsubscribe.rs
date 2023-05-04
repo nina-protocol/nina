@@ -17,12 +17,7 @@ pub struct SubscriptionUnsubscribe<'info> {
 }
 
 pub fn handler(
-    ctx: Context<SubscriptionUnsubscribe>
+    _ctx: Context<SubscriptionUnsubscribe>
 ) -> Result<()> {
-
-    emit!(SubscriptionUnsubscribed {
-        public_key: ctx.accounts.subscription.key(),
-    });
-
     Ok(())
 }

@@ -21,19 +21,3 @@ pub struct Subscription {
     pub subscription_type: SubscriptionType,
 		pub datetime: i64,
 }
-
-#[event]
-pub struct SubscriptionSubscribed {
-	#[index]
-	pub public_key: Pubkey,
-	pub from: Pubkey,
-	pub to: Pubkey,
-	pub subscription_type: SubscriptionType,
-	pub datetime: i64,
-}
-
-#[event]
-pub struct SubscriptionUnsubscribed {
-	#[index]
-	pub public_key: Pubkey,
-}

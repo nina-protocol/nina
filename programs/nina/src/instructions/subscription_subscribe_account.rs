@@ -26,13 +26,5 @@ pub fn handler(ctx: Context<SubscriptionSubscribeAccount>) -> Result<()> {
     subscription.subscription_type = SubscriptionType::Account;
     subscription.datetime = Clock::get()?.unix_timestamp;
 
-    emit!(SubscriptionSubscribed {
-        public_key: subscription.key(),
-        from: subscription.from,
-        to: subscription.to,
-        subscription_type: subscription.subscription_type,
-        datetime: subscription.datetime,
-    });
-
     Ok(())
 }
