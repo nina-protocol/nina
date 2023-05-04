@@ -1,10 +1,14 @@
 use anchor_lang::prelude::*;
 use crate::state::*;
+use crate::utils::{dispatcher_account};
+use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
 pub struct SubscriptionUnsubscribe<'info> {
     #[account(mut)]
-    pub from: Signer<'info>,
+    pub payer: Signer<'info>,
+    /// CHECK: This is safe because we check from in the handler
+    pub from: UncheckedAccount<'info>,
     #[account(
         mut,
         seeds = [b"nina-subscription", from.key().as_ref(), to.key().as_ref()],
@@ -17,7 +21,13 @@ pub struct SubscriptionUnsubscribe<'info> {
 }
 
 pub fn handler(
-    _ctx: Context<SubscriptionUnsubscribe>
+    ctx: Context<SubscriptionUnsubscribe>
 ) -> Result<()> {
+    if ctx.accounts.payer.key() != ctx.accounts.from.key() {
+        if ctx.accounts.payer.key() != dispatcher_account::ID {
+            return Err(ErrorCode::SubscriptionPayerMismatch.into());
+        }
+    }
+
     Ok(())
 }

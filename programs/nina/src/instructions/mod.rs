@@ -38,11 +38,8 @@ pub mod post_init_via_hub_with_reference_release;
 pub mod post_update_via_hub_post;
 
 pub mod subscription_subscribe_account;
-pub mod subscription_subscribe_account_delegated;
 pub mod subscription_subscribe_hub;
-pub mod subscription_subscribe_hub_delegated;
 pub mod subscription_unsubscribe;
-pub mod subscription_unsubscribe_delegated;
 
 pub use release_init::*;
 pub use release_init_with_credit::*;
@@ -84,8 +81,5 @@ pub use post_init_via_hub_with_reference_release::*;
 pub use post_update_via_hub_post::*;
 
 pub use subscription_subscribe_account::*;
-pub use subscription_subscribe_account_delegated::*;
 pub use subscription_subscribe_hub::*;
-pub use subscription_subscribe_hub_delegated::*;
 pub use subscription_unsubscribe::*;
-pub use subscription_unsubscribe_delegated::*;
