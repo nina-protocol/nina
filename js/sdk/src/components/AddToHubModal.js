@@ -24,13 +24,7 @@ import Dots from './Dots'
 const WalletConnectModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
 )
-const AddToHubModal = ({
-  userHubs,
-  releasePubkey,
-  metadata,
-  hubPubkey,
-  inHubDashboard,
-}) => {
+const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const { wallet, pendingTransactionMessage } = useContext(Wallet.Context)
