@@ -78,12 +78,6 @@ pub mod nina {
         instructions::release_revenue_share_transfer::handler(ctx, transfer_share)
     }
 
-    pub fn release_airdrop(
-        ctx: Context<ReleaseAirdrop>,
-    ) -> Result<()> {
-        instructions::release_airdrop::handler(ctx)
-    }
-
     pub fn release_update_metadata(
         ctx: Context<ReleaseUpdateMetadata>,
         bumps: ReleaseBumps,
