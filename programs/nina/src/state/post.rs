@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use crate::state::*;
 
-#[account(zero_copy(unsafe))]
+#[account(zero_copy)]
 #[repr(packed)]
 // size = 8 + 32 + 8 + 8 + 100 + 100 (+ 40) = 296
 pub struct Post {

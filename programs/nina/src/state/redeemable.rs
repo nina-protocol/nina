@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-#[account(zero_copy(unsafe))]
+#[account(zero_copy)]
 #[repr(packed)]
 pub struct Redeemable {
     pub authority: Pubkey,
@@ -15,7 +15,7 @@ pub struct Redeemable {
     pub bumps: RedeemableBumps,
 }
 
-#[account(zero_copy(unsafe))]
+#[account(zero_copy)]
 #[repr(packed)]
 pub struct RedemptionRecord {
     pub redeemer: Pubkey,

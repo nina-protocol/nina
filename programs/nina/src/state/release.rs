@@ -13,7 +13,7 @@ use crate::utils::{wrapped_sol};
 
 use crate::errors::ErrorCode;
 
-#[account(zero_copy(unsafe))]
+#[account(zero_copy)]
 #[repr(packed)]
 #[derive(Default)]
 pub struct Release {
@@ -532,7 +532,7 @@ impl Release {
     } 
 }
 
-#[zero_copy(unsafe)]
+#[zero_copy]
 #[repr(packed)]
 #[derive(Default)]
 pub struct RoyaltyRecipient {

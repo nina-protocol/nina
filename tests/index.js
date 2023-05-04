@@ -66,8 +66,18 @@ let initializerAmount = 5000000;
 
 let releaseSellOut
 
+const printProgramInfo = async () => {
+  const program = await provider.connection.getAccountInfo(nina.programId);
+  console.log('build size: ', program.data.length)
+  console.log('build limit: 1395325')
+  console.log('remaining program size: ', 1395325 - program.data.length)
+  console.log('remaining program size %: ', (1395325 - program.data.length) / 1395325 * 100) 
+}
+printProgramInfo()
+
 describe('Init', async () => {
   it('Set up USDC Mint + Users', async () => {
+
     user1 = await newAccount(provider);
     user2 = await newAccount(provider);
     user3 = await newAccount(provider);
@@ -5860,3 +5870,13 @@ describe('Subscription', async () => {
     assert.equal(Object.keys(subscriptionAfter.subscriptionType)[0], 'hub')
   })
 })
+
+describe('Program size', async () => {
+  it ('Program is below the max size', async () => {
+    const program = await provider.connection.getAccountInfo(nina.programId);
+
+    if (program.data.length > 1395325) {
+      throw new Error('PROGRAM TOO LARGE')
+    }
+  })
+});
