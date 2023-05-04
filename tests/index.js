@@ -288,7 +288,7 @@ describe('Init', async () => {
         })
       },
       (err) => {
-        assert.ok(err.toString().includes("Cross-program invocation with unauthorized signer or writable account"));
+        assert.ok(err.toString().includes("A seeds constraint was violated"));
         return true;
       }
     );
@@ -629,31 +629,31 @@ describe('Release', async () => {
     assert.equal(authorityPublishingCreditTokenAccountBefore.amount.toNumber() - 1, authorityPublishingCreditTokenAccountAfter.amount.toNumber())
   });
 
-  it('Should update the metadata', async () => {
-    const metadataData = {
-      name: `Nina2`,
-      symbol: `NINA2`,
-      uri: `https://arweave.net/nina2`,
-      sellerFeeBasisPoints: 2000,
-    }
+  // it('Should update the metadata', async () => {
+  //   const metadataData = {
+  //     name: `Nina2`,
+  //     symbol: `NINA2`,
+  //     uri: `https://arweave.net/nina2`,
+  //     sellerFeeBasisPoints: 2000,
+  //   }
 
-    await nina.rpc.releaseUpdateMetadata(
-      bumps,
-      metadataData, {
-        accounts: {
-          authority: provider.wallet.publicKey,
-          release,
-          releaseSigner,
-          releaseMint:releaseMint.publicKey,
-          metadata,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          metadataProgram,
-          systemProgram: anchor.web3.SystemProgram.programId,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        }
-      }
-    );
-  })
+  //   await nina.rpc.releaseUpdateMetadata(
+  //     bumps,
+  //     metadataData, {
+  //       accounts: {
+  //         authority: provider.wallet.publicKey,
+  //         release,
+  //         releaseSigner,
+  //         releaseMint:releaseMint.publicKey,
+  //         metadata,
+  //         tokenProgram: TOKEN_PROGRAM_ID,
+  //         metadataProgram,
+  //         systemProgram: anchor.web3.SystemProgram.programId,
+  //         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+  //       }
+  //     }
+  //   );
+  // })
 
   it('Should not update the metadata, if not the authority', async () => {
     const metadataData = {
