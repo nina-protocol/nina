@@ -13,7 +13,7 @@ use crate::utils::{wrapped_sol};
 
 use crate::errors::ErrorCode;
 
-#[account(zero_copy)]
+#[account(zero_copy(unsafe))]
 #[repr(packed)]
 #[derive(Default)]
 pub struct Release {
@@ -337,6 +337,13 @@ impl Release {
         metadata_data: ReleaseMetadataData,
         bumps: ReleaseBumps,
     ) -> Result<()> {
+        let creators: Vec<Creator> =
+        vec![Creator {
+            address: *release_signer.to_account_info().key,
+            verified: true,
+            share: 100,
+        }];
+
         let metadata_infos = vec![
             metadata.clone(),
             release_mint.to_account_info().clone(),
@@ -365,7 +372,7 @@ impl Release {
                     symbol: metadata_data.symbol,
                     uri: metadata_data.uri.clone(),
                     seller_fee_basis_points: metadata_data.seller_fee_basis_points,
-                    creators: None,
+                    creators: Some(creators),
                     collection: None,
                     uses: None
                 }),
@@ -525,7 +532,7 @@ impl Release {
     } 
 }
 
-#[zero_copy]
+#[zero_copy(unsafe)]
 #[repr(packed)]
 #[derive(Default)]
 pub struct RoyaltyRecipient {
