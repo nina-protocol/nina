@@ -39,6 +39,7 @@ const HubPostCreate = ({
   selectedHubId,
   setParentOpen,
   userHasHubs,
+  inHubDashboard,
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { wallet, pendingTransactionMessage, shortPendingTransactionMessage } =
@@ -308,7 +309,8 @@ const HubPostCreate = ({
                           isPublishing ||
                           !formIsValid ||
                           (!preloadedRelease &&
-                            !formValues.postForm.reference) ||
+                            !formValues.postForm.reference &&
+                            !inHubDashboard) ||
                           bundlrBalance === 0 ||
                           mbs < uploadSize
                         }
@@ -317,7 +319,20 @@ const HubPostCreate = ({
                         {isPublishing ? (
                           <Dots msg={publishingStepText} />
                         ) : (
-                          <Typography variant="body2">{buttonText}</Typography>
+                          <StyledTypography
+                            disabled={
+                              isPublishing ||
+                              !formIsValid ||
+                              (!preloadedRelease &&
+                                !formValues.postForm.reference &&
+                                !inHubDashboard) ||
+                              bundlrBalance === 0 ||
+                              mbs < uploadSize
+                            }
+                            variant="body2"
+                          >
+                            {buttonText}
+                          </StyledTypography>
                         )}
                       </Button>
                     )}
@@ -402,6 +417,10 @@ const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+}))
+
+const StyledTypography = styled(Typography)(({ theme, disabled }) => ({
+  color: disabled ? theme.palette.grey.primary : theme.palette.black,
 }))
 
 export default HubPostCreate

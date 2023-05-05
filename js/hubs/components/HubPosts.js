@@ -92,6 +92,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
             hubPubkey={hubPubkey}
             selectedHubId={hubPubkey}
             hubReleasesToReference={hubReleases}
+            inHubDashboard={true}
           />
         </DashboardContent>
         <DashboardContent item md={6}>
