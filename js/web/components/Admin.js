@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { encodeBase64 } from 'tweetnacl-util'
 import axios from 'axios'
 import Typography from '@mui/material/Typography'
@@ -7,17 +6,17 @@ import ScrollablePageWrapper from './ScrollablePageWrapper'
 import Button from '@mui/material/Button'
 import Input from '@mui/material/Input'
 import Box from '@mui/material/Box'
-import { useRouter } from 'next/router'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import onboardingCodeWhitelist from '@nina-protocol/nina-internal-sdk/src/utils/onboardingCodeWhitelist'
 import { useSnackbar } from 'notistack'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 
 const ONBOARDING_ACCOUNT = 'B9TUbCJV5mpmgBzuqNBpsAnSTqzXZ4S6FxpPtcFPMps3'
 const ID_ACCOUNT = 'idHukURpSwMbvcRER9pN97tBSsH4pdLSUhnHYwHftd5'
 const DISPATCHER_ACCOUNT = 'BnhxwsrY5aaeMehsTRoJzX2X4w5sKMhMfBs2MCKUqMC'
 
 const Admin = () => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const { enqueueSnackbar } = useSnackbar()
   const walletPubkey = wallet.publicKey?.toBase58()
   const hasAccess = onboardingCodeWhitelist.includes(walletPubkey)
