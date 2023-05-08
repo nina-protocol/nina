@@ -14,7 +14,7 @@ import Dots from './Dots'
 const Swap = ({ refreshBalances }) => {
   const { enqueueSnackbar } = useSnackbar()
 
-  const { ninaClient, usdcBalance, solBalance } = useContext(Nina.Context)
+  const { ninaClient, usdcBalance, solBalance, getUserBalances } = useContext(Nina.Context)
   const { wallet, connection, pendingTransactionMessage } = useContext(
     Wallet.Context
   )
@@ -93,7 +93,7 @@ const Swap = ({ refreshBalances }) => {
     setPending(true)
     try {
       await swap(quote, wallet, connection)
-      await refreshBalances()
+      await getUserBalances()
       setInputAmount(0)
       setOutputCurrency(0)
       enqueueSnackbar('Swap Successful', {
@@ -170,7 +170,7 @@ const Swap = ({ refreshBalances }) => {
           color="primary"
           variant="outlined"
           fullWidth
-          onClick={() => handleSwap()}
+          onClick={handleSwap}
         >
           {pending ? (
             <Dots msg={pendingTransactionMessage} />

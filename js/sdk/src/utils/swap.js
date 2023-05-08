@@ -45,6 +45,8 @@ export const swapQuote = async (
 }
 
 export const swap = async (quote, wallet, connection) => {
+  console.log('connection :>> ', connection);
+
   const context = WhirlpoolContext.from(
     connection,
     wallet,
@@ -56,6 +58,10 @@ export const swap = async (quote, wallet, connection) => {
 
   const txBuilder = await whirlpool.swap(quote)
   const tx = await txBuilder.build()
+
+  console.log('tx :>> ', tx);
+  console.log('tx.signers :>> ', tx.signers);
+  
   if (tx.signers.length > 0) {
     tx.transaction.partialSign(...tx.signers)
   }

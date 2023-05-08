@@ -95,9 +95,11 @@ const exchangeContextHelper = ({
       const release = await program.account.release.fetch(
         new anchor.web3.PublicKey(releasePubkey)
       )
+      console.log('new anchor.web3.PublicKey(releasePubkey) :>> ', new anchor.web3.PublicKey(releasePubkey));
       const exchangeAccount = await program.account.exchange.fetch(
         new anchor.web3.PublicKey(exchange.publicKey)
       )
+      console.log('  new anchor.web3.PublicKey(exchange.publicKey) :>> ',   new anchor.web3.PublicKey(exchange.publicKey));
       const [takerSendingTokenAccount, takerSendingTokenAccountIx] =
         await findOrCreateAssociatedTokenAccount(
           provider.connection,
@@ -199,6 +201,10 @@ const exchangeContextHelper = ({
       ).blockhash
       tx.feePayer = provider.wallet.publicKey
 
+      console.log('request.signers :>> ', request.signers);
+
+      // tx.partialSign(exchangeHistory)
+
       for await (let signer of request.signers) {
         tx.partialSign(signer)
       }
@@ -216,6 +222,8 @@ const exchangeContextHelper = ({
       }
       await getUserBalances()
       await getExchange(exchange.publicKey, false, txid)
+      // await getExchangesForRelease(releasePubkey, exchange.publicKey)
+
 
       return {
         success: true,
