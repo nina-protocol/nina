@@ -730,10 +730,11 @@ const ninaContextHelper = ({
         )
         solBalanceResult = await getSolBalance()
         setSolUsdcBalance(
-          (
+          Math.floor(
             ninaClient.nativeToUi(solBalanceResult, ids.mints.wsol) *
-            solPrice.data.data.SOL.price
-          ).toFixed(2)
+              solPrice.data.data.SOL.price *
+              100
+          ) / 100
         )
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
           provider.connection,
@@ -748,7 +749,7 @@ const ninaContextHelper = ({
             await provider.connection.getTokenAccountBalance(
               usdcTokenAccountPubkey
             )
-          usdc = usdcTokenAccount.value.uiAmount.toFixed(2)
+          usdc = Math.floor(usdcTokenAccount.value.uiAmount * 100) / 100
           setUsdcBalance(usdc)
           return
         } else {
