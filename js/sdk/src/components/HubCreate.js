@@ -101,7 +101,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
   }, [solBalanceFetched])
 
   useEffect(() => {
-    if (isPublishing) {
+    if (isPublishing && !update) {
       if (!artworkTx) {
         setPublishingStepText(
           `1/3 Uploading Artwork.  ${pendingTransactionMessage}, do not close this window.`
@@ -115,6 +115,10 @@ const HubCreate = ({ update, hubData, inHubs }) => {
           `3/3 Finalizing Hub.  ${pendingTransactionMessage}, do not close this window.`
         )
       }
+    } else if (isPublishing && update) {
+      setPublishingStepText(
+        `Updating Hub. ${pendingTransactionMessage}, do not close this window.`
+      )
     } else {
       if (artworkTx && !metadataTx) {
         setButtonText('Restart 2/3: Upload Metadata.')
@@ -278,7 +282,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
             enqueueSnackbar('Hub Updated!', {
               variant: 'success',
             })
-
+            setPublishingStepText('Hub Updated')
             removeUpload(upload)
             setIsPublishing(false)
           } else {
