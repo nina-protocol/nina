@@ -228,7 +228,6 @@ const HubPostCreate = ({
           } else {
             result = await postInitViaHub(hubPubkey, slug, uri)
           }
-
           if (result?.success) {
             await getHubsForRelease(metadataJson.reference)
             enqueueSnackbar(result.msg, {
@@ -253,6 +252,10 @@ const HubPostCreate = ({
     } catch (error) {
       setParentOpen(false)
       console.warn(error)
+      enqueueSnackbar(error.msg, {
+        variant: 'failure',
+      })
+
     }
   }
 
