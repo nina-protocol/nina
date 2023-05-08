@@ -74,4 +74,6 @@ pub enum ErrorCode {
     ReleaseAlreadyOwned,
     #[msg("Subscription Payer Mismatch")]
     SubscriptionPayerMismatch,
+    #[msg("Subscription Delegated Payer Mismatch")]
+    SubscriptionDelegatedPayerMismatch,
 }

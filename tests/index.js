@@ -5842,6 +5842,41 @@ describe('Subscription', async () => {
     assert.equal(Object.keys(subscriptionAfter.subscriptionType)[0], 'account')
   })
 
+  it('should not unsubscrive to an account with wrong payer', async () => {
+    const [_subscription] = await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("nina-subscription")), 
+        provider.wallet.publicKey.toBuffer(),
+        user1.publicKey.toBuffer(),
+      ],
+      nina.programId
+    );
+    subscription = _subscription
+
+
+    await assert.rejects(
+      async () => {
+        await nina.rpc.subscriptionUnsubscribe(
+          {
+            accounts: {
+              payer: user1.publicKey,
+              from: provider.wallet.publicKey,
+              subscription,
+              to: user1.publicKey,
+            },
+            signers: [user1]
+          }
+        )        
+    },
+      (err) => {
+        assert.equal(err.error.errorCode.number, 6035);
+        assert.equal(err.error.errorMessage, "Subscription Payer Mismatch");
+        return true;
+      }
+    );
+
+  })
+
   it('should subscribe to a hub', async () => {
     const hubHandle = 'NinaHub'
     const [hub] = await anchor.web3.PublicKey.findProgramAddress([

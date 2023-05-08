@@ -14,7 +14,7 @@ pub struct SubscriptionSubscribeAccount<'info> {
         seeds = [b"nina-subscription", from.key().as_ref(), to.key().as_ref()],
         bump,
         payer = payer,
-        space = 113
+        space = 121
     )]
     pub subscription: Account<'info, Subscription>,
     /// CHECK: This is safe because we don't need to verify anything about
@@ -36,6 +36,7 @@ pub fn handler(ctx: Context<SubscriptionSubscribeAccount>) -> Result<()> {
     subscription.to = ctx.accounts.to.key();
     subscription.subscription_type = SubscriptionType::Account;
     subscription.datetime = Clock::get()?.unix_timestamp;
+    subscription.payer = Some(ctx.accounts.payer.key());
 
     Ok(())
 }

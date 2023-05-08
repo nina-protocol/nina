@@ -42,6 +42,7 @@ pub fn handler(
     subscription.to = ctx.accounts.to.key();
     subscription.subscription_type = SubscriptionType::Hub;
     subscription.datetime = Clock::get()?.unix_timestamp;
-    
+    subscription.payer = Some(ctx.accounts.payer.key());
+
     Ok(())
 }
