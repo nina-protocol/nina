@@ -113,7 +113,7 @@ const IdentityVerification = ({
 
   const buttonTypes = useMemo(() => {
     const buttonArray = []
-    if (publicKey?.toBase58() === profilePublicKey) {
+    if (publicKey?.toBase58() === profilePubKey) {
       if (accountVerifiedForType('ethereum')) {
         buttonArray.push('ethereum')
       }
