@@ -282,7 +282,6 @@ const HubCreate = ({ update, hubData, inHubs }) => {
             enqueueSnackbar('Hub Updated!', {
               variant: 'success',
             })
-            setPublishingStepText('Hub Updated')
             removeUpload(upload)
             setIsPublishing(false)
           } else {
