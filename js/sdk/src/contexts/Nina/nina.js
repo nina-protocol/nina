@@ -750,6 +750,7 @@ const ninaContextHelper = ({
             )
           usdc = usdcTokenAccount.value.uiAmount.toFixed(2)
           setUsdcBalance(usdc)
+          console.log('usdc IN LOOKUP FUNCTION :>> ', usdc);
           return
         } else {
           setUsdcBalance(0)

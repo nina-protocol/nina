@@ -92,10 +92,16 @@ const Swap = ({ refreshBalances }) => {
   const handleSwap = async () => {
     setPending(true)
     try {
+
+      console.log('usdcBalance :>> ', usdcBalance);
+      console.log('solBalance :>> ', solBalance);
       await swap(quote, wallet, connection)
       await getUserBalances()
       setInputAmount(0)
-      setOutputCurrency(0)
+      // setOutputCurrency(0)
+
+      console.log('usdcBalance 1111 :>> ', usdcBalance);
+      console.log('solBalance 1111 :>> ', solBalance)
       enqueueSnackbar('Swap Successful', {
         variant: 'success',
       })
