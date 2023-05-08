@@ -6,7 +6,7 @@ import {
   AccountFetcher,
 } from '@orca-so/whirlpools-sdk'
 import { Percentage } from '@orca-so/common-sdk'
-import {getConfirmTransaction} from '.'
+import { getConfirmTransaction } from '.'
 
 const WHIRLPOOL_PROGRAM_ID = new anchor.web3.PublicKey(
   'whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc'
@@ -46,7 +46,6 @@ export const swapQuote = async (
 }
 
 export const swap = async (quote, wallet, connection) => {
-
   const context = WhirlpoolContext.from(
     connection,
     wallet,
@@ -59,15 +58,10 @@ export const swap = async (quote, wallet, connection) => {
   const txBuilder = await whirlpool.swap(quote)
   const tx = await txBuilder.build()
 
-  console.log('tx :>> ', tx);
-  console.log('tx.signers :>> ', tx.signers);
-  
   if (tx.signers.length > 0) {
     tx.transaction.partialSign(...tx.signers)
   }
   const txid = await wallet.sendTransaction(tx.transaction, connection)
-
-  console.log('txid :>> ', txid);
   await getConfirmTransaction(txid, connection)
   return
 }

@@ -11,10 +11,12 @@ import Box from '@mui/material/Box'
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
-const Swap = ({ refreshBalances }) => {
+const Swap = () => {
   const { enqueueSnackbar } = useSnackbar()
 
-  const { ninaClient, usdcBalance, solBalance, getUserBalances } = useContext(Nina.Context)
+  const { ninaClient, usdcBalance, solBalance, getUserBalances } = useContext(
+    Nina.Context
+  )
   const { wallet, connection, pendingTransactionMessage } = useContext(
     Wallet.Context
   )
@@ -92,16 +94,9 @@ const Swap = ({ refreshBalances }) => {
   const handleSwap = async () => {
     setPending(true)
     try {
-
-      console.log('usdcBalance :>> ', usdcBalance);
-      console.log('solBalance :>> ', solBalance);
       await swap(quote, wallet, connection)
       await getUserBalances()
       setInputAmount(0)
-      // setOutputCurrency(0)
-
-      console.log('usdcBalance 1111 :>> ', usdcBalance);
-      console.log('solBalance 1111 :>> ', solBalance)
       enqueueSnackbar('Swap Successful', {
         variant: 'success',
       })
