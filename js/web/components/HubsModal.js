@@ -10,7 +10,8 @@ import Link from 'next/link'
 
 const HubsModal = (props) => {
   const { releasePubkey, metadata } = props
-  const { getHubsForRelease } = useContext(Hub.Context)
+  const { getHubsForRelease, filterHubsForRelease, hubContentState } =
+    useContext(Hub.Context)
   const [open, setOpen] = useState(false)
   const [hubs, setHubs] = useState([])
 
@@ -20,7 +21,11 @@ const HubsModal = (props) => {
       setHubs(hubs)
     }
     handleGetHubsForRelease(releasePubkey)
-  }, [releasePubkey])
+  }, [])
+
+  useEffect(() => {
+    setHubs(filterHubsForRelease(releasePubkey))
+  }, [hubContentState])
 
   return (
     <>

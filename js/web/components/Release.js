@@ -87,15 +87,14 @@ const ReleaseComponent = ({ metadataSsr, hub }) => {
 
       setUserHubs(hubs)
     }
-    if (wallet.connected && hubState && !userHubs) {
+    if (wallet.publicKey && wallet.connected && hubState && !userHubs) {
       fetchHubs()
     }
-  }, [wallet?.connected, hubState])
-
-  useEffect(() => {
-    setUserHubs(null)
-    setUserIsRecipient(false)
-  }, [wallet?.disconnecting])
+    if (!wallet.connected) {
+      setUserHubs(null)
+      setUserIsRecipient(false)
+    }
+  }, [wallet, wallet?.connected, hubState])
 
   const handleFetchGates = async () => {
     const gates = await fetchGatesForRelease(releasePubkey)
