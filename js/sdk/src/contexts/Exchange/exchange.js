@@ -491,7 +491,6 @@ const exchangeContextHelper = ({
       withAccountInfo,
       transactionId
     )
-    // const updatedExchangeState = { ...exchangeState }
     const updatedExchangeState = {}
     if (exchange.accountData) {
       updatedExchangeState[publicKey] = {
