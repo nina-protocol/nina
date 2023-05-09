@@ -14,7 +14,7 @@ import {
   DashboardHeader,
   DashboardEntry,
 } from '../styles/theme/lightThemeOptions.js'
-
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
   const { wallet } = useContext(Wallet.Context)
   const { hubContentToggleVisibility, hubContentState, hubState } = useContext(
@@ -24,6 +24,8 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState])
   const { enqueueSnackbar } = useSnackbar()
+  const [pending, setPending] = useState()
+
   const hubPosts = useMemo(
     () =>
       Object.values(hubContentState)
@@ -69,6 +71,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
   }
 
   const handleTogglePost = async (hubPubkey, postPubkey) => {
+    setPending(postPubkey)
     const result = await hubContentToggleVisibility(
       hubPubkey,
       postPubkey,
@@ -77,6 +80,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
     enqueueSnackbar(result.msg, {
       variant: result.success ? 'info' : 'failure',
     })
+    setPending()
   }
   return (
     <>
@@ -129,6 +133,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
                           }
                         ></CloseIcon>
                       )}
+                      {pending === hubPost.post && <Dots />}
                     </DashboardEntry>
                   )
                 })}

@@ -16,6 +16,7 @@ import {
   DashboardHeader,
   DashboardEntry,
 } from '../styles/theme/lightThemeOptions.js'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 
 const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
   const { wallet } = useContext(Wallet.Context)
@@ -23,6 +24,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
   const { releaseState } = useContext(Release.Context)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState])
   const { enqueueSnackbar } = useSnackbar()
+  const [pending, setPending] = useState()
   const hubReleases = useMemo(
     () =>
       Object.values(hubContent)
@@ -58,6 +60,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
   }
 
   const handleToggleRelease = async (hubPubkey, releasePubkey) => {
+    setPending(releasePubkey)
     const result = await hubContentToggleVisibility(
       hubPubkey,
       releasePubkey,
@@ -66,6 +69,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
     enqueueSnackbar(result.msg, {
       variant: result.success ? 'info' : 'failure',
     })
+    setPending()
   }
 
   return (
@@ -117,21 +121,25 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
                       </a>
                     </Link>
                     {canToggleRelease(hubRelease.release) &&
-                      hubReleasesShowArchived && (
+                      hubReleasesShowArchived &&
+                      pending !== hubRelease.release && (
                         <AddIcon
                           onClick={() =>
                             handleToggleRelease(hubPubkey, hubRelease.release)
                           }
                         ></AddIcon>
                       )}
+
                     {canToggleRelease(hubRelease.release) &&
-                      !hubReleasesShowArchived && (
+                      !hubReleasesShowArchived &&
+                      pending !== hubRelease.release && (
                         <CloseIcon
                           onClick={() =>
                             handleToggleRelease(hubPubkey, hubRelease.release)
                           }
                         ></CloseIcon>
                       )}
+                    {pending === hubRelease.release && <Dots />}
                   </DashboardEntry>
                 )
               })}
