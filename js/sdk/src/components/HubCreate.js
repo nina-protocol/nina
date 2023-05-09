@@ -116,7 +116,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
         )
       }
     } else if (isPublishing && update) {
-      if (!artworkTx && !metadataTx) {
+      if (artwork && !artworkTx && !metadataTx) {
         setPublishingStepText(
           `Updating Artwork.  ${pendingTransactionMessage}, do not close this window.`
         )
