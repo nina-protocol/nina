@@ -938,14 +938,14 @@ const ninaContextHelper = ({
             })
             await tx.sign()
             txId = (await uploader.uploadTransaction(tx)).data.id
+            getBundlrBalance()
+            logEvent(`bundlr_upload_success`, 'engagement', {
+              wallet: provider.wallet.publicKey.toBase58(),
+            })
+            resolve(txId)
           } catch (error) {
-            ninaErrorHandler(error)
+            reject(ninaErrorHandler(error))
           }
-          getBundlrBalance()
-          logEvent(`bundlr_upload_success`, 'engagement', {
-            wallet: provider.wallet.publicKey.toBase58(),
-          })
-          resolve(txId)
         }
         reader.onerror = (error) => {
           reject(error)
