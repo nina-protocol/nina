@@ -137,9 +137,6 @@ const ReleasePurchase = (props) => {
     )
   }, [exchangeState])
 
-
-  console.log('solBalance :>> ', solBalance);
-
   useEffect(() => {
     if (metadata?.descriptionHtml) {
       unified()
