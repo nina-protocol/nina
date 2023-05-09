@@ -120,7 +120,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
         setPublishingStepText(
           `Updating Artwork.  ${pendingTransactionMessage}, do not close this window.`
         )
-      } else if (artworkTx && !metadataTx) {
+      } else if (!metadataTx) {
         setPublishingStepText(
           `Updating Metadata.  ${pendingTransactionMessage}, do not close this window.`
         )
@@ -525,7 +525,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
                     mbs < uploadSize ||
                     artwork?.meta.status === 'uploading'
                   }
-                  sx={{ height: '54px' }}
+                  sx={{ height: '54px', maxWidth: '506px' }}
                 >
                   {isPublishing ? (
                     <Dots msg={publishingStepText} />
