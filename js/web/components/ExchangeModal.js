@@ -19,11 +19,8 @@ const ExchangeModal = (props) => {
   const { ninaClient } = useContext(Nina.Context)
   const [pendingConfirm, setPendingConfirm] = useState(false)
   const { pendingTransactionMessage } = useContext(Wallet.Context)
-  const nativeAmount = isAccept
-    ? amount
-    : ninaClient.uiToNative(amount, release.paymentMint)
-  const artistFee = (nativeAmount * release.resalePercentage) / 1000000
-  const sellerAmount = nativeAmount - artistFee
+  const artistFee = (amount * release.resalePercentage) / 1000000
+  const sellerAmount = amount - artistFee
 
   const handleSubmit = async (e) => {
     setPendingConfirm(true)

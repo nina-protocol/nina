@@ -360,7 +360,7 @@ const ExchangeComponent = (props) => {
               ) || exchangeAwaitingConfirm?.amount
             }
             cancelTransaction={() => setExchangeAwaitingConfirm(undefined)}
-            isAccept={true}
+            isAccept={!exchangeAwaitingConfirm?.isSelling}
             metadata={metadata}
           />
         )}
