@@ -110,13 +110,10 @@ const HubCreate = ({ update, hubData, inHubs }) => {
         setPublishingStepText(
           `2/3 Uploading Metadata.  ${pendingTransactionMessage}, do not close this window.`
         )
-      } else if (!hubCreated) {
+      } else {
         setPublishingStepText(
           `3/3 Finalizing Hub.  ${pendingTransactionMessage}, do not close this window.`
         )
-      }
-      if (artworkTx && metadataTx && hubCreated) {
-        setPublishingStepText(`Hub Created.`)
       }
     } else if (isPublishing && update) {
       if (!artworkTx && !metadataTx) {
