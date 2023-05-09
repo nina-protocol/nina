@@ -118,21 +118,25 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
                       >
                         <a>{postContent.data.title}</a>
                       </Link>
-                      {canTogglePost(hubPost) && hubPostsShowArchived && (
-                        <AddIcon
-                          onClick={() =>
-                            handleTogglePost(hubPubkey, hubPost.post)
-                          }
-                        ></AddIcon>
-                      )}
+                      {canTogglePost(hubPost) &&
+                        hubPostsShowArchived &&
+                        pending !== hubPost.post && (
+                          <AddIcon
+                            onClick={() =>
+                              handleTogglePost(hubPubkey, hubPost.post)
+                            }
+                          ></AddIcon>
+                        )}
 
-                      {canTogglePost(hubPost) && !hubPostsShowArchived && (
-                        <CloseIcon
-                          onClick={() =>
-                            handleTogglePost(hubPubkey, hubPost.post)
-                          }
-                        ></CloseIcon>
-                      )}
+                      {canTogglePost(hubPost) &&
+                        !hubPostsShowArchived &&
+                        pending !== hubPost.post && (
+                          <CloseIcon
+                            onClick={() =>
+                              handleTogglePost(hubPubkey, hubPost.post)
+                            }
+                          ></CloseIcon>
+                        )}
                       {pending === hubPost.post && <Dots />}
                     </DashboardEntry>
                   )

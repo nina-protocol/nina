@@ -143,25 +143,20 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
                   </DashboardEntry>
                 )
               })}
-
-              {Object.keys(hubReleasesArchived).length > 0 && (
-                <Button
-                  onClick={() =>
-                    sethubReleasesShowArchived(!hubReleasesShowArchived)
-                  }
-                  sx={{ paddingLeft: '0' }}
-                >
-                  View{' '}
-                  {
-                    Object.keys(
-                      !hubReleasesShowArchived
-                        ? hubReleasesArchived
-                        : hubReleases
-                    ).length
-                  }{' '}
-                  {!hubReleasesShowArchived ? 'Archived' : ''} Releases
-                </Button>
-              )}
+              <Button
+                onClick={() =>
+                  sethubReleasesShowArchived(!hubReleasesShowArchived)
+                }
+                sx={{ paddingLeft: '0' }}
+              >
+                View{' '}
+                {
+                  Object.keys(
+                    !hubReleasesShowArchived ? hubReleasesArchived : hubReleases
+                  ).length
+                }{' '}
+                {!hubReleasesShowArchived ? 'Archived' : ''} Releases
+              </Button>
             </ul>
           </>
         )}
