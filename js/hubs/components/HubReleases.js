@@ -16,6 +16,7 @@ import {
   DashboardHeader,
   DashboardEntry,
 } from '../styles/theme/lightThemeOptions.js'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 
 const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
   const { wallet } = useContext(Wallet.Context)
@@ -23,6 +24,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
   const { releaseState } = useContext(Release.Context)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState])
   const { enqueueSnackbar } = useSnackbar()
+  const [pendingReleasePubkey, setPendingReleasePubkey] = useState()
   const hubReleases = useMemo(
     () =>
       Object.values(hubContent)
@@ -58,6 +60,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
   }
 
   const handleToggleRelease = async (hubPubkey, releasePubkey) => {
+    setPendingReleasePubkey(releasePubkey)
     const result = await hubContentToggleVisibility(
       hubPubkey,
       releasePubkey,
@@ -66,6 +69,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
     enqueueSnackbar(result.msg, {
       variant: result.success ? 'info' : 'failure',
     })
+    setPendingReleasePubkey()
   }
 
   return (
@@ -117,43 +121,42 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
                       </a>
                     </Link>
                     {canToggleRelease(hubRelease.release) &&
-                      hubReleasesShowArchived && (
+                      hubReleasesShowArchived &&
+                      pendingReleasePubkey !== hubRelease.release && (
                         <AddIcon
                           onClick={() =>
                             handleToggleRelease(hubPubkey, hubRelease.release)
                           }
                         ></AddIcon>
                       )}
+
                     {canToggleRelease(hubRelease.release) &&
-                      !hubReleasesShowArchived && (
+                      !hubReleasesShowArchived &&
+                      pendingReleasePubkey !== hubRelease.release && (
                         <CloseIcon
                           onClick={() =>
                             handleToggleRelease(hubPubkey, hubRelease.release)
                           }
                         ></CloseIcon>
                       )}
+                    {pendingReleasePubkey === hubRelease.release && <Dots />}
                   </DashboardEntry>
                 )
               })}
-
-              {Object.keys(hubReleasesArchived).length > 0 && (
-                <Button
-                  onClick={() =>
-                    sethubReleasesShowArchived(!hubReleasesShowArchived)
-                  }
-                  sx={{ paddingLeft: '0' }}
-                >
-                  View{' '}
-                  {
-                    Object.keys(
-                      !hubReleasesShowArchived
-                        ? hubReleasesArchived
-                        : hubReleases
-                    ).length
-                  }{' '}
-                  {!hubReleasesShowArchived ? 'Archived' : ''} Releases
-                </Button>
-              )}
+              <Button
+                onClick={() =>
+                  sethubReleasesShowArchived(!hubReleasesShowArchived)
+                }
+                sx={{ paddingLeft: '0' }}
+              >
+                View{' '}
+                {
+                  Object.keys(
+                    !hubReleasesShowArchived ? hubReleasesArchived : hubReleases
+                  ).length
+                }{' '}
+                {!hubReleasesShowArchived ? 'Archived' : ''} Releases
+              </Button>
             </ul>
           </>
         )}

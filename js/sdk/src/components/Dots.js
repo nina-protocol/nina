@@ -5,13 +5,11 @@ import Typography from '@mui/material/Typography'
 const Dots = ({ size, msg }) => {
   return (
     <StyledDots size={size}>
-      {msg && (
-        <Typography variant="body2">
-          {msg} <span>•</span>
-          <span>•</span>
-          <span>•</span>
-        </Typography>
-      )}
+      <Typography variant="body2">
+        {msg} <span>•</span>
+        <span>•</span>
+        <span>•</span>
+      </Typography>
     </StyledDots>
   )
 }

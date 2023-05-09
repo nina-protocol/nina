@@ -14,7 +14,7 @@ import {
   DashboardHeader,
   DashboardEntry,
 } from '../styles/theme/lightThemeOptions.js'
-
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
   const { wallet } = useContext(Wallet.Context)
   const { hubContentToggleVisibility, hubContentState, hubState } = useContext(
@@ -24,6 +24,8 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState])
   const { enqueueSnackbar } = useSnackbar()
+  const [pendingPostPubkey, setPendingPostPubkey] = useState()
+
   const hubPosts = useMemo(
     () =>
       Object.values(hubContentState)
@@ -69,6 +71,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
   }
 
   const handleTogglePost = async (hubPubkey, postPubkey) => {
+    setPendingPostPubkey(postPubkey)
     const result = await hubContentToggleVisibility(
       hubPubkey,
       postPubkey,
@@ -77,6 +80,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
     enqueueSnackbar(result.msg, {
       variant: result.success ? 'info' : 'failure',
     })
+    setPendingPostPubkey()
   }
   return (
     <>
@@ -114,21 +118,26 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
                       >
                         <a>{postContent.data.title}</a>
                       </Link>
-                      {canTogglePost(hubPost) && hubPostsShowArchived && (
-                        <AddIcon
-                          onClick={() =>
-                            handleTogglePost(hubPubkey, hubPost.post)
-                          }
-                        ></AddIcon>
-                      )}
+                      {canTogglePost(hubPost) &&
+                        hubPostsShowArchived &&
+                        pendingPostPubkey !== hubPost.post && (
+                          <AddIcon
+                            onClick={() =>
+                              handleTogglePost(hubPubkey, hubPost.post)
+                            }
+                          ></AddIcon>
+                        )}
 
-                      {canTogglePost(hubPost) && !hubPostsShowArchived && (
-                        <CloseIcon
-                          onClick={() =>
-                            handleTogglePost(hubPubkey, hubPost.post)
-                          }
-                        ></CloseIcon>
-                      )}
+                      {canTogglePost(hubPost) &&
+                        !hubPostsShowArchived &&
+                        pendingPostPubkey !== hubPost.post && (
+                          <CloseIcon
+                            onClick={() =>
+                              handleTogglePost(hubPubkey, hubPost.post)
+                            }
+                          ></CloseIcon>
+                        )}
+                      {pendingPostPubkey === hubPost.post && <Dots />}
                     </DashboardEntry>
                   )
                 })}
