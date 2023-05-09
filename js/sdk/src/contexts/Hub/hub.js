@@ -1192,7 +1192,7 @@ const hubContextHelper = ({
       await initSdkIfNeeded()
       const { hubs } = await NinaSdk.Release.fetchHubs(releasePubkey, true)
       const updatedHubState = {}
-      const updatedHubContent = { ...hubContentState }
+      const updatedHubContent = {}
       hubs.forEach((hub) => {
         const accountData = { ...hub.accountData }
         delete hub.accountData
