@@ -85,6 +85,7 @@ const HubCreateForm = ({
                   }
                   size="small"
                   InputLabelProps={touched.handle ? { shrink: true } : ''}
+                  inputProps={{ maxLength: 32 }}
                   placeholder={
                     errors.handle && touched.handle ? errors.handle : null
                   }
