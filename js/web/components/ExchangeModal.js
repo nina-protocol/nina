@@ -46,11 +46,7 @@ const ExchangeModal = (props) => {
           <Typography variant="overline">
             YOU ARE {isAccept ? 'SELLING' : 'CREATING A LISTING TO SELL'} 1{' '}
             {`${metadata?.symbol} `}
-            FOR{' '}
-            {` ${ninaClient.nativeToUiString(
-              nativeAmount,
-              release.paymentMint
-            )}`}
+            FOR {` ${ninaClient.nativeToUiString(amount, release.paymentMint)}`}
             .
           </Typography>
           <Typography variant="subtitle" className={classes.receivingAmount}>

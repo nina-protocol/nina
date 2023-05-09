@@ -106,7 +106,6 @@ const ExchangeComponent = (props) => {
       setOpenNoSolModal(true)
       return
     }
-
     if (exchange.isInit) {
       const error = await checkIfHasBalanceToCompleteAction(
         NinaProgramAction.EXCHANGE_INIT
@@ -355,8 +354,10 @@ const ExchangeComponent = (props) => {
             release={release}
             onSubmit={() => handleExchangeAction(exchangeAwaitingConfirm)}
             amount={
-              exchangeAwaitingConfirm?.initializerAmount ||
-              exchangeAwaitingConfirm?.amount
+              ninaClient.uiToNative(
+                exchangeAwaitingConfirm?.initializerAmount,
+                release.paymentMint
+              ) || exchangeAwaitingConfirm?.amount
             }
             cancelTransaction={() => setExchangeAwaitingConfirm(undefined)}
             isAccept={true}
