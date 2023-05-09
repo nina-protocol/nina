@@ -227,7 +227,9 @@ const HubPostCreate = ({
             result = await postInitViaHub(hubPubkey, slug, uri)
           }
           if (result?.success) {
-            await getHubsForRelease(metadataJson.reference)
+            if (metadataJson.reference) {
+              await getHubsForRelease(metadataJson.reference)
+            }
             enqueueSnackbar(result.msg, {
               variant: 'info',
             })
