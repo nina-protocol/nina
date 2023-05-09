@@ -46,7 +46,7 @@ const WalletContextProvider = ({ children }) => {
     const transactionMessage = () => {
       if (wallet?.wallet?.adapter.name === 'Nina') {
         setPendingTransactionMessage('Completing transaction')
-        setShortPendingTransactionMessage('Completing')
+        setShortPendingTransactionMessage('Completing...')
       } else {
         setPendingTransactionMessage('Please approve transaction in wallet')
         setShortPendingTransactionMessage('Approve in wallet')
