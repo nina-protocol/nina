@@ -216,6 +216,8 @@ const exchangeContextHelper = ({
       }
       await getUserBalances()
       await getExchange(exchange.publicKey, false, txid)
+      await getExchangesForRelease(releasePubkey, exchange.publicKey)
+
 
       return {
         success: true,
@@ -462,6 +464,8 @@ const exchangeContextHelper = ({
 
       await getUserBalances()
       await getExchange(exchangePubkey.toBase58(), false, txid)
+      await getExchangesForRelease(releasePubkey)
+
       return {
         success: true,
         msg: 'Offer cancelled!',
@@ -488,7 +492,8 @@ const exchangeContextHelper = ({
       withAccountInfo,
       transactionId
     )
-    const updatedExchangeState = { ...exchangeState }
+    // const updatedExchangeState = { ...exchangeState }
+    const updatedExchangeState = { }
     if (exchange.accountData) {
       updatedExchangeState[publicKey] = {
         ...updatedExchangeState[publicKey],
@@ -499,7 +504,11 @@ const exchangeContextHelper = ({
       ...updatedExchangeState[publicKey],
       ...formatExchange(exchange),
     }
-    setExchangeState(updatedExchangeState)
+    console.log('updatedExchangeState single:>> ', updatedExchangeState);
+    setExchangeState((prevState) => ({
+      ...prevState,
+      ...updatedExchangeState,
+    }))
   }
 
   const getExchangesForUser = async (publicKey, withAccountData = true) => {
@@ -562,11 +571,14 @@ const exchangeContextHelper = ({
         ...prevState,
         ...updatedVerificationState,
       }))
+
+      console.log('updatedExchangeState multiple :>> ', updatedExchangeState);
       setExchangeState((prevState) => ({
         ...prevState,
         ...updatedExchangeState,
       }))
     } catch (err) {
+      console.log('exchange error :>>' , err);
       console.warn(err)
     }
   }
@@ -684,7 +696,7 @@ const exchangeContextHelper = ({
     isUser = false
   ) => {
     let exchanges = filterExchangesForRelease(releasePubkey)
-    if (isUser) {
+    if (isUser) 
       if (!provider.wallet?.connected) {
         return []
       }

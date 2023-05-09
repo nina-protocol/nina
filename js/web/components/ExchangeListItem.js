@@ -19,7 +19,6 @@ const ExchangeListItem = (props) => {
   const { wallet } = useContext(Wallet.Context)
   const { ninaClient } = useContext(Nina.Context)
   const displayPrice = ninaClient.nativeToUiString(amount, release.paymentMint)
-
   const itemData = (
     <Root>
       <Typography>
@@ -82,19 +81,18 @@ const ExchangeListButton = (props) => {
 
   useEffect(() => {
     if (wallet?.connected) {
-      if (initializer.publicKey === wallet?.publicKey?.toBase58()) {
+      if (initializer.publicKey === wallet?.publicKey.toBase58()) {
+        setButtonText('Cancel')
         if (pending) {
           setButtonText('Pending')
-        } else {
-          setButtonText('Cancel')
-        }
+        } 
       } else {
         setButtonText(isSelling ? 'Buy' : 'Accept')
       }
     } else {
       setButtonText(isSelling ? 'Buy' : 'Accept')
     }
-  }, [wallet?.connected, pending, wallet?.publicKey, isSelling])
+  }, [wallet?.connected, pending, isSelling, initializer])
 
   if (wallet?.connected && !pending) {
     return (
