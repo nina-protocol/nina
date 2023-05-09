@@ -24,7 +24,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
   const { releaseState } = useContext(Release.Context)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState])
   const { enqueueSnackbar } = useSnackbar()
-  const [pending, setPending] = useState()
+  const [pendingReleasePubkey, setPendingReleasePubkey] = useState()
   const hubReleases = useMemo(
     () =>
       Object.values(hubContent)
@@ -60,7 +60,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
   }
 
   const handleToggleRelease = async (hubPubkey, releasePubkey) => {
-    setPending(releasePubkey)
+    setPendingReleasePubkey(releasePubkey)
     const result = await hubContentToggleVisibility(
       hubPubkey,
       releasePubkey,
@@ -69,7 +69,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
     enqueueSnackbar(result.msg, {
       variant: result.success ? 'info' : 'failure',
     })
-    setPending()
+    setPendingReleasePubkey()
   }
 
   return (
@@ -122,7 +122,7 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
                     </Link>
                     {canToggleRelease(hubRelease.release) &&
                       hubReleasesShowArchived &&
-                      pending !== hubRelease.release && (
+                      pendingReleasePubkey !== hubRelease.release && (
                         <AddIcon
                           onClick={() =>
                             handleToggleRelease(hubPubkey, hubRelease.release)
@@ -132,14 +132,14 @@ const HubReleases = ({ hubPubkey, hubContent, isAuthority, canAddContent }) => {
 
                     {canToggleRelease(hubRelease.release) &&
                       !hubReleasesShowArchived &&
-                      pending !== hubRelease.release && (
+                      pendingReleasePubkey !== hubRelease.release && (
                         <CloseIcon
                           onClick={() =>
                             handleToggleRelease(hubPubkey, hubRelease.release)
                           }
                         ></CloseIcon>
                       )}
-                    {pending === hubRelease.release && <Dots />}
+                    {pendingReleasePubkey === hubRelease.release && <Dots />}
                   </DashboardEntry>
                 )
               })}

@@ -24,7 +24,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState])
   const { enqueueSnackbar } = useSnackbar()
-  const [pending, setPending] = useState()
+  const [pendingPostPubkey, setPendingPostPubkey] = useState()
 
   const hubPosts = useMemo(
     () =>
@@ -71,7 +71,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
   }
 
   const handleTogglePost = async (hubPubkey, postPubkey) => {
-    setPending(postPubkey)
+    setPendingPostPubkey(postPubkey)
     const result = await hubContentToggleVisibility(
       hubPubkey,
       postPubkey,
@@ -80,7 +80,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
     enqueueSnackbar(result.msg, {
       variant: result.success ? 'info' : 'failure',
     })
-    setPending()
+    setPendingPostPubkey()
   }
   return (
     <>
@@ -120,7 +120,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
                       </Link>
                       {canTogglePost(hubPost) &&
                         hubPostsShowArchived &&
-                        pending !== hubPost.post && (
+                        pendingPostPubkey !== hubPost.post && (
                           <AddIcon
                             onClick={() =>
                               handleTogglePost(hubPubkey, hubPost.post)
@@ -130,14 +130,14 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
 
                       {canTogglePost(hubPost) &&
                         !hubPostsShowArchived &&
-                        pending !== hubPost.post && (
+                        pendingPostPubkey !== hubPost.post && (
                           <CloseIcon
                             onClick={() =>
                               handleTogglePost(hubPubkey, hubPost.post)
                             }
                           ></CloseIcon>
                         )}
-                      {pending === hubPost.post && <Dots />}
+                      {pendingPostPubkey === hubPost.post && <Dots />}
                     </DashboardEntry>
                   )
                 })}
