@@ -255,7 +255,6 @@ const HubPostCreate = ({
       enqueueSnackbar(error.msg, {
         variant: 'failure',
       })
-
     }
   }
 
