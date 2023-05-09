@@ -6,13 +6,12 @@ const Dots = ({ size, msg }) => {
   return (
     <StyledDots size={size}>
       {msg && (
-        <Typography variant="body2" sx={{ paddingRight: '2px' }}>
-          {msg}
+        <Typography variant="body2">
+          {msg} <span>•</span>
+          <span>•</span>
+          <span>•</span>
         </Typography>
       )}
-      <span>•</span>
-      <span>•</span>
-      <span>•</span>
     </StyledDots>
   )
 }

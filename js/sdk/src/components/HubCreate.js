@@ -101,7 +101,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
   }, [solBalanceFetched])
 
   useEffect(() => {
-    if (isPublishing) {
+    if (isPublishing && !update) {
       if (!artworkTx) {
         setPublishingStepText(
           `1/3 Uploading Artwork.  ${pendingTransactionMessage}, do not close this window.`
@@ -115,10 +115,24 @@ const HubCreate = ({ update, hubData, inHubs }) => {
           `3/3 Finalizing Hub.  ${pendingTransactionMessage}, do not close this window.`
         )
       }
+    } else if (isPublishing && update) {
+      if (artwork && !artworkTx && !metadataTx) {
+        setPublishingStepText(
+          `Updating Artwork.  ${pendingTransactionMessage}, do not close this window.`
+        )
+      } else if (!metadataTx) {
+        setPublishingStepText(
+          `Updating Metadata.  ${pendingTransactionMessage}, do not close this window.`
+        )
+      } else {
+        setPublishingStepText(
+          `Finalizing Hub Update.  ${pendingTransactionMessage}, do not close this window.`
+        )
+      }
     } else {
       if (artworkTx && !metadataTx) {
         setButtonText('Restart 2/3: Upload Metadata.')
-      } else if (artworkTx && metadataTx && !hubCreated) {
+      } else if (artworkTx && metadataTx && !hubCreated && !update) {
         setButtonText('Restart 3/3: Finalize Hub')
       } else if (mbs < uploadSize) {
         setButtonText(
@@ -278,9 +292,10 @@ const HubCreate = ({ update, hubData, inHubs }) => {
             enqueueSnackbar('Hub Updated!', {
               variant: 'success',
             })
-
             removeUpload(upload)
             setIsPublishing(false)
+            setArtworkTx()
+            setMetadataTx()
           } else {
             enqueueSnackbar(result.msg, {
               variant: 'error',
@@ -510,7 +525,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
                     mbs < uploadSize ||
                     artwork?.meta.status === 'uploading'
                   }
-                  sx={{ height: '54px' }}
+                  sx={{ height: '54px', maxWidth: '506px' }}
                 >
                   {isPublishing ? (
                     <Dots msg={publishingStepText} />
