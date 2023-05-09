@@ -38,8 +38,7 @@ import Dots from './Dots'
 const HubCreateSchema = Yup.object().shape({
   handle: Yup.string()
     .required('Hub Handle is Required')
-    .min(0)
-    .max(32, 'Hub handle must be 32 characters or less'),
+    .max(32),
   displayName: Yup.string().required('Display Name is Required'),
   publishFee: Yup.number().required('Publish Fee is Required'),
   referralFee: Yup.number().required('Referral Fee is Required'),
