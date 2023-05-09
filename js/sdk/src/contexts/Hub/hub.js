@@ -547,7 +547,7 @@ const hubContextHelper = ({
       queue = new Set(addToHubQueue)
       queue.delete(releasePubkey.toBase58())
       setAddToHubQueue(queue)
-      logEvent('hub_add_release_initiated', 'engagement', {
+      logEvent('hub_add_release_success', 'engagement', {
         release: releasePubkey.toBase58(),
         hub: hubPubkey.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
@@ -1192,7 +1192,7 @@ const hubContextHelper = ({
       await initSdkIfNeeded()
       const { hubs } = await NinaSdk.Release.fetchHubs(releasePubkey, true)
       const updatedHubState = {}
-      const updatedHubContent = { ...hubContentState }
+      const updatedHubContent = {}
       hubs.forEach((hub) => {
         const accountData = { ...hub.accountData }
         delete hub.accountData
@@ -1209,7 +1209,10 @@ const hubContextHelper = ({
         }
       })
       setHubState((prevState) => ({ ...prevState, ...updatedHubState }))
-      setHubContentState(updatedHubContent)
+      setHubContentState((prevState) => ({
+        ...prevState,
+        ...updatedHubContent,
+      }))
       return hubs
     } catch (error) {
       console.warn(error)
