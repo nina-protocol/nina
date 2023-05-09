@@ -21,7 +21,7 @@ const Subscribe = dynamic(() => import('./Subscribe'))
 const NewProfileCtas = dynamic(() => import('./NewProfileCtas'))
 
 const Profile = ({ profilePubkey }) => {
-  console.log('profilePubk :>> ', profilePubk);
+  console.log('profilePubk :>> ', profilePubk)
   const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
   const tableContainerRef = useRef(null)

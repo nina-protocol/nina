@@ -85,7 +85,7 @@ const ExchangeListButton = (props) => {
         setButtonText('Cancel')
         if (pending) {
           setButtonText('Pending')
-        } 
+        }
       } else {
         setButtonText(isSelling ? 'Buy' : 'Accept')
       }

@@ -218,7 +218,6 @@ const exchangeContextHelper = ({
       await getExchange(exchange.publicKey, false, txid)
       await getExchangesForRelease(releasePubkey, exchange.publicKey)
 
-
       return {
         success: true,
         msg: 'Offer accepted!',
@@ -493,7 +492,7 @@ const exchangeContextHelper = ({
       transactionId
     )
     // const updatedExchangeState = { ...exchangeState }
-    const updatedExchangeState = { }
+    const updatedExchangeState = {}
     if (exchange.accountData) {
       updatedExchangeState[publicKey] = {
         ...updatedExchangeState[publicKey],
@@ -504,7 +503,6 @@ const exchangeContextHelper = ({
       ...updatedExchangeState[publicKey],
       ...formatExchange(exchange),
     }
-    console.log('updatedExchangeState single:>> ', updatedExchangeState);
     setExchangeState((prevState) => ({
       ...prevState,
       ...updatedExchangeState,
@@ -572,13 +570,11 @@ const exchangeContextHelper = ({
         ...updatedVerificationState,
       }))
 
-      console.log('updatedExchangeState multiple :>> ', updatedExchangeState);
       setExchangeState((prevState) => ({
         ...prevState,
         ...updatedExchangeState,
       }))
     } catch (err) {
-      console.log('exchange error :>>' , err);
       console.warn(err)
     }
   }
@@ -696,7 +692,7 @@ const exchangeContextHelper = ({
     isUser = false
   ) => {
     let exchanges = filterExchangesForRelease(releasePubkey)
-    if (isUser) 
+    if (isUser) {
       if (!provider.wallet?.connected) {
         return []
       }
