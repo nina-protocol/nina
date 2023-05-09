@@ -57,6 +57,7 @@ const ReleasePurchase = (props) => {
     checkIfHasBalanceToCompleteAction,
     solBalance,
     NinaProgramAction,
+    getUserBalances,
   } = useContext(Nina.Context)
   const [release, setRelease] = useState(undefined)
   const [userIsRecipient, setUserIsRecipient] = useState(false)
@@ -72,6 +73,10 @@ const ReleasePurchase = (props) => {
     () => releasePurchasePending[releasePubkey],
     [releasePubkey, releasePurchasePending]
   )
+
+  useEffect(() => {
+    getUserBalances()
+  }, [])
 
   const isAuthority = useMemo(() => {
     if (wallet.connected) {
