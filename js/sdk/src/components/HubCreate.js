@@ -110,19 +110,32 @@ const HubCreate = ({ update, hubData, inHubs }) => {
         setPublishingStepText(
           `2/3 Uploading Metadata.  ${pendingTransactionMessage}, do not close this window.`
         )
-      } else {
+      } else if (!hubCreated) {
         setPublishingStepText(
           `3/3 Finalizing Hub.  ${pendingTransactionMessage}, do not close this window.`
         )
       }
+      if (artworkTx && metadataTx && hubCreated) {
+        setPublishingStepText(`Hub Created.`)
+      }
     } else if (isPublishing && update) {
-      setPublishingStepText(
-        `Updating Hub. ${pendingTransactionMessage}, do not close this window.`
-      )
+      if (!artworkTx && !metadataTx) {
+        setPublishingStepText(
+          `Updating Artwork.  ${pendingTransactionMessage}, do not close this window.`
+        )
+      } else if (artworkTx && !metadataTx) {
+        setPublishingStepText(
+          `Updating Metadata.  ${pendingTransactionMessage}, do not close this window.`
+        )
+      } else {
+        setPublishingStepText(
+          `Finalizing Hub Update.  ${pendingTransactionMessage}, do not close this window.`
+        )
+      }
     } else {
       if (artworkTx && !metadataTx) {
         setButtonText('Restart 2/3: Upload Metadata.')
-      } else if (artworkTx && metadataTx && !hubCreated) {
+      } else if (artworkTx && metadataTx && !hubCreated && !update) {
         setButtonText('Restart 3/3: Finalize Hub')
       } else if (mbs < uploadSize) {
         setButtonText(
@@ -284,6 +297,8 @@ const HubCreate = ({ update, hubData, inHubs }) => {
             })
             removeUpload(upload)
             setIsPublishing(false)
+            setArtworkTx()
+            setMetadataTx()
           } else {
             enqueueSnackbar(result.msg, {
               variant: 'error',
