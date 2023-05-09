@@ -197,13 +197,11 @@ const HubPostCreate = ({
             metadataJson.reference = preloadedRelease
             formValues.postForm.reference = preloadedRelease
           }
-
           metadataResult = await bundlrUpload(
             new Blob([JSON.stringify(metadataJson)], {
               type: 'application/json',
             })
           )
-
           setMetadataTx(metadataResult)
 
           upload = createUpload(
@@ -246,12 +244,17 @@ const HubPostCreate = ({
           setFormValues({ postForm: {} })
           setPostCreated(true)
           setOpen(false)
-          setParentOpen(false)
+          if (setParentOpen) {
+            setParentOpen(false)
+          }
         }
       }
     } catch (error) {
-      setParentOpen(false)
       console.warn(error)
+      setIsPublishing(false)
+      if (setParentOpen) {
+        setParentOpen(false)
+      }
       enqueueSnackbar(error.msg, {
         variant: 'failure',
       })
