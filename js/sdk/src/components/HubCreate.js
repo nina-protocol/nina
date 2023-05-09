@@ -36,7 +36,10 @@ import NoSolWarning from './NoSolWarning'
 import Dots from './Dots'
 
 const HubCreateSchema = Yup.object().shape({
-  handle: Yup.string().required('Hub Handle is Required'),
+  handle: Yup.string()
+    .required('Hub Handle is Required')
+    .min(0)
+    .max(32, 'Hub handle must be 32 characters or less'),
   displayName: Yup.string().required('Display Name is Required'),
   publishFee: Yup.number().required('Publish Fee is Required'),
   referralFee: Yup.number().required('Referral Fee is Required'),
