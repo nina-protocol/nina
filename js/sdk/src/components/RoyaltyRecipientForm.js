@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import { useSnackbar } from 'notistack'
 import { Formik, Field, Form } from 'formik'
@@ -10,12 +10,17 @@ import Slider from '@mui/material/Slider'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import { formatPlaceholder } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Wallet from '../contexts/Wallet'
+import Dots from './Dots'
+
 const RoyaltyRecipientForm = (props) => {
   const { getUserBalances } = useContext(Nina.Context)
+  const { pendingTransactionMessage } = useContext(Wallet.Context)
   const { release, userShare, setUserDisplayShare, releasePubkey, toggleForm } =
     props
   const { enqueueSnackbar } = useSnackbar()
   const { addRoyaltyRecipient } = useContext(Release.Context)
+  const [pending, setPending] = useState(false)
   useEffect(() => {
     getUserBalances()
   }, [])
@@ -47,6 +52,7 @@ const RoyaltyRecipientForm = (props) => {
           percentShare: 20,
         }}
         onSubmit={async (values, { resetForm, initialValues }) => {
+          setPending(true)
           enqueueSnackbar('Transferring Revenue Share...', {
             variant: 'info',
           })
@@ -60,6 +66,7 @@ const RoyaltyRecipientForm = (props) => {
           })
           resetForm(initialValues)
           toggleForm()
+          setPending(false)
         }}
       >
         {({ values, setFieldValue, field, form }) => (
@@ -116,7 +123,11 @@ const RoyaltyRecipientForm = (props) => {
                   fullWidth
                   disabled={!values.recipientAddress}
                 >
-                  Transfer Revenue Share
+                  {pending ? (
+                    <Dots msg={pendingTransactionMessage} />
+                  ) : (
+                    'Transfer Revenue Share'
+                  )}
                 </Button>
               </Box>
             </Form>
