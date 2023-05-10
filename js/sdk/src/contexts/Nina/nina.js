@@ -793,7 +793,7 @@ const ninaContextHelper = ({
             await provider.connection.getTokenAccountBalance(
               usdcTokenAccountPubkey
             )
-          usdc = Math.floor(usdcTokenAccount.value.uiAmount * 100) / 100
+          usdc = usdcTokenAccount.value.uiAmount.toFixed(2)
           setUsdcBalance(usdc)
         } else {
           setUsdcBalance(0)

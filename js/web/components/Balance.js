@@ -50,7 +50,6 @@ const Balance = ({ profilePublishedReleases, inDashboard, profilePubkey }) => {
 
   useEffect(() => {
     getSolBalanceForPublicKey(profilePubkey)
-
     setUserSolBalance(
       ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol).toFixed(3)
     )
