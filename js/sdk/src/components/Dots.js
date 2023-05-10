@@ -6,7 +6,7 @@ const Dots = ({ size, msg }) => {
   return (
     <StyledDots size={size}>
       {msg && (
-        <Typography variant="body2" sx={{ paddingRight: '2px' }}>
+        <Typography variant="body2" style={{ paddingRight: '2px' }}>
           {msg}
         </Typography>
       )}

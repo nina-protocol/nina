@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
 import axios from 'axios'
 import { encodeBase64 } from 'tweetnacl-util'
 import Box from '@mui/material/Box'
@@ -23,7 +22,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
 
   const [codes, setCodes] = useState()
   const [amount, setAmount] = useState()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const { enqueueSnackbar } = useSnackbar()
   const [open, setOpen] = useState(false)
   const [pendingCodes, setPendingCodes] = useState(false)

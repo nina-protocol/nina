@@ -39,6 +39,7 @@ const HubPostCreate = ({
   selectedHubId,
   setParentOpen,
   userHasHubs,
+  inHubDashboard,
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { wallet, pendingTransactionMessage, shortPendingTransactionMessage } =
@@ -196,13 +197,11 @@ const HubPostCreate = ({
             metadataJson.reference = preloadedRelease
             formValues.postForm.reference = preloadedRelease
           }
-
           metadataResult = await bundlrUpload(
             new Blob([JSON.stringify(metadataJson)], {
               type: 'application/json',
             })
           )
-
           setMetadataTx(metadataResult)
 
           upload = createUpload(
@@ -227,9 +226,10 @@ const HubPostCreate = ({
           } else {
             result = await postInitViaHub(hubPubkey, slug, uri)
           }
-
           if (result?.success) {
-            await getHubsForRelease(metadataJson.reference)
+            if (metadataJson.reference) {
+              await getHubsForRelease(metadataJson.reference)
+            }
             enqueueSnackbar(result.msg, {
               variant: 'info',
             })
@@ -246,12 +246,20 @@ const HubPostCreate = ({
           setFormValues({ postForm: {} })
           setPostCreated(true)
           setOpen(false)
-          setParentOpen(false)
+          if (setParentOpen) {
+            setParentOpen(false)
+          }
         }
       }
     } catch (error) {
-      setParentOpen(false)
       console.warn(error)
+      setIsPublishing(false)
+      if (setParentOpen) {
+        setParentOpen(false)
+      }
+      enqueueSnackbar(error.msg, {
+        variant: 'failure',
+      })
     }
   }
 
@@ -308,7 +316,8 @@ const HubPostCreate = ({
                           isPublishing ||
                           !formIsValid ||
                           (!preloadedRelease &&
-                            !formValues.postForm.reference) ||
+                            !formValues.postForm.reference &&
+                            !inHubDashboard) ||
                           bundlrBalance === 0 ||
                           mbs < uploadSize
                         }
@@ -317,7 +326,20 @@ const HubPostCreate = ({
                         {isPublishing ? (
                           <Dots msg={publishingStepText} />
                         ) : (
-                          <Typography variant="body2">{buttonText}</Typography>
+                          <StyledTypography
+                            disabled={
+                              isPublishing ||
+                              !formIsValid ||
+                              (!preloadedRelease &&
+                                !formValues.postForm.reference &&
+                                !inHubDashboard) ||
+                              bundlrBalance === 0 ||
+                              mbs < uploadSize
+                            }
+                            variant="body2"
+                          >
+                            {buttonText}
+                          </StyledTypography>
                         )}
                       </Button>
                     )}
@@ -402,6 +424,10 @@ const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+}))
+
+const StyledTypography = styled(Typography)(({ theme, disabled }) => ({
+  color: disabled ? theme.palette.grey.primary : theme.palette.black,
 }))
 
 export default HubPostCreate

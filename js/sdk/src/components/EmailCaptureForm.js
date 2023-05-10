@@ -146,7 +146,7 @@ export default withFormik({
       soundcloud: soundcloudAccount ? soundcloudAccount : soundcloudAccount,
       twitter: twitterAccount ? twitterAccount : '',
       instagram: '',
-      wallet: user ? user.publicAddress : publicKey.toString(),
+      wallet: user ? user.publicAddress : publicKey?.toString(),
       type: 'artist',
     }
   },

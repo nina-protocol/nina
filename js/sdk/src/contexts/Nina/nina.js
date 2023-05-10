@@ -289,6 +289,7 @@ const ninaContextHelper = ({
 
       const request = {
         accounts: {
+          payer: provider.wallet.publicKey,
           from: provider.wallet.publicKey,
           subscription,
           to: subscribeToAccount,
@@ -361,6 +362,7 @@ const ninaContextHelper = ({
       )
       const tx = await program.transaction.subscriptionUnsubscribe({
         accounts: {
+          payer: provider.wallet.publicKey,
           from: provider.wallet.publicKey,
           subscription,
           to: unsubscribeAccount,
@@ -730,10 +732,11 @@ const ninaContextHelper = ({
         )
         solBalanceResult = await getSolBalance()
         setSolUsdcBalance(
-          (
+          Math.floor(
             ninaClient.nativeToUi(solBalanceResult, ids.mints.wsol) *
-            solPrice.data.data.SOL.price
-          ).toFixed(2)
+              solPrice.data.data.SOL.price *
+              100
+          ) / 100
         )
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
           provider.connection,
@@ -748,7 +751,7 @@ const ninaContextHelper = ({
             await provider.connection.getTokenAccountBalance(
               usdcTokenAccountPubkey
             )
-          usdc = usdcTokenAccount.value.uiAmount.toFixed(2)
+          usdc = Math.floor(usdcTokenAccount.value.uiAmount * 100) / 100
           setUsdcBalance(usdc)
           return
         } else {
@@ -935,14 +938,14 @@ const ninaContextHelper = ({
             })
             await tx.sign()
             txId = (await uploader.uploadTransaction(tx)).data.id
+            getBundlrBalance()
+            logEvent(`bundlr_upload_success`, 'engagement', {
+              wallet: provider.wallet.publicKey.toBase58(),
+            })
+            resolve(txId)
           } catch (error) {
-            ninaErrorHandler(error)
+            reject(ninaErrorHandler(error))
           }
-          getBundlrBalance()
-          logEvent(`bundlr_upload_success`, 'engagement', {
-            wallet: provider.wallet.publicKey.toBase58(),
-          })
-          resolve(txId)
         }
         reader.onerror = (error) => {
           reject(error)
