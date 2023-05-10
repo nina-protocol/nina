@@ -23,6 +23,8 @@ const Balance = ({ profilePublishedReleases, inDashboard, profilePubkey }) => {
     bundlrBalance,
     getBundlrBalanceForUser,
     solPrice,
+    getSolBalanceForPublicKey,
+    getUsdcBalanceForUser,
     initBundlr,
   } = useContext(Nina.Context)
   const [revenueSumForArtist, setRevenueSumForArtist] = useState(0)
@@ -47,12 +49,15 @@ const Balance = ({ profilePublishedReleases, inDashboard, profilePubkey }) => {
   }, [profilePublishedReleases, revenueSumForArtist])
 
   useEffect(() => {
+    getSolBalanceForPublicKey(profilePubkey)
+
     setUserSolBalance(
       ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol).toFixed(3)
     )
   }, [solBalance])
 
   useEffect(() => {
+    getUsdcBalanceForUser(profilePubkey)
     setUserUsdcBalance(usdcBalance)
   }, [usdcBalance])
 
@@ -103,7 +108,7 @@ const Balance = ({ profilePublishedReleases, inDashboard, profilePubkey }) => {
               <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
 
               <Typography variant="string" sx={{ pr: 1 }}>
-                {`USDC: ${userUsdcBalance}`}
+                {`USDC: $${userUsdcBalance}`}
               </Typography>
               <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
 
