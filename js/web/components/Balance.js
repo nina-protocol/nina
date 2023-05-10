@@ -49,15 +49,21 @@ const Balance = ({ profilePublishedReleases, inDashboard, profilePubkey }) => {
   }, [profilePublishedReleases, revenueSumForArtist])
 
   useEffect(() => {
-    getSolBalanceForPublicKey(profilePubkey)
-    setUserSolBalance(
-      ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol).toFixed(3)
-    )
+    const getUserSolBalance = async () => {
+      const result = await getSolBalanceForPublicKey(profilePubkey)
+      setUserSolBalance(
+        ninaClient.nativeToUi(result, ninaClient.ids.mints.wsol).toFixed(3)
+      )
+    }
+    getUserSolBalance()
   }, [solBalance])
 
   useEffect(() => {
-    getUsdcBalanceForPublicKey(profilePubkey)
-    setUserUsdcBalance(usdcBalance)
+    const getUserUsdcBalance = async () => {
+      const result = await getUsdcBalanceForPublicKey(profilePubkey)
+      setUserUsdcBalance(result)
+    }
+    getUserUsdcBalance()
   }, [usdcBalance])
 
   const fetchRevenueSumForArtist = () => {

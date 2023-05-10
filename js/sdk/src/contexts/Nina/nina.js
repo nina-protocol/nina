@@ -723,8 +723,6 @@ const ninaContextHelper = ({
     let solUsdcBalanceResult = await provider.connection.getBalance(
       new anchor.web3.PublicKey(publicKey)
     )
-    setSolBalance(solUsdcBalanceResult)
-    setSolBalanceFetched(true)
     return solUsdcBalanceResult
   }
 
@@ -794,15 +792,15 @@ const ninaContextHelper = ({
               usdcTokenAccountPubkey
             )
           usdc = usdcTokenAccount.value.uiAmount.toFixed(2)
-          setUsdcBalance(usdc)
+          return usdc
         } else {
-          setUsdcBalance(0)
+          return 0
         }
       } catch (error) {
         console.warn('error getting usdc balance')
       }
     } else {
-      setUsdcBalance(0)
+      return 0
     }
     return usdc
   }
