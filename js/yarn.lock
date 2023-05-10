@@ -2181,6 +2181,14 @@
     "@project-serum/anchor" "^0.25.0"
     axios "^0.27.2"
 
+"@nina-protocol/js-sdk@^0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@nina-protocol/js-sdk/-/js-sdk-0.0.16.tgz#837c05dc56610c4120da129d157d4e50e90cde70"
+  integrity sha512-zhhFumjD6xH+00kXJ3KoBXcvzGViJQd3oImN0dRsiShI3PyMYEi/bB8Z7R8V3Ofqgu/so3AOdsBAQ6MG4V8rlw==
+  dependencies:
+    "@project-serum/anchor" "^0.25.0"
+    axios "^0.27.2"
+
 "@nina-protocol/js-sdk@^0.0.8":
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/@nina-protocol/js-sdk/-/js-sdk-0.0.8.tgz#ad8ac467b05675715eaeee2438def3a4cc01efed"

@@ -578,58 +578,19 @@ const releaseContextHelper = ({
     if (!releasePubkey || !recipient) {
       return
     }
-    // const program = await ninaClient.useProgram()
-
-    try {
-      console.log('collecting !!!!!:>>', ' ');
+    try {    
+      const {release} = await NinaSdk.Release.collectRoyaltyForRelease(recipient, releasePubkey, provider.wallet, provider.connection)
+      console.log('release in client:>> ', release);
+      const paymentMint = release.accountData.release.paymentMint
     
-      await NinaSdk.Release.collectRoyaltyForRelease(recipient, releasePubkey, recipient, provider.wallet, provider.connection)
-    
-      
-      // let release = releaseState.tokenData[releasePubkey]
-      // if (!release) {
-      //   release = await program.account.release.fetch(
-      //     new anchor.web3.PublicKey(releasePubkey)
-      //   )
-      // }
-      // release.paymentMint = new anchor.web3.PublicKey(release.paymentMint)
-
-      // const [authorityTokenAccount, authorityTokenAccountIx] =
-      //   await findOrCreateAssociatedTokenAccount(
-      //     provider.connection,
-      //     provider.wallet.publicKey,
-      //     provider.wallet.publicKey,
-      //     anchor.web3.SystemProgram.programId,
-      //     anchor.web3.SYSVAR_RENT_PUBKEY,
-      //     release.paymentMint
-      //   )
-
-      // const request = {
-      //   accounts: {
-      //     authority: provider.wallet.publicKey,
-      //     authorityTokenAccount,
-      //     release: new anchor.web3.PublicKey(releasePubkey),
-      //     releaseMint: release.releaseMint,
-      //     releaseSigner: release.releaseSigner,
-      //     royaltyTokenAccount: release.royaltyTokenAccount,
-      //     tokenProgram: TOKEN_PROGRAM_ID,
-      //   },
-      // }
-
-      // if (authorityTokenAccountIx) {
-      //   request.instructions = [authorityTokenAccountIx]
-      // }
-
-      // const txid = await program.rpc.releaseRevenueShareCollect(request)
-      // await getConfirmTransaction(txid, provider.connection)
 
       await getRelease(releasePubkey)
-      getUserBalances()
+      await getUserBalances()
       return {
         success: true,
         msg: `You collected ${nativeToUiString(
           recipient.owed,
-          release.paymentMint
+          paymentMint
         )}`,
       }
     } catch (error) {
