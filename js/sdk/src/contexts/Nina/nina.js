@@ -115,7 +115,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     getUserBalances,
     getSolBalanceForPublicKey,
     getNpcAmountHeld,
-    getUsdcBalanceForUser,
+    getUsdcBalanceForPublicKey,
     bundlrFund,
     bundlrWithdraw,
     getBundlrBalance,
@@ -191,7 +191,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         getSolBalanceForPublicKey,
         usdcBalance,
         getNpcAmountHeld,
-        getUsdcBalanceForUser,
+        getUsdcBalanceForPublicKey,
         npcAmountHeld,
         healthOk,
         ninaClient,
@@ -776,7 +776,7 @@ const ninaContextHelper = ({
     }
   }
 
-  const getUsdcBalanceForUser = async (publicKey) => {
+  const getUsdcBalanceForPublicKey = async (publicKey) => {
     let usdc = 0
     if (publicKey) {
       try {
@@ -1248,7 +1248,7 @@ const ninaContextHelper = ({
     getUserBalances,
     getSolBalanceForPublicKey,
     getNpcAmountHeld,
-    getUsdcBalanceForUser,
+    getUsdcBalanceForPublicKey,
     bundlrFund,
     bundlrWithdraw,
     getBundlrBalance,

@@ -24,7 +24,7 @@ const Balance = ({ profilePublishedReleases, inDashboard, profilePubkey }) => {
     getBundlrBalanceForUser,
     solPrice,
     getSolBalanceForPublicKey,
-    getUsdcBalanceForUser,
+    getUsdcBalanceForPublicKey,
     initBundlr,
   } = useContext(Nina.Context)
   const [revenueSumForArtist, setRevenueSumForArtist] = useState(0)
@@ -57,7 +57,7 @@ const Balance = ({ profilePublishedReleases, inDashboard, profilePubkey }) => {
   }, [solBalance])
 
   useEffect(() => {
-    getUsdcBalanceForUser(profilePubkey)
+    getUsdcBalanceForPublicKey(profilePubkey)
     setUserUsdcBalance(usdcBalance)
   }, [usdcBalance])
 
