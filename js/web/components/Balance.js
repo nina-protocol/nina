@@ -21,13 +21,9 @@ const Balance = ({ profilePublishedReleases, inDashboard, profilePubkey }) => {
     solBalance,
     usdcBalance,
     bundlrBalance,
-    getBundlrBalance,
     getBundlrBalanceForUser,
     solPrice,
-    getSolPrice,
     initBundlr,
-    getBundlrPricePerMb,
-    bundlrPricePerMb,
   } = useContext(Nina.Context)
   const [revenueSumForArtist, setRevenueSumForArtist] = useState(0)
   const [userSolBalance, setUserSolBalance] = useState(0)
