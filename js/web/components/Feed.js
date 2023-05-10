@@ -500,53 +500,57 @@ const Feed = ({
         //     </MultiCard>
         //   )
         case 'SubscriptionSubscribeAccount':
-          const image = displayImageForAccount(item?.toAccount?.publicKey)
-          return (
-            <ImageCard>
-              <Link href={`/profiles/${item.toAccount?.publicKey}`} passHref>
-                <a>
-                  {image && image.includes('https') ? (
-                    <Image
-                      height={'400px'}
-                      width={'400px'}
-                      layout="responsive"
-                      src={getImageFromCDN(
-                        image,
-                        600,
-                        Date.parse(item.datetime)
-                      )}
-                      alt={i}
-                      priority={true}
-                      loader={loader}
-                      unoptimized={true}
-                    />
-                  ) : (
-                    <img src={image} height={418} width={418} />
-                  )}
-                </a>
-              </Link>
-              <CopyWrapper>
-                <Typography my={1}>
-                  <Link
-                    href={`/profiles/${item.authority?.publicKey}`}
-                    passHref
-                  >
-                    <a>{displayNameForAccount(item.authority?.publicKey)}</a>
-                  </Link>{' '}
-                  followed{' '}
-                  <Link
-                    href={`/profiles/${item.toAccount?.publicKey}`}
-                    passHref
-                  >
-                    <a>{displayNameForAccount(item.toAccount?.publicKey)}</a>
-                  </Link>
-                </Typography>
-                <Typography my={1} fontWeight={600}>
-                  {timeSince(Date.parse(item.datetime))} ago
-                </Typography>
-              </CopyWrapper>
-            </ImageCard>
-          )
+          if (item?.toAccount) {
+
+            const image = displayImageForAccount(item?.toAccount?.publicKey)
+            return (
+              <ImageCard>
+                <Link href={`/profiles/${item.toAccount?.publicKey}`} passHref>
+                  <a>
+                    {image && image.includes('https') ? (
+                      <Image
+                        height={'400px'}
+                        width={'400px'}
+                        layout="responsive"
+                        src={getImageFromCDN(
+                          image,
+                          600,
+                          Date.parse(item.datetime)
+                        )}
+                        alt={i}
+                        priority={true}
+                        loader={loader}
+                        unoptimized={true}
+                      />
+                    ) : (
+                      <img src={image} height={418} width={418} />
+                    )}
+                  </a>
+                </Link>
+                <CopyWrapper>
+                  <Typography my={1}>
+                    <Link
+                      href={`/profiles/${item.authority?.publicKey}`}
+                      passHref
+                    >
+                      <a>{displayNameForAccount(item.authority?.publicKey)}</a>
+                    </Link>{' '}
+                    followed{' '}
+                    <Link
+                      href={`/profiles/${item.toAccount?.publicKey}`}
+                      passHref
+                    >
+                      <a>{displayNameForAccount(item.toAccount?.publicKey)}</a>
+                    </Link>
+                  </Typography>
+                  <Typography my={1} fontWeight={600}>
+                    {timeSince(Date.parse(item.datetime))} ago
+                  </Typography>
+                </CopyWrapper>
+              </ImageCard>
+            )
+          }
+          break
         case 'SubscriptionSubscribeHub':
           return (
             <ImageCard>
