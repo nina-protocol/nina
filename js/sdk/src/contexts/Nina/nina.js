@@ -119,7 +119,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     bundlrFund,
     bundlrWithdraw,
     getBundlrBalance,
-    getBundlrBalanceForUser,
+    getBundlrBalanceForPublicKey,
     getBundlrPricePerMb,
     getSolPrice,
     bundlrUpload,
@@ -198,7 +198,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         bundlrFund,
         bundlrWithdraw,
         getBundlrBalance,
-        getBundlrBalanceForUser,
+        getBundlrBalanceForPublicKey,
         bundlrBalance,
         getBundlrPricePerMb,
         bundlrPricePerMb,
@@ -917,7 +917,7 @@ const ninaContextHelper = ({
     }
   }
 
-  const getBundlrBalanceForUser = async (publicKey) => {
+  const getBundlrBalanceForPublicKey = async (publicKey) => {
     try {
       const bundlrBalanceRequest = await bundlr?.getBalance(publicKey)
       setBundlrBalance(nativeToUi(bundlrBalanceRequest, ids.mints.wsol))
@@ -1250,7 +1250,7 @@ const ninaContextHelper = ({
     bundlrFund,
     bundlrWithdraw,
     getBundlrBalance,
-    getBundlrBalanceForUser,
+    getBundlrBalanceForPublicKey,
     getBundlrPricePerMb,
     getSolPrice,
     bundlrUpload,

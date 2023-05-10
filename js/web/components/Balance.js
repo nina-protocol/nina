@@ -15,13 +15,12 @@ import Swap from '@nina-protocol/nina-internal-sdk/esm/Swap'
 import Divider from '@mui/material/Divider'
 
 const Balance = ({ profilePublishedReleases, inDashboard, profilePubkey }) => {
-  const { wallet } = useContext(Wallet.Context)
   const {
     ninaClient,
     solBalance,
     usdcBalance,
     bundlrBalance,
-    getBundlrBalanceForUser,
+    getBundlrBalanceForPublicKey,
     solPrice,
     getSolBalanceForPublicKey,
     getUsdcBalanceForPublicKey,
@@ -41,29 +40,29 @@ const Balance = ({ profilePublishedReleases, inDashboard, profilePubkey }) => {
   }, [])
 
   useEffect(() => {
-    getBundlrBalanceForUser(profilePubkey)
-  }, [getBundlrBalanceForUser])
+    getBundlrBalanceForPublicKey(profilePubkey)
+  }, [getBundlrBalanceForPublicKey])
 
   useEffect(() => {
     fetchRevenueSumForArtist()
   }, [profilePublishedReleases, revenueSumForArtist])
 
   useEffect(() => {
-    const getUserSolBalance = async () => {
+    const handleUserSolBalance = async () => {
       const result = await getSolBalanceForPublicKey(profilePubkey)
       setUserSolBalance(
         ninaClient.nativeToUi(result, ninaClient.ids.mints.wsol).toFixed(3)
       )
     }
-    getUserSolBalance()
+    handleUserSolBalance()
   }, [solBalance])
 
   useEffect(() => {
-    const getUserUsdcBalance = async () => {
+    const handleUserUsdcBalance = async () => {
       const result = await getUsdcBalanceForPublicKey(profilePubkey)
       setUserUsdcBalance(result)
     }
-    getUserUsdcBalance()
+    handleUserUsdcBalance()
   }, [usdcBalance])
 
   const fetchRevenueSumForArtist = () => {
