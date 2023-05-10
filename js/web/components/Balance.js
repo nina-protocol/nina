@@ -14,12 +14,37 @@ import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Swap from '@nina-protocol/nina-internal-sdk/esm/Swap'
 import Divider from '@mui/material/Divider'
 
-const Balance = ({ profilePublishedReleases }) => {
-  const { ninaClient, solBalance, usdcBalance } = useContext(Nina.Context)
+const Balance = ({ profilePublishedReleases, inDashboard, profilePubkey }) => {
+  const { wallet } = useContext(Wallet.Context)
+  const {
+    ninaClient,
+    solBalance,
+    usdcBalance,
+    bundlrBalance,
+    getBundlrBalance,
+    getBundlrBalanceForUser,
+    solPrice,
+    getSolPrice,
+    initBundlr,
+    getBundlrPricePerMb,
+    bundlrPricePerMb,
+  } = useContext(Nina.Context)
   const [revenueSumForArtist, setRevenueSumForArtist] = useState(0)
   const [userSolBalance, setUserSolBalance] = useState(0)
   const [userUsdcBalance, setUserUsdcBalance] = useState(0)
   const [open, setOpen] = useState(false)
+  const bundlrUsdBalance = useMemo(
+    () => bundlrBalance * solPrice,
+    [bundlrBalance, solPrice]
+  )
+
+  useEffect(() => {
+    initBundlr()
+  }, [])
+
+  useEffect(() => {
+    getBundlrBalanceForUser(profilePubkey)
+  }, [getBundlrBalanceForUser])
 
   useEffect(() => {
     fetchRevenueSumForArtist()
@@ -84,6 +109,15 @@ const Balance = ({ profilePublishedReleases }) => {
               <Typography variant="string" sx={{ pr: 1 }}>
                 {`USDC: ${userUsdcBalance}`}
               </Typography>
+              <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
+
+              <Typography
+                variant="string"
+                sx={{ pr: 1, display: 'flex', flexDirection: 'column' }}
+              >
+                {`Upload Account Balance: ${bundlrBalance?.toFixed(4)} SOL ($
+                ${bundlrUsdBalance.toFixed(2)})`}
+              </Typography>
 
               <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
 
@@ -100,8 +134,12 @@ const Balance = ({ profilePublishedReleases }) => {
                 }`}
               </Typography>
             </Box>
-            <Divider sx={{ margin: '30px 0 30px' }} />
-            <Swap />
+            {inDashboard && (
+              <>
+                <Divider sx={{ margin: '30px 0 30px' }} />
+                <Swap />
+              </>
+            )}
           </StyledPaper>
         </Fade>
       </StyledModal>
