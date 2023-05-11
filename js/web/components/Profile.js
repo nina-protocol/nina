@@ -10,6 +10,7 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import IdentityVerification from '@nina-protocol/nina-internal-sdk/esm/IdentityVerification'
 import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
+import onboardingCodeWhitelist from '@nina-protocol/nina-internal-sdk/src/utils/onboardingCodeWhitelist'
 
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Balance from './Balance'
@@ -46,7 +47,9 @@ const Profile = ({ profilePubkey }) => {
     verificationState,
     displayImageForAccount,
   } = useContext(Nina.Context)
+  const walletPubkey = wallet.publicKey?.toBase58()
 
+  const isAdmin = onboardingCodeWhitelist.includes(walletPubkey)
   const [profilePublishedReleases, setProfilePublishedReleases] =
     useState(undefined)
   const [profileCollectionReleases, setProfileCollectionReleases] =
@@ -90,7 +93,7 @@ const Profile = ({ profilePubkey }) => {
   }, [profilePubkey])
 
   useEffect(() => {
-    if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
+    if (wallet.connected && profilePubkey === walletPubkey) {
       setInDashboard(true)
       setInCollection(true)
     }
@@ -412,9 +415,12 @@ const Profile = ({ profilePubkey }) => {
                       profilePubkey={profilePubkey}
                     />
 
-                    {inDashboard && (
+                    {(inDashboard || isAdmin) && (
                       <Balance
                         profilePublishedReleases={profilePublishedReleases}
+                        inDashboard={inDashboard}
+                        profilePubkey={profilePubkey}
+                        isAdmin={isAdmin && !inDashboard}
                       />
                     )}
                   </Box>
