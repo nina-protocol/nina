@@ -43,6 +43,12 @@ const Balance = ({
   )
 
   useEffect(() => {
+    initBundlr()
+    getBundlrBalance()
+    getSolPrice()
+  }, [])
+
+  useEffect(() => {
     fetchRevenueSumForArtist()
   }, [profilePublishedReleases, revenueSumForArtist])
 
@@ -57,13 +63,8 @@ const Balance = ({
   }, [usdcBalance])
 
   useEffect(() => {
-    initBundlr()
-    getBundlrBalance()
+    setUserBundlrBalance(bundlrBalance)
   }, [bundlrBalance])
-
-  useEffect(() => {
-    getSolPrice()
-  }, [])
 
   useEffect(() => {
     if (isAdmin) {
@@ -84,7 +85,7 @@ const Balance = ({
       }
       handleUserBalanceLookup()
     }
-  }, [])
+  }, [isAdmin])
 
   const fetchRevenueSumForArtist = () => {
     let revenueSum = 0
@@ -127,19 +128,13 @@ const Balance = ({
 
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
               <Typography variant="string" sx={{ pr: 1 }}>
-                {`SOL: ${
-                  isAdmin
-                    ? userSolBalance
-                    : ninaClient
-                        .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
-                        .toFixed(3)
-                }`}
+                {`SOL: ${userSolBalance}`}
               </Typography>
 
               <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
 
               <Typography variant="string" sx={{ pr: 1 }}>
-                {`USDC: $${isAdmin ? userUsdcBalance : usdcBalance.toFixed(2)}`}
+                {`USDC: $${userUsdcBalance}`}
               </Typography>
               <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
 
@@ -147,11 +142,9 @@ const Balance = ({
                 variant="string"
                 sx={{ pr: 1, display: 'flex', flexDirection: 'column' }}
               >
-                {`Upload Account Balance: ${
-                  isAdmin
-                    ? userBundlrBalance?.toFixed(4)
-                    : bundlrBalance.toFixed(4)
-                } SOL ($${userBundlrUsdBalance.toFixed(2)})`}
+                {`Upload Account Balance: ${userBundlrBalance?.toFixed(
+                  4
+                )} SOL ($${userBundlrUsdBalance.toFixed(2)})`}
               </Typography>
 
               <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
