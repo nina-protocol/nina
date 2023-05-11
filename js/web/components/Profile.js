@@ -420,7 +420,7 @@ const Profile = ({ profilePubkey }) => {
                         profilePublishedReleases={profilePublishedReleases}
                         inDashboard={inDashboard}
                         profilePubkey={profilePubkey}
-                        admin={hasAccess && !inDashboard}
+                        isAdmin={hasAccess && !inDashboard}
                       />
                     )}
                   </Box>

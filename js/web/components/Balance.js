@@ -10,7 +10,6 @@ import {
   Fade,
 } from '@mui/material'
 import { styled } from '@mui/system'
-import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Swap from '@nina-protocol/nina-internal-sdk/esm/Swap'
 import Divider from '@mui/material/Divider'
 
@@ -18,7 +17,7 @@ const Balance = ({
   profilePublishedReleases,
   inDashboard,
   profilePubkey,
-  admin,
+  isAdmin,
 }) => {
   const {
     ninaClient,
@@ -39,7 +38,7 @@ const Balance = ({
   const [userBundlrBalance, setUserBundlrBalance] = useState(0)
   const [open, setOpen] = useState(false)
   const userBundlrUsdBalance = useMemo(
-    () => (admin ? userBundlrBalance : bundlrBalance) * solPrice,
+    () => (isAdmin ? userBundlrBalance : bundlrBalance) * solPrice,
     [bundlrBalance, userBundlrBalance, solPrice]
   )
 
@@ -67,7 +66,7 @@ const Balance = ({
   }, [])
 
   useEffect(() => {
-    if (admin) {
+    if (isAdmin) {
       const handleUserBalanceLookup = async () => {
         const solBalance = await getSolBalanceForPublicKey(profilePubkey)
         const usdcBalance = await getUsdcBalanceForPublicKey(profilePubkey)
@@ -128,13 +127,13 @@ const Balance = ({
 
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
               <Typography variant="string" sx={{ pr: 1 }}>
-                {`SOL: ${admin ? userSolBalance : solBalance.toFixed(3)}`}
+                {`SOL: ${isAdmin ? userSolBalance : solBalance.toFixed(3)}`}
               </Typography>
 
               <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
 
               <Typography variant="string" sx={{ pr: 1 }}>
-                {`USDC: $${admin ? userUsdcBalance : usdcBalance.toFixed(2)}`}
+                {`USDC: $${isAdmin ? userUsdcBalance : usdcBalance.toFixed(2)}`}
               </Typography>
               <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
 
@@ -143,7 +142,7 @@ const Balance = ({
                 sx={{ pr: 1, display: 'flex', flexDirection: 'column' }}
               >
                 {`Upload Account Balance: ${
-                  admin
+                  isAdmin
                     ? userBundlrBalance?.toFixed(4)
                     : bundlrBalance.toFixed(4)
                 } SOL ($${userBundlrUsdBalance.toFixed(2)})`}
