@@ -127,7 +127,13 @@ const Balance = ({
 
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
               <Typography variant="string" sx={{ pr: 1 }}>
-                {`SOL: ${isAdmin ? userSolBalance : solBalance.toFixed(3)}`}
+                {`SOL: ${
+                  isAdmin
+                    ? userSolBalance
+                    : ninaClient
+                        .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
+                        .toFixed(3)
+                }`}
               </Typography>
 
               <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
