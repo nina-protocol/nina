@@ -14,7 +14,12 @@ import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Swap from '@nina-protocol/nina-internal-sdk/esm/Swap'
 import Divider from '@mui/material/Divider'
 
-const Balance = ({ profilePublishedReleases, inDashboard, profilePubkey }) => {
+const Balance = ({
+  profilePublishedReleases,
+  inDashboard,
+  profilePubkey,
+  admin,
+}) => {
   const {
     ninaClient,
     solBalance,
@@ -36,34 +41,40 @@ const Balance = ({ profilePublishedReleases, inDashboard, profilePubkey }) => {
   )
 
   useEffect(() => {
-    initBundlr()
-  }, [])
-
-  useEffect(() => {
-    getBundlrBalanceForPublicKey(profilePubkey)
-  }, [getBundlrBalanceForPublicKey])
-
-  useEffect(() => {
     fetchRevenueSumForArtist()
   }, [profilePublishedReleases, revenueSumForArtist])
 
   useEffect(() => {
-    const handleUserSolBalance = async () => {
-      const result = await getSolBalanceForPublicKey(profilePubkey)
-      setUserSolBalance(
-        ninaClient.nativeToUi(result, ninaClient.ids.mints.wsol).toFixed(3)
-      )
-    }
-    handleUserSolBalance()
+    setUserSolBalance(
+      ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol).toFixed(3)
+    )
   }, [solBalance])
 
   useEffect(() => {
-    const handleUserUsdcBalance = async () => {
-      const result = await getUsdcBalanceForPublicKey(profilePubkey)
-      setUserUsdcBalance(result)
-    }
-    handleUserUsdcBalance()
+    setUserUsdcBalance(usdcBalance)
   }, [usdcBalance])
+
+  useEffect(() => {
+    initBundlr()
+  }, [])
+
+  // useEffect(() => {
+  //   if (admin) {
+  //     const handleUserBalanceLookup = async () => {
+  //       const solBalance = await getSolBalanceForPublicKey(profilePubkey)
+  //       const usdcBalance = await getUsdcBalanceForPublicKey(profilePubkey)
+  //       setUserUsdcBalance(usdcBalance)
+  //       setUserSolBalance(
+  //         ninaClient
+  //           .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
+  //           .toFixed(3)
+  //       )
+  //       return
+  //     }
+  //     handleUserBalanceLookup()
+  //     getBundlrBalanceForPublicKey(profilePubkey)
+  //   }
+  // }, [])
 
   const fetchRevenueSumForArtist = () => {
     let revenueSum = 0
