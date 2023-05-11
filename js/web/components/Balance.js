@@ -26,8 +26,8 @@ const Balance = ({
     bundlrBalance,
     getBundlrBalanceForPublicKey,
     getBundlrBalance,
-    solPrice,
-    getSolPrice,
+    getBundlrPricePerMb,
+    bundlrPricePerMb,
     getSolBalanceForPublicKey,
     getUsdcBalanceForPublicKey,
     initBundlr,
@@ -37,15 +37,16 @@ const Balance = ({
   const [userUsdcBalance, setUserUsdcBalance] = useState(0)
   const [userBundlrBalance, setUserBundlrBalance] = useState(0)
   const [open, setOpen] = useState(false)
-  const userBundlrUsdBalance = useMemo(
-    () => (isAdmin ? userBundlrBalance : bundlrBalance) * solPrice,
-    [bundlrBalance, userBundlrBalance, solPrice]
+
+  const availableStorage = useMemo(
+    () => (isAdmin ? userBundlrBalance : bundlrBalance) / bundlrPricePerMb,
+    [bundlrBalance, userBundlrBalance, bundlrPricePerMb]
   )
 
   useEffect(() => {
     initBundlr()
+    getBundlrPricePerMb()
     getBundlrBalance()
-    getSolPrice()
   }, [])
 
   useEffect(() => {
@@ -126,7 +127,7 @@ const Balance = ({
               Your Balances
             </Typography>
 
-            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+            <ResponsiveBox>
               <Typography variant="string" sx={{ pr: 1 }}>
                 {`SOL: ${userSolBalance}`}
               </Typography>
@@ -144,7 +145,7 @@ const Balance = ({
               >
                 {`Upload Account Balance: ${userBundlrBalance?.toFixed(
                   4
-                )} SOL ($${userBundlrUsdBalance.toFixed(2)})`}
+                )} SOL / ${availableStorage.toFixed(2)} MB`}
               </Typography>
 
               <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
@@ -161,7 +162,7 @@ const Balance = ({
                     : '0'
                 }`}
               </Typography>
-            </Box>
+            </ResponsiveBox>
             {inDashboard && (
               <>
                 <Divider sx={{ margin: '30px 0 30px' }} />
@@ -178,7 +179,17 @@ const Balance = ({
 const Root = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  width: '100%',
+  width: 'min-content',
+}))
+
+const ResponsiveBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  whiteSpace: 'nowrap',
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column',
+    whiteSpace: 'unset',
+  },
 }))
 
 const StyledModal = styled(Modal)(() => ({
