@@ -115,9 +115,11 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     getUserBalances,
     getSolBalanceForPublicKey,
     getNpcAmountHeld,
+    getUsdcBalanceForPublicKey,
     bundlrFund,
     bundlrWithdraw,
     getBundlrBalance,
+    getBundlrBalanceForPublicKey,
     getBundlrPricePerMb,
     getSolPrice,
     bundlrUpload,
@@ -189,12 +191,14 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         getSolBalanceForPublicKey,
         usdcBalance,
         getNpcAmountHeld,
+        getUsdcBalanceForPublicKey,
         npcAmountHeld,
         healthOk,
         ninaClient,
         bundlrFund,
         bundlrWithdraw,
         getBundlrBalance,
+        getBundlrBalanceForPublicKey,
         bundlrBalance,
         getBundlrPricePerMb,
         bundlrPricePerMb,
@@ -719,7 +723,7 @@ const ninaContextHelper = ({
     let solUsdcBalanceResult = await provider.connection.getBalance(
       new anchor.web3.PublicKey(publicKey)
     )
-    return ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol)
+    return solUsdcBalanceResult
   }
 
   const getUserBalances = async () => {
@@ -768,6 +772,37 @@ const ninaContextHelper = ({
       usdc,
       sol: ninaClient.nativeToUi(solBalanceResult, ids.mints.wsol),
     }
+  }
+
+  const getUsdcBalanceForPublicKey = async (publicKey) => {
+    let usdc = 0
+    if (publicKey) {
+      try {
+        let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
+          provider.connection,
+          new anchor.web3.PublicKey(publicKey),
+          new anchor.web3.PublicKey(publicKey),
+          anchor.web3.SystemProgram.programId,
+          anchor.web3.SYSVAR_RENT_PUBKEY,
+          new anchor.web3.PublicKey(ids.mints.usdc)
+        )
+        if (usdcTokenAccountPubkey) {
+          let usdcTokenAccount =
+            await provider.connection.getTokenAccountBalance(
+              usdcTokenAccountPubkey
+            )
+          usdc = usdcTokenAccount.value.uiAmount.toFixed(2)
+          return usdc
+        } else {
+          return 0
+        }
+      } catch (error) {
+        console.warn('error getting usdc balance')
+      }
+    } else {
+      return 0
+    }
+    return usdc
   }
 
   const getNpcAmountHeld = async () => {
@@ -877,6 +912,15 @@ const ninaContextHelper = ({
       }
       const bundlrBalanceRequest = await bundlrInstance?.getLoadedBalance()
       setBundlrBalance(nativeToUi(bundlrBalanceRequest, ids.mints.wsol))
+    } catch (error) {
+      console.warn('Unable to get Bundlr Balance: ', error)
+    }
+  }
+
+  const getBundlrBalanceForPublicKey = async (publicKey) => {
+    try {
+      const bundlrBalanceRequest = await bundlr?.getBalance(publicKey)
+      return bundlrBalanceRequest
     } catch (error) {
       console.warn('Unable to get Bundlr Balance: ', error)
     }
@@ -1202,9 +1246,11 @@ const ninaContextHelper = ({
     getUserBalances,
     getSolBalanceForPublicKey,
     getNpcAmountHeld,
+    getUsdcBalanceForPublicKey,
     bundlrFund,
     bundlrWithdraw,
     getBundlrBalance,
+    getBundlrBalanceForPublicKey,
     getBundlrPricePerMb,
     getSolPrice,
     bundlrUpload,
