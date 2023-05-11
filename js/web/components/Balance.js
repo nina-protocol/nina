@@ -179,7 +179,7 @@ const Balance = ({
 const Root = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  width: 'min-content',
+  width: '100%',
 }))
 
 const ResponsiveBox = styled(Box)(({ theme }) => ({
@@ -203,7 +203,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   border: '2px solid #000',
   boxShadow: theme.shadows[5],
   padding: theme.spacing(2, 4, 3),
-  width: '40vw',
+  width: 'min-content',
   maxHeight: '90vh',
   overflowY: 'auto',
   zIndex: '10',
