@@ -920,7 +920,7 @@ const ninaContextHelper = ({
   const getBundlrBalanceForPublicKey = async (publicKey) => {
     try {
       const bundlrBalanceRequest = await bundlr?.getBalance(publicKey)
-      setBundlrBalance(nativeToUi(bundlrBalanceRequest, ids.mints.wsol))
+      return bundlrBalanceRequest
     } catch (error) {
       console.warn('Unable to get Bundlr Balance: ', error)
     }

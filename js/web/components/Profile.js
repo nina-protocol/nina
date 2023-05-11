@@ -95,7 +95,7 @@ const Profile = ({ profilePubkey }) => {
   useEffect(() => {
     if (wallet.connected && profilePubkey === walletPubkey) {
       setInDashboard(true)
-      setInCollection(true)    
+      setInCollection(true)
     }
   }, [wallet, profilePubkey])
 

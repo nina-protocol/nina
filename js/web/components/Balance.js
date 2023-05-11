@@ -26,7 +26,9 @@ const Balance = ({
     usdcBalance,
     bundlrBalance,
     getBundlrBalanceForPublicKey,
+    getBundlrBalance,
     solPrice,
+    getSolPrice,
     getSolBalanceForPublicKey,
     getUsdcBalanceForPublicKey,
     initBundlr,
@@ -34,10 +36,11 @@ const Balance = ({
   const [revenueSumForArtist, setRevenueSumForArtist] = useState(0)
   const [userSolBalance, setUserSolBalance] = useState(0)
   const [userUsdcBalance, setUserUsdcBalance] = useState(0)
+  const [userBundlrBalance, setUserBundlrBalance] = useState(0)
   const [open, setOpen] = useState(false)
-  const bundlrUsdBalance = useMemo(
-    () => bundlrBalance * solPrice,
-    [bundlrBalance, solPrice]
+  const userBundlrUsdBalance = useMemo(
+    () => (admin ? userBundlrBalance : bundlrBalance) * solPrice,
+    [bundlrBalance, userBundlrBalance, solPrice]
   )
 
   useEffect(() => {
@@ -56,25 +59,33 @@ const Balance = ({
 
   useEffect(() => {
     initBundlr()
+    getBundlrBalance()
+  }, [bundlrBalance])
+
+  useEffect(() => {
+    getSolPrice()
   }, [])
 
-  // useEffect(() => {
-  //   if (admin) {
-  //     const handleUserBalanceLookup = async () => {
-  //       const solBalance = await getSolBalanceForPublicKey(profilePubkey)
-  //       const usdcBalance = await getUsdcBalanceForPublicKey(profilePubkey)
-  //       setUserUsdcBalance(usdcBalance)
-  //       setUserSolBalance(
-  //         ninaClient
-  //           .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
-  //           .toFixed(3)
-  //       )
-  //       return
-  //     }
-  //     handleUserBalanceLookup()
-  //     getBundlrBalanceForPublicKey(profilePubkey)
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (admin) {
+      const handleUserBalanceLookup = async () => {
+        const solBalance = await getSolBalanceForPublicKey(profilePubkey)
+        const usdcBalance = await getUsdcBalanceForPublicKey(profilePubkey)
+        const bundlrBalance = await getBundlrBalanceForPublicKey(profilePubkey)
+
+        setUserUsdcBalance(usdcBalance)
+        setUserSolBalance(
+          ninaClient
+            .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
+            .toFixed(3)
+        )
+        setUserBundlrBalance(
+          ninaClient.nativeToUi(bundlrBalance, ninaClient.ids.mints.wsol)
+        )
+      }
+      handleUserBalanceLookup()
+    }
+  }, [])
 
   const fetchRevenueSumForArtist = () => {
     let revenueSum = 0
@@ -117,13 +128,13 @@ const Balance = ({
 
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
               <Typography variant="string" sx={{ pr: 1 }}>
-                {`SOL: ${userSolBalance}`}
+                {`SOL: ${admin ? userSolBalance : solBalance.toFixed(3)}`}
               </Typography>
 
               <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
 
               <Typography variant="string" sx={{ pr: 1 }}>
-                {`USDC: $${userUsdcBalance}`}
+                {`USDC: $${admin ? userUsdcBalance : usdcBalance.toFixed(2)}`}
               </Typography>
               <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
 
@@ -131,8 +142,11 @@ const Balance = ({
                 variant="string"
                 sx={{ pr: 1, display: 'flex', flexDirection: 'column' }}
               >
-                {`Upload Account Balance: ${bundlrBalance?.toFixed(4)} SOL ($
-                ${bundlrUsdBalance.toFixed(2)})`}
+                {`Upload Account Balance: ${
+                  admin
+                    ? userBundlrBalance?.toFixed(4)
+                    : bundlrBalance.toFixed(4)
+                } SOL ($${userBundlrUsdBalance.toFixed(2)})`}
               </Typography>
 
               <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
