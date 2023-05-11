@@ -49,7 +49,7 @@ const Profile = ({ profilePubkey }) => {
   } = useContext(Nina.Context)
   const walletPubkey = wallet.publicKey?.toBase58()
 
-  const hasAccess = onboardingCodeWhitelist.includes(walletPubkey)
+  const isAdmin = onboardingCodeWhitelist.includes(walletPubkey)
   const [profilePublishedReleases, setProfilePublishedReleases] =
     useState(undefined)
   const [profileCollectionReleases, setProfileCollectionReleases] =
@@ -415,12 +415,12 @@ const Profile = ({ profilePubkey }) => {
                       profilePubkey={profilePubkey}
                     />
 
-                    {(inDashboard || hasAccess) && (
+                    {(inDashboard || isAdmin) && (
                       <Balance
                         profilePublishedReleases={profilePublishedReleases}
                         inDashboard={inDashboard}
                         profilePubkey={profilePubkey}
-                        isAdmin={hasAccess && !inDashboard}
+                        isAdmin={isAdmin && !inDashboard}
                       />
                     )}
                   </Box>
