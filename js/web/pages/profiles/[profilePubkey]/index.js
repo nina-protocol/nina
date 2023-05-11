@@ -17,11 +17,12 @@ const ProfilePage = (props) => {
   const router = useRouter()
   const dashboardPath = `/profiles/${wallet.publicKey?.toBase58()}`
   const routerPath = router.asPath
+  console.log('routerPath', routerPath)
   useEffect(() => {
     if (routerPath === dashboardPath) {
       router.push('/dashboard')
     }
-  }, [wallet])
+  }, [routerPath])
   return (
     <>
       <Head>
