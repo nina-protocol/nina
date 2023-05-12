@@ -38,10 +38,9 @@ const ReleaseCode = ({ release, releasePubkey }) => {
       const signature = await wallet.signMessage(message)
       const signatureBase64 = encodeBase64(signature)
 
-      logEvent('ReleaseCodeCreateInit',
-        'engagement',{ 
-        wallet: wallet.publicKey.toBase58(),
-        publicKey: releasePubkey, 
+      logEvent('ReleaseCodeCreateInit', 'engagement', {
+        wallet: wallet?.publicKey?.toBase58(),
+        publicKey: releasePubkey,
       })
 
       const response = await axios.post(
@@ -55,10 +54,9 @@ const ReleaseCode = ({ release, releasePubkey }) => {
         }
       )
 
-      logEvent('ReleaseCodeCreateSuccess',
-        'engagement',{ 
-        wallet: wallet.publicKey.toBase58(),
-        publicKey: releasePubkey, 
+      logEvent('ReleaseCodeCreateSuccess', 'engagement', {
+        wallet: wallet?.publicKey?.toBase58(),
+        publicKey: releasePubkey,
       })
 
       if (response.data) {
@@ -67,10 +65,9 @@ const ReleaseCode = ({ release, releasePubkey }) => {
         setAmount('')
       }
     } catch (error) {
-      logEvent('ReleaseCodeCreateFailure',
-        'engagement',{ 
-        wallet: wallet.publicKey.toBase58(),
-        publicKey: releasePubkey, 
+      logEvent('ReleaseCodeCreateFailure', 'engagement', {
+        wallet: wallet?.publicKey?.toBase58(),
+        publicKey: releasePubkey,
       })
 
       enqueueSnackbar('Error generating codes', {

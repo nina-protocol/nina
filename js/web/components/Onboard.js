@@ -351,9 +351,8 @@ const Onboard = () => {
     const messageBase64 = encodeBase64(message)
     const signature = await wallet.signMessage(message)
     const signatureBase64 = encodeBase64(signature)
-    logEvent('handleClaimCodeInit',
-      'engagement',{ 
-      wallet: wallet.publicKey.toBase58() 
+    logEvent('handleClaimCodeInit', 'engagement', {
+      wallet: wallet?.publicKey?.toBase58(),
     })
 
     try {
@@ -367,11 +366,10 @@ const Onboard = () => {
         }
       )
       if (response.data.status === 'success') {
-        logEvent('handleClaimCodeSuccess',
-        'engagement',{ 
-        wallet: wallet.publicKey.toBase58() 
-      })
-  
+        logEvent('handleClaimCodeSuccess', 'engagement', {
+          wallet: wallet?.publicKey?.toBase58(),
+        })
+
         enqueueSnackbar('Code has been successfully redeemed', {
           info: 'success',
           variant: 'success',
@@ -381,9 +379,8 @@ const Onboard = () => {
       }
       return
     } catch (error) {
-      logEvent('handleClaimCodeFailure',
-        'engagement',{ 
-        wallet: wallet.publicKey.toBase58() 
+      logEvent('handleClaimCodeFailure', 'engagement', {
+        wallet: wallet?.publicKey?.toBase58(),
       })
 
       enqueueSnackbar('Code has already been redeemed or is invalid', {

@@ -47,12 +47,11 @@ const RedeemReleaseCode = (props) => {
         const signature = await wallet.signMessage(message)
         const signatureBase64 = encodeBase64(signature)
 
-        logEvent('ReleaseCodeClaimInit',
-          'engagement',{ 
-          wallet: wallet.publicKey.toBase58(),
-          publicKey: releasePubkey, 
+        logEvent('ReleaseCodeClaimInit', 'engagement', {
+          wallet: wallet?.publicKey?.toBase58(),
+          publicKey: releasePubkey,
         })
-    
+
         await axios.post(
           `${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes/${code}/claim`,
           {
@@ -64,10 +63,9 @@ const RedeemReleaseCode = (props) => {
         )
         await getRelease(releasePubkey)
         await addReleaseToCollection(releasePubkey)
-        logEvent('ReleaseCodeClaimSuccess',
-          'engagement',{ 
-          wallet: wallet.publicKey.toBase58(),
-          publicKey: releasePubkey, 
+        logEvent('ReleaseCodeClaimSuccess', 'engagement', {
+          wallet: wallet?.publicKey?.toBase58(),
+          publicKey: releasePubkey,
         })
 
         enqueueSnackbar('Release code redeemed!', {
@@ -79,10 +77,9 @@ const RedeemReleaseCode = (props) => {
       }
     } catch (error) {
       setPending(false)
-      logEvent('ReleaseCodeClaimFailure',
-        'engagement',{ 
-        wallet: wallet.publicKey.toBase58(),
-        publicKey: releasePubkey, 
+      logEvent('ReleaseCodeClaimFailure', 'engagement', {
+        wallet: wallet?.publicKey?.toBase58(),
+        publicKey: releasePubkey,
       })
       enqueueSnackbar('Code is either invalid or already claimed.', {
         variant: 'error',
