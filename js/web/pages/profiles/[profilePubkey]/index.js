@@ -15,12 +15,13 @@ const ProfilePage = (props) => {
   const { profilePubkey, loading } = props
   const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
-
+  const dashboardPath = `/profiles/${wallet.publicKey?.toBase58()}`
+  const routerPath = router.asPath
   useEffect(() => {
-    if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
+    if (routerPath === dashboardPath) {
       router.push('/dashboard')
     }
-  }, [wallet, profilePubkey])
+  }, [routerPath])
   return (
     <>
       <Head>
