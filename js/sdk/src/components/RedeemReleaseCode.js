@@ -14,6 +14,7 @@ import { useSnackbar } from 'notistack'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import axios from 'axios'
 import dynamic from 'next/dynamic'
 import Dots from './Dots'
@@ -45,6 +46,13 @@ const RedeemReleaseCode = (props) => {
         const messageBase64 = encodeBase64(message)
         const signature = await wallet.signMessage(message)
         const signatureBase64 = encodeBase64(signature)
+
+        logEvent('ReleaseCodeClaimInit',
+          'engagement',{ 
+          wallet: wallet.publicKey.toBase58(),
+          publicKey: releasePubkey, 
+        })
+    
         await axios.post(
           `${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes/${code}/claim`,
           {
@@ -56,6 +64,12 @@ const RedeemReleaseCode = (props) => {
         )
         await getRelease(releasePubkey)
         await addReleaseToCollection(releasePubkey)
+        logEvent('ReleaseCodeClaimSuccess',
+          'engagement',{ 
+          wallet: wallet.publicKey.toBase58(),
+          publicKey: releasePubkey, 
+        })
+
         enqueueSnackbar('Release code redeemed!', {
           variant: 'success',
         })
@@ -65,6 +79,11 @@ const RedeemReleaseCode = (props) => {
       }
     } catch (error) {
       setPending(false)
+      logEvent('ReleaseCodeClaimFailure',
+        'engagement',{ 
+        wallet: wallet.publicKey.toBase58(),
+        publicKey: releasePubkey, 
+      })
       enqueueSnackbar('Code is either invalid or already claimed.', {
         variant: 'error',
       })

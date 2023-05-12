@@ -15,6 +15,7 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import { useSnackbar } from 'notistack'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import Dots from './Dots'
 
 const ReleaseCode = ({ release, releasePubkey }) => {
@@ -36,6 +37,13 @@ const ReleaseCode = ({ release, releasePubkey }) => {
       const messageBase64 = encodeBase64(message)
       const signature = await wallet.signMessage(message)
       const signatureBase64 = encodeBase64(signature)
+
+      logEvent('ReleaseCodeCreateInit',
+        'engagement',{ 
+        wallet: wallet.publicKey.toBase58(),
+        publicKey: releasePubkey, 
+      })
+
       const response = await axios.post(
         `${process.env.NINA_IDENTITY_ENDPOINT}/releaseCodes`,
         {
@@ -47,12 +55,24 @@ const ReleaseCode = ({ release, releasePubkey }) => {
         }
       )
 
+      logEvent('ReleaseCodeCreateSuccess',
+        'engagement',{ 
+        wallet: wallet.publicKey.toBase58(),
+        publicKey: releasePubkey, 
+      })
+
       if (response.data) {
         setCodes(response.data.codes)
         setPendingCodes(false)
         setAmount('')
       }
     } catch (error) {
+      logEvent('ReleaseCodeCreateFailure',
+        'engagement',{ 
+        wallet: wallet.publicKey.toBase58(),
+        publicKey: releasePubkey, 
+      })
+
       enqueueSnackbar('Error generating codes', {
         variant: 'error',
       })
