@@ -260,6 +260,7 @@ const ReusableTableBody = (props) => {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const [downloadId, setDownloadId] = useState(false)
+  const [collectId, setCollectId] = useState(false)
   const snackbarHandler = (message) => {
     const snackbarMessage = enqueueSnackbar(message, {
       persistent: 'true',
@@ -297,6 +298,7 @@ const ReusableTableBody = (props) => {
   }
 
   const handleCollect = async (e, recipient, releasePubkey) => {
+    setCollectId(releasePubkey)
     e.stopPropagation()
     e.preventDefault()
     const result = await collectRoyaltyForRelease(recipient, releasePubkey)
@@ -305,10 +307,12 @@ const ReusableTableBody = (props) => {
         variant: 'success',
       })
       refreshProfile()
+      setCollectId()
     } else {
       enqueueSnackbar('Error Collecting Revenue for Release', {
         variant: 'error',
       })
+      setCollectId()
     }
   }
 
@@ -774,7 +778,9 @@ const ReusableTableBody = (props) => {
                   } else if (cellName === 'collect') {
                     return (
                       <StyledTableCell key={cellName}>
-                        <CollectContainer>{cellData}</CollectContainer>
+                        <CollectContainer>
+                          {collectId === row.id ? <Dots /> : cellData}
+                        </CollectContainer>
                       </StyledTableCell>
                     )
                   } else if (cellName === 'hubDashboard') {
