@@ -47,7 +47,7 @@ const RedeemReleaseCode = (props) => {
         const signature = await wallet.signMessage(message)
         const signatureBase64 = encodeBase64(signature)
 
-        logEvent('ReleaseCodeClaimInit', 'engagement', {
+        logEvent('release_code_redeem_initiated', 'engagement', {
           wallet: wallet?.publicKey?.toBase58(),
           publicKey: releasePubkey,
         })
@@ -63,7 +63,7 @@ const RedeemReleaseCode = (props) => {
         )
         await getRelease(releasePubkey)
         await addReleaseToCollection(releasePubkey)
-        logEvent('ReleaseCodeClaimSuccess', 'engagement', {
+        logEvent('release_code_redeem_success', 'engagement', {
           wallet: wallet?.publicKey?.toBase58(),
           publicKey: releasePubkey,
         })
@@ -77,7 +77,7 @@ const RedeemReleaseCode = (props) => {
       }
     } catch (error) {
       setPending(false)
-      logEvent('ReleaseCodeClaimFailure', 'engagement', {
+      logEvent('release_code_redeem_failure', 'engagement', {
         wallet: wallet?.publicKey?.toBase58(),
         publicKey: releasePubkey,
       })

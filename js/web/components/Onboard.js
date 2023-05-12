@@ -351,7 +351,7 @@ const Onboard = () => {
     const messageBase64 = encodeBase64(message)
     const signature = await wallet.signMessage(message)
     const signatureBase64 = encodeBase64(signature)
-    logEvent('handleClaimCodeInit', 'engagement', {
+    logEvent('claim_onboard_code_initiated', 'engagement', {
       wallet: wallet?.publicKey?.toBase58(),
     })
 
@@ -366,7 +366,7 @@ const Onboard = () => {
         }
       )
       if (response.data.status === 'success') {
-        logEvent('handleClaimCodeSuccess', 'engagement', {
+        logEvent('claim_onboard_code_success', 'engagement', {
           wallet: wallet?.publicKey?.toBase58(),
         })
 
@@ -379,7 +379,7 @@ const Onboard = () => {
       }
       return
     } catch (error) {
-      logEvent('handleClaimCodeFailure', 'engagement', {
+      logEvent('claim_onboard_code_failure', 'engagement', {
         wallet: wallet?.publicKey?.toBase58(),
       })
 

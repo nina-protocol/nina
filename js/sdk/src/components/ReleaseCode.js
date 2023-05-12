@@ -38,7 +38,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
       const signature = await wallet.signMessage(message)
       const signatureBase64 = encodeBase64(signature)
 
-      logEvent('ReleaseCodeCreateInit', 'engagement', {
+      logEvent('release_code_create_initiated', 'engagement', {
         wallet: wallet?.publicKey?.toBase58(),
         publicKey: releasePubkey,
       })
@@ -54,7 +54,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
         }
       )
 
-      logEvent('ReleaseCodeCreateSuccess', 'engagement', {
+      logEvent('release_code_create_success', 'engagement', {
         wallet: wallet?.publicKey?.toBase58(),
         publicKey: releasePubkey,
       })
@@ -65,7 +65,7 @@ const ReleaseCode = ({ release, releasePubkey }) => {
         setAmount('')
       }
     } catch (error) {
-      logEvent('ReleaseCodeCreateFailure', 'engagement', {
+      logEvent('release_code_create_failure', 'engagement', {
         wallet: wallet?.publicKey?.toBase58(),
         publicKey: releasePubkey,
       })
