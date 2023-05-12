@@ -307,12 +307,12 @@ const ReusableTableBody = (props) => {
         variant: 'success',
       })
       refreshProfile()
-      setCollectId()
+      setCollectId(undefined)
     } else {
       enqueueSnackbar('Error Collecting Revenue for Release', {
         variant: 'error',
       })
-      setCollectId()
+      setCollectId(undefined)
     }
   }
 
