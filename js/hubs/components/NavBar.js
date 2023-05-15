@@ -177,7 +177,7 @@ const NavBar = ({ hubPubkey }) => {
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
           {!wallet?.connected && (
             <a
-              href="https://www.ninaprotocol.com/getStarted"
+              href="https://www.ninaprotocol.com/start"
               target="_blank"
               rel="noopener noreferrer"
               style={{

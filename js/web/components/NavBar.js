@@ -102,7 +102,7 @@ const NavBar = () => {
 
             {!wallet?.connected && (
               <>
-                <Link href="/getStarted" style={{ textTransform: 'none' }}>
+                <Link href="/start" style={{ textTransform: 'none' }}>
                   <SignUpLink variant="body1" component={'a'}>
                     Sign Up
                   </SignUpLink>
