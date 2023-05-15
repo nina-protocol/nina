@@ -45,8 +45,11 @@ const Subscribe = ({
     e.stopPropagation()
 
     setPending(true)
-    const result = await subscriptionSubscribe(accountAddress, hubHandle)
-    console.log('result :>> ', result);
+    const result = await subscriptionSubscribeDelegated(
+      accountAddress,
+      hubHandle ? 'hub' : 'account',
+      hubHandle
+    )
     if (result.success) {
       enqueueSnackbar(result.msg, {
         variant: 'success',
