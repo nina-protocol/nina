@@ -6,7 +6,6 @@ pub mod release_purchase_via_hub;
 pub mod release_revenue_share_collect;
 pub mod release_revenue_share_collect_via_hub;
 pub mod release_revenue_share_transfer;
-pub mod release_airdrop;
 pub mod release_update_metadata;
 pub mod release_close_edition;
 pub mod release_claim;
@@ -39,11 +38,8 @@ pub mod post_init_via_hub_with_reference_release;
 pub mod post_update_via_hub_post;
 
 pub mod subscription_subscribe_account;
-pub mod subscription_subscribe_account_delegated;
 pub mod subscription_subscribe_hub;
-pub mod subscription_subscribe_hub_delegated;
 pub mod subscription_unsubscribe;
-pub mod subscription_unsubscribe_delegated;
 
 pub use release_init::*;
 pub use release_init_with_credit::*;
@@ -53,7 +49,6 @@ pub use release_purchase_via_hub::*;
 pub use release_revenue_share_collect::*;
 pub use release_revenue_share_collect_via_hub::*;
 pub use release_revenue_share_transfer::*;
-pub use release_airdrop::*;
 pub use release_update_metadata::*;
 pub use release_close_edition::*;
 pub use release_claim::*;
@@ -86,8 +81,5 @@ pub use post_init_via_hub_with_reference_release::*;
 pub use post_update_via_hub_post::*;
 
 pub use subscription_subscribe_account::*;
-pub use subscription_subscribe_account_delegated::*;
 pub use subscription_subscribe_hub::*;
-pub use subscription_subscribe_hub_delegated::*;
 pub use subscription_unsubscribe::*;
-pub use subscription_unsubscribe_delegated::*;

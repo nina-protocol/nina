@@ -78,12 +78,6 @@ pub mod nina {
         instructions::release_revenue_share_transfer::handler(ctx, transfer_share)
     }
 
-    pub fn release_airdrop(
-        ctx: Context<ReleaseAirdrop>,
-    ) -> Result<()> {
-        instructions::release_airdrop::handler(ctx)
-    }
-
     pub fn release_update_metadata(
         ctx: Context<ReleaseUpdateMetadata>,
         bumps: ReleaseBumps,
@@ -286,12 +280,6 @@ pub mod nina {
         instructions::subscription_subscribe_account::handler(ctx)
     }
 
-    pub fn subscription_subscribe_account_delegated(
-        ctx: Context<SubscriptionSubscribeAccountDelegated>
-    ) -> Result <()> {
-        instructions::subscription_subscribe_account_delegated::handler(ctx)
-    }
-
     pub fn subscription_subscribe_hub(
         ctx: Context<SubscriptionSubscribeHub>,
         hub_handle: String,
@@ -299,22 +287,10 @@ pub mod nina {
         instructions::subscription_subscribe_hub::handler(ctx, hub_handle)
 
     }
-    pub fn subscription_subscribe_hub_delegated(
-        ctx: Context<SubscriptionSubscribeHubDelegated>,
-        hub_handle: String,
-    ) -> Result <()> {
-        instructions::subscription_subscribe_hub_delegated::handler(ctx, hub_handle)
-    }
 
     pub fn subscription_unsubscribe(
         ctx: Context<SubscriptionUnsubscribe>
     ) -> Result <()> {
         instructions::subscription_unsubscribe::handler(ctx)
-    }
-
-    pub fn subscription_unsubscribe_delegated(
-        ctx: Context<SubscriptionUnsubscribeDelegated>
-    ) -> Result <()> {
-        instructions::subscription_unsubscribe_delegated::handler(ctx)
     }
 }

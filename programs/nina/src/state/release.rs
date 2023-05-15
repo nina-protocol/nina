@@ -208,12 +208,6 @@ impl Release {
 
         // Make sure royalty shares of all recipients does not exceed 1000000
         if release.royalty_equals_1000000() {
-            if !is_init {
-                emit!(RoyaltyRecipientAdded {
-                    authority: new_royalty_recipient,
-                    public_key: release_loader.key(),
-                });
-            }
             Ok(())
         } else {
             return Err(error!(ErrorCode::RoyaltyExceeds100Percent));
@@ -337,6 +331,13 @@ impl Release {
         metadata_data: ReleaseMetadataData,
         bumps: ReleaseBumps,
     ) -> Result<()> {
+        let creators: Vec<Creator> =
+        vec![Creator {
+            address: *release_signer.to_account_info().key,
+            verified: true,
+            share: 100,
+        }];
+
         let metadata_infos = vec![
             metadata.clone(),
             release_mint.to_account_info().clone(),
@@ -365,7 +366,7 @@ impl Release {
                     symbol: metadata_data.symbol,
                     uri: metadata_data.uri.clone(),
                     seller_fee_basis_points: metadata_data.seller_fee_basis_points,
-                    creators: None,
+                    creators: Some(creators),
                     collection: None,
                     uses: None
                 }),
@@ -582,39 +583,3 @@ impl From<AuthorityType> for spl_token::instruction::AuthorityType {
         }
     }
 }
-
-#[event]
-pub struct ReleaseCreated {
-    pub authority: Pubkey,
-    pub datetime: i64,
-    pub mint: Pubkey,
-    #[index]
-    pub public_key: Pubkey,
-    pub metadata_public_key: Pubkey,
-    pub uri: String,
-}
-
-#[event]
-pub struct RoyaltyRecipientAdded {
-    pub authority: Pubkey,
-    pub public_key: Pubkey,
-}
-
-#[event]
-pub struct ReleaseSold {
-    pub public_key: Pubkey,
-    pub purchaser: Pubkey,
-    #[index]
-    pub date: i64,
-}
-
-#[event]
-pub struct ReleaseSoldViaHub {
-    pub public_key: Pubkey,
-    pub purchaser: Pubkey,
-    pub hub: Pubkey,
-    #[index]
-    pub date: i64,
-}
-
-

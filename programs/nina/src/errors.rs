@@ -72,4 +72,8 @@ pub enum ErrorCode {
     HubReferralFeeInvalidValue,
     #[msg("ReleaseAlreadyOwned Cannot Claim Release Already Owned")]
     ReleaseAlreadyOwned,
+    #[msg("Subscription Payer Mismatch")]
+    SubscriptionPayerMismatch,
+    #[msg("Subscription Delegated Payer Mismatch")]
+    SubscriptionDelegatedPayerMismatch,
 }

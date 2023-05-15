@@ -52,13 +52,6 @@ pub fn handler (
 
     let mut hub_post = ctx.accounts.hub_post.load_mut()?;
     hub_post.version_uri = uri_array;
-
-    emit!(PostUpdatedViaHub {
-        public_key: ctx.accounts.post.key(),
-        hub: ctx.accounts.hub.key(),
-        hub_post: ctx.accounts.hub_post.key(),
-        uri: uri,
-    });
     
     Ok(())
 }

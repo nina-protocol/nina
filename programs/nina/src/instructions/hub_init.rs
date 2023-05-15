@@ -70,14 +70,5 @@ pub fn handler (
     hub_collaborator.allowance = -1;
     hub_collaborator.datetime = hub.datetime;
 
-    emit!(HubCreated {
-        public_key: ctx.accounts.hub.key(),
-        authority: ctx.accounts.authority.key(),
-        handle: params.handle,
-        uri: params.uri,
-        datetime: hub.datetime,
-        hub_collaborator: ctx.accounts.hub_collaborator.key()
-    });
-
     Ok(())
 }
