@@ -103,7 +103,7 @@ class ReverseEthAddressRegistryState {
       anchor.web3.SystemProgram.programId,
       reverseRegistryKey,
       publicKey,
-      publicKey,
+      NINA_ID,
       hashedVerifiedPubkey,
       new Numberu64(LAMPORTS_FOR_REVERSE_REGISTRY * 2),
       new Numberu32(ReverseEthAddressRegistryStateBuff.length),
@@ -186,7 +186,7 @@ class ReverseSoundcloudRegistryState {
       anchor.web3.SystemProgram.programId,
       reverseRegistryKey,
       publicKey,
-      publicKey,
+      NINA_ID,
       hashedVerifiedPubkey,
       new Numberu64(LAMPORTS_FOR_REVERSE_REGISTRY * 2),
       new Numberu32(ReverseSoundcloudRegistryStateBuff.length),
@@ -269,7 +269,7 @@ class ReverseTwitterRegistryState {
       anchor.web3.SystemProgram.programId,
       reverseRegistryKey,
       publicKey,
-      publicKey,
+      NINA_ID,
       hashedVerifiedPubkey,
       new Numberu64(LAMPORTS_FOR_REVERSE_REGISTRY * 2),
       new Numberu32(ReverseTwitterRegistryStateBuff.length),
@@ -352,7 +352,7 @@ class ReverseInstagramRegistryState {
       anchor.web3.SystemProgram.programId,
       reverseRegistryKey,
       publicKey,
-      publicKey,
+      NINA_ID,
       hashedVerifiedPubkey,
       new Numberu64(LAMPORTS_FOR_REVERSE_REGISTRY * 2),
       new Numberu32(ReverseInstagramRegistryStateBuff.length),
@@ -394,7 +394,7 @@ const verifyEthereum = async (
       provider.connection,
       ethAddress,
       96,
-      publicKey,
+      NINA_ID,
       publicKey,
       LAMPORTS_FOR_NAME_ACCOUNT,
       NINA_ID,
@@ -460,7 +460,7 @@ const verifySoundcloud = async (
       provider.connection,
       soundcloudHandle,
       96,
-      publicKey,
+      NINA_ID,
       publicKey,
       LAMPORTS_FOR_NAME_ACCOUNT,
       NINA_ID,
@@ -527,7 +527,7 @@ const verifyTwitter = async (
       provider.connection,
       twitterHandle,
       96,
-      publicKey,
+      NINA_ID,
       publicKey,
       LAMPORTS_FOR_NAME_ACCOUNT,
       NINA_ID,
@@ -602,14 +602,14 @@ const deleteTwitterVerification = async (
       deleteInstruction(
         NAME_PROGRAM_ID,
         twitterHandleRegistryKey,
-        publicKey,
+        NINA_ID,
         publicKey
       ),
       // Delete the reverse registry
       deleteInstruction(
         NAME_PROGRAM_ID,
         reverseRegistryKey,
-        publicKey,
+        NINA_ID,
         publicKey
       ),
     ]
@@ -617,7 +617,7 @@ const deleteTwitterVerification = async (
     const tx = new anchor.web3.Transaction({
       recentBlockhash: (await provider.connection.getLatestBlockhash())
         .blockhash,
-      feePayer: publicKey,
+      feePayer: NINA_ID,
     })
     tx.add(...instructions)
     await signTransaction(tx)
@@ -664,14 +664,14 @@ const deleteEthereumVerification = async (
       deleteInstruction(
         NAME_PROGRAM_ID,
         ethAddressRegistryKey,
-        publicKey,
+        NINA_ID,
         publicKey
       ),
       // Delete the reverse registry
       deleteInstruction(
         NAME_PROGRAM_ID,
         reverseRegistryKey,
-        publicKey,
+        NINA_ID,
         publicKey
       ),
     ]
@@ -679,7 +679,7 @@ const deleteEthereumVerification = async (
     const tx = new anchor.web3.Transaction({
       recentBlockhash: (await provider.connection.getLatestBlockhash())
         .blockhash,
-      feePayer: publicKey,
+      feePayer: NINA_ID,
     })
     tx.add(...instructions)
     await signTransaction(tx)
@@ -717,7 +717,7 @@ const verifyInstagram = async (
       provider.connection,
       instagramHandle,
       96,
-      publicKey,
+      NINA_ID,
       publicKey,
       LAMPORTS_FOR_NAME_ACCOUNT,
       NINA_ID,

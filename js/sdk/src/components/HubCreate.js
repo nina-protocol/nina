@@ -8,21 +8,18 @@ import React, {
 import * as Yup from 'yup'
 import Hub from '../contexts/Hub'
 import Nina from '../contexts/Nina'
+import Wallet from '../contexts/Wallet'
 import { useSnackbar } from 'notistack'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import { useWallet } from '@solana/wallet-adapter-react'
 import dynamic from 'next/dynamic'
 import HubCreateForm from './HubCreateForm'
 import HubCreateConfirm from './HubCreateConfirm'
 import NinaBox from './NinaBox'
-import Dots from './Dots'
 import ImageMediaDropzone from './ImageMediaDropzone'
-
-const EmailCapture = dynamic(() => import('./EmailCapture'), { ssr: false })
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
 const ColorModal = dynamic(() => import('./ColorModal'), { ssr: false })
 const HubCreateSuccess = dynamic(() => import('./HubCreateSuccess'), {
@@ -35,9 +32,11 @@ import {
   UploadType,
   uploadHasItemForType,
 } from '../utils/uploadManager'
+import NoSolWarning from './NoSolWarning'
+import Dots from './Dots'
 
 const HubCreateSchema = Yup.object().shape({
-  handle: Yup.string().required('Hub Handle is Required'),
+  handle: Yup.string().required('Hub Handle is Required').max(32),
   displayName: Yup.string().required('Display Name is Required'),
   publishFee: Yup.number().required('Publish Fee is Required'),
   referralFee: Yup.number().required('Referral Fee is Required'),
@@ -46,8 +45,9 @@ const HubCreateSchema = Yup.object().shape({
 
 const HubCreate = ({ update, hubData, inHubs }) => {
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
-  const { hubInitWithCredit, hubUpdateConfig, validateHubHandle } = useContext(
+  const { wallet, pendingTransactionMessage, shortPendingTransactionMessage } =
+    useContext(Wallet.Context)
+  const { hubInit, hubUpdateConfig, validateHubHandle } = useContext(
     Hub.Context
   )
   const {
@@ -55,12 +55,12 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     bundlrBalance,
     bundlrPricePerMb,
     solPrice,
-    getNpcAmountHeld,
-    npcAmountHeld,
+    solBalance,
+    solBalanceFetched,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
+    getUserBalances,
   } = useContext(Nina.Context)
-
   const [artwork, setArtwork] = useState()
   const [uploadSize, setUploadSize] = useState()
   const [hubPubkey, setHubPubkey] = useState(hubData?.publicKey || undefined)
@@ -80,7 +80,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
   const [hubCreated, setHubCreated] = useState(false)
   const [uploadId, setUploadId] = useState()
   const [publishingStepText, setPublishingStepText] = useState()
-
+  const [open, setOpen] = useState(false)
   const mbs = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
     [bundlrBalance, bundlrPricePerMb]
@@ -89,29 +89,50 @@ const HubCreate = ({ update, hubData, inHubs }) => {
     () => bundlrBalance * solPrice,
     [bundlrBalance, solPrice]
   )
-  useEffect(() => {
-    getNpcAmountHeld()
-  }, [wallet?.connected])
 
   useEffect(() => {
-    if (isPublishing) {
+    getUserBalances()
+  }, [])
+
+  useEffect(() => {
+    if (wallet.connected && solBalance === 0 && solBalanceFetched) {
+      setOpen(true)
+    }
+  }, [solBalanceFetched])
+
+  useEffect(() => {
+    if (isPublishing && !update) {
       if (!artworkTx) {
         setPublishingStepText(
-          '1/3 Uploading Artwork.  Please confirm in wallet and do not close this window.'
+          `1/3 Uploading Artwork.  ${pendingTransactionMessage}, do not close this window.`
         )
       } else if (!metadataTx) {
         setPublishingStepText(
-          '2/3 Uploading Metadata.  Please confirm in wallet and do not close this window.'
+          `2/3 Uploading Metadata.  ${pendingTransactionMessage}, do not close this window.`
         )
       } else {
         setPublishingStepText(
-          '3/3 Finalizing Hub.  Please confirm in wallet and do not close this window.'
+          `3/3 Finalizing Hub.  ${pendingTransactionMessage}, do not close this window.`
+        )
+      }
+    } else if (isPublishing && update) {
+      if (artwork && !artworkTx && !metadataTx) {
+        setPublishingStepText(
+          `Updating Artwork.  ${pendingTransactionMessage}, do not close this window.`
+        )
+      } else if (!metadataTx) {
+        setPublishingStepText(
+          `Updating Metadata.  ${pendingTransactionMessage}, do not close this window.`
+        )
+      } else {
+        setPublishingStepText(
+          `Finalizing Hub Update.  ${pendingTransactionMessage}, do not close this window.`
         )
       }
     } else {
       if (artworkTx && !metadataTx) {
         setButtonText('Restart 2/3: Upload Metadata.')
-      } else if (artworkTx && metadataTx && !hubCreated) {
+      } else if (artworkTx && metadataTx && !hubCreated && !update) {
         setButtonText('Restart 3/3: Finalize Hub')
       } else if (mbs < uploadSize) {
         setButtonText(
@@ -185,7 +206,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
           let artworkResult = artworkTx
           setIsPublishing(true)
           enqueueSnackbar(
-            'Uploading artwork to Arweave.  Please confirm in wallet.',
+            `Uploading artwork to Arweave.  ${shortPendingTransactionMessage}`,
             {
               variant: 'info',
             }
@@ -213,7 +234,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
         if (!uploadHasItemForType(upload, UploadType.metadataJson)) {
           setIsPublishing(true)
           enqueueSnackbar(
-            'Uploading Hub Info to Arweave.  Please confirm in wallet.',
+            `Uploading Hub Info to Arweave.  ${shortPendingTransactionMessage}`,
             {
               variant: 'info',
             }
@@ -253,9 +274,12 @@ const HubCreate = ({ update, hubData, inHubs }) => {
           metadataResult
         ) {
           setIsPublishing(true)
-          enqueueSnackbar('Finalizing Hub.  Please confirm in wallet.', {
-            variant: 'info',
-          })
+          enqueueSnackbar(
+            `Finalizing Hub.  ${shortPendingTransactionMessage}`,
+            {
+              variant: 'info',
+            }
+          )
 
           const result = await hubUpdateConfig(
             hubPubkey,
@@ -268,9 +292,10 @@ const HubCreate = ({ update, hubData, inHubs }) => {
             enqueueSnackbar('Hub Updated!', {
               variant: 'success',
             })
-
             removeUpload(upload)
             setIsPublishing(false)
+            setArtworkTx()
+            setMetadataTx()
           } else {
             enqueueSnackbar(result.msg, {
               variant: 'error',
@@ -291,7 +316,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
           if (!uploadId) {
             setIsPublishing(true)
             enqueueSnackbar(
-              'Uploading Hub Image to Arweave.  Please confirm in wallet.',
+              `Uploading Hub Image to Arweave.  ${shortPendingTransactionMessage}`,
               {
                 variant: 'info',
               }
@@ -313,7 +338,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
 
             if (!uploadHasItemForType(upload, UploadType.metadataJson)) {
               enqueueSnackbar(
-                'Uploading Hub Info to Arweave.  Please confirm in wallet.',
+                `Uploading Hub Info to Arweave.  ${shortPendingTransactionMessage}`,
                 {
                   variant: 'info',
                 }
@@ -345,9 +370,12 @@ const HubCreate = ({ update, hubData, inHubs }) => {
               uploadHasItemForType(upload, UploadType.metadataJson) ||
               metadataResult
             ) {
-              enqueueSnackbar('Finalizing Hub.  Please confirm in wallet.', {
-                variant: 'info',
-              })
+              enqueueSnackbar(
+                `Finalizing Hub.  ${shortPendingTransactionMessage}`,
+                {
+                  variant: 'info',
+                }
+              )
 
               const hubParams = {
                 handle: `${
@@ -358,7 +386,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
                 uri: `https://arweave.net/${metadataResult}`,
               }
 
-              const result = await hubInitWithCredit(hubParams)
+              const result = await hubInit(hubParams)
               if (result?.success) {
                 enqueueSnackbar('Hub Created!', {
                   variant: 'success',
@@ -394,6 +422,7 @@ const HubCreate = ({ update, hubData, inHubs }) => {
       />
     )
   }
+
   return (
     <StyledGrid item md={12}>
       {!wallet.connected && (
@@ -402,30 +431,19 @@ const HubCreate = ({ update, hubData, inHubs }) => {
         </ConnectMessage>
       )}
 
-      {!update && wallet?.connected && npcAmountHeld === 0 && (
-        <Box width="50%" margin="24vh auto">
-          <BlueTypography
-            variant="h1"
-            align="left"
-            sx={{ padding: { md: '0px 0px', xs: '30px 0px' }, mb: 4 }}
-          >
-            You do not have any credits to create a Hub.
-          </BlueTypography>
-          <EmailCapture size="medium" />
-        </Box>
-      )}
+      <NoSolWarning action={'hub'} open={open} setOpen={setOpen} />
 
       {update && (
         <Typography gutterBottom>
           Updating {hubData.data.displayName}
         </Typography>
       )}
-      {!update && npcAmountHeld > 0 && (
+      {!update && wallet.connected && (
         <Typography variant="h3" gutterBottom>
           Create Hub
         </Typography>
       )}
-      {wallet?.connected && (update || npcAmountHeld > 0) > 0 && (
+      {wallet?.connected && (
         <NinaBox columns="500px" gridColumnGap="10px">
           <CreateFormWrapper>
             <HubCreateForm
@@ -507,10 +525,13 @@ const HubCreate = ({ update, hubData, inHubs }) => {
                     mbs < uploadSize ||
                     artwork?.meta.status === 'uploading'
                   }
-                  sx={{ height: '54px' }}
+                  sx={{ height: '54px', maxWidth: '506px' }}
                 >
-                  {isPublishing && <Dots msg={publishingStepText} />}
-                  {!isPublishing && buttonText}
+                  {isPublishing ? (
+                    <Dots msg={publishingStepText} />
+                  ) : (
+                    <Typography variant="body2">{buttonText}</Typography>
+                  )}
                 </Button>
               )}
 
@@ -606,13 +627,6 @@ const Warning = styled(Typography)(({ theme }) => ({
   textTransform: 'none !important',
   color: theme.palette.red,
   opacity: '85%',
-}))
-
-const BlueTypography = styled(Typography)(({ theme }) => ({
-  '& a': {
-    color: theme.palette.blue,
-    textDecoration: 'none',
-  },
 }))
 
 export default HubCreate

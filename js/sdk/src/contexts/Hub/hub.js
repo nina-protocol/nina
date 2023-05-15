@@ -45,7 +45,7 @@ const HubContextProvider = ({ children }) => {
     getHubsForUser,
     getHubsForRelease,
     filterHubsForRelease,
-    hubInitWithCredit,
+    hubInit,
     hubUpdateConfig,
     hubAddCollaborator,
     hubUpdateCollaboratorPermission,
@@ -105,7 +105,7 @@ const HubContextProvider = ({ children }) => {
         getHubsForUser,
         getHubsForRelease,
         filterHubsForRelease,
-        hubInitWithCredit,
+        hubInit,
         hubUpdateConfig,
         hubAddCollaborator,
         hubUpdateCollaboratorPermission,
@@ -169,7 +169,7 @@ const hubContextHelper = ({
 }) => {
   const { ids, provider, endpoints } = ninaClient
 
-  const hubInitWithCredit = async (hubParams) => {
+  const hubInit = async (hubParams) => {
     try {
       logEvent('hub_init_with_credit_initiated', 'engagement', {
         wallet: provider.wallet.publicKey.toBase58(),
@@ -469,7 +469,7 @@ const hubContextHelper = ({
         program.programId
       )
 
-      const txid = await program.rpc.postUpdateViaHubPost(
+      const tx = await program.transaction.postUpdateViaHubPost(
         hub.handle,
         slug,
         uri,
@@ -482,6 +482,14 @@ const hubContextHelper = ({
             hubCollaborator,
           },
         }
+      )
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
       )
 
       await getConfirmTransaction(txid, provider.connection)
@@ -541,9 +549,18 @@ const hubContextHelper = ({
         },
       }
 
-      const txid = await program.rpc.releaseRevenueShareCollectViaHub(
+      const tx = await program.transaction.releaseRevenueShareCollectViaHub(
         decodeNonEncryptedByteArray(hub.handle),
         request
+      )
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
       )
       await getConfirmTransaction(txid, provider.connection)
 
@@ -701,7 +718,7 @@ const hubContextHelper = ({
       await initSdkIfNeeded()
       const { hubs } = await NinaSdk.Release.fetchHubs(releasePubkey, true)
       const updatedHubState = {}
-      const updatedHubContent = { ...hubContentState }
+      const updatedHubContent = {}
       hubs.forEach((hub) => {
         const accountData = { ...hub.accountData }
         delete hub.accountData
@@ -718,7 +735,10 @@ const hubContextHelper = ({
         }
       })
       setHubState((prevState) => ({ ...prevState, ...updatedHubState }))
-      setHubContentState(updatedHubContent)
+      setHubContentState((prevState) => ({
+        ...prevState,
+        ...updatedHubContent,
+      }))
       return hubs
     } catch (error) {
       console.warn(error)
@@ -862,7 +882,7 @@ const hubContextHelper = ({
     getHubsForUser,
     getHubsForRelease,
     filterHubsForRelease,
-    hubInitWithCredit,
+    hubInit,
     hubUpdateConfig,
     hubAddCollaborator,
     hubUpdateCollaboratorPermission,

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Box } from '@mui/system'
 import Head from 'next/head'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { useRouter } from 'next/router'
 import { styled } from '@mui/system'
 import dynamic from 'next/dynamic'
@@ -9,12 +9,14 @@ const Dashboard = dynamic(() => import('../components/Dashboard'))
 
 const DashboardPage = () => {
   const [publicKey, setPublicKey] = useState()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
 
   useEffect(() => {
-    if (wallet.connected) {
-      setPublicKey(wallet.publicKey.toBase58())
+    if (wallet?.publicKey) {
+      setPublicKey(wallet?.publicKey?.toBase58())
+    } else {
+      router.push('/')
     }
   }, [wallet, publicKey])
   return (

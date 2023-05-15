@@ -26,19 +26,19 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/router'
 import { orderBy } from 'lodash'
 import dynamic from 'next/dynamic'
-import { useWallet } from '@solana/wallet-adapter-react'
 import TablePagination from '@mui/material/TablePagination'
 import axios from 'axios'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import openInNewTab from '@nina-protocol/nina-internal-sdk/src/utils/openInNewTab'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 const { getImageFromCDN, loader } = imageManager
 
 const Subscribe = dynamic(() => import('./Subscribe'))
@@ -232,7 +232,7 @@ const HubDescription = ({ description }) => {
 }
 
 const ReusableTableBody = (props) => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const {
     items,
     tableType,
@@ -260,6 +260,7 @@ const ReusableTableBody = (props) => {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const [downloadId, setDownloadId] = useState(false)
+  const [collectId, setCollectId] = useState(false)
   const snackbarHandler = (message) => {
     const snackbarMessage = enqueueSnackbar(message, {
       persistent: 'true',
@@ -297,6 +298,7 @@ const ReusableTableBody = (props) => {
   }
 
   const handleCollect = async (e, recipient, releasePubkey) => {
+    setCollectId(releasePubkey)
     e.stopPropagation()
     e.preventDefault()
     const result = await collectRoyaltyForRelease(recipient, releasePubkey)
@@ -305,10 +307,12 @@ const ReusableTableBody = (props) => {
         variant: 'success',
       })
       refreshProfile()
+      setCollectId(undefined)
     } else {
       enqueueSnackbar('Error Collecting Revenue for Release', {
         variant: 'error',
       })
+      setCollectId(undefined)
     }
   }
 
@@ -774,7 +778,9 @@ const ReusableTableBody = (props) => {
                   } else if (cellName === 'collect') {
                     return (
                       <StyledTableCell key={cellName}>
-                        <CollectContainer>{cellData}</CollectContainer>
+                        <CollectContainer>
+                          {collectId === row.id ? <Dots /> : cellData}
+                        </CollectContainer>
                       </StyledTableCell>
                     )
                   } else if (cellName === 'hubDashboard') {
@@ -1093,6 +1099,7 @@ const SearchResultOverflowContainer = styled(Box)(({ theme }) => ({
   width: '70vw',
   textAlign: 'left',
   textOverflow: 'ellipsis',
+  border: '2px solid red',
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
     width: '80vw',

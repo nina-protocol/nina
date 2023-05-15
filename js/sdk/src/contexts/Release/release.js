@@ -2,9 +2,9 @@ import React, { createContext, useEffect, useState, useContext } from 'react'
 import * as anchor from '@project-serum/anchor'
 import NinaSdk from '@nina-protocol/js-sdk'
 import promiseRetry from 'promise-retry'
-import { useWallet } from '@solana/wallet-adapter-react'
 
 import Nina from '../Nina'
+import Wallet from '../Wallet'
 import {
   createMintInstructions,
   findOrCreateAssociatedTokenAccount,
@@ -39,7 +39,7 @@ const ReleaseContextProvider = ({ children }) => {
     releasePurchaseTransactionPending,
     setReleasePurchaseTransactionPending,
   ] = useState({})
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [pressingState, setPressingState] = useState(defaultPressingState)
   const [redeemableState, setRedeemableState] = useState({})
   const [searchResults, setSearchResults] = useState(searchResultsInitialState)
@@ -71,7 +71,7 @@ const ReleaseContextProvider = ({ children }) => {
   }
 
   const {
-    releaseCreate,
+    releaseInit,
     releasePurchase,
     closeRelease,
     collectRoyaltyForRelease,
@@ -139,6 +139,7 @@ const ReleaseContextProvider = ({ children }) => {
     solBalance,
     setGatesState,
     gatesState,
+    wallet,
   })
 
   useEffect(() => {
@@ -175,7 +176,7 @@ const ReleaseContextProvider = ({ children }) => {
       value={{
         pressingState,
         resetPressingState,
-        releaseCreate,
+        releaseInit,
         closeRelease,
         releasePurchase,
         releasePurchasePending,
@@ -406,7 +407,7 @@ const releaseContextHelper = ({
     }
   }
 
-  const releaseCreate = async ({
+  const releaseInit = async ({
     retailPrice,
     amount,
     resalePercentage,
@@ -520,13 +521,13 @@ const releaseContextHelper = ({
         ...releasePurchaseTransactionPending,
         [releasePubkey]: false,
       })
+
       const txid = await releasePurchaseHelper(
         releasePubkey,
         provider,
         ninaClient,
         usdcBalance
       )
-
       await getConfirmTransaction(txid, provider.connection)
       await getUserBalances()
 
@@ -659,10 +660,19 @@ const releaseContextHelper = ({
         request.instructions = [authorityTokenAccountIx]
       }
 
-      const txid = await program.rpc.releaseRevenueShareTransfer(
+      const tx = await program.transaction.releaseRevenueShareTransfer(
         new anchor.BN(updateAmount),
         request
       )
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
+
       await getConfirmTransaction(txid, provider.connection)
 
       getRelease(releasePubkey)
@@ -1246,23 +1256,27 @@ const releaseContextHelper = ({
   }
 
   const fetchGatesForRelease = async (releasePubkey) => {
-    const { gates } = (
-      await axios.get(
-        `${process.env.NINA_GATE_URL}/releases/${releasePubkey}/gates`
-      )
-    ).data
-    if (gates.length > 0) {
-      setGatesState((prevState) => ({
-        ...prevState,
-        [releasePubkey]: gates,
-      }))
-    } else {
-      const prevState = { ...gatesState }
-      delete prevState[releasePubkey]
-      setGatesState(prevState)
-    }
+    try {
+      const { gates } = (
+        await axios.get(
+          `${process.env.NINA_GATE_URL}/releases/${releasePubkey}/gates`
+        )
+      ).data
+      if (gates.length > 0) {
+        setGatesState((prevState) => ({
+          ...prevState,
+          [releasePubkey]: gates,
+        }))
+      } else {
+        const prevState = { ...gatesState }
+        delete prevState[releasePubkey]
+        setGatesState(prevState)
+      }
 
-    return gates
+      return gates
+    } catch (error) {
+      console.warn(error)
+    }
   }
 
   /*
@@ -1491,7 +1505,7 @@ const releaseContextHelper = ({
     releaseInitViaHub,
     releasePurchaseViaHub,
     addRoyaltyRecipient,
-    releaseCreate,
+    releaseInit,
     closeRelease,
     releasePurchase,
     collectRoyaltyForRelease,

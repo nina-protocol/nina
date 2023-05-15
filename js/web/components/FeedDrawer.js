@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { styled } from '@mui/material/styles'
-import { useWallet } from '@solana/wallet-adapter-react'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
@@ -10,6 +9,7 @@ import Suggestions from './Suggestions'
 import axios from 'axios'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import CloseIcon from '@mui/icons-material/Close'
 import Typography from '@mui/material/Typography'
@@ -17,7 +17,7 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import { isMobile } from 'react-device-detect'
 
 const FeedDrawer = ({ override }) => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [drawerOpen, setDrawerOpen] = useState(!override)
   const [feedItems, setFeedItems] = useState(undefined)
   const [hubSuggestions, setHubSuggestions] = useState(undefined)

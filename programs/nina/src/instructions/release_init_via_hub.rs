@@ -152,17 +152,5 @@ pub fn handler(
         None,
     )?;
 
-    emit!(ReleaseInitializedViaHub {
-        public_key: ctx.accounts.release.key(),
-        mint: ctx.accounts.release_mint.key(),
-        authority: ctx.accounts.authority.key(),
-        datetime: config.release_datetime,
-        hub: ctx.accounts.hub.key(),
-        hub_release: ctx.accounts.hub_release.key(),
-        metadata_public_key: ctx.accounts.metadata.key(),
-        uri: metadata_data.uri,
-        hub_content: ctx.accounts.hub_content.key(),
-    });
-
     Ok(())
 }

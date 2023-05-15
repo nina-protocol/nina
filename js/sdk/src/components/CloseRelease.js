@@ -11,11 +11,13 @@ import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import { useSnackbar } from 'notistack'
 import Release from '../contexts/Release'
 import CloseIcon from '@mui/icons-material/Close'
+import Wallet from '../contexts/Wallet'
 
 const CloseRelease = (props) => {
   const { release, releasePubkey } = props
   const { enqueueSnackbar } = useSnackbar()
   const { closeRelease } = useContext(Release.Context)
+  const { pendingTransactionMessage } = useContext(Wallet.Context)
   const [open, setOpen] = useState(false)
   const [pendingTx, setPendingTx] = useState(false)
 
@@ -109,7 +111,9 @@ const CloseRelease = (props) => {
               >
                 <StyledModalButtonTypography>
                   {pendingTx && (
-                    <Dots msg={'Closing release, please confirm in wallet '} />
+                    <Dots
+                      msg={`Closing release. ${pendingTransactionMessage} `}
+                    />
                   )}
                   {!pendingTx && 'Close Release'}
                 </StyledModalButtonTypography>

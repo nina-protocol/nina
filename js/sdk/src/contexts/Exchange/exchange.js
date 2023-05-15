@@ -188,12 +188,25 @@ const exchangeContextHelper = ({
         datetime: new anchor.BN(Date.now() / 1000),
       }
 
-      const txid = await program.methods
+      const tx = await program.methods
         .exchangeAccept(params)
         .accounts(request.accounts)
         .preInstructions(request.instructions)
         .signers(request.signers)
-        .rpc()
+        .transaction()
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+
+      for await (let signer of request.signers) {
+        tx.partialSign(signer)
+      }
+
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
       await provider.connection.getParsedTransaction(txid, 'confirmed')
 
       if (exchange.isSelling) {
@@ -203,6 +216,7 @@ const exchangeContextHelper = ({
       }
       await getUserBalances()
       await getExchange(exchange.publicKey, false, txid)
+      await getExchangesForRelease(releasePubkey, exchange.publicKey)
 
       return {
         success: true,
@@ -286,29 +300,40 @@ const exchangeContextHelper = ({
           tokenProgram: TOKEN_PROGRAM_ID,
         },
       }
+
       if (initializerReturnTokenAccountIx) {
         request.instructions = [initializerReturnTokenAccountIx]
       }
 
-      let txid
+      let tx
       const params = new anchor.BN(
         exchange.isSelling ? 1 : exchange.initializerAmount.toNumber()
       )
       if (ninaClient.isSol(exchange.initializerSendingMint)) {
-        txid = await program.methods
+        tx = await program.methods
           .exchangeCancelSol(params)
           .accounts(request.accounts)
           .preInstructions(request.instructions || [])
           .signers(request.signers || [])
-          .rpc()
+          .transaction()
       } else {
-        txid = await program.methods
+        tx = await program.methods
           .exchangeCancel(params)
           .accounts(request.accounts)
           .preInstructions(request.instructions || [])
           .signers(request.signers || [])
-          .rpc()
+          .transaction()
       }
+
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
       await provider.connection.getParsedTransaction(txid, 'confirmed')
       if (exchange.isSelling) {
         addReleaseToCollection(releasePubkey)
@@ -316,6 +341,8 @@ const exchangeContextHelper = ({
 
       await getUserBalances()
       await getExchange(exchangePubkey.toBase58(), false, txid)
+      await getExchangesForRelease(releasePubkey)
+
       return {
         success: true,
         msg: 'Offer cancelled!',
@@ -342,7 +369,7 @@ const exchangeContextHelper = ({
       withAccountInfo,
       transactionId
     )
-    const updatedExchangeState = { ...exchangeState }
+    const updatedExchangeState = {}
     if (exchange.accountData) {
       updatedExchangeState[publicKey] = {
         ...updatedExchangeState[publicKey],
@@ -353,7 +380,10 @@ const exchangeContextHelper = ({
       ...updatedExchangeState[publicKey],
       ...formatExchange(exchange),
     }
-    setExchangeState(updatedExchangeState)
+    setExchangeState((prevState) => ({
+      ...prevState,
+      ...updatedExchangeState,
+    }))
   }
 
   const getExchangesForUser = async (publicKey, withAccountData = true) => {
@@ -416,6 +446,7 @@ const exchangeContextHelper = ({
         ...prevState,
         ...updatedVerificationState,
       }))
+
       setExchangeState((prevState) => ({
         ...prevState,
         ...updatedExchangeState,

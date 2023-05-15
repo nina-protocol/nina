@@ -9,7 +9,7 @@ import { styled } from '@mui/material/styles'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 import { DashboardHeader } from '../styles/theme/lightThemeOptions.js'
-import Dots from './Dots.js'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 
 import { useFormik } from 'formik'
 

@@ -14,6 +14,16 @@ use instructions::*;
 pub mod nina {
     use super::*;
 
+    pub fn release_init(
+        ctx: Context<ReleaseInitialize>,
+        config: ReleaseConfig,
+        bumps: ReleaseBumps,
+        metadata_data: ReleaseMetadataData
+    ) -> Result<()> {
+        instructions::release_init::handler(ctx, config, bumps, metadata_data)
+    }
+
+    #[deprecated(since="0.2.14", note="please use `release_init` instead")]
     pub fn release_init_with_credit(
         ctx: Context<ReleaseInitializeWithCredit>,
         config: ReleaseConfig,
@@ -68,12 +78,6 @@ pub mod nina {
         instructions::release_revenue_share_transfer::handler(ctx, transfer_share)
     }
 
-    pub fn release_airdrop(
-        ctx: Context<ReleaseAirdrop>,
-    ) -> Result<()> {
-        instructions::release_airdrop::handler(ctx)
-    }
-
     pub fn release_update_metadata(
         ctx: Context<ReleaseUpdateMetadata>,
         bumps: ReleaseBumps,
@@ -86,6 +90,12 @@ pub mod nina {
         ctx: Context<ReleaseCloseEdition>,
     ) -> Result<()> {
         instructions::release_close_edition::handler(ctx)
+    }
+
+    pub fn release_claim(
+        ctx:Context<ReleaseClaim>,
+    ) -> Result<()> {
+        instructions::release_claim::handler(ctx)
     }
 
     pub fn redeemable_init(
@@ -163,6 +173,14 @@ pub mod nina {
         instructions::vault_withdraw::handler(ctx, amount)
     }
 
+    pub fn hub_init(
+        ctx: Context<HubInit>,
+        params: HubInitParams,
+    ) -> Result<()> {
+        instructions::hub_init::handler(ctx, params)
+    }
+
+    #[deprecated(since="0.2.14", note="please use `hub_init` instead")]
     pub fn hub_init_with_credit(
         ctx: Context<HubInitWithCredit>,
         params: HubInitParams,
@@ -267,6 +285,7 @@ pub mod nina {
         hub_handle: String,
     ) -> Result <()> {
         instructions::subscription_subscribe_hub::handler(ctx, hub_handle)
+
     }
 
     pub fn subscription_unsubscribe(

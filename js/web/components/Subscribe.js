@@ -1,11 +1,11 @@
 import React, { useContext, useState, useEffect, useMemo } from 'react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { Box, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import { useSnackbar } from 'notistack'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useRouter } from 'next/router'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import Link from 'next/link'
 
 const Subscribe = ({
@@ -14,10 +14,13 @@ const Subscribe = ({
   inFeed = false,
   inHub = false,
 }) => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
-  const { subscriptionSubscribe, subscriptionUnsubscribe, userSubscriptions } =
-    useContext(Nina.Context)
+  const {
+    userSubscriptions,
+    subscriptionSubscribeDelegated,
+    subscriptionUnsubscribeDelegated,
+  } = useContext(Nina.Context)
   const [pending, setPending] = useState(false)
   const [followsYou, setFollowsYou] = useState(false)
   const isFollowing = useMemo(() => {
@@ -62,7 +65,10 @@ const Subscribe = ({
 
     setPending(true)
 
-    const result = await subscriptionUnsubscribe(accountAddress, hubHandle)
+    const result = await subscriptionUnsubscribeDelegated(
+      accountAddress,
+      hubHandle
+    )
     if (result.success) {
       enqueueSnackbar(result.msg, {
         variant: 'success',
@@ -82,37 +88,38 @@ const Subscribe = ({
           <Dots />
         </Box>
       )}
-      {wallet.connected && wallet.publicKey.toBase58() !== accountAddress && (
-        <>
-          {!isFollowing && !pending && (
-            <Button
-              color="primary"
-              sx={{ padding: `${inFeed ? '0px' : '0 15px'}` }}
-              className="disableClickCapture"
-              onClick={(e) => handleSubscribe(e, accountAddress, hubHandle)}
-            >
-              Follow
-            </Button>
-          )}
+      {wallet?.connected &&
+        wallet?.publicKey?.toBase58() !== accountAddress && (
+          <>
+            {!isFollowing && !pending && (
+              <Button
+                color="primary"
+                sx={{ padding: `${inFeed ? '0px' : '0 15px'}` }}
+                className="disableClickCapture"
+                onClick={(e) => handleSubscribe(e, accountAddress, hubHandle)}
+              >
+                Follow
+              </Button>
+            )}
 
-          {isFollowing && !pending && (
-            <Button
-              color="primary"
-              sx={{ padding: `${inFeed ? '0px' : '0 15px'}` }}
-              className="disableClickCapture"
-              onClick={(e) => handleUnsubscribe(e, accountAddress, hubHandle)}
-            >
-              Unfollow
-            </Button>
-          )}
+            {isFollowing && !pending && (
+              <Button
+                color="primary"
+                sx={{ padding: `${inFeed ? '0px' : '0 15px'}` }}
+                className="disableClickCapture"
+                onClick={(e) => handleUnsubscribe(e, accountAddress, hubHandle)}
+              >
+                Unfollow
+              </Button>
+            )}
 
-          {followsYou && (
-            <Typography variant="body2" sx={{ padding: '0 15px' }}>
-              Follows You
-            </Typography>
-          )}
-        </>
-      )}
+            {followsYou && (
+              <Typography variant="body2" sx={{ padding: '0 15px' }}>
+                Follows You
+              </Typography>
+            )}
+          </>
+        )}
     </Box>
   )
 }

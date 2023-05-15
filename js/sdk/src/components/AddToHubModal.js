@@ -1,28 +1,33 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react'
-import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Hub from '../contexts/Hub'
+import Nina from '../contexts/Nina'
+import Wallet from '../contexts/Wallet'
 import { styled } from '@mui/material/styles'
-import Paper from '@mui/material/Paper'
-import Modal from '@mui/material/Modal'
-import Backdrop from '@mui/material/Backdrop'
-import Fade from '@mui/material/Fade'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
+import {
+  Paper,
+  Modal,
+  Backdrop,
+  Fade,
+  Button,
+  Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from '@mui/material'
 import AutorenewIcon from '@mui/icons-material/Autorenew'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
 import HubPostCreate from './HubPostCreate'
-import { useWallet } from '@solana/wallet-adapter-react'
-
 import { useSnackbar } from 'notistack'
+import dynamic from 'next/dynamic'
 import Dots from './Dots'
 
+const WalletConnectModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
+)
 const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   const [open, setOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
+  const { wallet, pendingTransactionMessage } = useContext(Wallet.Context)
 
   const { hubAddRelease, getHubsForRelease, hubCollaboratorsState } =
     useContext(Hub.Context)
@@ -32,7 +37,9 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
   const [selectedHubId, setSelectedHubId] = useState()
   const [inProgress, setInProgress] = useState(false)
   const [filteredHubs, setFilteredHubs] = useState()
-  const [canAddContent, setCanAddContent] = useState(false)
+  const [canAddContent] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
+
   const userHasHubs = useMemo(() => userHubs && userHubs.length > 0, [userHubs])
 
   useEffect(() => {
@@ -57,7 +64,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
     }
   }, [wallet?.connected, userHubs])
 
-  const handleRepost = async (e) => {
+  const handleRepost = async () => {
     const error = await checkIfHasBalanceToCompleteAction(
       NinaProgramAction.HUB_ADD_RELEASE
     )
@@ -86,10 +93,17 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
     setInProgress(false)
     handleClose()
   }
-
   const handleClose = () => {
     setOpen(false)
     setSelectedHubId(null)
+  }
+  const handleOpen = () => {
+    if (!wallet?.connected) {
+      setShowWalletModal(true)
+      return
+    } else {
+      setOpen(true)
+    }
   }
 
   return (
@@ -98,8 +112,8 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
         variant="contained"
         color="primary"
         type="submit"
-        onClick={() => setOpen(true)}
-        sx={{ height: '22px', width: '28px', m: 0 }}
+        onClick={() => handleOpen()}
+        sx={{ height: '22px', width: '18px', m: 0 }}
       >
         <AutorenewIcon />
       </ModalToggle>
@@ -149,7 +163,7 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                     : 'your hub: ' + userHubs[0]?.data?.displayName}
                 </Typography>
 
-                {userHubs.length > 1 && (
+                {filteredHubs?.length > 1 && (
                   <FormControl sx={{ mt: 1 }}>
                     <InputLabel disabled>Select a hub to add to</InputLabel>
 
@@ -160,8 +174,8 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                       label="Select hub"
                       fullWidth
                       variant="standard"
-                      onChange={(e, filteredHubs) => {
-                        setSelectedHubId(e.target.value)
+                      onChange={(e) => {
+                        setSelectedHubId(e.target.value, filteredHubs)
                       }}
                     >
                       {filteredHubs?.map((hub) => {
@@ -182,9 +196,12 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
               disabled={inProgress || !selectedHubId || !userHasHubs}
               onClick={(e) => handleRepost(e)}
             >
-              {!inProgress && 'Repost release to your hub'}
-              {inProgress && (
-                <Dots msg={'Please approve transaction in wallet'} />
+              {inProgress ? (
+                <Dots msg={pendingTransactionMessage} />
+              ) : (
+                <Typography variant="body2">
+                  Repost release to your hub
+                </Typography>
               )}
             </Button>
 
@@ -201,11 +218,18 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
           </StyledPaper>
         </Fade>
       </StyledModal>
+      <WalletConnectModal
+        inOnboardingFlow={false}
+        showWalletModal={showWalletModal}
+        forceOpen={showWalletModal}
+        setForceOpen={setShowWalletModal}
+        action={'repost'}
+      />
     </Root>
   )
 }
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
   width: 'min-content',
@@ -232,7 +256,6 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   border: '2px solid #000',
   boxShadow: theme.shadows[5],
-  // padding: theme.spacing(2, 4, 3),
   padding: `30px 60px 45px`,
   width: '40vw',
   maxHeight: '90vh',

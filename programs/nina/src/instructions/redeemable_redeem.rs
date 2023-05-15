@@ -117,11 +117,5 @@ pub fn handler(
         .checked_add(1)
         .unwrap();
 
-    emit!(RedeemableRedeemed {
-        authority: *ctx.accounts.redeemer.to_account_info().key,
-        public_key: *ctx.accounts.redemption_record.to_account_info().key,
-        release: *ctx.accounts.release.to_account_info().key,
-    });
-
     Ok(())
 }

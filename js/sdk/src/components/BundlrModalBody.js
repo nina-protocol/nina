@@ -13,6 +13,7 @@ import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Nina from '../contexts/Nina'
 import { useSnackbar } from 'notistack'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Dots from './Dots'
 
 const BundlrModalBody = ({
@@ -23,6 +24,7 @@ const BundlrModalBody = ({
   handleClose,
 }) => {
   const { enqueueSnackbar } = useSnackbar()
+  const { pendingTransactionMessage } = useContext(Wallet.Context)
   const {
     bundlrBalance,
     getBundlrBalance,
@@ -222,11 +224,12 @@ const BundlrModalBody = ({
               }}
               disabled={inProgress || !amount}
             >
-              <Typography variant="body1">
-                {!inProgress && (mode === 'deposit' ? 'Deposit' : 'Withdraw')}
-              </Typography>
-              {inProgress && (
-                <Dots msg={'Please approve transaction in wallet'} />
+              {inProgress ? (
+                <Dots msg={pendingTransactionMessage} />
+              ) : (
+                <Typography variant="body2">
+                  {mode === 'deposit' ? 'Deposit' : 'Withdraw'}
+                </Typography>
               )}
             </Button>
           </InputWrapper>

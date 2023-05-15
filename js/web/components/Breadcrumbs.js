@@ -6,13 +6,13 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 
 const YourCollectionBreadcrumb = () => {
   const { releaseState, filterReleasesUserCollection } = useContext(
     Release.Context
   )
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
 
   const [userCollectionReleasesCount, setUserCollectionReleasesCount] =
     useState()
@@ -32,7 +32,7 @@ const YourReleasesBreadcrumb = () => {
   const { releaseState, filterReleasesPublishedByUser } = useContext(
     Release.Context
   )
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
 
   const [userPublishedReleasesCount, setUserPublishedReleasesCount] =
     useState(0)
@@ -152,6 +152,15 @@ const Breadcrumbs = () => {
           pathArray = linkPath.map((path, i) => {
             return {
               breadcrumb: 'Search',
+              href: '/' + linkPath.slice(0, i + 1).join('/'),
+            }
+          })
+          break
+
+        case '/getStarted':
+          pathArray = linkPath.map((path, i) => {
+            return {
+              breadcrumb: 'Get Started',
               href: '/' + linkPath.slice(0, i + 1).join('/'),
             }
           })

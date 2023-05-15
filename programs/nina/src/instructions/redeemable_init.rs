@@ -101,13 +101,5 @@ pub fn handler(
     let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
     token::set_authority(cpi_ctx, AuthorityType::MintTokens.into(), Some(redeemable.redeemable_signer))?;
 
-    emit!(RedeemableCreated {
-        public_key: *ctx.accounts.redeemable.to_account_info().key,
-        mint: redeemable.redeemable_mint,
-        authority: redeemable.authority,
-        redeemed_mint: redeemable.redeemed_mint,
-        release: redeemable.release
-    });
-
     Ok(())
 }

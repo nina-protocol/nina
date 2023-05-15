@@ -9,27 +9,39 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import RefreshIcon from '@mui/icons-material/Refresh'
-import { useWallet } from '@solana/wallet-adapter-react'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import Image from 'next/image'
 import BuySell from './BuySell'
 import ExchangeHistoryModal from './ExchangeHistoryModal'
 import ExchangeList from './ExchangeList'
 import ExchangeModal from './ExchangeModal'
+import dynamic from 'next/dynamic'
+
+const NoSolWarning = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/NoSolWarning')
+)
+const WalletConnectModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
+)
 
 const { getImageFromCDN, loader } = imageManager
 
 const ExchangeComponent = (props) => {
   const { releasePubkey, metadata } = props
 
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const { enqueueSnackbar } = useSnackbar()
-  const { ninaClient, checkIfHasBalanceToCompleteAction, NinaProgramAction } =
-    useContext(Nina.Context)
+  const {
+    ninaClient,
+    solBalance,
+    checkIfHasBalanceToCompleteAction,
+    NinaProgramAction,
+  } = useContext(Nina.Context)
   const { releaseState, getRelease } = useContext(Release.Context)
   const {
     exchangeState,
@@ -50,7 +62,6 @@ const ExchangeComponent = (props) => {
     setInitialized,
     audioPlayerRef,
   } = useContext(Audio.Context)
-
   const [exchangeAwaitingConfirm, setExchangeAwaitingConfirm] =
     useState(undefined)
   const [exchangesBuy, setExchangesBuy] = useState(undefined)
@@ -58,7 +69,9 @@ const ExchangeComponent = (props) => {
   const [exchangeHistory, setExchangeHistory] = useState(undefined)
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey])
   const [updateTime, setUpdateTime] = useState(Date.now())
-
+  const [openNoSolModal, setOpenNoSolModal] = useState(false)
+  const [noSolModalAction, setNoSolModalAction] = useState(undefined)
+  const [showWalletModal, setShowWalletModal] = useState(false)
   useEffect(() => {
     const handleGetExchanges = async () => {
       await getRelease(releasePubkey)
@@ -84,6 +97,15 @@ const ExchangeComponent = (props) => {
 
   const handleExchangeAction = async (exchange) => {
     let result
+    setNoSolModalAction('acceptOffer')
+    if (!wallet.connected) {
+      setShowWalletModal(true)
+      return
+    }
+    if (solBalance === 0) {
+      setOpenNoSolModal(true)
+      return
+    }
     if (exchange.isInit) {
       const error = await checkIfHasBalanceToCompleteAction(
         NinaProgramAction.EXCHANGE_INIT
@@ -127,13 +149,17 @@ const ExchangeComponent = (props) => {
 
   const onExchangeInitSubmit = async (e, isBuy, amount) => {
     e.preventDefault()
-
     let result
     const data = {
       releasePubkey,
       amount: ninaClient.uiToNative(amount, release.paymentMint),
       isSelling: !isBuy,
       isInit: true,
+    }
+    isBuy ? setNoSolModalAction('buyOffer') : setNoSolModalAction('sellOffer')
+    if (solBalance === 0) {
+      setOpenNoSolModal(true)
+      return
     }
 
     const exchangeCompletedByInput = filterExchangeMatch(
@@ -328,14 +354,28 @@ const ExchangeComponent = (props) => {
             release={release}
             onSubmit={() => handleExchangeAction(exchangeAwaitingConfirm)}
             amount={
-              exchangeAwaitingConfirm?.initializerAmount ||
-              exchangeAwaitingConfirm?.amount
+              ninaClient.uiToNative(
+                exchangeAwaitingConfirm?.initializerAmount,
+                release.paymentMint
+              ) || exchangeAwaitingConfirm?.amount
             }
             cancelTransaction={() => setExchangeAwaitingConfirm(undefined)}
-            isAccept={true}
+            isAccept={!exchangeAwaitingConfirm?.isSelling}
             metadata={metadata}
           />
         )}
+        <NoSolWarning
+          action={noSolModalAction}
+          open={openNoSolModal}
+          setOpen={setOpenNoSolModal}
+        />
+
+        <WalletConnectModal
+          inOnboardingFlow={false}
+          forceOpen={showWalletModal}
+          setForceOpen={setShowWalletModal}
+          action={noSolModalAction}
+        />
       </ExchangeWrapper>
     </>
   )
