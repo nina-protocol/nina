@@ -15,7 +15,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import Dots from './Dots'
-
+import { truncateStringToLength } from '../utils/truncateManager'
 const GateCreateModal = ({
   fetchGatesForRelease,
   name,
@@ -155,7 +155,9 @@ const GateCreateModal = ({
             <StyledTypography variant="h5" sx={{ mb: 1 }}>
               Select a file to be available exclusively to collectors of:
             </StyledTypography>
-            <StyledTypography variant="h5">{name}</StyledTypography>
+            <StyledTypography variant="h5">
+              {truncateStringToLength(name, 50)}
+            </StyledTypography>
 
             <TextField
               id="standard-multiline-static"

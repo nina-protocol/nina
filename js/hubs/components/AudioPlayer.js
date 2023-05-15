@@ -114,7 +114,7 @@ const HubAudioPlayer = ({ hubPubkey }) => {
                   Next
                 </Button>
                 {track && (
-                  <Box>
+                  <OverflowContainer>
                     <Typography>
                       Now Playing:{' '}
                       <Link
@@ -134,7 +134,7 @@ const HubAudioPlayer = ({ hubPubkey }) => {
                     )} / ${formatDuration(
                       track?.duration || duration
                     )}`}</Typography>
-                  </Box>
+                  </OverflowContainer>
                 )}
               </Controls>
 
@@ -248,6 +248,14 @@ const ProgressContainer = styled(Box)(({ theme }) => ({
       height: '2px',
     },
   },
+}))
+
+const OverflowContainer = styled(Box)(({ theme }) => ({
+  overflow: 'hidden',
+  display: ['-webkit-box'],
+  ['-webkit-line-clamp']: '3',
+  ['-webkit-box-orient']: 'vertical',
+  textOverflow: 'ellipsis',
 }))
 
 export default HubAudioPlayer
