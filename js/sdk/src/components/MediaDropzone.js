@@ -95,7 +95,7 @@ const MediaDropzone = ({
         return
       }
       if (meta.status === 'error_validation') {
-        const size = meta.size / 1000000
+        const size = file.size / 1000000
         if (file.type.includes('audio')) {
           if (file.type !== 'audio/mpeg') {
             alert(`Your track is not an MP3. \nPlease upload an MP3.`)
