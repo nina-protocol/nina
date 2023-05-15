@@ -512,18 +512,6 @@ const ProfileHeaderWrapper = styled(Box)(({ theme }) => ({
   },
 }))
 
-const ProfileOverflowContainer = styled(Box)(({ theme }) => ({
-  overflow: 'hidden',
-  display: ['-webkit-box'],
-  ['-webkit-line-clamp']: '5',
-  ['-webkit-box-orient']: 'vertical',
-  textOverflow: 'ellipsis',
-  paddingTop: '5px',
-  [theme.breakpoints.down('md')]: {
-    ['-webkit-line-clamp']: '4',
-  },
-}))
-
 const ProfileTableContainer = styled(Box)(({ theme }) => ({
   paddingBottom: '100px',
   overflowY: 'auto',

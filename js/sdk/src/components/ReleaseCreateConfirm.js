@@ -136,10 +136,16 @@ const ReleaseCreateConfirm = (props) => {
           </Typography>
           <Box>
             <Value sx={{ mt: 1 }}>
-              Artist: <span>{data.artist}</span>
+              Artist:{' '}
+              <span style={{ maxHeight: '80px', overflowY: 'auto' }}>
+                {data.artist}
+              </span>
             </Value>
             <Value sx={{ mt: 1 }}>
-              Title: <span>{data.title}</span>
+              Title:{' '}
+              <span style={{ maxHeight: '80px', overflowY: 'auto' }}>
+                {data.title}
+              </span>
             </Value>
 
             <Value sx={{ mt: 1 }}>

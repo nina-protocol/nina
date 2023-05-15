@@ -32,7 +32,7 @@ import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { useSnackbar } from 'notistack'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
-
+import { truncateForUi } from '@nina-protocol/nina-internal-sdk/src/utils/truncateManager'
 const Button = dynamic(() => import('@mui/material/Button'))
 const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
 const AddToHubModal = dynamic(() => import('./AddToHubModal'))
@@ -43,9 +43,7 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } =
     useContext(Audio.Context)
   const { releaseState, getRelease } = useContext(Release.Context)
-  const { getHub, hubState, getHubsForUser, filterHubsForUser } = useContext(
-    Hub.Context
-  )
+  const { getHub, hubState, getHubsForUser } = useContext(Hub.Context)
   const { getAmountHeld } = useContext(Nina.Context)
 
   const [metadata, setMetadata] = useState(metadataSsr || null)
@@ -194,13 +192,16 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
             </MobileImageWrapper>
 
             <CtaWrapper>
-              <Typography
-                variant="h3"
-                align="left"
-                sx={{ color: 'text.primary', mr: 1 }}
-              >
-                {metadata.properties.artist} - {metadata.properties.title}
-              </Typography>
+              <OverflowContainer>
+                <Typography
+                  variant="h3"
+                  align="left"
+                  sx={{ color: 'text.primary', mr: 1 }}
+                >
+                  {truncateForUi(metadata.properties.artist, 50, 20, 250)} -{' '}
+                  {truncateForUi(metadata.properties.title, 50, 20, 250)}
+                </Typography>
+              </OverflowContainer>
 
               <Box
                 display="flex"
@@ -342,6 +343,7 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
   fontSize: '18px !important',
   lineHeight: '20.7px !important',
   marginTop: '15px',
+  overflowWrap: 'break-word',
   '&::-webkit-scrollbar': {
     display: 'none',
   },
@@ -384,6 +386,14 @@ const CtaWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     marginTop: '15px',
   },
+}))
+
+const OverflowContainer = styled(Box)(({ theme }) => ({
+  overflow: 'hidden',
+  display: ['-webkit-box'],
+  ['-webkit-line-clamp']: '3',
+  ['-webkit-box-orient']: 'vertical',
+  textOverflow: 'ellipsis',
 }))
 
 export default ReleaseComponent
