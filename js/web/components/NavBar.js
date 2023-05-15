@@ -36,6 +36,7 @@ const NavBar = () => {
     return base58.slice(0, 4) + '..' + base58.slice(-4)
   }, [wallet, base58])
 
+
   const [connectedString, setConnectedString] = useState()
   useEffect(() => {
     setConnectedString(healthOk ? 'connected-healthy' : 'connected-unhealthy')
@@ -100,7 +101,6 @@ const NavBar = () => {
                 </BlueTypography>
               )}
             </UploadWrapper>
-
             {!wallet?.connected && (
               <>
                 <Link href="/start" style={{ textTransform: 'none' }}>
@@ -111,7 +111,7 @@ const NavBar = () => {
               </>
             )}
 
-            {wallet?.wallets && (
+            {wallet.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
                 <StyledWalletButton router={router}>
                   {wallet?.connected &&
@@ -300,7 +300,6 @@ const BlueTypography = styled(Typography)(({ theme }) => ({
   '& a': { color: theme.palette.blue },
   cursor: 'pointer',
 }))
-
 const SignUpLink = styled(Typography)(({ theme }) => ({
   color: `${theme.palette.blue} !important`,
   border: '1px solid blue',
@@ -309,7 +308,6 @@ const SignUpLink = styled(Typography)(({ theme }) => ({
     fontSize: '12px !important',
   },
 }))
-
 export default withFormik({
   enableReinitialize: true,
   mapPropsToValues: () => {

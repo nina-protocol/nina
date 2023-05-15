@@ -1099,6 +1099,7 @@ const SearchResultOverflowContainer = styled(Box)(({ theme }) => ({
   width: '70vw',
   textAlign: 'left',
   textOverflow: 'ellipsis',
+  border: '2px solid red',
   [theme.breakpoints.down('md')]: {
     minWidth: '0',
     width: '80vw',
