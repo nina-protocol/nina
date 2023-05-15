@@ -835,13 +835,6 @@ const ninaContextHelper = ({
         })
 
         const value = uiToNative(fundAmount, ids.mints.wsol)
-        if (
-          value -
-            2 * NinaProgramActionCost[NinaProgramAction.RELEASE_INIT_VIA_HUB] >
-          solBalance
-        ) {
-          throw 'Insufficient SOL balance - please deposit a smaller amount or top up your Solana balance'
-        }
         if (!value) return
         await bundlr.fund(value)
         await getBundlrBalance()
