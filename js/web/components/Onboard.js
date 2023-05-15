@@ -374,6 +374,7 @@ const Onboard = () => {
           info: 'success',
           variant: 'success',
         })
+        await getUserBalances()
         setClaimedError(false)
         setClaimedCodeSuccess(true)
       }
