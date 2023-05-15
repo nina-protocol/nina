@@ -157,10 +157,10 @@ const Breadcrumbs = () => {
           })
           break
 
-        case '/getStarted':
+        case '/start':
           pathArray = linkPath.map((path, i) => {
             return {
-              breadcrumb: 'Get Started',
+              breadcrumb: 'Start',
               href: '/' + linkPath.slice(0, i + 1).join('/'),
             }
           })
