@@ -149,15 +149,14 @@ const releasePurchaseHelper = async (
     return response.data.txid
   }
 
-  let [payerTokenAccount] =
-    await findOrCreateAssociatedTokenAccount(
-      provider.connection,
-      provider.wallet.publicKey,
-      provider.wallet.publicKey,
-      anchor.web3.SystemProgram.programId,
-      anchor.web3.SYSVAR_RENT_PUBKEY,
-      release.paymentMint
-    )
+  let [payerTokenAccount] = await findOrCreateAssociatedTokenAccount(
+    provider.connection,
+    provider.wallet.publicKey,
+    provider.wallet.publicKey,
+    anchor.web3.SystemProgram.programId,
+    anchor.web3.SYSVAR_RENT_PUBKEY,
+    release.paymentMint
+  )
 
   let [receiverReleaseTokenAccount, receiverReleaseTokenAccountIx] =
     await findOrCreateAssociatedTokenAccount(
