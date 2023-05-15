@@ -126,7 +126,6 @@ const walletContextHelper = ({
             requireAllSignatures: false,
             verifySignatures: true,
           }
-
           const signedTransaction = await magic.solana.signTransaction(
             transaction,
             serializeConfig
@@ -147,7 +146,6 @@ const walletContextHelper = ({
             signedTransaction.rawTransaction =
               deserializedTransaction.serialize()
           }
-
           const txid = await connection.sendRawTransaction(
             signedTransaction.rawTransaction
           )
