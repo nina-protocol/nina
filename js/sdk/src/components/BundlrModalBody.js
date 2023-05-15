@@ -22,6 +22,7 @@ const BundlrModalBody = ({
   showLowUploadModal,
   uploadSize,
   handleClose,
+  inOnboardFlow,
 }) => {
   const { enqueueSnackbar } = useSnackbar()
   const { pendingTransactionMessage } = useContext(Wallet.Context)
@@ -69,7 +70,7 @@ const BundlrModalBody = ({
 
   useEffect(() => {
     const lowSolBalance = releaseCreateFee > formattedSolBalance
-    if (!lowSolBalance) {
+    if (!lowSolBalance || inOnboardFlow) {
       setAmount(0.05)
     }
   }, [releaseCreateFee, formattedSolBalance])

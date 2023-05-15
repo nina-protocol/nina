@@ -86,6 +86,7 @@ const BundlrModal = ({
         uploadSize={uploadSize}
         availableSol={availableSol}
         handleClose={handleClose}
+        inOnboardFlow={inOnboardFlow}
       />
     </Root>
   )
