@@ -80,7 +80,6 @@ const releasePurchaseWithOrcaSwap = async (
       microLamports: PRIORITY_SWAP_FEE,
     }
   )
-
   txBuilder.prependInstruction({
     instructions: [addPriorityFeeIx],
     cleanupInstructions: [],
@@ -150,7 +149,7 @@ const releasePurchaseHelper = async (
     return response.data.txid
   }
 
-  let [payerTokenAccount, payerTokenAccountIx] =
+  let [payerTokenAccount] =
     await findOrCreateAssociatedTokenAccount(
       provider.connection,
       provider.wallet.publicKey,
@@ -229,14 +228,6 @@ const releasePurchaseHelper = async (
   }
 
   const instructions = []
-  if (payerTokenAccountIx) {
-    instructions.push({
-      instructions: [payerTokenAccountIx],
-      cleanupInstructions: [],
-      signers: [],
-    })
-  }
-
   if (receiverReleaseTokenAccountIx) {
     instructions.push({
       instructions: [receiverReleaseTokenAccountIx],
