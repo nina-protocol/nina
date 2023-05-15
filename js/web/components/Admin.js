@@ -95,15 +95,42 @@ const Admin = () => {
       {hasAccess && (
         <Box>
           <Box>
-            <Typography variant="h4" mb={2}>
-              {`Onboarding Account Balance: ${ninaClient.nativeToUiString(onboardingBalance, ninaClient.ids.mints.wsol)}`}
-            </Typography>
-            <Typography variant="h4" mb={2}>
-              {`Verification Account Balance: ${ninaClient.nativeToUiString(verificationBalance, ninaClient.ids.mints.wsol)}`}
-            </Typography>
-            <Typography variant="h4" mb={4}>
-              {`Dispatcher Account Balance: ${ninaClient.nativeToUiString(dispatcherBalance,  ninaClient.ids.mints.wsol)}`}
-            </Typography>
+            <a
+              href={`https://explorer.solana.com/address/${ONBOARDING_ACCOUNT}?cluster=${process.env.SOLANA_CLUSTER}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Typography variant="h4" mb={2}>
+                {`Onboarding Account Balance: ${ninaClient.nativeToUiString(
+                  onboardingBalance,
+                  ninaClient.ids.mints.wsol
+                )}`}
+              </Typography>
+            </a>
+            <a
+              href={`https://explorer.solana.com/address/${ID_ACCOUNT}?cluster=${process.env.SOLANA_CLUSTER}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Typography variant="h4" mb={2}>
+                {`Verification Account Balance: ${ninaClient.nativeToUiString(
+                  verificationBalance,
+                  ninaClient.ids.mints.wsol
+                )}`}
+              </Typography>
+            </a>
+            <a
+              href={`https://explorer.solana.com/address/${DISPATCHER_ACCOUNT}?cluster=${process.env.SOLANA_CLUSTER}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Typography variant="h4" mb={4}>
+                {`Dispatcher Account Balance: ${ninaClient.nativeToUiString(
+                  dispatcherBalance,
+                  ninaClient.ids.mints.wsol
+                )}`}
+              </Typography>
+            </a>
           </Box>
           <Box mb={2}>
             <Button variant="outlined" onClick={() => handleGenerateCode()}>
