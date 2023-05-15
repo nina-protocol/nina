@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import Fade from '@mui/material/Fade'
 import Modal from '@mui/material/Modal'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 const ExchangeModal = (props) => {
   const {
     toggleOverlay,
@@ -18,13 +18,9 @@ const ExchangeModal = (props) => {
   } = props
   const { ninaClient } = useContext(Nina.Context)
   const [pendingConfirm, setPendingConfirm] = useState(false)
-
-  const nativeAmount = isAccept
-    ? amount
-    : ninaClient.uiToNative(amount, release.paymentMint)
-  const artistFee = (nativeAmount * release.resalePercentage) / 1000000
-  const vaultFee = (nativeAmount * ninaClient.NINA_VAULT_FEE) / 1000000
-  const sellerAmount = nativeAmount - artistFee - vaultFee
+  const { pendingTransactionMessage } = useContext(Wallet.Context)
+  const artistFee = (amount * release.resalePercentage) / 1000000
+  const sellerAmount = amount - artistFee
 
   const handleSubmit = async (e) => {
     setPendingConfirm(true)
@@ -47,11 +43,7 @@ const ExchangeModal = (props) => {
           <Typography variant="overline">
             YOU ARE {isAccept ? 'SELLING' : 'CREATING A LISTING TO SELL'} 1{' '}
             {`${metadata?.symbol} `}
-            FOR{' '}
-            {` ${ninaClient.nativeToUiString(
-              nativeAmount,
-              release.paymentMint
-            )}`}
+            FOR {` ${ninaClient.nativeToUiString(amount, release.paymentMint)}`}
             .
           </Typography>
           <Typography variant="subtitle" className={classes.receivingAmount}>
@@ -70,18 +62,13 @@ const ExchangeModal = (props) => {
             )}`}{' '}
             [{release.resalePercentage / 10000}%]
           </Typography>
-          <Typography variant="overline">
-            THE PROTOCOL WILL RECEIVE
-            {` ${ninaClient.nativeToUiString(vaultFee, release.paymentMint)}`} [
-            {ninaClient.NINA_VAULT_FEE / 10000}%]
-          </Typography>
           <Button
             onClick={(e) => handleSubmit(e, false)}
             variant="contained"
             className={classes.confirm}
             disabled={pendingConfirm}
           >
-            {pendingConfirm ? 'Please approve in your wallet' : 'Confirm'}
+            {pendingConfirm ? pendingTransactionMessage : 'Confirm'}
           </Button>
           <Typography
             variant="body1"

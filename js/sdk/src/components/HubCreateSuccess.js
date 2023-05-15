@@ -125,7 +125,7 @@ const HubCreateSuccess = (props) => {
               onClick={() => releaseCreateRerouteHandler(inHubs)}
               sx={{ height: '54px', '&:hover': { opacity: '50%' } }}
             >
-              Click here to publish your first release.
+              Upload a Release
             </Button>
           </Box>
         </HubSuccessWrapper>

@@ -48,12 +48,6 @@ pub fn handler (
     hub_collaborator.can_add_content = can_add_content;
     hub_collaborator.can_add_collaborator = can_add_collaborator;
     hub_collaborator.allowance = allowance;
-
-    emit!(HubCollaboratorUpdated {
-        public_key: ctx.accounts.hub_collaborator.key(),
-        hub: ctx.accounts.hub.key(),
-        collaborator: ctx.accounts.collaborator.key(),
-    });
     
     Ok(())
 }

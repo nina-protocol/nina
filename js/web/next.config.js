@@ -41,12 +41,15 @@ const moduleExports = withTM({
       crypto: false,
       stream: false,
       https: false,
+      http: false,
     }
     config.resolve.alias = {
       ...config.resolve.alias,
       '@nina-protocol/nina-internal-sdk': path.resolve(
         '../node_modules/@nina-protocol/nina-internal-sdk'
       ),
+      https: path.resolve('../node_modules/https-browserify'),
+      http: path.resolve('../node_modules/http-browserify'),
       react: path.resolve('../node_modules/react'),
       crypto: path.resolve('../node_modules/crypto-browserify'),
       stream: path.resolve('../node_modules/stream-browserify'),
@@ -86,6 +89,7 @@ const moduleExports = withTM({
     NINA_API_KEY: process.env.NINA_API_KEY,
     SOLANA_CLUSTER_URL_BUNDLR: process.env.SOLANA_CLUSTER_URL_BUNDLR,
     NINA_GATE_URL: process.env.NINA_GATE_URL,
+    MAGIC_KEY: process.env.MAGIC_KEY,
   },
   images: {
     loader: 'imgix',

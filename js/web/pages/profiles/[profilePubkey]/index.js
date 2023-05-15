@@ -1,25 +1,27 @@
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Box } from '@mui/material'
 import { styled } from '@mui/system'
 import Head from 'next/head'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
-import Dots from '../../../components/Dots'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import { useRouter } from 'next/router'
 
 const Profile = dynamic(() => import('../../../components/Profile'))
 
 const ProfilePage = (props) => {
   const { profilePubkey, loading } = props
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
+  const dashboardPath = `/profiles/${wallet.publicKey?.toBase58()}`
+  const routerPath = router.asPath
   useEffect(() => {
-    if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
+    if (routerPath === dashboardPath) {
       router.push('/dashboard')
     }
-  }, [wallet, profilePubkey])
+  }, [routerPath])
   return (
     <>
       <Head>

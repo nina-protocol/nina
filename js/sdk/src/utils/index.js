@@ -2,6 +2,7 @@ import * as encrypt from './encrypt'
 import * as web3 from './web3'
 import * as imageManager from './imageManager'
 import * as truncateManager from './truncateManager'
+import * as swap from './swap'
 import CryptoJS from 'crypto-js'
 import promiseRetry from 'promise-retry'
 
@@ -218,6 +219,7 @@ export {
   getConfirmTransaction,
   imageManager,
   truncateManager,
+  swap,
   sleep,
   encrypt,
   web3,

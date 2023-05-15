@@ -8,6 +8,7 @@ import Release from '../contexts/Release'
 import GateCreateModal from './GateCreateModal'
 import Link from 'next/link'
 import Image from 'next/image'
+
 const ReleaseCreateSuccess = (props) => {
   const {
     hubHandle,

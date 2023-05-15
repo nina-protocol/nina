@@ -1,18 +1,31 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Homepage from '../components/HomePage'
 import Head from 'next/head'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { useRouter } from 'next/router'
 
 export default function Home() {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
 
   useEffect(() => {
     if (wallet.connected && router?.query?.code) {
-      router.push(`/dashboard?code=${router.query.code}`)
+      const inOnboardingFlow = localStorage.getItem('inOnboardingFlow')
+      if (inOnboardingFlow) {
+        const onboardingCode = localStorage.getItem('onboardingCode')
+        localStorage.removeItem('inOnboardingFlow')
+        if (onboardingCode) {
+          router.push(
+            `/getStarted?claim=${onboardingCode}&code=${router.query.code}`
+          )
+        } else {
+          router.push(`/getStarted?code=${router.query.code}`)
+        }
+      } else {
+        router.push(`/dashboard?code=${router.query.code}`)
+      }
     }
-  }, [wallet, router.query.code])
+  }, [wallet, router, router.query.code])
   return (
     <>
       <Head>

@@ -1,11 +1,10 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useContext, useState, useMemo, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Modal from '@mui/material/Modal'
 import { styled } from '@mui/material/styles'
-import { useWallet } from '@solana/wallet-adapter-react'
-
+import Wallet from '../contexts/Wallet'
 const style = {
   position: 'absolute',
   top: '50%',
@@ -29,7 +28,7 @@ const HubCreateConfirm = (props) => {
     textColor,
   } = props
 
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const isAuthority = useMemo(
     () =>
       wallet?.publicKey && wallet?.publicKey?.toBase58() === hubData?.authority,

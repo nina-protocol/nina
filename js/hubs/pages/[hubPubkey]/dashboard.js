@@ -2,7 +2,7 @@ import Dashboard from '../../components/Dashboard'
 import NinaSdk from '@nina-protocol/js-sdk'
 import Head from 'next/head'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
-import Dots from '../../components/Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 
 const DashboardPage = ({ hub, loading }) => {
   return (

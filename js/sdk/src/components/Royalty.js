@@ -10,9 +10,9 @@ import Typography from '@mui/material/Typography'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
-import { useWallet } from '@solana/wallet-adapter-react'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Nina from '../contexts/Nina'
+import Wallet from '../contexts/Wallet'
+import Release from '../contexts/Release'
 import RoyaltyRecipientForm from './RoyaltyRecipientForm'
 import Link from 'next/link'
 import CloseIcon from '@mui/icons-material/Close'
@@ -20,7 +20,7 @@ import CloseIcon from '@mui/icons-material/Close'
 const Royalty = (props) => {
   const { release, releasePubkey } = props
 
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [open, setOpen] = useState(false)
   const [formShown, setFormShown] = useState(false)
   const [userIsRecipient, setUserIsRecipient] = useState(false)

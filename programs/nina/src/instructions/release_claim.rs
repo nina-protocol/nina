@@ -3,14 +3,15 @@ use anchor_lang::solana_program::{
     program_option::{COption},
 };
 use anchor_spl::token::{self, TokenAccount, MintTo, Token, Mint};
+use crate::utils::{dispatcher_account};
 
 use crate::state::*;
 use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
-pub struct ReleaseAirdrop<'info> {
+pub struct ReleaseClaim<'info> {
     #[account(
-        constraint = release.load()?.authority == payer.key(),
+        address = dispatcher_account::ID,
     )]
     pub payer: Signer<'info>,
     #[account(
@@ -26,12 +27,12 @@ pub struct ReleaseAirdrop<'info> {
         bump,
     )]
     pub release_signer: UncheckedAccount<'info>,
-    /// CHECK: This is safe because we don't care about who the release.authority is sending token to
+    /// CHECK: This is safe because we don't care about who is claiming the release
     pub recipient: UncheckedAccount<'info>,
     #[account(
         mut,
         constraint = recipient_release_token_account.owner == *recipient.key,
-        constraint = recipient_release_token_account.mint == release.load()?.release_mint
+        constraint = recipient_release_token_account.mint == release.load()?.release_mint,
     )]
     pub recipient_release_token_account: Box<Account<'info, TokenAccount>>,
     #[account(
@@ -45,7 +46,7 @@ pub struct ReleaseAirdrop<'info> {
 }
 
 pub fn handler(
-    ctx: Context<ReleaseAirdrop>,
+    ctx: Context<ReleaseClaim>,
 ) -> Result<()> {
     let mut release = ctx.accounts.release.load_mut()?;
 
@@ -53,8 +54,17 @@ pub fn handler(
         return Err(error!(ErrorCode::SoldOut))
     }
 
+    if ctx.accounts.recipient_release_token_account.amount > 0 {
+        return Err(error!(ErrorCode::ReleaseAlreadyOwned))
+    }
+
     // Update Counters
-    release.remaining_supply -= 1;
+    release.remaining_supply = u64::from(release.remaining_supply)
+        .checked_sub(1)
+        .unwrap();
+    release.sale_counter = u64::from(release.sale_counter)
+        .checked_add(1)
+        .unwrap();  
 
     //MintTo RecipientReleaseTokenAccount
     let cpi_accounts = MintTo {

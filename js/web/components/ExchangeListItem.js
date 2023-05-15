@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 
 const ExchangeListItem = (props) => {
@@ -16,10 +16,9 @@ const ExchangeListItem = (props) => {
     symbol,
     amount,
   } = props
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const { ninaClient } = useContext(Nina.Context)
   const displayPrice = ninaClient.nativeToUiString(amount, release.paymentMint)
-
   const itemData = (
     <Root>
       <Typography>
@@ -77,16 +76,15 @@ const ExchangeListItem = (props) => {
 
 const ExchangeListButton = (props) => {
   const { onExchangeButtonAction, pending, isSelling, initializer } = props
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [buttonText, setButtonText] = useState('Pending')
 
   useEffect(() => {
     if (wallet?.connected) {
-      if (initializer.publicKey === wallet?.publicKey?.toBase58()) {
+      if (initializer.publicKey === wallet?.publicKey.toBase58()) {
+        setButtonText('Cancel')
         if (pending) {
           setButtonText('Pending')
-        } else {
-          setButtonText('Cancel')
         }
       } else {
         setButtonText(isSelling ? 'Buy' : 'Accept')
@@ -94,7 +92,7 @@ const ExchangeListButton = (props) => {
     } else {
       setButtonText(isSelling ? 'Buy' : 'Accept')
     }
-  }, [wallet?.connected, pending, wallet?.publicKey, isSelling])
+  }, [wallet?.connected, pending, isSelling, initializer])
 
   if (wallet?.connected && !pending) {
     return (
@@ -116,7 +114,7 @@ const ExchangeListButton = (props) => {
         className={classes.exchangeListButton}
         variant="outlined"
         color="primary"
-        disabled
+        onClick={() => onExchangeButtonAction(props)}
       >
         {buttonText}
       </Button>

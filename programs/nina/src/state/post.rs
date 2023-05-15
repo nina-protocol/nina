@@ -65,29 +65,3 @@ impl Post {
         Ok(())
     }
 }
-
-#[event]
-pub struct PostInitializedViaHub {
-	#[index]
-	pub public_key: Pubkey,
-	pub hub: Pubkey,
-	pub hub_post: Pubkey,
-	pub slug: String,
-	pub uri: String,
-    pub datetime: i64,
-    pub hub_content: Pubkey,
-    pub reference_content: Option<Pubkey>,
-    pub reference_hub_content: Option<Pubkey>,
-    pub reference_hub_content_child: Option<Pubkey>,
-    pub added_by: Pubkey,
-    pub reposted_from_hub: Option<Pubkey>,
-}
-
-#[event]
-pub struct PostUpdatedViaHub {
-	#[index]
-	pub public_key: Pubkey,
-	pub hub: Pubkey,
-	pub hub_post: Pubkey,
-	pub uri: String,
-}

@@ -126,14 +126,5 @@ pub fn handler (
         )?;
     }
 
-    emit!(ExchangeAdded {
-        public_key: *ctx.accounts.exchange.to_account_info().key,
-        release: *ctx.accounts.release.to_account_info().key,
-        release_mint: *ctx.accounts.release.to_account_info().key,
-        initializer: *ctx.accounts.initializer.to_account_info().key,
-        expected_amount: config.expected_amount,
-        initializer_amount: config.initializer_amount
-    });
-
     Ok(())
 }

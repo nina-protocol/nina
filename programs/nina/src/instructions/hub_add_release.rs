@@ -59,16 +59,5 @@ pub fn handler (
         if ctx.remaining_accounts.len() == 1 {Some(ctx.remaining_accounts[0].clone())} else {None}
     )?;
 
-    emit!(HubReleaseAdded {
-        public_key: ctx.accounts.hub_release.key(),
-        hub:ctx.accounts.hub.key(),
-        release: ctx.accounts.release.key(),
-        datetime: Clock::get()?.unix_timestamp,
-        hub_content: ctx.accounts.hub_content.key(),
-        added_by: ctx.accounts.authority.key(),
-        published_through_hub: false,
-        reposted_from_hub: if ctx.remaining_accounts.len() == 1 {Some(ctx.remaining_accounts[0].key())} else {None}
-    });
-
     Ok(())
 }
