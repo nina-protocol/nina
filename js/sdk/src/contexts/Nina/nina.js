@@ -282,6 +282,7 @@ const ninaContextHelper = ({
 
       const request = {
         accounts: {
+          payer: provider.wallet.publicKey,
           from: provider.wallet.publicKey,
           subscription,
           to: subscribeToAccount,
@@ -342,6 +343,7 @@ const ninaContextHelper = ({
       )
       const txid = await program.rpc.subscriptionUnsubscribe({
         accounts: {
+          payer: provider.wallet.publicKey,
           from: provider.wallet.publicKey,
           subscription,
           to: unsubscribeAccount,
