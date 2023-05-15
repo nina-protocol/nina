@@ -117,12 +117,8 @@ const IdentityVerification = ({
       if (accountVerifiedForType('ethereum')) {
         buttonArray.push('ethereum')
       }
-      if (accountVerifiedForType('twitter')) {
-        buttonArray.push('twitter')
-      }
-      if (accountVerifiedForType('soundcloud')) {
-        buttonArray.push('soundcloud')
-      }
+      buttonArray.push('twitter')
+      buttonArray.push('soundcloud')
     } else {
       verifications.forEach((verification) => {
         if (verification.type === 'twitter') {
