@@ -131,7 +131,6 @@ const walletContextHelper = ({
             transaction,
             serializeConfig
           )
-
           if (transaction.signatures.length > 1) {
             let deserializedTransaction = anchor.web3.Transaction.from(
               signedTransaction.rawTransaction

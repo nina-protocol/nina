@@ -16,10 +16,10 @@ export default function Home() {
         localStorage.removeItem('inOnboardingFlow')
         if (onboardingCode) {
           router.push(
-            `/getStarted?claim=${onboardingCode}&code=${router.query.code}`
+            `/start?claim=${onboardingCode}&code=${router.query.code}`
           )
         } else {
-          router.push(`/getStarted?code=${router.query.code}`)
+          router.push(`/start?code=${router.query.code}`)
         }
       } else {
         router.push(`/dashboard?code=${router.query.code}`)

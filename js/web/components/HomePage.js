@@ -120,7 +120,7 @@ const HomePage = ({ loading }) => {
               Learn More
             </a>{' '}
             or{' '}
-            <Link href="/getStarted">
+            <Link href="/start">
               <a>Sign up</a>
             </Link>
           </BlueTypography>
