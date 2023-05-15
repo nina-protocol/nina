@@ -171,12 +171,16 @@ const hubContextHelper = ({
 
   const hubInitWithCredit = async (hubParams) => {
     try {
-        logEvent('hub_init_with_credit_initiated', 'engagement', {
+      logEvent('hub_init_with_credit_initiated', 'engagement', {
         wallet: provider.wallet.publicKey.toBase58(),
       })
       await initSdkIfNeeded()
-      const {hub} = await NinaSdk.Hub.hubInitWithCredit(hubParams, provider.wallet, provider.connection)
- 
+      const { hub } = await NinaSdk.Hub.hubInitWithCredit(
+        hubParams,
+        provider.wallet,
+        provider.connection
+      )
+
       logEvent('hub_init_with_credit_success', 'engagement', {
         hub: hub.publicKey,
         wallet: provider.wallet.publicKey.toBase58(),
@@ -200,7 +204,14 @@ const hubContextHelper = ({
   const hubUpdateConfig = async (hubPubkey, uri, publishFee, referralFee) => {
     try {
       await initSdkIfNeeded()
-      await NinaSdk.Hub.hubUpdateConfig(hubPubkey, uri, publishFee, referralFee, provider.wallet, provider.connection)
+      await NinaSdk.Hub.hubUpdateConfig(
+        hubPubkey,
+        uri,
+        publishFee,
+        referralFee,
+        provider.wallet,
+        provider.connection
+      )
       await getHub(hubPubkey)
 
       return {
@@ -221,22 +232,20 @@ const hubContextHelper = ({
   ) => {
     try {
       await NinaSdk.Hub.hubAddCollaborator(
-        hubPubkey, 
-        collaboratorPubkey, 
+        ninaClient,
+        hubPubkey,
+        collaboratorPubkey,
         canAddContent,
         canAddCollaborator,
-        allowance, 
-        provider.wallet, 
-        provider.connection
-        )
-     
-        await getHub(hubPubkey)
-        //TODO: State needs to update in UI
-        return {
-          success: true,
-          msg: 'Collaborator Added to hub',
-        }
+        allowance,
+      )
 
+      await getHub(hubPubkey)
+      //TODO: State needs to update in UI
+      return {
+        success: true,
+        msg: 'Collaborator Added to hub',
+      }
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -250,8 +259,13 @@ const hubContextHelper = ({
     allowance = 1
   ) => {
     try {
-        await NinaSdk.Hub.hubUpdateCollaboratorPermission(
-        hubPubkey, collaboratorPubkey, canAddContent, canAddCollaborator, allowance, provider.wallet, provider.connection
+      await NinaSdk.Hub.hubUpdateCollaboratorPermission(
+        ninaClient,
+        hubPubkey,
+        collaboratorPubkey,
+        canAddContent,
+        canAddCollaborator,
+        allowance,
       )
 
       await getHub(hubPubkey)
@@ -259,7 +273,6 @@ const hubContextHelper = ({
         success: true,
         msg: 'Hub Collaborator Permissions Updated',
       }
-
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -267,6 +280,7 @@ const hubContextHelper = ({
 
   const hubAddRelease = async (hubPubkey, releasePubkey, fromHub) => {
     try {
+      console.log('here we go')
       logEvent('hub_add_release_initiated', 'engagement', {
         release: releasePubkey,
         hub: hubPubkey,
@@ -278,7 +292,12 @@ const hubContextHelper = ({
       setAddToHubQueue(queue)
 
       await NinaSdk.Hub.hubAddRelease(
-        hubPubkey, releasePubkey, fromHub, provider.wallet, provider.connection
+        ninaClient,
+        hubPubkey,
+        releasePubkey,
+        fromHub,
+        provider.wallet,
+        provider.connection
       )
 
       await getHubsForRelease(releasePubkey)
@@ -312,7 +331,10 @@ const hubContextHelper = ({
   const hubRemoveCollaborator = async (hubPubkey, collaboratorPubkey) => {
     try {
       const removedCollaborator = await NinaSdk.Hub.hubRemoveCollaborator(
-        hubPubkey, collaboratorPubkey, provider.wallet, provider.connection
+        hubPubkey,
+        collaboratorPubkey,
+        provider.wallet,
+        provider.connection
       )
 
       await getHub(hubPubkey)
@@ -323,8 +345,7 @@ const hubContextHelper = ({
       return {
         success: true,
         msg: 'Collaborator Removed From Hub',
-      } 
-
+      }
     } catch (error) {
       return ninaErrorHandler(error)
     }
@@ -337,7 +358,11 @@ const hubContextHelper = ({
   ) => {
     try {
       const toggledContentPubkey = await NinaSdk.Hub.hubContentToggleVisibility(
-        hubPubkey, contentAccountPubkey, type, provider.wallet, provider.connection
+        hubPubkey,
+        contentAccountPubkey,
+        type,
+        provider.wallet,
+        provider.connection
       )
 
       if (toggledContentPubkey) {
@@ -346,7 +371,7 @@ const hubContextHelper = ({
         )[0]
         toggledContent.visible = !toggledContent.visible
         const hubContentStateCopy = { ...hubContentState }
-  
+
         hubContentState[toggledContent.publicKey] = toggledContent
         setHubContentState(hubContentStateCopy)
         return {
@@ -364,7 +389,9 @@ const hubContextHelper = ({
   const hubWithdraw = async (hubPubkey) => {
     try {
       await NinaSdk.Hub.hubWithdraw(
-        hubPubkey, provider.wallet, provider.connection
+        hubPubkey,
+        provider.wallet,
+        provider.connection
       )
 
       await getHub(hubPubkey)
@@ -386,10 +413,19 @@ const hubContextHelper = ({
   ) => {
     try {
       const initializedPost = await NinaSdk.Hub.postInitViaHub(
-        hubPubkey, slug, uri, referenceRelease, fromHub, provider.wallet, provider.connection
+        hubPubkey,
+        slug,
+        uri,
+        referenceRelease,
+        fromHub,
+        provider.wallet,
+        provider.connection
       )
 
-      await NinaSdk.Hub.fetchHubPost(hubPubkey, initializedPost.hubPost.toBase58())
+      await NinaSdk.Hub.fetchHubPost(
+        hubPubkey,
+        initializedPost.hubPost.toBase58()
+      )
       if (referenceRelease) {
         await NinaSdk.Hub.fetchHubRelease(
           hubPubkey,
@@ -792,10 +828,10 @@ const hubContextHelper = ({
       hub.hubSigner,
       new anchor.web3.PublicKey(ids.mints.usdc)
     )
-    console.log('hubTokenAccount :>> ', hubTokenAccount.toBase58());
+    console.log('hubTokenAccount :>> ', hubTokenAccount.toBase58())
     const hubFeePendingAmount =
       await provider.connection.getTokenAccountBalance(hubTokenAccount)
-      console.log('hubFeePendingAmount.value.uiAmount :>> ', hubFeePendingAmount);
+    console.log('hubFeePendingAmount.value.uiAmount :>> ', hubFeePendingAmount)
     return hubFeePendingAmount.value.uiAmount
   }
 
