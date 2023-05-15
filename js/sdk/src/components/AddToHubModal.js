@@ -3,6 +3,7 @@ import Hub from '../contexts/Hub'
 import Nina from '../contexts/Nina'
 import Wallet from '../contexts/Wallet'
 import { styled } from '@mui/material/styles'
+import Link from 'next/link'
 import {
   Paper,
   Modal,
@@ -137,14 +138,12 @@ const AddToHubModal = ({ userHubs, releasePubkey, metadata, hubPubkey }) => {
                   The connected wallet is not a collaborator on any hub.
                 </Typography>
                 <Typography>
-                  <a
-                    href="https://docs.google.com/forms/d/1JOgbVh-5SbA4mCwSWAiSolPCAHCjx6baSiJGh0J7N1g"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ color: 'black' }}
+                  <Link
+                    href="/hubs/create"
+                    style={{ color: 'black', textDecoration: 'underline' }}
                   >
                     Click here to get started setting up your hub.
-                  </a>
+                  </Link>
                 </Typography>
               </>
             )}
