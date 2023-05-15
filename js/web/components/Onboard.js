@@ -19,6 +19,7 @@ import StepContent from '@mui/material/StepContent'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import IdentityVerification from '@nina-protocol/nina-internal-sdk/esm/IdentityVerification'
 import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 
 import dynamic from 'next/dynamic'
 
@@ -350,6 +351,9 @@ const Onboard = () => {
     const messageBase64 = encodeBase64(message)
     const signature = await wallet.signMessage(message)
     const signatureBase64 = encodeBase64(signature)
+    logEvent('claim_onboard_code_initiated', 'engagement', {
+      wallet: wallet?.publicKey?.toBase58(),
+    })
 
     try {
       setPending(true)
@@ -362,6 +366,10 @@ const Onboard = () => {
         }
       )
       if (response.data.status === 'success') {
+        logEvent('claim_onboard_code_success', 'engagement', {
+          wallet: wallet?.publicKey?.toBase58(),
+        })
+
         enqueueSnackbar('Code has been successfully redeemed', {
           info: 'success',
           variant: 'success',
@@ -371,6 +379,10 @@ const Onboard = () => {
       }
       return
     } catch (error) {
+      logEvent('claim_onboard_code_failure', 'engagement', {
+        wallet: wallet?.publicKey?.toBase58(),
+      })
+
       enqueueSnackbar('Code has already been redeemed or is invalid', {
         variant: 'error',
       })

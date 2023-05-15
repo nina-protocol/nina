@@ -23,7 +23,7 @@ const Admin = () => {
   const [code, setCode] = useState()
   const [restrictedRelease, setRestrictedRelease] = useState()
   const [restrictedAccount, setRestrictedAccount] = useState()
-  const { getSolBalanceForPublicKey } = useContext(Nina.Context)
+  const { getSolBalanceForPublicKey, ninaClient } = useContext(Nina.Context)
   const [verificationBalance, setVerificationBalance] = useState(0)
   const [dispatcherBalance, setDispatcherBalance] = useState(0)
   const [onboardingBalance, setOnboardingBalance] = useState(0)
@@ -96,13 +96,13 @@ const Admin = () => {
         <Box>
           <Box>
             <Typography variant="h4" mb={2}>
-              {`Onboarding Account Balance: ${onboardingBalance} SOL`}
+              {`Onboarding Account Balance: ${ninaClient.nativeToUiString(onboardingBalance, ninaClient.ids.mints.wsol)}`}
             </Typography>
             <Typography variant="h4" mb={2}>
-              {`Verification Account Balance: ${verificationBalance} SOL`}
+              {`Verification Account Balance: ${ninaClient.nativeToUiString(verificationBalance, ninaClient.ids.mints.wsol)}`}
             </Typography>
             <Typography variant="h4" mb={4}>
-              {`Dispatcher Account Balance: ${dispatcherBalance} SOL`}
+              {`Dispatcher Account Balance: ${ninaClient.nativeToUiString(dispatcherBalance,  ninaClient.ids.mints.wsol)}`}
             </Typography>
           </Box>
           <Box mb={2}>
