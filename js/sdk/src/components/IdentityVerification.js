@@ -381,12 +381,13 @@ const IdentityVerification = ({
                     <Typography ml={1} variant="body2">
                       {buttonTextForType(buttonType)}
                     </Typography>
-                    {accountVerifiedForType(buttonType) && (
-                      <CloseIcon
-                        sx={{ ml: 1 }}
-                        onClick={(e) => handleDisconnectFlow(e, buttonType)}
-                      />
-                    )}
+                    {accountVerifiedForType(buttonType) &&
+                      wallet.publicKey.toBase58() === profilePubkey && (
+                        <CloseIcon
+                          sx={{ ml: 1 }}
+                          onClick={(e) => handleDisconnectFlow(e, buttonType)}
+                        />
+                      )}
                   </Box>
                 </StyledCta>
               )
