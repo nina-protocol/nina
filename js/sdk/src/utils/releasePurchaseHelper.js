@@ -73,7 +73,7 @@ const releasePurchaseWithOrcaSwap = async (
     true
   )
 
-  const tx = await whirlpool.swap(inputTokenQuote)
+  const txBuilder = await whirlpool.swap(inputTokenQuote)
 
   const addPriorityFeeIx = anchor.web3.ComputeBudgetProgram.setComputeUnitPrice(
     {
@@ -81,13 +81,13 @@ const releasePurchaseWithOrcaSwap = async (
     }
   )
 
-  tx.prependInstruction({
+  txBuilder.prependInstruction({
     instructions: [addPriorityFeeIx],
     cleanupInstructions: [],
     signers: [],
   })
   if (instructions) {
-    tx.addInstructions(instructions)
+    txBuilder.addInstructions(instructions)
   }
   const program = await ninaClient.useProgram()
   let purchaseIx
@@ -104,13 +104,20 @@ const releasePurchaseWithOrcaSwap = async (
     )
   }
 
-  tx.addInstruction({
+  txBuilder.addInstruction({
     instructions: [purchaseIx],
     cleanupInstructions: [],
     signers: [],
   })
 
-  return await tx.buildAndExecute()
+  const tx = await txBuilder.build()
+  for await (let signer of tx.signers) {
+    tx.transaction.partialSign(signer)
+  }
+  return await provider.wallet.sendTransaction(
+    tx.transaction,
+    provider.connection
+  )
 }
 
 const releasePurchaseHelper = async (
