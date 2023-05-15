@@ -51,10 +51,6 @@ const IdentityVerificationModal = ({ action, type, value, open, setOpen }) => {
             >
               {titleForType(type)}
             </Typography>
-            <Typography align="center" id="transition-modal-title" gutterBottom>
-              You will need to sign a transaction to complete the verification
-              process
-            </Typography>
             <Button
               style={{ marginTop: '15px' }}
               color="primary"
