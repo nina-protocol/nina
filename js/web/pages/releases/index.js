@@ -8,13 +8,13 @@ const ReleasePage = () => {
         <title>Nina Protocol - All Releases</title>
         <meta
           name="description"
-          content={'Nina Protocol is a digitally native music ecosystem'}
+          content={'Nina Protocol is an independent music ecosystem'}
         />
         <meta name="og:type" content="website" />
         <meta name="og:title" content="Nina Protocol - All Releases" />
         <meta
           name="og:description"
-          content={'Nina Protocol is a digitally native music ecosystem'}
+          content={'Nina Protocol is an independent music ecosystem'}
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@ninaprotocol" />
@@ -23,7 +23,7 @@ const ReleasePage = () => {
         <meta name="twitter:title" content="Nina Protocol - All Releases" />
         <meta
           name="twitter:description"
-          content={'Nina Protocol is a digitally native music ecosystem'}
+          content={'Nina Protocol is an independent music ecosystem'}
         />
         <meta
           name="twitter:image"
