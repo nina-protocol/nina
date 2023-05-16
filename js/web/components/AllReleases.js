@@ -3,6 +3,7 @@ import debounce from 'lodash.debounce'
 import Head from 'next/head'
 import { styled } from '@mui/material/styles'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
 import Box from '@mui/material/Box'
 import { isMobile } from 'react-device-detect'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
@@ -22,11 +23,15 @@ const Releases = () => {
   const scrollRef = useRef()
 
   useEffect(() => {
-    getReleasesAll()
-    window.addEventListener('scroll', handleScroll)
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
+    const handleInitialFetch = async () => {
+      await initSdkIfNeeded()
+      getReleasesAll()
+      window.addEventListener('scroll', handleScroll)
+      return () => {
+        window.removeEventListener('scroll', handleScroll)
+      }
     }
+    handleInitialFetch()
   }, [])
 
   useEffect(() => {
