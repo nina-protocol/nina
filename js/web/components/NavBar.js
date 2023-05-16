@@ -305,6 +305,9 @@ const SignUpLink = styled(Typography)(({ theme }) => ({
   color: `${theme.palette.blue} !important`,
   border: '1px solid blue',
   padding: '4px',
+  [theme.breakpoints.down('md')]: {
+    fontSize: '12px !important',
+  },
 }))
 
 export default withFormik({
