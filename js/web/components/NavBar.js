@@ -17,6 +17,7 @@ import DevnetIndicator from '@nina-protocol/nina-internal-sdk/esm/DevnetIndicato
 import PendingReleasesIndicator from '@nina-protocol/nina-internal-sdk/esm/PendingReleasesIndicator'
 import FeedDrawer from './FeedDrawer'
 import WalletButton from '@nina-protocol/nina-internal-sdk/esm/WalletButton'
+import { fontFamily, fontSize } from '@material-ui/system'
 
 const NavBar = () => {
   const router = useRouter()
@@ -165,6 +166,9 @@ const NavRight = styled('div')(({ theme }) => ({
     position: 'absolute',
     right: 0,
     top: '15px',
+    '& .MuiButton-root': {
+      fontSize: '12px !important',
+    },
   },
 }))
 
@@ -208,6 +212,9 @@ const StyledWalletDialogProvider = styled(Box)(({ theme }) => ({
   display: 'flex',
   margin: 'auto',
   padding: '0px 15px',
+  [theme.breakpoints.down('md')]: {
+    paddingLeft: '10px !important',
+  },
   '& .MuiList-root': {
     background: `${theme.palette.transparent} !important`,
   },
