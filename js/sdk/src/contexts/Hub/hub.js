@@ -205,12 +205,11 @@ const hubContextHelper = ({
     try {
       await initSdkIfNeeded()
       await NinaSdk.Hub.hubUpdateConfig(
+        ninaClient,
         hubPubkey,
         uri,
         publishFee,
-        referralFee,
-        provider.wallet,
-        provider.connection
+        referralFee
       )
       await getHub(hubPubkey)
 
@@ -237,7 +236,7 @@ const hubContextHelper = ({
         collaboratorPubkey,
         canAddContent,
         canAddCollaborator,
-        allowance,
+        allowance
       )
 
       await getHub(hubPubkey)
@@ -265,7 +264,7 @@ const hubContextHelper = ({
         collaboratorPubkey,
         canAddContent,
         canAddCollaborator,
-        allowance,
+        allowance
       )
 
       await getHub(hubPubkey)
@@ -280,7 +279,6 @@ const hubContextHelper = ({
 
   const hubAddRelease = async (hubPubkey, releasePubkey, fromHub) => {
     try {
-      console.log('here we go')
       logEvent('hub_add_release_initiated', 'engagement', {
         release: releasePubkey,
         hub: hubPubkey,
@@ -330,11 +328,11 @@ const hubContextHelper = ({
 
   const hubRemoveCollaborator = async (hubPubkey, collaboratorPubkey) => {
     try {
+      // endpoint in fetchHubCollaborator needs to be updated, currently returns {success: true}
       const removedCollaborator = await NinaSdk.Hub.hubRemoveCollaborator(
+        ninaClient,
         hubPubkey,
-        collaboratorPubkey,
-        provider.wallet,
-        provider.connection
+        collaboratorPubkey
       )
 
       await getHub(hubPubkey)
@@ -358,11 +356,10 @@ const hubContextHelper = ({
   ) => {
     try {
       const toggledContentPubkey = await NinaSdk.Hub.hubContentToggleVisibility(
+        ninaClient,
         hubPubkey,
         contentAccountPubkey,
-        type,
-        provider.wallet,
-        provider.connection
+        type
       )
 
       if (toggledContentPubkey) {
@@ -388,11 +385,7 @@ const hubContextHelper = ({
 
   const hubWithdraw = async (hubPubkey) => {
     try {
-      await NinaSdk.Hub.hubWithdraw(
-        hubPubkey,
-        provider.wallet,
-        provider.connection
-      )
+      await NinaSdk.Hub.hubWithdraw(ninaClient, hubPubkey)
 
       await getHub(hubPubkey)
       return {
@@ -413,13 +406,12 @@ const hubContextHelper = ({
   ) => {
     try {
       const initializedPost = await NinaSdk.Hub.postInitViaHub(
+        ninaClient,
         hubPubkey,
         slug,
         uri,
         referenceRelease,
-        fromHub,
-        provider.wallet,
-        provider.connection
+        fromHub
       )
 
       await NinaSdk.Hub.fetchHubPost(

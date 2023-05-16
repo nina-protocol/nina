@@ -266,7 +266,12 @@ const releaseContextHelper = ({
     nativeToUiString,
   } = ninaClient
   const initializeReleaseAndMint = async (hubPubkey) => {
-    return await NinaSdk.Release.initializeReleaseAndMint(hubPubkey, provider.wallet, provider.connection, provider.program)
+    return await NinaSdk.Release.initializeReleaseAndMint(
+      hubPubkey,
+      provider.wallet,
+      provider.connection,
+      provider.program
+    )
   }
 
   const releaseInitViaHub = async ({
@@ -285,7 +290,8 @@ const releaseContextHelper = ({
     isOpen,
   }) => {
     try {
-     const newRelease = await NinaSdk.Release.releaseInitViaHub(
+      const newRelease = await NinaSdk.Release.releaseInitViaHub(
+        ninaClient,
         hubPubkey,
         retailPrice,
         amount,
@@ -297,12 +303,10 @@ const releaseContextHelper = ({
         catalogNumber,
         release,
         releaseBump,
-        releaseMint,   
-        isOpen,
-        provider.wallet,
-        provider.connection
+        releaseMint,
+        isOpen
       )
-    
+
       return newRelease
     } catch (error) {
       if (error.toString().includes('unable_to_confirm_transaction')) {
@@ -422,13 +426,12 @@ const releaseContextHelper = ({
     })
 
     try {
-   
       logEvent('release_init_initiated', 'engagement', {
         publicKey: release.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
       })
-
-     const newRelease = await NinaSdk.Release.releaseCreate(
+      const newRelease = await NinaSdk.Release.releaseCreate(
+        ninaClient,
         retailPrice,
         amount,
         resalePercentage,
@@ -440,10 +443,8 @@ const releaseContextHelper = ({
         release,
         releaseBump,
         releaseMint,
-        isOpen,
-        provider.wallet,
-        provider.connection
-      )      
+        isOpen
+      )
 
       await getRelease(release)
 
@@ -486,7 +487,7 @@ const releaseContextHelper = ({
 
   const closeRelease = async (releasePubkey) => {
     try {
-      await NinaSdk.Release.closeRelease(releasePubkey, provider.wallet, provider.connection)
+      await NinaSdk.Release.closeRelease(ninaClient, releasePubkey)
       await getRelease(releasePubkey)
 
       return {
@@ -578,20 +579,20 @@ const releaseContextHelper = ({
     if (!releasePubkey || !recipient) {
       return
     }
-    try {    
-      const {release} = await NinaSdk.Release.collectRoyaltyForRelease(recipient, releasePubkey, provider.wallet, provider.connection)
-      console.log('release in client:>> ', release);
+    try {
+      const { release } = await NinaSdk.Release.collectRoyaltyForRelease(
+        ninaClient,
+        recipient,
+        releasePubkey
+      )
+      console.log('release in client:>> ', release)
       const paymentMint = release.accountData.release.paymentMint
-    
 
       await getRelease(releasePubkey)
       await getUserBalances()
       return {
         success: true,
-        msg: `You collected ${nativeToUiString(
-          recipient.owed,
-          paymentMint
-        )}`,
+        msg: `You collected ${nativeToUiString(recipient.owed, paymentMint)}`,
       }
     } catch (error) {
       console.warn(error)

@@ -221,11 +221,15 @@ const exchangeContextHelper = ({
       [releasePubkey]: true,
     })
     try {
+      const { exchange } = await NinaSdk.Exchange.exchangeInit(
+        amount,
+        isSelling,
+        releasePubkey,
+        provider.wallet,
+        provider.connection
+      )
 
-      const {exchange} = await NinaSdk.Exchange.exchangeInit(amount, isSelling, releasePubkey, provider.wallet,
-        provider.connection)
-
-        console.log('exchange returned :>> ', exchange);
+      console.log('exchange returned :>> ', exchange)
 
       setExchangeInitPending({
         ...exchangeInitPending,
@@ -233,7 +237,10 @@ const exchangeContextHelper = ({
       })
 
       if (isSelling) {
-        removeReleaseFromCollection(releasePubkey, exchange.accountData.releaseMint)
+        removeReleaseFromCollection(
+          releasePubkey,
+          exchange.accountData.releaseMint
+        )
       }
 
       await getUserBalances()
