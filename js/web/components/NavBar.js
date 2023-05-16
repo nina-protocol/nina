@@ -36,7 +36,6 @@ const NavBar = () => {
     return base58.slice(0, 4) + '..' + base58.slice(-4)
   }, [wallet, base58])
 
-
   const [connectedString, setConnectedString] = useState()
   useEffect(() => {
     setConnectedString(healthOk ? 'connected-healthy' : 'connected-unhealthy')

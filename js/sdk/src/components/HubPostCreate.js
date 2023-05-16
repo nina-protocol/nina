@@ -41,8 +41,6 @@ const HubPostCreate = ({
   userHasHubs,
   inHubDashboard,
 }) => {
-
-
   const { enqueueSnackbar } = useSnackbar()
   const { wallet, pendingTransactionMessage, shortPendingTransactionMessage } =
     useContext(Wallet.Context)
