@@ -176,9 +176,8 @@ const hubContextHelper = ({
       })
       await initSdkIfNeeded()
       const { hub } = await NinaSdk.Hub.hubInitWithCredit(
+        ninaClient,
         hubParams,
-        provider.wallet,
-        provider.connection
       )
 
       logEvent('hub_init_with_credit_success', 'engagement', {
