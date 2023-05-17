@@ -29,14 +29,7 @@ const linksConnected = [
   'dev',
 ]
 
-const linksNotConnected = [
-  'home',
-  'all Releases',
-  'hubs',
-  
-  'faq',
-  'dev',
-]
+const linksNotConnected = ['home', 'all Releases', 'hubs', 'faq', 'dev']
 
 const NavDrawer = () => {
   const { wallet } = useContext(Wallet.Context)
@@ -200,10 +193,7 @@ const NavDrawer = () => {
                     passHref
                   >
                     <a>
-                      <StyledListItemText
-                        disablePadding
-                        primary={'Create'}
-                      />
+                      <StyledListItemText disablePadding primary={'Create'} />
                     </a>
                   </Link>
                 </ListItem>

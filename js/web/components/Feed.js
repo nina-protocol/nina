@@ -20,9 +20,10 @@ import { useRouter } from 'next/router'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { timeSince } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { isMobile } from 'react-device-detect'
+import ScrollablePageWrapper from './ScrollablePageWrapper'
 
 const Feed = ({
-  publicKey,
+  // publicKey,
   toggleDrawer,
   defaultItems,
 }) => {
@@ -33,7 +34,6 @@ const Feed = ({
     Nina.Context
   )
   const { getFeedForUser } = useContext(Release.Context)
-
   const router = useRouter()
   const { wallet } = useContext(Wallet.Context)
   const [pendingFetch, setPendingFetch] = useState(false)
@@ -41,11 +41,12 @@ const Feed = ({
   const [feedFetched, setFeedFetched] = useState(false)
   const [itemsTotal, setItemsTotal] = useState(0)
   const [items, setItems] = useState(undefined)
+  const publicKey = useMemo(() => {
+    return wallet.publicKey?.toBase58() || process.env.NINA_SUBSCRIPTION_PUBKEY
+  }, [wallet?.publicKey])
 
   useEffect(() => {
     const handleFetch = async (refresh = false) => {
-      let publicKey =
-        wallet?.publicKey?.toBase58() || process.env.NINA_SUBSCRIPTION_PUBKEY
       await handleGetFeedForUser(publicKey, refresh)
       await getHubSuggestionsForUser(publicKey)
     }
@@ -97,7 +98,6 @@ const Feed = ({
       return []
     }
   }
-
 
   const handleScroll = async () => {
     const bottom =
@@ -578,7 +578,9 @@ const Feed = ({
                       unoptimized={true}
                     />
                   ) : (
-                    <img src={image} height={400} width={400} />
+                    <Placeholder>
+                      <img src={image} width="100%" height="100%" />
+                    </Placeholder>
                   )}
                 </a>
               </Link>
@@ -661,7 +663,7 @@ const Feed = ({
     )
   }
   return (
-    <ScrollWrapper onScroll={debounce(() => handleScroll(), 500)}>
+    <ScrollWrapper onScroll={debounce(async () => await handleScroll(), 500)}>
       {feedItems && wallet?.connected && (
         <Box>
           <FeedWrapper ref={scrollRef}>
@@ -678,7 +680,8 @@ const Feed = ({
                   }}
                 >
                   <Typography variant="h4" mb={1}>
-                    Here you will see recent activity for people and Hubs that you follow.
+                    Here you will see recent activity for people and Hubs that
+                    you follow.
                   </Typography>
                 </Box>
               ))}
@@ -731,6 +734,7 @@ const Feed = ({
 const ScrollWrapper = styled(Box)(({ theme }) => ({
   overflowY: 'scroll',
   overflowX: 'hidden',
+  width: '100%',
   '&::-webkit-scrollbar': {
     display: 'none' /* Safari and Chrome */,
   },
@@ -743,15 +747,21 @@ const ScrollWrapper = styled(Box)(({ theme }) => ({
 
 const FeedWrapper = styled(Box)(({ theme }) => ({
   padding: '15px',
+  marginLeft: 'auto',
+  marginRight: 'auto',
   marginTop: '30px',
+  // border: '2px solid blue',
   // minHeight: '75vh',
+  width: '50vw',
+  maxWidth: '700px',
   '& a': {
     color: theme.palette.blue,
   },
   [theme.breakpoints.down('md')]: {
-    padding: '0px 30px',
+    padding: '0px 10px',
     overflowX: 'auto',
     minHeight: '80vh',
+    width: '80vw',
   },
 }))
 
@@ -760,16 +770,17 @@ const CardWrapper = styled(Box)(({ theme }) => ({
   margin: '15px 0px',
 }))
 
-const TextCard = styled(Box)(({ theme }) => ({
-  border: '1px solid',
-}))
-
 const ImageCard = styled(Box)(({ theme }) => ({
-  minHeight: '300px',
   height: 'auto',
   border: '1px solid',
   textOverflow: 'ellipsis',
   overflow: 'hidden',
+  display: 'grid',
+  gridColumns: '25% 75%',
+  gridTemplateColumns: '25% 75%',
+  [theme.breakpoints.down('md')]: {
+    gridTemplateColumns: '100%',
+  },
   '& img': {
     cursor: 'pointer',
   },
@@ -778,10 +789,15 @@ const ImageCard = styled(Box)(({ theme }) => ({
 const CopyWrapper = styled(Box)(({ theme }) => ({
   padding: '0 15px',
   margin: '5px 0px 15px',
+  textAlign: 'left',
 }))
 
 const HoverContainer = styled(Box)(({ theme }) => ({
   position: 'relative',
+}))
+
+const Placeholder = styled(Box)(({ theme }) => ({
+  height: '100%',
 }))
 
 const HoverCard = styled(Box)(({ theme }) => ({
