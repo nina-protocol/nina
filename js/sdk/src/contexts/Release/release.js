@@ -1320,13 +1320,11 @@ const releaseContextHelper = ({
   }
 
   const getFeedForUser = async (publicKey, offset) => {
-    console.log('offset :>> ', offset);
     try {
       const { data } = await axios.get(
         `${process.env.NINA_API_ENDPOINT}/accounts/${publicKey}/feed?offset=${offset}`
       )
 
-      console.log('data top:>> ', data);
       const releases = []
       const updatedVerificationState = {}
 
@@ -1357,8 +1355,6 @@ const releaseContextHelper = ({
           ...newState.releaseMintMap,
         },
       }))
-
-      console.log('data in get feed for user:>> ', data);
 
       return data
     } catch (error) {
