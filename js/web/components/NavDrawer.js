@@ -22,26 +22,20 @@ import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 const linksConnected = [
   'home',
   'dashboard',
+  'feed',
   'all Releases',
   'hubs',
-
   'faq',
   'dev',
-  'radio',
-  'nina night',
-  'the soft lp',
 ]
 
 const linksNotConnected = [
   'home',
   'all Releases',
   'hubs',
-
+  
   'faq',
   'dev',
-  'radio',
-  'nina night',
-  'the soft lp',
 ]
 
 const NavDrawer = () => {
@@ -92,7 +86,7 @@ const NavDrawer = () => {
                       className={`${classes.drawerLink}`}
                       passHref
                     >
-                      Nina Dev
+                      For Developers
                     </a>
                   </StyledListItemText>
                 </ListItem>
@@ -208,7 +202,7 @@ const NavDrawer = () => {
                     <a>
                       <StyledListItemText
                         disablePadding
-                        primary={'Create Hub'}
+                        primary={'Create'}
                       />
                     </a>
                   </Link>
