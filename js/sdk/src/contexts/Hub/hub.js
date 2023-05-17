@@ -175,13 +175,12 @@ const hubContextHelper = ({
         wallet: provider.wallet.publicKey.toBase58(),
       })
       await initSdkIfNeeded()
-      const { hub } = await NinaSdk.Hub.hubInitWithCredit(ninaClient, hubParams)
-
+      const { hub } = await NinaSdk.Hub.hubInit(ninaClient, hubParams)
       logEvent('hub_init_with_credit_success', 'engagement', {
         hub: hub.publicKey,
         wallet: provider.wallet.publicKey.toBase58(),
       })
-
+      await getHub(hub.publicKey)
       return {
         success: true,
         msg: 'Hub Created',

@@ -2307,7 +2307,7 @@
     jsbi "^3.1.5"
     sha.js "^2.4.11"
 
-"@nina-protocol/js-sdk@0.0.14":
+"@nina-protocol/js-sdk@^0.0.14":
   version "0.0.14"
   resolved "https://registry.yarnpkg.com/@nina-protocol/js-sdk/-/js-sdk-0.0.14.tgz#6ccf6997edc60d7f69a6346f2e0d4170a3818874"
   integrity sha512-o/a5EjPDuXd31CPa2Angn+LIikTYhmEIpJl2FbIKH5II9rjxXYdRBJYH8PzoUs0fGO1ObT2galbrQ3WEfKDXzg==
