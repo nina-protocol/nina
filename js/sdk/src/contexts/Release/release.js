@@ -1227,7 +1227,7 @@ const releaseContextHelper = ({
     return updatedReleaseState
   }
 
-  const getReleasesRecent = async () => {
+  const getReleasesRecent = async (params = undefined) => {
     try {
       if (
         !releasesRecentState.highlights ||
@@ -1238,10 +1238,10 @@ const releaseContextHelper = ({
           process.env.REACT_APP_CLUSTER === 'devnet'
             ? '4xHeZW8BK8HeCinoDLsGiGwtYsjQ9zBb71m5vdDa5ceS'
             : '4QECgzp8hjknK3pvPEMoXATywcsNnH4MU49tVvDWLgKg'
-        const published = (await NinaSdk.Release.fetchAll({ limit: 25 }, true))
-          .releases
+        const published = []
+
         let highlights = (
-          await NinaSdk.Hub.fetchReleases(highlightsHubPubkey, true)
+          await NinaSdk.Hub.fetchReleases(highlightsHubPubkey, true, params)
         ).releases
 
         const allReleases = [...published, ...highlights]
