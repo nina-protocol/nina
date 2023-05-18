@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react'
-import * as anchor from '@project-serum/anchor'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
@@ -15,9 +14,8 @@ import Dots from './Dots'
 const Swap = () => {
   const { enqueueSnackbar } = useSnackbar()
 
-  const { ninaClient, usdcBalance, solBalance, getUserBalances, sendUsdc } = useContext(
-    Nina.Context
-  )
+  const { ninaClient, usdcBalance, solBalance, getUserBalances, sendUsdc } =
+    useContext(Nina.Context)
   const { wallet, connection, pendingTransactionMessage } = useContext(
     Wallet.Context
   )
@@ -35,8 +33,14 @@ const Swap = () => {
   const [withdrawTarget, setWithdrawTarget] = useState('')
 
   const multiplier = useMemo(() => (isSolToUsdc ? 100 : 10000), [isSolToUsdc])
-  const swapHeaderTextDecoration = useMemo(() => isWithdraw ? 'none' : 'underline', [isWithdraw])
-  const withdrawHeaderTextDecoration = useMemo(() => isWithdraw ? 'underline' : 'none', [isWithdraw])
+  const swapHeaderTextDecoration = useMemo(
+    () => (isWithdraw ? 'none' : 'underline'),
+    [isWithdraw]
+  )
+  const withdrawHeaderTextDecoration = useMemo(
+    () => (isWithdraw ? 'underline' : 'none'),
+    [isWithdraw]
+  )
 
   const outputAmount = useMemo(() => {
     if (quote) {
@@ -116,14 +120,11 @@ const Swap = () => {
     }
     setPending(false)
   }
-  
+
   const handleWithdraw = async () => {
     setWithdrawPending(true)
     try {
-      const tx = await sendUsdc(
-        withdrawAmount,
-        withdrawTarget
-      )
+      const tx = await sendUsdc(withdrawAmount, withdrawTarget)
       if (tx.success) {
         enqueueSnackbar('Withdraw Successful', {
           variant: 'success',
@@ -148,78 +149,84 @@ const Swap = () => {
         <div>
           <Typography
             variant="h3"
-            sx={{ display: 'inline', alignItems: 'baseline', textDecoration: swapHeaderTextDecoration, mb: 1, mr: 1, cursor: 'pointer', }}
+            sx={{
+              display: 'inline',
+              alignItems: 'baseline',
+              textDecoration: swapHeaderTextDecoration,
+              mb: 1,
+              mr: 1,
+              cursor: 'pointer',
+            }}
             onClick={() => setIsWithdraw(false)}
-            >
+          >
             Swap
           </Typography>
           <Typography
             variant="h3"
-            sx={{ display: 'inline', alignItems: 'baseline', textDecoration: withdrawHeaderTextDecoration, mb: 1,  ml: 1, cursor: 'pointer' }}
+            sx={{
+              display: 'inline',
+              alignItems: 'baseline',
+              textDecoration: withdrawHeaderTextDecoration,
+              mb: 1,
+              ml: 1,
+              cursor: 'pointer',
+            }}
             onClick={() => setIsWithdraw(true)}
-            >
+          >
             Withdraw USDC
           </Typography>
         </div>
         {isWithdraw ? (
           <>
-          <WithdrawWrapper>
-            <TextField
-              id={'withdrawAmountInput'}
-              name={'withdrawAmountInput'}
-              onChange={(e) => setWithdrawAmount(e.target.value)}
-              value={withdrawAmount}
-              type="number"
-              variant="standard"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    Send:
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="start">
-                    USDC
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <WithdrawWrapper>
+              <TextField
+                id={'withdrawAmountInput'}
+                name={'withdrawAmountInput'}
+                onChange={(e) => setWithdrawAmount(e.target.value)}
+                value={withdrawAmount}
+                type="number"
+                variant="standard"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">Send:</InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="start">USDC</InputAdornment>
+                  ),
+                }}
+              />
+              <Button onClick={() => setWithdrawAmount(usdcBalance)}>
+                MAX
+              </Button>
+              <TextField
+                id={'withdrawTargetInput'}
+                name={'withdrawTargetInput'}
+                onChange={(e) => setWithdrawTarget(e.target.value)}
+                value={withdrawTarget}
+                type="string"
+                variant="standard"
+                sx={{ width: '100%' }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">To:</InputAdornment>
+                  ),
+                }}
+              />
+            </WithdrawWrapper>
             <Button
-              onClick={() => setWithdrawAmount(usdcBalance)}
+              color="primary"
+              variant="outlined"
+              fullWidth
+              onClick={handleWithdraw}
             >
-              MAX
+              {withdrawPending ? (
+                <Dots msg={pendingTransactionMessage} />
+              ) : (
+                <Typography variant="body2">Send</Typography>
+              )}
             </Button>
-            <TextField
-              id={'withdrawTargetInput'}
-              name={'withdrawTargetInput'}
-              onChange={(e) => setWithdrawTarget(e.target.value)}
-              value={withdrawTarget}
-              type="string"
-              variant="standard"
-              sx={{ width: "100%" }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    To:
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </WithdrawWrapper>
-          <Button
-            color="primary"
-            variant="outlined"
-            fullWidth
-            onClick={handleWithdraw}
-          >
-            {withdrawPending ? (
-              <Dots msg={pendingTransactionMessage} />
-            ) : (
-              <Typography variant="body2">Send</Typography>
-            )}
-          </Button>
-        </>
-      ) : (
+          </>
+        ) : (
           <>
             <Typography
               variant="h3"
