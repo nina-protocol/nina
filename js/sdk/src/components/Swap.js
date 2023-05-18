@@ -11,6 +11,8 @@ import Box from '@mui/material/Box'
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
+import Divider from '@mui/material/Divider'
+
 const Swap = () => {
   const { enqueueSnackbar } = useSnackbar()
 
@@ -129,6 +131,8 @@ const Swap = () => {
         enqueueSnackbar('Withdraw Successful', {
           variant: 'success',
         })
+        setWithdrawAmount(0)
+        setWithdrawTarget('')
       } else {
         enqueueSnackbar(`Withdraw Failed: ${tx.error.msg}`, {
           variant: 'failure',
@@ -146,14 +150,13 @@ const Swap = () => {
   return (
     <>
       <InputWrapper>
-        <div>
+        <Box display="flex" alignItems={'center'}>
           <Typography
             variant="h3"
             sx={{
               display: 'inline',
               alignItems: 'baseline',
               textDecoration: swapHeaderTextDecoration,
-              mb: 1,
               mr: 1,
               cursor: 'pointer',
             }}
@@ -161,21 +164,24 @@ const Swap = () => {
           >
             Swap
           </Typography>
+
+          <Divider orientation="vertical" flexItem />
+
           <Typography
             variant="h3"
             sx={{
               display: 'inline',
               alignItems: 'baseline',
               textDecoration: withdrawHeaderTextDecoration,
-              mb: 1,
               ml: 1,
               cursor: 'pointer',
             }}
             onClick={() => setIsWithdraw(true)}
           >
-            Withdraw USDC
+            Withdraw
           </Typography>
-        </div>
+        </Box>
+
         {isWithdraw ? (
           <>
             <WithdrawWrapper>
@@ -312,6 +318,8 @@ const WithdrawWrapper = styled(Box)(() => ({
 const InputWrapper = styled(Box)(() => ({
   display: 'flex',
   flexDirection: 'column',
+  minHeight: '230px',
+  justifyContent: 'space-between',
 }))
 
 export default Swap
