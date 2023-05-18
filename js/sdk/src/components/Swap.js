@@ -120,24 +120,24 @@ const Swap = () => {
   const handleWithdraw = async () => {
     setWithdrawPending(true)
     try {
-      const success = await sendUsdc(
+      const tx = await sendUsdc(
         withdrawAmount,
         withdrawTarget
       )
-      if (success) {
+      if (tx.success) {
         enqueueSnackbar('Withdraw Successful', {
           variant: 'success',
         })
       } else {
-        enqueueSnackbar('Withdraw Failed', {
+        enqueueSnackbar(`Withdraw Failed: ${tx.error.msg}`, {
           variant: 'failure',
         })
       }
     } catch (e) {
+      console.warn(e)
       enqueueSnackbar('Withdraw Failed', {
         variant: 'failure',
       })
-      console.warn(e)
     }
     setWithdrawPending(false)
   }
@@ -212,7 +212,7 @@ const Swap = () => {
             fullWidth
             onClick={handleWithdraw}
           >
-            {pending ? (
+            {withdrawPending ? (
               <Dots msg={pendingTransactionMessage} />
             ) : (
               <Typography variant="body2">Send</Typography>
