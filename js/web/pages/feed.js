@@ -12,7 +12,7 @@ const FeedPage = () => {
           content={'Nina Protocol is an independent music ecosystem'}
         />
         <meta name="og:type" content="website" />
-        <meta name="og:title" content="Nina Protocol - Artist Program" />
+        <meta name="og:title" content="Nina Protocol - Activity Feed" />
         <meta
           name="og:description"
           content={'Nina Protocol is an independent music ecosystem'}

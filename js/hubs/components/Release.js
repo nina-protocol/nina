@@ -12,7 +12,10 @@ import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import {
+  imageManager,
+  downloadHelper,
+} from '@nina-protocol/nina-internal-sdk/esm/utils'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
@@ -27,7 +30,6 @@ import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
-const { getImageFromCDN, loader } = imageManager
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { useSnackbar } from 'notistack'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
@@ -38,6 +40,9 @@ const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
 const AddToHubModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/AddToHubModal')
 )
+
+const { getImageFromCDN, loader } = imageManager
+const { downloadWithFallback } = downloadHelper
 
 const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const { wallet } = useContext(Wallet.Context)
@@ -148,20 +153,15 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       wallet: wallet?.publicKey?.toBase58(),
     })
 
-    const response = await axios.get(url, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/octet-stream',
-      },
-      responseType: 'blob',
-    })
-    if (response?.data) {
-      const a = document.createElement('a')
-      const url = window.URL.createObjectURL(response.data)
-      a.href = url
-      a.download = name
-      a.click()
+    const success = await downloadWithFallback(url, name)
+    if (success) {
+      enqueueSnackbar('Download complete', {
+        variant: 'success',
+      })
+    } else {
+      enqueueSnackbar('Download failed', {
+        variant: 'error',
+      })
     }
   }
 
