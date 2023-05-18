@@ -329,7 +329,6 @@ const hubContextHelper = ({
         hubPubkey,
         collaboratorPubkey
       )
-
       await getHub(hubPubkey)
       const hubCollaboratorsStateCopy = { ...hubCollaboratorsState }
       delete hubCollaboratorsStateCopy[removedCollaborator.toBase58()]

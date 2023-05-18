@@ -431,7 +431,7 @@ const releaseContextHelper = ({
         publicKey: release.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
       })
-      const newRelease = await NinaSdk.Release.releaseCreate(
+      const newRelease = await NinaSdk.Release.releaseInit(
         ninaClient,
         retailPrice,
         amount,
