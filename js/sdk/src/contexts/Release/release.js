@@ -1324,6 +1324,7 @@ const releaseContextHelper = ({
       const { data } = await axios.get(
         `${process.env.NINA_API_ENDPOINT}/accounts/${publicKey}/feed?offset=${offset}`
       )
+
       const releases = []
       const updatedVerificationState = {}
 
