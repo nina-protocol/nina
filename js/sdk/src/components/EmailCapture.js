@@ -212,9 +212,18 @@ const EmailCapture = ({
         <Box sx={style}>
           {!showSuccessInfo && (
             <>
-              <Typography variant="h4" sx={{ mb: 1 }}>
-                Please provide a social account to submit a request for SOL.
-              </Typography>
+              {!inArtistProgram && (
+                <Typography variant="h4" sx={{ mb: 1 }}>
+                  Please provide a social account to submit a request for SOL.
+                </Typography>
+              )}
+
+              {inArtistProgram && (
+                <Typography variant="h4" sx={{ mb: 1 }}>
+                  Please fill out this form and we will provide you with
+                  everything needed to start uploading your music.
+                </Typography>
+              )}
 
               <EmailCaptureForm
                 onChange={handleFormChange}
