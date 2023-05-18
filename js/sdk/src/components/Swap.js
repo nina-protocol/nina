@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react'
+import * as anchor from '@project-serum/anchor'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
@@ -14,7 +15,7 @@ import Dots from './Dots'
 const Swap = () => {
   const { enqueueSnackbar } = useSnackbar()
 
-  const { ninaClient, usdcBalance, solBalance, getUserBalances } = useContext(
+  const { ninaClient, usdcBalance, solBalance, getUserBalances, sendUsdc } = useContext(
     Nina.Context
   )
   const { wallet, connection, pendingTransactionMessage } = useContext(
@@ -28,7 +29,14 @@ const Swap = () => {
     ninaClient.ids.mints.wsol
   )
   const [pending, setPending] = useState(false)
+  const [withdrawPending, setWithdrawPending] = useState(false)
+  const [isWithdraw, setIsWithdraw] = useState(false)
+  const [withdrawAmount, setWithdrawAmount] = useState(0)
+  const [withdrawTarget, setWithdrawTarget] = useState('')
+
   const multiplier = useMemo(() => (isSolToUsdc ? 100 : 10000), [isSolToUsdc])
+  const swapHeaderTextDecoration = useMemo(() => isWithdraw ? 'none' : 'underline', [isWithdraw])
+  const withdrawHeaderTextDecoration = useMemo(() => isWithdraw ? 'underline' : 'none', [isWithdraw])
 
   const outputAmount = useMemo(() => {
     if (quote) {
@@ -108,77 +116,174 @@ const Swap = () => {
     }
     setPending(false)
   }
+  
+  const handleWithdraw = async () => {
+    setWithdrawPending(true)
+    try {
+      const success = await sendUsdc(
+        withdrawAmount,
+        withdrawTarget
+      )
+      if (success) {
+        enqueueSnackbar('Withdraw Successful', {
+          variant: 'success',
+        })
+      } else {
+        enqueueSnackbar('Withdraw Failed', {
+          variant: 'failure',
+        })
+      }
+    } catch (e) {
+      enqueueSnackbar('Withdraw Failed', {
+        variant: 'failure',
+      })
+      console.warn(e)
+    }
+    setWithdrawPending(false)
+  }
 
   return (
     <>
       <InputWrapper>
-        <Typography
-          variant="h3"
-          sx={{ alignItems: 'baseline', textDecoration: 'underline', mb: 1 }}
-        >
-          Swap
-        </Typography>
-        <Typography
-          variant="h3"
-          sx={{
-            mb: 3,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          {isSolToUsdc ? 'SOL to USDC' : 'USDC to SOL'}
-          <SwapHorizIcon
-            sx={{ marginLeft: '8px', marginBotton: '0px' }}
-            fontSize="large"
-            onClick={() => setIsSolToUsdc(!isSolToUsdc)}
-          />
-        </Typography>
-        <SwapWrapper>
-          <TextField
-            id={'swapInput'}
-            name={'swapInput'}
-            onChange={(e) => handleInputAmountChange(e.target.value)}
-            value={inputAmount}
-            type="number"
-            variant="standard"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  {isSolToUsdc ? 'SOL' : 'USDC'}
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Typography sx={{ margin: '0 10px' }}>For</Typography>
-          <TextField
-            id={'swapOutput'}
-            name={'swapOutput'}
-            value={outputAmount}
-            type="number"
-            variant="standard"
-            disabled
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  {!isSolToUsdc ? 'SOL' : 'USDC'}
-                </InputAdornment>
-              ),
-            }}
-          />
-        </SwapWrapper>
-        <Button
-          color="primary"
-          variant="outlined"
-          fullWidth
-          onClick={handleSwap}
-        >
-          {pending ? (
-            <Dots msg={pendingTransactionMessage} />
-          ) : (
-            <Typography variant="body2">Swap</Typography>
-          )}
-        </Button>
+        <div>
+          <Typography
+            variant="h3"
+            sx={{ display: 'inline', alignItems: 'baseline', textDecoration: swapHeaderTextDecoration, mb: 1, mr: 1, cursor: 'pointer', }}
+            onClick={() => setIsWithdraw(false)}
+            >
+            Swap
+          </Typography>
+          <Typography
+            variant="h3"
+            sx={{ display: 'inline', alignItems: 'baseline', textDecoration: withdrawHeaderTextDecoration, mb: 1,  ml: 1, cursor: 'pointer' }}
+            onClick={() => setIsWithdraw(true)}
+            >
+            Withdraw USDC
+          </Typography>
+        </div>
+        {isWithdraw ? (
+          <>
+          <WithdrawWrapper>
+            <TextField
+              id={'withdrawAmountInput'}
+              name={'withdrawAmountInput'}
+              onChange={(e) => setWithdrawAmount(e.target.value)}
+              value={withdrawAmount}
+              type="number"
+              variant="standard"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    Send:
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="start">
+                    USDC
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Button
+              onClick={() => setWithdrawAmount(usdcBalance)}
+            >
+              MAX
+            </Button>
+            <TextField
+              id={'withdrawTargetInput'}
+              name={'withdrawTargetInput'}
+              onChange={(e) => setWithdrawTarget(e.target.value)}
+              value={withdrawTarget}
+              type="string"
+              variant="standard"
+              sx={{ width: "100%" }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    To:
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </WithdrawWrapper>
+          <Button
+            color="primary"
+            variant="outlined"
+            fullWidth
+            onClick={handleWithdraw}
+          >
+            {pending ? (
+              <Dots msg={pendingTransactionMessage} />
+            ) : (
+              <Typography variant="body2">Send</Typography>
+            )}
+          </Button>
+        </>
+      ) : (
+          <>
+            <Typography
+              variant="h3"
+              sx={{
+                mb: 3,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {isSolToUsdc ? 'SOL to USDC' : 'USDC to SOL'}
+              <SwapHorizIcon
+                sx={{ marginLeft: '8px', marginBotton: '0px' }}
+                fontSize="large"
+                onClick={() => setIsSolToUsdc(!isSolToUsdc)}
+              />
+            </Typography>
+            <SwapWrapper>
+              <TextField
+                id={'swapInput'}
+                name={'swapInput'}
+                onChange={(e) => handleInputAmountChange(e.target.value)}
+                value={inputAmount}
+                type="number"
+                variant="standard"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      {isSolToUsdc ? 'SOL' : 'USDC'}
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <Typography sx={{ margin: '0 10px' }}>For</Typography>
+              <TextField
+                id={'swapOutput'}
+                name={'swapOutput'}
+                value={outputAmount}
+                type="number"
+                variant="standard"
+                disabled
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      {!isSolToUsdc ? 'SOL' : 'USDC'}
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </SwapWrapper>
+            <Button
+              color="primary"
+              variant="outlined"
+              fullWidth
+              onClick={handleSwap}
+            >
+              {pending ? (
+                <Dots msg={pendingTransactionMessage} />
+              ) : (
+                <Typography variant="body2">Swap</Typography>
+              )}
+            </Button>
+          </>
+        )}
       </InputWrapper>
     </>
   )
@@ -188,6 +293,12 @@ const SwapWrapper = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
   marginBottom: '30px',
+  justifyContent: 'space-around',
+}))
+
+const WithdrawWrapper = styled(Box)(() => ({
+  margin: '30px 0',
+  alignItems: 'center',
   justifyContent: 'space-around',
 }))
 

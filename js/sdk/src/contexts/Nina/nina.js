@@ -136,6 +136,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     getUsdcToSolSwapData,
     subscriptionSubscribeDelegated,
     subscriptionUnsubscribeDelegated,
+    sendUsdc,
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -234,6 +235,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         MAX_IMAGE_FILE_UPLOAD_SIZE,
         subscriptionSubscribeDelegated,
         subscriptionUnsubscribeDelegated,
+        sendUsdc,
       }}
     >
       {children}
@@ -724,6 +726,68 @@ const ninaContextHelper = ({
       new anchor.web3.PublicKey(publicKey)
     )
     return solUsdcBalanceResult
+  }
+
+  const sendUsdc = async (amount, destination) => {
+    try {
+      let [fromUsdcTokenAccount, fromUsdcTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+        provider.connection,
+        provider.wallet.publicKey,
+        provider.wallet.publicKey,
+        anchor.web3.SystemProgram.programId,
+        anchor.web3.SYSVAR_RENT_PUBKEY,
+        new anchor.web3.PublicKey(ids.mints.usdc)
+      )
+
+      let [toUsdcTokenAccount, toUsdcTokenAccountIx] = await findOrCreateAssociatedTokenAccount(
+        provider.connection,
+        provider.wallet.publicKey,
+        new anchor.web3.PublicKey(destination),
+        anchor.web3.SystemProgram.programId,
+        anchor.web3.SYSVAR_RENT_PUBKEY,
+        new anchor.web3.PublicKey(ids.mints.usdc)
+      )
+
+      const program = anchor.Spl.token({
+        provider,
+      });
+
+      const instructions = []
+
+      if (fromUsdcTokenAccountIx) {
+        instructions.push(fromUsdcTokenAccountIx)
+      }
+
+      if (toUsdcTokenAccountIx) {
+        instructions.push(toUsdcTokenAccountIx)
+      }
+
+      const tx = await program.methods
+        .transfer(new anchor.BN(ninaClient.uiToNative(amount, ids.mints.usdc)))
+        .accounts({
+          source: fromUsdcTokenAccount,
+          destination: toUsdcTokenAccount,
+          authority: provider.wallet.publicKey,
+        })
+        .preInstructions(instructions)
+        .transaction()
+
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
+
+      await getConfirmTransaction(txid, provider.connection)
+      await getUserBalances()
+      return true
+    } catch (error) {
+      console.warn('sendUsdc error: ', error)
+      return false
+    }
   }
 
   const getUserBalances = async () => {
@@ -1261,6 +1325,7 @@ const ninaContextHelper = ({
     getUsdcToSolSwapData,
     subscriptionSubscribeDelegated,
     subscriptionUnsubscribeDelegated,
+    sendUsdc,
   }
 }
 
