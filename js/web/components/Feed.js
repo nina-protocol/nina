@@ -76,7 +76,7 @@ const Feed = ({
 
       setItemsTotal(feed.total)
       if (feedItems && feedItems.length > 0 && !refresh) {
-        setItems(feedItems.concat(feed?.feedItems))
+        setItems(items.concat(feed?.feedItems))
       } else {
         setItems(feed?.feedItems)
       }
