@@ -117,7 +117,10 @@ const ReleasePurchase = (props) => {
 
   useEffect(() => {
     const handleFetchAmount = async () => {
-      const amount = await getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
+      const amount = await getAmountHeld(
+        releaseState.releaseMintMap[releasePubkey],
+        releasePubkey
+      )
       setAmountHeld(amount)
     }
     handleFetchAmount()
