@@ -694,6 +694,7 @@ const ninaContextHelper = ({
   }
 
   const getAmountHeld = async (releaseMint) => {
+    let amount = 0
     if (provider.wallet?.connected) {
       let tokenAccounts =
         await provider.connection.getParsedTokenAccountsByOwner(
@@ -703,11 +704,11 @@ const ninaContextHelper = ({
       tokenAccounts.value.forEach((value) => {
         const account = value.account.data.parsed.info
         if (account.mint === releaseMint) {
-          return account.tokenAmount.uiAmount
+          amount = account.tokenAmount.uiAmount
         }
       })
     }
-    return 0
+    return amount
   }
   const getSolBalance = async () => {
     let solUsdcBalanceResult = await provider.connection.getBalance(

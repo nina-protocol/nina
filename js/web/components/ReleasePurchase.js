@@ -52,6 +52,8 @@ const ReleasePurchase = (props) => {
     setAmountHeld,
     isAuthority,
   } = props
+
+  console.log('releasePubkey :>> ', releasePubkey);
   const { enqueueSnackbar } = useSnackbar()
   const { wallet, pendingTransactionMessage } = useContext(Wallet.Context)
   const {
@@ -115,12 +117,12 @@ const ReleasePurchase = (props) => {
   }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
-    setAmountHeld(collection[releasePubkey] || 0)
-  }, [collection[releasePubkey]])
-
-  useEffect(() => {
-    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
-  }, [releasePubkey])
+    const handleFetchAmount = async () => {
+      const amount = await getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
+      setAmountHeld(amount)
+    }
+    handleFetchAmount()
+  }, [releasePubkey, releaseState.releaseMintMap, collection])
 
   useEffect(() => {
     setAmountPendingBuys(
