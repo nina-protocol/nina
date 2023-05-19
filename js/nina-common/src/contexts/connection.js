@@ -18,7 +18,7 @@ export const ENDPOINTS = {
   },
   mainnet: {
     name: 'mainnet',
-    endpoint: 'https://nina.rpcpool.com/a4720dd909cb194f1d9ea07d50ee',
+    endpoint: 'https://nina.rpcpool.com',
     custom: true,
   },
 }
