@@ -53,7 +53,6 @@ const ReleasePurchase = (props) => {
     isAuthority,
   } = props
 
-  console.log('releasePubkey :>> ', releasePubkey);
   const { enqueueSnackbar } = useSnackbar()
   const { wallet, pendingTransactionMessage } = useContext(Wallet.Context)
   const {
