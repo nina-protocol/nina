@@ -2,12 +2,8 @@ import { createContext, useState, useMemo } from 'react'
 import { Connection } from '@solana/web3.js'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import { WalletProvider } from '@solana/wallet-adapter-react'
-import {
-  getPhantomWallet,
-  getSolflareWallet,
-  getSolletWallet,
-  getSolletExtensionWallet,
-} from '@solana/wallet-adapter-wallets'
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom'
+import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
 
 export const ENDPOINTS = {
   devnet: {
@@ -22,7 +18,7 @@ export const ENDPOINTS = {
   },
   mainnet: {
     name: 'mainnet',
-    endpoint: 'https://nina.rpcpool.com',
+    endpoint: 'https://nina.rpcpool.com/a4720dd909cb194f1d9ea07d50ee',
     custom: true,
   },
 }
@@ -40,15 +36,11 @@ const ConnectionContextProvider = ({ children }) => {
     [endpoint]
   )
 
-  const wallets = useMemo(
-    () => [
-      getPhantomWallet({ network }),
-      getSolletWallet({ network }),
-      getSolletExtensionWallet({ network }),
-      getSolflareWallet({ network }),
-    ],
-    []
-  )
+  const walletOptions = [
+    new PhantomWalletAdapter({ network }),
+    new SolflareWalletAdapter({ network }),
+  ]
+  const wallets = useMemo(() => walletOptions, [network])
 
   return (
     <ConnectionContext.Provider

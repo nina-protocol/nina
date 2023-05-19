@@ -2,8 +2,8 @@
   "compilerOptions": {
     /* Basic Options */
     "module": "es6",
-    "target": "es2019",
-    "lib": ["ESNext"],
+    "target": "ES2021",
+    "lib": ["DOM", "ES6", "DOM.Iterable", "ScriptHost", "ES2016.Array.Include"],
 
     /* Strict Type-Checking Options */
     "strict": true,

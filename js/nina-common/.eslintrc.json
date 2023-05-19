@@ -40,7 +40,7 @@
         "argsIgnorePattern": "^_"
       }
     ],
-    "react/destructuring-assignment": 2,
+    "react/destructuring-assignment": 0,
     "no-console": [
       1,
       {

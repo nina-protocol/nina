@@ -101,11 +101,10 @@ const exchangeContextHelper = ({
   getRelease,
   getUsdcBalance,
 }) => {
-  const provider = new anchor.Provider(
-    connection,
-    wallet,
-    anchor.Provider.defaultOptions()
-  )
+  const provider = new anchor.AnchorProvider(connection, wallet, {
+    commitment: 'confirmed',
+    preflightCommitment: 'processed',
+  })
 
   const exchangeAccept = async (exchange, releasePubkey) => {
     try {
@@ -352,8 +351,26 @@ const exchangeContextHelper = ({
         isSelling,
       }
 
-      const txid = await nina.program.rpc.exchangeInit(config, bump, request)
-      await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
+      const tx = await nina.program.methods
+        .exchangeInit(config, bump)
+        .accounts(request.accounts)
+        .preInstructions(request.instructions)
+        .signers(request.signers)
+        .transaction()
+
+        tx.recentBlockhash = (
+          await provider.connection.getRecentBlockhash()
+        ).blockhash
+        tx.feePayer = provider.wallet.publicKey
+        for await (let signer of request.signers) {
+          tx.partialSign(signer)
+        }
+  
+        const txid = await provider.wallet.sendTransaction(
+          tx,
+          provider.connection
+        )
+        await provider.connection.getParsedConfirmedTransaction(txid, 'confirmed')
 
       setExchangeInitPending({
         ...exchangeInitPending,

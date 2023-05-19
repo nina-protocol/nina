@@ -159,11 +159,10 @@ const releaseContextHelper = ({
   setRedeemableState,
   removeReleaseFromCollection,
 }) => {
-  const provider = new anchor.Provider(
-    connection,
-    wallet,
-    anchor.Provider.defaultOptions()
-  )
+  const provider = new anchor.AnchorProvider(connection, wallet, {
+    commitment: 'confirmed',
+    preflightCommitment: 'processed',
+  })
 
   const releaseCreate = async ({
     retailPrice,

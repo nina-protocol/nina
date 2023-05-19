@@ -3,8 +3,6 @@ import { TokenInstructions } from '@project-serum/serum'
 import Arweave from 'arweave'
 import CoinGecko from 'coingecko-api'
 
-import idl from './idl'
-
 export const NINA_CLIENT_IDS = {
   mainnet: {
     programs: {
@@ -61,6 +59,7 @@ export default class NinaClient {
 
   static async connect(provider) {
     const NINA_ID = NINA_CLIENT_IDS[process.env.REACT_APP_CLUSTER].programs.nina
+    const idl = await anchor.Program.fetchIdl(NINA_ID, provider)
     const program = new anchor.Program(idl, NINA_ID, provider)
 
     return new NinaClient(program)

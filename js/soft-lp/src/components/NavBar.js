@@ -60,11 +60,11 @@ const NavBar = (props) => {
         <div className={classes.nav__button}>
           <WalletDialogProvider
             className={classes.walletDialogProvider}
-            featuredWallets={4}
+            featuredWallets={2}
           >
             <WalletMultiButton className={classes.walletButtonWrapper}>
               {wallet?.connected
-                ? `${wallet.wallet.name} ${walletDisplay}`
+                ? `${wallet.wallet.adapter.name} ${walletDisplay}`
                 : 'Connect Wallet'}
             </WalletMultiButton>
           </WalletDialogProvider>
@@ -135,6 +135,17 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     marginRight: '20px',
   },
+  walletButtonWrapper: {
+    textTransform: 'capitalize',
+    paddingRight: '20px',
+    paddingLeft: '20px',
+    '& img': {
+      display: 'none',
+    },
+    '& .MuiButton-label:hover': {
+      color: `${theme.vars.blue}`,
+    },
+  },
   walletDialogProvider: {
     '& .MuiButton-root': {
       backgroundColor: `${theme.vars.white}`,
@@ -178,17 +189,6 @@ const useStyles = makeStyles((theme) => ({
           },
         },
       },
-    },
-  },
-  walletButtonWrapper: {
-    textTransform: 'capitalize',
-    paddingRight: '20px',
-    paddingLeft: '20px',
-    '& img': {
-      display: 'none',
-    },
-    '& .MuiButton-label:hover': {
-      color: `${theme.vars.blue}`,
     },
   },
   connectionDot: {
