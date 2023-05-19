@@ -426,7 +426,7 @@ const CtaWrapper = styled(Box)(({ theme, inOnboardingFlow }) => ({
     borderRadius: '0px',
     margin: inOnboardingFlow ? '10px 0 0 0' : '0 8px',
     [theme.breakpoints.down('md')]: {
-      padding: '10px 10px 10px 0px',
+      padding: '10px 10px 10px 10px',
       '& p': {
         display: 'none',
       },
@@ -442,8 +442,6 @@ const CtaWrapper = styled(Box)(({ theme, inOnboardingFlow }) => ({
 
 const StyledCta = styled(Button)(({ inOnboardingFlow }) => ({
   width: inOnboardingFlow ? '100%' : '',
-  // margin: inOnboardingFlow ? '10px 0px 0px 0px' : '0px',
-  // padding: inOnboardingFlow ? '10px' : '10px 10px 10px 0px',
 }))
 
 export default IdentityVerification
