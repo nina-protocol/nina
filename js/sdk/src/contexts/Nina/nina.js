@@ -1070,7 +1070,7 @@ const ninaContextHelper = ({
           new anchor.web3.PublicKey(ids.mints.usdc)
         )
       if (isSystemAccount) {
-        ;[toUsdcTokenAccount, toUsdcTokenAccountIx] =
+        [toUsdcTokenAccount, toUsdcTokenAccountIx] =
           await findOrCreateAssociatedTokenAccount(
             provider.connection,
             provider.wallet.publicKey,
