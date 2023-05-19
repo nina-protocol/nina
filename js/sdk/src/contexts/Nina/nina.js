@@ -1069,19 +1069,18 @@ const ninaContextHelper = ({
           anchor.web3.SYSVAR_RENT_PUBKEY,
           new anchor.web3.PublicKey(ids.mints.usdc)
         )
-      if (isSystemAccount) {
-        [toUsdcTokenAccount, toUsdcTokenAccountIx] =
-          await findOrCreateAssociatedTokenAccount(
-            provider.connection,
-            provider.wallet.publicKey,
-            new anchor.web3.PublicKey(destination),
-            anchor.web3.SystemProgram.programId,
-            anchor.web3.SYSVAR_RENT_PUBKEY,
-            new anchor.web3.PublicKey(ids.mints.usdc)
-          )
-      } else {
-        toUsdcTokenAccount = new anchor.web3.PublicKey(destination)
-      }
+
+      isSystemAccount
+        ? ([toUsdcTokenAccount, toUsdcTokenAccountIx] =
+            await findOrCreateAssociatedTokenAccount(
+              provider.connection,
+              provider.wallet.publicKey,
+              new anchor.web3.PublicKey(destination),
+              anchor.web3.SystemProgram.programId,
+              anchor.web3.SYSVAR_RENT_PUBKEY,
+              new anchor.web3.PublicKey(ids.mints.usdc)
+            ))
+        : (toUsdcTokenAccount = new anchor.web3.PublicKey(destination))
 
       const program = anchor.Spl.token({
         provider,
