@@ -27,7 +27,10 @@ import rehypeExternalLinks from 'rehype-external-links'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
-import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+import {
+  imageManager,
+  downloadHelper,
+} from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/router'
@@ -36,10 +39,11 @@ import dynamic from 'next/dynamic'
 import TablePagination from '@mui/material/TablePagination'
 import axios from 'axios'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
-import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
+// import { downloadWithFallback } from '@nina-protocol/nina-internal-sdk/esm/utils/downloadHelper'
 import openInNewTab from '@nina-protocol/nina-internal-sdk/src/utils/openInNewTab'
 import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 const { getImageFromCDN, loader } = imageManager
+const { downloadWithFallback } = downloadHelper
 
 const Subscribe = dynamic(() => import('./Subscribe'))
 
@@ -321,28 +325,17 @@ const ReusableTableBody = (props) => {
     logEvent('track_download_dashboard', 'engagement', {
       publicKey: releasePubkey,
     })
-    try {
-      const response = await axios.get(url, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/octet-stream',
-        },
-        responseType: 'blob',
+    const success = await downloadWithFallback(url, name)
+    if (success) {
+      enqueueSnackbar('Download complete', {
+        variant: 'success',
       })
-      if (response?.data) {
-        const a = document.createElement('a')
-        const url = window.URL.createObjectURL(response.data)
-        a.href = url
-        a.download = name
-        a.click()
-      }
-      enqueueSnackbar('Release Downloaded', { variant: 'success' })
-      setDownloadId(undefined)
-    } catch (error) {
-      enqueueSnackbar('Release Not Downloaded', { variant: 'error' })
-      setDownloadId(undefined)
+    } else {
+      enqueueSnackbar('Download failed', {
+        variant: 'error',
+      })
     }
+    setDownloadId(undefined)
   }
 
   const getComparator = (order, orderBy, type) => {
