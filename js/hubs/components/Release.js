@@ -11,9 +11,7 @@ import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import {
-  imageManager,
-} from '@nina-protocol/nina-internal-sdk/esm/utils'
+import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'

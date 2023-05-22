@@ -2,9 +2,7 @@ import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import {
-  imageManager,
-} from '@nina-protocol/nina-internal-sdk/src/utils'
+import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -56,7 +54,6 @@ const ReleaseCard = (props) => {
     }
     return metadata.properties.title
   }, [metadata.properties.title])
-
 
   return (
     <StyledReleaseCard>
