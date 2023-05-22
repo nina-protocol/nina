@@ -9,7 +9,6 @@ import Typography from '@mui/material/Typography'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import LockIcon from '@mui/icons-material/Lock'
 import CloseIcon from '@mui/icons-material/Close'
-
 import Dots from './Dots'
 import Box from '@mui/material/Box'
 import List from '@mui/material/List'
@@ -34,7 +33,6 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate, inHubs }) => {
     setActiveIndex(index)
     try {
       await unlockGate(gate)
-      setOpen(false)
     } catch (error) {
       console.warn(error)
     }
@@ -82,77 +80,72 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate, inHubs }) => {
                     ? 'You have access to: '
                     : 'Purchase this release to download: '}
                 </StyledTypography>
-                <List>
-                  {gates.map((gate, index) => {
-                    const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(2)
-                    return (
-                      <ListItem
-                        disableGutters
-                        key={index}
-                        secondaryAction={
-                          <Box>
-                            <IconButton
-                              aria-label="delete"
-                              disabled={
-                                amountHeld === 0 ||
-                                (inProgress && activeIndex === index)
+                <GateWrapper>
+                  <List>
+                    {gates.map((gate, index) => {
+                      const fileSize = (gate.fileSize / (1024 * 1024)).toFixed(
+                        2
+                      )
+                      return (
+                        <ListItem
+                          disableGutters
+                          key={index}
+                          secondaryAction={
+                            <Box>
+                              <IconButton
+                                aria-label="delete"
+                                disabled={
+                                  amountHeld === 0 ||
+                                  (inProgress && activeIndex === index)
+                                }
+                                onClick={() => {
+                                  handleUnlockGate(gate, index)
+                                }}
+                              >
+                                {inProgress && activeIndex === index ? (
+                                  <Dots />
+                                ) : (
+                                  <DownloadIcon />
+                                )}
+                              </IconButton>
+                            </Box>
+                          }
+                        >
+                          <ListItemButton disableGutters>
+                            <ListItemText
+                              primary={
+                                <StyledTypography
+                                  sx={{
+                                    wordBreak: 'break-word',
+                                  }}
+                                >
+                                  {gate.fileName} {`(${fileSize} mb)`}
+                                </StyledTypography>
                               }
-                              onClick={() => {
-                                handleUnlockGate(gate, index)
-                              }}
-                            >
-                              {inProgress && activeIndex === index ? (
-                                <Dots />
-                              ) : (
-                                <DownloadIcon />
-                              )}
-                            </IconButton>
-                          </Box>
-                        }
-                      >
-                        <ListItemButton disableGutters>
-                          <ListItemText
-                            primary={
-                              <StyledTypography>
-                                {gate.fileName} {`(${fileSize} mb)`}
-                              </StyledTypography>
-                            }
-                            secondary={gate.description}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                    )
-                  })}
-                </List>
+                              secondary={
+                                <Box sx={{ wordBreak: 'break-word' }}>
+                                  {gate.description}
+                                </Box>
+                              }
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      )
+                    })}
+                  </List>
+                </GateWrapper>
               </>
             </StyledPaper>
           </Fade>
         </StyledModal>
       </Root>
-      {amountHeld === 0 && !inHubs && (
-        <Box sx={{ position: 'absolute', top: '110%' }}>
-          <StyledTypographyButtonSub>
-            {`There ${gates.length > 1 ? 'are' : 'is'} ${gates.length} ${
-              gates.length > 1 ? 'files' : 'file'
-            } available for download exclusively to owners of this release.`}
-          </StyledTypographyButtonSub>
-        </Box>
-      )}
     </>
   )
 }
 
 const Root = styled('div')(() => ({
   display: 'flex',
-  alignItems: 'center',
   width: '100%',
-}))
-
-const StyledTypographyButtonSub = styled(Typography)(({ theme }) => ({
-  color: theme.palette.grey[500],
-  textAlign: 'center',
-  paddingTop: '8px',
-  fontSize: '12px',
 }))
 
 const StyledTypography = styled(Typography)(({ theme }) => ({
@@ -190,6 +183,11 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   top: theme.spacing(1),
   color: theme.palette.black,
   cursor: 'pointer',
+}))
+
+const GateWrapper = styled(Box)(() => ({
+  maxHeight: '350px',
+  overflowY: 'auto',
 }))
 
 export default GateUnlockModal

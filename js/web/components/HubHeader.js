@@ -1,8 +1,8 @@
+import { useState, useEffect, useContext } from 'react'
 import Image from 'next/image'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Link from 'next/link'
-import { useState, useEffect, createElement, Fragment } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { Typography } from '@mui/material'
 import { styled } from '@mui/system'
 import { Box } from '@mui/system'
@@ -12,7 +12,7 @@ import sanitizeHtml from 'sanitize-html'
 
 const HubHeader = ({ hubData }) => {
   const [hubDescription, setHubDescription] = useState(undefined)
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
 
   useEffect(() => {
     const sanitizedDescription = sanitizeHtml(

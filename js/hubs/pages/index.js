@@ -1,6 +1,6 @@
 import Hubs from '../components/Hubs'
 import Head from 'next/head'
-import Dots from '../components/Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 
 export default function Home({ loading }) {
   return (

@@ -8,6 +8,7 @@ import Release from '../contexts/Release'
 import GateCreateModal from './GateCreateModal'
 import Link from 'next/link'
 import Image from 'next/image'
+
 const ReleaseCreateSuccess = (props) => {
   const {
     hubHandle,
@@ -16,7 +17,6 @@ const ReleaseCreateSuccess = (props) => {
     hubReleasePubkey,
     artist,
     title,
-    url,
     image,
     handleReload,
   } = props
@@ -88,7 +88,11 @@ const ReleaseCreateSuccess = (props) => {
                 </Typography>
               </a>
             </Button>
-            <ShareToTwitter artist={artist} title={title} url={url} />
+            <ShareToTwitter
+              artist={artist}
+              title={title}
+              releasePubkey={releasePubkey}
+            />
           </CtaBox>
         </ReleaseSuccessBox>
       </ReleaseSuccessContainer>

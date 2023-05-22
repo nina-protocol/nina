@@ -16,8 +16,8 @@ import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import { useRouter } from 'next/router'
 import Typography from '@mui/material/Typography'
-import { useWallet } from '@solana/wallet-adapter-react'
 import CloseIcon from '@mui/icons-material/Close'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 
 const getItemStyle = (isDragging, draggableStyle) => ({
   // styles we need to apply on draggables
@@ -30,7 +30,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 
 const QueueList = (props) => {
   const { setDrawerOpen } = props
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
   const {
     track,
@@ -47,7 +47,7 @@ const QueueList = (props) => {
 
   useEffect(() => {
     const playlistEntry = playlist.find(
-      (entry) => entry.releasePubkey === track.releasePubkey
+      (entry) => entry.releasePubkey === track?.releasePubkey
     )
 
     if (playlistEntry) {
@@ -82,7 +82,7 @@ const QueueList = (props) => {
     const newPlaylist = [...playlistState]
     arrayMove(newPlaylist, result.source.index, result.destination.index)
     const playlistEntry = playlistState.find(
-      (entry) => entry.releasePubkey === track.releasePubkey
+      (entry) => entry.releasePubkey === track?.releasePubkey
     )
 
     if (playlistEntry) {

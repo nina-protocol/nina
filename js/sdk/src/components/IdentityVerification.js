@@ -1,24 +1,26 @@
-import { useEffect, useContext, useState, useMemo } from 'react'
+import React, { useEffect, useContext, useState, useMemo } from 'react'
 import { useRouter } from 'next/router'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import axios from 'axios'
-import Web3 from 'web3'
-import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateAddress'
+import CloseIcon from '@mui/icons-material/Close'
+import { truncateAddress } from '@nina-protocol/nina-internal-sdk/src/utils/truncateManager'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import { useSnackbar } from 'notistack'
 import IdentityVerificationModal from './IdentityVerificationModal'
+import IdentityDisconnectModal from './IdentityDisconnectModal'
 import {
   verifyEthereum,
   verifyTwitter,
-  deleteTwitterVerification,
-  deleteEthereumVerification,
   verifySoundcloud,
   verifyInstagram,
+  deleteTwitterVerification,
+  deleteEthereumVerification,
+  deleteSoundcloudVerification,
 } from '../utils/identityVerification'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -28,20 +30,21 @@ import {
   faEthereum,
 } from '@fortawesome/free-brands-svg-icons'
 
-const IdentityVerification = ({ verifications, profilePublicKey }) => {
-  const web3 = new Web3(process.env.ETH_CLUSTER_URL)
+const IdentityVerification = ({
+  verifications,
+  profilePubkey,
+  inOnboardingFlow,
+}) => {
   const { enqueueSnackbar } = useSnackbar()
   const router = useRouter()
-  const { publicKey, signTransaction, sendTransaction } = useWallet()
-  const {
-    ninaClient,
-    getVerificationsForUser,
-    NinaProgramAction,
-    checkIfHasBalanceToCompleteAction,
-  } = useContext(Nina.Context)
+  const { wallet } = useContext(Wallet.Context)
+  const { publicKey, signTransaction, sendTransaction } = wallet
+  const { ninaClient, getVerificationsForUser } = useContext(Nina.Context)
   const { provider } = ninaClient
 
   const [open, setOpen] = useState(false)
+  const [openDisconnectModal, setOpenDisconnectModal] = useState(false)
+  const [disconnecting, setDisconencting] = useState(false)
   const [ethAddress, setEthAddress] = useState(undefined)
   const [soundcloudHandle, setSoundcloudHandle] = useState(undefined)
   const [soundcloudToken, setSoundcloudToken] = useState(undefined)
@@ -50,8 +53,6 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const [instagramHandle, setInstagramHandle] = useState(undefined)
   const [instagramToken, setInstagramToken] = useState(undefined)
   const [instagramUserId, setInstagramUserId] = useState(undefined)
-  const [action, setAction] = useState(undefined)
-  const [activeType, setActiveType] = useState(undefined)
   const [activeValue, setActiveValue] = useState(undefined)
 
   const logos = {
@@ -112,8 +113,12 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
 
   const buttonTypes = useMemo(() => {
     const buttonArray = []
-    if (publicKey?.toBase58() === profilePublicKey) {
-      buttonArray.push('twitter', 'soundcloud', 'ethereum')
+    if (publicKey?.toBase58() === profilePubkey) {
+      if (accountVerifiedForType('ethereum')) {
+        buttonArray.push('ethereum')
+      }
+      buttonArray.push('twitter')
+      buttonArray.push('soundcloud')
     } else {
       verifications.forEach((verification) => {
         if (verification.type === 'twitter') {
@@ -137,7 +142,6 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
     const codeSource = localStorage.getItem('codeSource')
     const getHandle = async () => {
       try {
-        setActiveType(codeSource)
         if (codeSource === 'soundcloud') {
           const response = await axios.post(
             `${process.env.NINA_IDENTITY_ENDPOINT}/sc/user`,
@@ -193,7 +197,6 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   const handleIdentityButtonAction = async (type) => {
     if (accountVerifiedForType(type)) {
       const value = valueForType(type)
-
       const params = {
         type,
         value,
@@ -224,29 +227,27 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
   }
 
   const handleVerify = async () => {
+    let success = false
     switch (localStorage.getItem('codeSource')) {
       case 'soundcloud':
-        await verifySoundcloud(
+        success = await verifySoundcloud(
           provider,
           soundcloudHandle,
           publicKey,
-          signTransaction,
           soundcloudToken
         )
-        await getVerificationsForUser(profilePublicKey)
         break
       case 'twitter':
-        await verifyTwitter(
+        success = await verifyTwitter(
           provider,
           twitterHandle,
           twitterToken,
           publicKey,
           signTransaction
         )
-        await getVerificationsForUser(profilePublicKey)
         break
       case 'instagram':
-        await verifyInstagram(
+        success = await verifyInstagram(
           provider,
           instagramUserId,
           instagramHandle,
@@ -254,24 +255,31 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
           signTransaction,
           instagramToken
         )
-        await getVerificationsForUser(profilePublicKey)
         break
       case 'ethereum':
-        await verifyEthereum(provider, ethAddress, publicKey, signTransaction)
-        await getVerificationsForUser(profilePublicKey)
+        success = await verifyEthereum(
+          provider,
+          ethAddress,
+          publicKey,
+          signTransaction
+        )
         break
+    }
+
+    if (success) {
+      await getVerificationsForUser(profilePubkey)
+      enqueueSnackbar('Account verified.', {
+        variant: 'success',
+      })
     }
   }
 
   const handleConnectAccount = async (type) => {
-    const error = await checkIfHasBalanceToCompleteAction(
-      NinaProgramAction.CONNECTION_CREATE
-    )
-    if (error) {
-      enqueueSnackbar(error.msg)
-      return
+    if (inOnboardingFlow) {
+      localStorage.setItem('inOnboardingFlow', 'true')
+    } else {
+      localStorage.removeItem('inOnboardFlow')
     }
-
     localStorage.setItem('codeSource', type)
 
     switch (type) {
@@ -300,27 +308,92 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
         break
     }
   }
+
+  const handleDisconnectFlow = async (e, type) => {
+    e.stopPropagation()
+    setDisconencting(true)
+    localStorage.setItem('codeSource', type)
+    setOpenDisconnectModal(true)
+    setActiveValue(valueForType(type))
+  }
+
+  const handleDisconnectAccount = async () => {
+    let success = false
+    switch (localStorage.getItem('codeSource')) {
+      case 'twitter':
+        success = await deleteTwitterVerification(
+          provider,
+          valueForType('twitter'),
+          publicKey,
+          signTransaction,
+          sendTransaction
+        )
+        break
+      case 'ethereum':
+        success = await deleteEthereumVerification(
+          provider,
+          valueForType('ethereum'),
+          publicKey,
+          signTransaction,
+          sendTransaction
+        )
+        break
+      case 'soundcloud':
+        success = await deleteSoundcloudVerification(
+          provider,
+          valueForType('soundcloud'),
+          publicKey,
+          signTransaction,
+          sendTransaction
+        )
+        break
+      default:
+        break
+    }
+
+    if (success) {
+      await getVerificationsForUser(profilePubkey)
+      enqueueSnackbar('Account disconnected.', {
+        variant: 'success',
+      })
+    }
+  }
+
   return (
     <>
-      <CtaWrapper>
+      <CtaWrapper inOnboardingFlow={inOnboardingFlow}>
         {buttonTypes &&
-          buttonTypes.map((buttonType, index) => {
-            return (
-              <Button
-                onClick={() => handleIdentityButtonAction(buttonType)}
-                key={index}
-              >
-                <Box display="flex" alignItems="center">
-                  {logos[buttonType]}{' '}
-                  <Typography ml={1} variant="body2">
-                    {buttonTextForType(buttonType)}
-                  </Typography>
-                </Box>
-              </Button>
-            )
-          })}
+          buttonTypes
+            .slice(0, inOnboardingFlow ? 2 : buttonTypes.length)
+            .map((buttonType, index) => {
+              return (
+                <StyledCta
+                  onClick={() => handleIdentityButtonAction(buttonType)}
+                  key={index}
+                  inOnboardingFlow={inOnboardingFlow}
+                >
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    padding={inOnboardingFlow ? '8px' : ''}
+                  >
+                    {logos[buttonType]}{' '}
+                    <Typography ml={1} variant="body2">
+                      {buttonTextForType(buttonType)}
+                    </Typography>
+                    {accountVerifiedForType(buttonType) &&
+                      wallet?.publicKey?.toBase58() === profilePubkey && (
+                        <CloseIcon
+                          sx={{ ml: 1 }}
+                          onClick={(e) => handleDisconnectFlow(e, buttonType)}
+                        />
+                      )}
+                  </Box>
+                </StyledCta>
+              )
+            })}
       </CtaWrapper>
-      {activeValue && (
+      {activeValue && !disconnecting && (
         <Box>
           <IdentityVerificationModal
             action={handleVerify}
@@ -328,23 +401,32 @@ const IdentityVerification = ({ verifications, profilePublicKey }) => {
             value={activeValue}
             open={open}
             setOpen={setOpen}
+            disconnecting={disconnecting}
           />
         </Box>
+      )}
+      {openDisconnectModal && disconnecting && (
+        <IdentityDisconnectModal
+          setOpen={setOpenDisconnectModal}
+          open={openDisconnectModal}
+          value={activeValue}
+          type={localStorage.getItem('codeSource')}
+          action={handleDisconnectAccount}
+          disconneting={disconnecting}
+        />
       )}
     </>
   )
 }
 
-const CtaWrapper = styled(Box)(({ theme }) => ({
+const CtaWrapper = styled(Box)(({ theme, inOnboardingFlow }) => ({
   '& button': {
     color: 'black',
     border: '1px solid black',
     borderRadius: '0px',
-    margin: '0 8px',
+    margin: inOnboardingFlow ? '10px 0 0 0' : '0 8px',
     [theme.breakpoints.down('md')]: {
-      border: 'none',
-      margin: '0px',
-      padding: '10px 10px 10px 0px',
+      padding: '10px 10px 10px 10px',
       '& p': {
         display: 'none',
       },
@@ -356,6 +438,10 @@ const CtaWrapper = styled(Box)(({ theme }) => ({
       },
     },
   },
+}))
+
+const StyledCta = styled(Button)(({ inOnboardingFlow }) => ({
+  width: inOnboardingFlow ? '100%' : '',
 }))
 
 export default IdentityVerification

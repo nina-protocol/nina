@@ -5,7 +5,7 @@ export const TOKEN_PROGRAM_ID = new anchor.web3.PublicKey(
   anchor.utils.token.TOKEN_PROGRAM_ID.toString()
 )
 
-const ASSOCIATED_TOKEN_PROGRAM_ID = new anchor.web3.PublicKey(
+export const ASSOCIATED_TOKEN_PROGRAM_ID = new anchor.web3.PublicKey(
   anchor.utils.token.ASSOCIATED_PROGRAM_ID.toString()
 )
 

@@ -7,6 +7,7 @@ import {
   swapQuoteByOutputToken,
 } from '@orca-so/whirlpools-sdk'
 import { Percentage } from '@orca-so/common-sdk'
+import axios from 'axios'
 import {
   findOrCreateAssociatedTokenAccount,
   TOKEN_PROGRAM_ID,
@@ -14,6 +15,7 @@ import {
 } from './web3'
 
 import { decodeNonEncryptedByteArray } from './encrypt'
+import { encodeBase64 } from 'tweetnacl-util'
 
 const PRIORITY_SWAP_FEE = 7500
 const WHIRLPOOL_PROGRAM_ID = new anchor.web3.PublicKey(
@@ -71,21 +73,20 @@ const releasePurchaseWithOrcaSwap = async (
     true
   )
 
-  const tx = await whirlpool.swap(inputTokenQuote)
+  const txBuilder = await whirlpool.swap(inputTokenQuote)
 
   const addPriorityFeeIx = anchor.web3.ComputeBudgetProgram.setComputeUnitPrice(
     {
       microLamports: PRIORITY_SWAP_FEE,
     }
   )
-
-  tx.prependInstruction({
+  txBuilder.prependInstruction({
     instructions: [addPriorityFeeIx],
     cleanupInstructions: [],
     signers: [],
   })
   if (instructions) {
-    tx.addInstructions(instructions)
+    txBuilder.addInstructions(instructions)
   }
   const program = await ninaClient.useProgram()
   let purchaseIx
@@ -102,13 +103,20 @@ const releasePurchaseWithOrcaSwap = async (
     )
   }
 
-  tx.addInstruction({
+  txBuilder.addInstruction({
     instructions: [purchaseIx],
     cleanupInstructions: [],
     signers: [],
   })
 
-  return await tx.buildAndExecute()
+  const tx = await txBuilder.build()
+  for await (let signer of tx.signers) {
+    tx.transaction.partialSign(signer)
+  }
+  return await provider.wallet.sendTransaction(
+    tx.transaction,
+    provider.connection
+  )
 }
 
 const releasePurchaseHelper = async (
@@ -123,15 +131,32 @@ const releasePurchaseHelper = async (
   const program = await ninaClient.useProgram()
   const release = await program.account.release.fetch(releasePubkey)
 
-  let [payerTokenAccount, payerTokenAccountIx] =
-    await findOrCreateAssociatedTokenAccount(
-      provider.connection,
-      provider.wallet.publicKey,
-      provider.wallet.publicKey,
-      anchor.web3.SystemProgram.programId,
-      anchor.web3.SYSVAR_RENT_PUBKEY,
-      release.paymentMint
+  if (release.price.toNumber() === 0) {
+    const message = new TextEncoder().encode(releasePubkey.toBase58())
+    const messageBase64 = encodeBase64(message)
+    const signature = await provider.wallet.signMessage(message)
+    const signatureBase64 = encodeBase64(signature)
+    const response = await axios.get(
+      `${
+        process.env.NINA_IDENTITY_ENDPOINT
+      }/collect/${releasePubkey.toBase58()}?message=${encodeURIComponent(
+        messageBase64
+      )}&signature=${encodeURIComponent(
+        signatureBase64
+      )}&publicKey=${encodeURIComponent(provider.wallet.publicKey.toBase58())}`
     )
+
+    return response.data.txid
+  }
+
+  let [payerTokenAccount] = await findOrCreateAssociatedTokenAccount(
+    provider.connection,
+    provider.wallet.publicKey,
+    provider.wallet.publicKey,
+    anchor.web3.SystemProgram.programId,
+    anchor.web3.SYSVAR_RENT_PUBKEY,
+    release.paymentMint
+  )
 
   let [receiverReleaseTokenAccount, receiverReleaseTokenAccountIx] =
     await findOrCreateAssociatedTokenAccount(
@@ -202,14 +227,6 @@ const releasePurchaseHelper = async (
   }
 
   const instructions = []
-  if (payerTokenAccountIx) {
-    instructions.push({
-      instructions: [payerTokenAccountIx],
-      cleanupInstructions: [],
-      signers: [],
-    })
-  }
-
   if (receiverReleaseTokenAccountIx) {
     instructions.push({
       instructions: [receiverReleaseTokenAccountIx],
@@ -266,13 +283,26 @@ const releasePurchaseHelper = async (
     }
 
     if (hub) {
-      return await program.rpc.releasePurchaseViaHub(
+      const tx = await program.transaction.releasePurchaseViaHub(
         release.price,
         decodeNonEncryptedByteArray(hub.handle),
         request
       )
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      return await provider.wallet.sendTransaction(tx, provider.connection)
     } else {
-      return await program.rpc.releasePurchase(release.price, request)
+      const tx = await program.transaction.releasePurchase(
+        release.price,
+        request
+      )
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      return await provider.wallet.sendTransaction(tx, provider.connection)
     }
   }
 }

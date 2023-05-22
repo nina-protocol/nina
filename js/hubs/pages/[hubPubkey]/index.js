@@ -3,7 +3,7 @@ import Hub from '../../components/Hub'
 import NotFound from '../../components/NotFound'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
-import Dots from '../../components/Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 
 const HubPage = (props) => {
   const { hub, loading, hubPubkey } = props
@@ -59,8 +59,6 @@ const HubPage = (props) => {
   )
 }
 
-export default HubPage
-
 export const getStaticPaths = async () => {
   await initSdkIfNeeded(true)
   const paths = []
@@ -102,3 +100,4 @@ export const getStaticProps = async (context) => {
     },
   }
 }
+export default HubPage

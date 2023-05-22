@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import Wallet from '../contexts/Wallet'
 import { styled } from '@mui/material/styles'
 import Paper from '@mui/material/Paper'
 import Modal from '@mui/material/Modal'
@@ -20,7 +21,6 @@ import IconButton from '@mui/material/IconButton'
 
 import GateCreateModal from './GateCreateModal'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 
@@ -32,7 +32,7 @@ const GateManageModal = ({
   unlockGate,
 }) => {
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [, setFile] = useState(undefined)
   const [open, setOpen] = useState(false)
   const [inProgress, setInProgress] = useState(false)
@@ -205,9 +205,20 @@ const GateManageModal = ({
                         <ListItemButton disableGutters>
                           <ListItemText
                             primary={
-                              <StyledTypography>
-                                {gate.fileName} ({`${fileSize} mb`})
-                              </StyledTypography>
+                              <>
+                                <StyledTypography
+                                  sx={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                  }}
+                                >
+                                  {gate.fileName}
+                                </StyledTypography>
+                                <StyledTypography>
+                                  ({`${fileSize} mb`})
+                                </StyledTypography>
+                              </>
                             }
                           />
                         </ListItemButton>
@@ -241,7 +252,7 @@ const StyledModal = styled(Modal)(() => ({
 }))
 
 const GateWrapper = styled(Box)(() => ({
-  maxHeight: '400px',
+  maxHeight: '325px',
   overflowY: 'auto',
 }))
 

@@ -2,7 +2,9 @@ import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+import {
+  imageManager,
+} from '@nina-protocol/nina-internal-sdk/src/utils'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -11,7 +13,8 @@ import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutli
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from 'next/image'
 import DownloadIcon from '@mui/icons-material/Download'
-import AddToHubModal from './AddToHubModal.js'
+import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
+import AddToHubModal from '@nina-protocol/nina-internal-sdk/esm/AddToHubModal'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
 import { downloadManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Link from 'next/link'
@@ -53,6 +56,7 @@ const ReleaseCard = (props) => {
     }
     return metadata.properties.title
   }, [metadata.properties.title])
+
 
   return (
     <StyledReleaseCard>
@@ -209,6 +213,10 @@ const CtaWrapper = styled(Box)(() => ({
   '& .MuiButton-root:not(:last-child)': {
     width: '21px',
     marginRight: '10px',
+  },
+  '& .MuiButton-root:not(:nth-last-child(3))': {
+    width: '21px',
+    marginRight: '8px',
   },
   svg: {
     color: 'white',

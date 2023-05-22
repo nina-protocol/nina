@@ -4,3 +4,7 @@ export const truncateAddress = (address) => {
     address.length
   )}`
 }
+
+export const truncateString = (string) => {
+  return `${string.slice(0, 20)}...`
+}

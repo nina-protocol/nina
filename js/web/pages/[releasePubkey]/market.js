@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic'
 import Release from '../../components/Release'
 import NinaSdk from '@nina-protocol/js-sdk'
 import { initSdkIfNeeded } from '@nina-protocol/nina-internal-sdk/src/utils/sdkInit'
-import Dots from '../../components/Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 const NotFound = dynamic(() => import('../../components/NotFound'))
 
 const ReleaseMarketPage = (props) => {

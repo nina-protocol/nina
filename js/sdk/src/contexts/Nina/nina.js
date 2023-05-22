@@ -2,15 +2,17 @@ import React, { createContext, useState, useEffect, useMemo } from 'react'
 import * as anchor from '@project-serum/anchor'
 import NinaSdk from '@nina-protocol/js-sdk'
 import axios from 'axios'
+import { getAccount } from '@solana/spl-token'
 import {
   findOrCreateAssociatedTokenAccount,
   TOKEN_PROGRAM_ID,
 } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
 import { logEvent } from '../../utils/event'
-import { truncateAddress } from '../../utils/truncateAddress'
+import { truncateAddress } from '../../utils/truncateManager'
 import Airtable from 'airtable'
 import { getConfirmTransaction } from '../../utils'
+import { encodeBase64 } from 'tweetnacl-util'
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -112,10 +114,13 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     shouldRemainInCollectionAfterSale,
     getAmountHeld,
     getUserBalances,
+    getSolBalanceForPublicKey,
     getNpcAmountHeld,
+    getUsdcBalanceForPublicKey,
     bundlrFund,
     bundlrWithdraw,
     getBundlrBalance,
+    getBundlrBalanceForPublicKey,
     getBundlrPricePerMb,
     getSolPrice,
     bundlrUpload,
@@ -130,6 +135,9 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     filterSubscriptionsForHub,
     submitEmailRequest,
     getUsdcToSolSwapData,
+    subscriptionSubscribeDelegated,
+    subscriptionUnsubscribeDelegated,
+    sendUsdc,
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -182,14 +190,17 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         shouldRemainInCollectionAfterSale,
         getAmountHeld,
         getUserBalances,
+        getSolBalanceForPublicKey,
         usdcBalance,
         getNpcAmountHeld,
+        getUsdcBalanceForPublicKey,
         npcAmountHeld,
         healthOk,
         ninaClient,
         bundlrFund,
         bundlrWithdraw,
         getBundlrBalance,
+        getBundlrBalanceForPublicKey,
         bundlrBalance,
         getBundlrPricePerMb,
         bundlrPricePerMb,
@@ -223,6 +234,9 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         getUsdcToSolSwapData,
         MAX_AUDIO_FILE_UPLOAD_SIZE,
         MAX_IMAGE_FILE_UPLOAD_SIZE,
+        subscriptionSubscribeDelegated,
+        subscriptionUnsubscribeDelegated,
+        sendUsdc,
       }}
     >
       {children}
@@ -282,6 +296,7 @@ const ninaContextHelper = ({
 
       const request = {
         accounts: {
+          payer: provider.wallet.publicKey,
           from: provider.wallet.publicKey,
           subscription,
           to: subscribeToAccount,
@@ -289,12 +304,24 @@ const ninaContextHelper = ({
         },
       }
 
-      let txid
+      let tx
       if (hubHandle) {
-        txid = await program.rpc.subscriptionSubscribeHub(hubHandle, request)
+        tx = await program.transaction.subscriptionSubscribeHub(
+          hubHandle,
+          request
+        )
       } else {
-        txid = await program.rpc.subscriptionSubscribeAccount(request)
+        tx = await program.transaction.subscriptionSubscribeAccount(request)
       }
+
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
 
       await getConfirmTransaction(txid, provider.connection)
       await getSubscription(subscription.toBase58())
@@ -340,14 +367,24 @@ const ninaContextHelper = ({
         ],
         program.programId
       )
-      const txid = await program.rpc.subscriptionUnsubscribe({
+      const tx = await program.transaction.subscriptionUnsubscribe({
         accounts: {
+          payer: provider.wallet.publicKey,
           from: provider.wallet.publicKey,
           subscription,
           to: unsubscribeAccount,
           systemProgram: anchor.web3.SystemProgram.programId,
         },
       })
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
+
       await getConfirmTransaction(txid, provider.connection)
       await getSubscription(subscription.toBase58(), txid)
       if (hubHandle) {
@@ -357,6 +394,80 @@ const ninaContextHelper = ({
       }
       removeSubScriptionFromState(subscription.toBase58())
 
+      return {
+        success: true,
+        msg: 'Successfully Unfollowed',
+      }
+    } catch (error) {
+      console.warn(error)
+      return ninaErrorHandler(error)
+    }
+  }
+
+  const subscriptionSubscribeDelegated = async (to, type, hubHandle) => {
+    try {
+      const message = new TextEncoder().encode(
+        provider.wallet.publicKey.toBase58()
+      )
+      const messageBase64 = encodeBase64(message)
+      const signature = await provider.wallet.signMessage(message)
+      const signatureBase64 = encodeBase64(signature)
+
+      const params = {
+        to,
+        signature: signatureBase64,
+        message: messageBase64,
+        publicKey: provider.wallet.publicKey.toBase58(),
+        type,
+      }
+      if (hubHandle) {
+        params.hubHandle = hubHandle
+      }
+      const request = await axios.post(
+        `${process.env.NINA_IDENTITY_ENDPOINT}/follow`,
+        params
+      )
+      if (request.data.status === 'success') {
+        await getConfirmTransaction(request.data.txid, provider.connection)
+        await getSubscription(request.data.subscription)
+      }
+      return {
+        success: true,
+        msg: 'Now Following',
+      }
+    } catch (error) {
+      console.warn(error)
+      return ninaErrorHandler(error)
+    }
+  }
+
+  const subscriptionUnsubscribeDelegated = async (to, hubHandle) => {
+    try {
+      const message = new TextEncoder().encode(
+        provider.wallet.publicKey.toBase58()
+      )
+      const messageBase64 = encodeBase64(message)
+      const signature = await provider.wallet.signMessage(message)
+      const signatureBase64 = encodeBase64(signature)
+
+      const request = await axios.post(
+        `${process.env.NINA_IDENTITY_ENDPOINT}/unfollow`,
+        {
+          to,
+          signature: signatureBase64,
+          message: messageBase64,
+          publicKey: provider.wallet.publicKey.toBase58(),
+        }
+      )
+
+      if (request.data.status === 'success') {
+        if (hubHandle) {
+          await getSubscriptionsForHub(hubHandle)
+        } else {
+          await getSubscriptionsForUser(provider.wallet.publicKey.toBase58())
+        }
+        removeSubScriptionFromState(request.data.subscription)
+      }
       return {
         success: true,
         msg: 'Successfully Unfollowed',
@@ -583,6 +694,7 @@ const ninaContextHelper = ({
   }
 
   const getAmountHeld = async (releaseMint) => {
+    let amount = 0
     if (provider.wallet?.connected) {
       let tokenAccounts =
         await provider.connection.getParsedTokenAccountsByOwner(
@@ -592,11 +704,11 @@ const ninaContextHelper = ({
       tokenAccounts.value.forEach((value) => {
         const account = value.account.data.parsed.info
         if (account.mint === releaseMint) {
-          return account.tokenAmount.uiAmount
+          amount = account.tokenAmount.uiAmount
         }
       })
     }
-    return 0
+    return amount
   }
   const getSolBalance = async () => {
     let solUsdcBalanceResult = await provider.connection.getBalance(
@@ -611,18 +723,28 @@ const ninaContextHelper = ({
     return solUsdcBalanceResult
   }
 
+  const getSolBalanceForPublicKey = async (publicKey) => {
+    let solUsdcBalanceResult = await provider.connection.getBalance(
+      new anchor.web3.PublicKey(publicKey)
+    )
+    return solUsdcBalanceResult
+  }
+
   const getUserBalances = async () => {
+    let usdc = 0
+    let solBalanceResult = 0
     if (provider.wallet?.connected && provider.wallet?.publicKey) {
       try {
         const solPrice = await axios.get(
           `https://price.jup.ag/v4/price?ids=SOL`
         )
-        const solUsdcBalanceResult = await getSolBalance()
+        solBalanceResult = await getSolBalance()
         setSolUsdcBalance(
-          (
-            ninaClient.nativeToUi(solUsdcBalanceResult, ids.mints.wsol) *
-            solPrice.data.data.SOL.price
-          ).toFixed(2)
+          Math.floor(
+            ninaClient.nativeToUi(solBalanceResult, ids.mints.wsol) *
+              solPrice.data.data.SOL.price *
+              100
+          ) / 100
         )
         let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
           provider.connection,
@@ -637,7 +759,8 @@ const ninaContextHelper = ({
             await provider.connection.getTokenAccountBalance(
               usdcTokenAccountPubkey
             )
-          setUsdcBalance(usdcTokenAccount.value.uiAmount.toFixed(2))
+          usdc = Math.floor(usdcTokenAccount.value.uiAmount * 100) / 100
+          setUsdcBalance(usdc)
           return
         } else {
           setUsdcBalance(0)
@@ -649,6 +772,41 @@ const ninaContextHelper = ({
       setUsdcBalance(0)
       setSolUsdcBalance(0)
     }
+    return {
+      usdc,
+      sol: ninaClient.nativeToUi(solBalanceResult, ids.mints.wsol),
+    }
+  }
+
+  const getUsdcBalanceForPublicKey = async (publicKey) => {
+    let usdc = 0
+    if (publicKey) {
+      try {
+        let [usdcTokenAccountPubkey] = await findOrCreateAssociatedTokenAccount(
+          provider.connection,
+          new anchor.web3.PublicKey(publicKey),
+          new anchor.web3.PublicKey(publicKey),
+          anchor.web3.SystemProgram.programId,
+          anchor.web3.SYSVAR_RENT_PUBKEY,
+          new anchor.web3.PublicKey(ids.mints.usdc)
+        )
+        if (usdcTokenAccountPubkey) {
+          let usdcTokenAccount =
+            await provider.connection.getTokenAccountBalance(
+              usdcTokenAccountPubkey
+            )
+          usdc = usdcTokenAccount.value.uiAmount.toFixed(2)
+          return usdc
+        } else {
+          return 0
+        }
+      } catch (error) {
+        console.warn('error getting usdc balance')
+      }
+    } else {
+      return 0
+    }
+    return usdc
   }
 
   const getNpcAmountHeld = async () => {
@@ -681,13 +839,6 @@ const ninaContextHelper = ({
         })
 
         const value = uiToNative(fundAmount, ids.mints.wsol)
-        if (
-          value -
-            2 * NinaProgramActionCost[NinaProgramAction.RELEASE_INIT_VIA_HUB] >
-          solBalance
-        ) {
-          throw 'Insufficient SOL balance - please deposit a smaller amount or top up your Solana balance'
-        }
         if (!value) return
         await bundlr.fund(value)
         await getBundlrBalance()
@@ -763,6 +914,15 @@ const ninaContextHelper = ({
     }
   }
 
+  const getBundlrBalanceForPublicKey = async (publicKey) => {
+    try {
+      const bundlrBalanceRequest = await bundlr?.getBalance(publicKey)
+      return bundlrBalanceRequest
+    } catch (error) {
+      console.warn('Unable to get Bundlr Balance: ', error)
+    }
+  }
+
   const getBundlrPricePerMb = async (bundlrInstance) => {
     try {
       if (!bundlrInstance) {
@@ -819,14 +979,14 @@ const ninaContextHelper = ({
             })
             await tx.sign()
             txId = (await uploader.uploadTransaction(tx)).data.id
+            getBundlrBalance()
+            logEvent(`bundlr_upload_success`, 'engagement', {
+              wallet: provider.wallet.publicKey.toBase58(),
+            })
+            resolve(txId)
           } catch (error) {
-            ninaErrorHandler(error)
+            reject(ninaErrorHandler(error))
           }
-          getBundlrBalance()
-          logEvent(`bundlr_upload_success`, 'engagement', {
-            wallet: provider.wallet.publicKey.toBase58(),
-          })
-          resolve(txId)
         }
         reader.onerror = (error) => {
           reject(error)
@@ -848,7 +1008,7 @@ const ninaContextHelper = ({
         const bundlrInstance = new module.WebBundlr(
           bundlrHttpAddress,
           'solana',
-          provider.wallet.wallet.adapter,
+          provider.wallet,
           {
             providerUrl: process.env.SOLANA_CLUSTER_URL_BUNDLR,
             timeout: 1000000000000000,
@@ -864,6 +1024,111 @@ const ninaContextHelper = ({
       return
     }
   }
+
+  const sendUsdc = async (amount, destination) => {
+    try {
+      const destinationInfo = await provider.connection.getAccountInfo(
+        new anchor.web3.PublicKey(destination)
+      )
+
+      let isSystemAccount = false
+      let isUsdcTokenAccount = false
+      let toUsdcTokenAccount = null
+      let toUsdcTokenAccountIx = null
+
+      if (
+        destinationInfo.owner.toBase58() ===
+        anchor.web3.SystemProgram.programId.toBase58()
+      ) {
+        isSystemAccount = true
+      }
+
+      if (!isSystemAccount) {
+        if (destinationInfo.owner.toBase58() === TOKEN_PROGRAM_ID.toBase58()) {
+          const tokenAccount = await getAccount(
+            provider.connection,
+            new anchor.web3.PublicKey(destination)
+          )
+          if (tokenAccount.mint.toBase58() === ids.mints.usdc) {
+            isUsdcTokenAccount = true
+          }
+        }
+      }
+
+      if (!isSystemAccount && !isUsdcTokenAccount) {
+        throw new Error(
+          'Destination is not a valid Solana address or USDC account'
+        )
+      }
+
+      let [fromUsdcTokenAccount, fromUsdcTokenAccountIx] =
+        await findOrCreateAssociatedTokenAccount(
+          provider.connection,
+          provider.wallet.publicKey,
+          provider.wallet.publicKey,
+          anchor.web3.SystemProgram.programId,
+          anchor.web3.SYSVAR_RENT_PUBKEY,
+          new anchor.web3.PublicKey(ids.mints.usdc)
+        )
+
+      isSystemAccount
+        ? ([toUsdcTokenAccount, toUsdcTokenAccountIx] =
+            await findOrCreateAssociatedTokenAccount(
+              provider.connection,
+              provider.wallet.publicKey,
+              new anchor.web3.PublicKey(destination),
+              anchor.web3.SystemProgram.programId,
+              anchor.web3.SYSVAR_RENT_PUBKEY,
+              new anchor.web3.PublicKey(ids.mints.usdc)
+            ))
+        : (toUsdcTokenAccount = new anchor.web3.PublicKey(destination))
+
+      const program = anchor.Spl.token({
+        provider,
+      })
+
+      const instructions = []
+
+      if (fromUsdcTokenAccountIx) {
+        instructions.push(fromUsdcTokenAccountIx)
+      }
+
+      if (toUsdcTokenAccountIx) {
+        instructions.push(toUsdcTokenAccountIx)
+      }
+
+      const tx = await program.methods
+        .transfer(new anchor.BN(ninaClient.uiToNative(amount, ids.mints.usdc)))
+        .accounts({
+          source: fromUsdcTokenAccount,
+          destination: toUsdcTokenAccount,
+          authority: provider.wallet.publicKey,
+        })
+        .preInstructions(instructions)
+        .transaction()
+
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
+
+      await getConfirmTransaction(txid, provider.connection)
+      await getUserBalances()
+      return {
+        success: true,
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: ninaErrorHandler(error),
+      }
+    }
+  }
+
   const checkIfHasBalanceToCompleteAction = async (action) => {
     const solUsdcBalanceResult = await getSolBalance()
     if (
@@ -1053,36 +1318,22 @@ const ninaContextHelper = ({
     wallet,
     type,
   }) => {
-    try {
-      var base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
-        'appm1DgEVpMWUjeJ8'
-      )
-      base('Requests').create(
-        [
-          {
-            fields: {
-              email,
-              soundcloud,
-              twitter,
-              instagram,
-              wallet,
-              type,
-            },
-          },
-        ],
-        function (err, records) {
-          if (err) {
-            console.error(err)
-            return
-          }
-          records.forEach(function (record) {
-            console.warn('Email request submitted: ', record.getId())
-          })
-        }
-      )
-    } catch (error) {
-      console.warn('email request error: ', error)
-    }
+    const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
+      'appm1DgEVpMWUjeJ8'
+    )
+
+    return await base('Requests').create([
+      {
+        fields: {
+          email,
+          soundcloud,
+          twitter,
+          instagram,
+          wallet,
+          type,
+        },
+      },
+    ])
   }
 
   return {
@@ -1095,10 +1346,13 @@ const ninaContextHelper = ({
     shouldRemainInCollectionAfterSale,
     getAmountHeld,
     getUserBalances,
+    getSolBalanceForPublicKey,
     getNpcAmountHeld,
+    getUsdcBalanceForPublicKey,
     bundlrFund,
     bundlrWithdraw,
     getBundlrBalance,
+    getBundlrBalanceForPublicKey,
     getBundlrPricePerMb,
     getSolPrice,
     bundlrUpload,
@@ -1114,6 +1368,9 @@ const ninaContextHelper = ({
     filterSubscriptionsForHub,
     submitEmailRequest,
     getUsdcToSolSwapData,
+    subscriptionSubscribeDelegated,
+    subscriptionUnsubscribeDelegated,
+    sendUsdc,
   }
 }
 

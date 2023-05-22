@@ -5,12 +5,10 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { timeSince } from '../utils'
 import { Button } from '@mui/material'
-import useTheme from '@mui/material/styles/useTheme'
 
 const PendingReleasesIndicator = ({ inHubs }) => {
   const { pendingReleases, removePendingRelease } = useContext(Release.Context)
   const [pendingReleasesOpen, setPendingReleasesOpen] = useState(true)
-  const theme = useTheme()
 
   return (
     <PendingReleaseContainer inHubs={inHubs}>
@@ -32,11 +30,7 @@ const PendingReleasesIndicator = ({ inHubs }) => {
                   onClick={() => setPendingReleasesOpen(!pendingReleasesOpen)}
                   style={{
                     textDecoration: 'underline',
-                    color: `${
-                      status === 'success'
-                        ? theme.palette.darkGreen
-                        : theme.palette.red
-                    }`,
+                    color: `${status === 'success' ? '#023020' : '#FF0000'}`,
                   }}
                 >
                   <Typography

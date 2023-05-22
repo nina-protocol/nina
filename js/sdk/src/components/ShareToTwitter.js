@@ -1,6 +1,7 @@
 import React from 'react'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
+import { styled } from '@mui/material/styles'
 
 const ShareToTwitter = (props) => {
   const { artist, title, releasePubkey } = props
@@ -9,7 +10,7 @@ const ShareToTwitter = (props) => {
       variant="outlined"
       onClick={() =>
         window.open(
-          `https://twitter.com/intent/tweet?text=${`${artist} - "${title}" on Nina`}&url=ninaprotocol.com/${releasePubkey}`,
+          `https://twitter.com/intent/tweet?text=${`${artist} - "${title}" on @ninaprotocol`}&url=ninaprotocol.com/${releasePubkey}`,
           null,
           'status=no,location=no,toolbar=no,menubar=no,height=500,width=500'
         )
@@ -22,11 +23,15 @@ const ShareToTwitter = (props) => {
         },
       }}
     >
-      <Typography variant="body2" align="left">
+      <StyledTypography variant="body2" align="left">
         Share To Twitter
-      </Typography>
+      </StyledTypography>
     </Button>
   )
 }
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.black,
+}))
 
 export default ShareToTwitter

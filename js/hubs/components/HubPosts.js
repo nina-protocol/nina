@@ -1,22 +1,22 @@
 import React, { useMemo, useContext, useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import AddIcon from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { useSnackbar } from 'notistack'
-import HubPostCreate from './HubPostCreate'
+import HubPostCreate from '@nina-protocol/nina-internal-sdk/esm/HubPostCreate'
 import {
   DashboardWrapper,
   DashboardContent,
   DashboardHeader,
   DashboardEntry,
 } from '../styles/theme/lightThemeOptions.js'
-
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const { hubContentToggleVisibility, hubContentState, hubState } = useContext(
     Hub.Context
   )
@@ -24,6 +24,8 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
 
   const hubData = useMemo(() => hubState[hubPubkey], [hubState])
   const { enqueueSnackbar } = useSnackbar()
+  const [pendingPostPubkey, setPendingPostPubkey] = useState()
+
   const hubPosts = useMemo(
     () =>
       Object.values(hubContentState)
@@ -69,6 +71,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
   }
 
   const handleTogglePost = async (hubPubkey, postPubkey) => {
+    setPendingPostPubkey(postPubkey)
     const result = await hubContentToggleVisibility(
       hubPubkey,
       postPubkey,
@@ -77,8 +80,8 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
     enqueueSnackbar(result.msg, {
       variant: result.success ? 'info' : 'failure',
     })
+    setPendingPostPubkey()
   }
-
   return (
     <>
       <DashboardWrapper
@@ -93,6 +96,7 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
             hubPubkey={hubPubkey}
             selectedHubId={hubPubkey}
             hubReleasesToReference={hubReleases}
+            inHubDashboard={true}
           />
         </DashboardContent>
         <DashboardContent item md={6}>
@@ -114,21 +118,26 @@ const HubPosts = ({ hubPubkey, isAuthority, canAddContent }) => {
                       >
                         <a>{postContent.data.title}</a>
                       </Link>
-                      {canTogglePost(hubPost) && hubPostsShowArchived && (
-                        <AddIcon
-                          onClick={() =>
-                            handleTogglePost(hubPubkey, hubPost.post)
-                          }
-                        ></AddIcon>
-                      )}
+                      {canTogglePost(hubPost) &&
+                        hubPostsShowArchived &&
+                        pendingPostPubkey !== hubPost.post && (
+                          <AddIcon
+                            onClick={() =>
+                              handleTogglePost(hubPubkey, hubPost.post)
+                            }
+                          ></AddIcon>
+                        )}
 
-                      {canTogglePost(hubPost) && !hubPostsShowArchived && (
-                        <CloseIcon
-                          onClick={() =>
-                            handleTogglePost(hubPubkey, hubPost.post)
-                          }
-                        ></CloseIcon>
-                      )}
+                      {canTogglePost(hubPost) &&
+                        !hubPostsShowArchived &&
+                        pendingPostPubkey !== hubPost.post && (
+                          <CloseIcon
+                            onClick={() =>
+                              handleTogglePost(hubPubkey, hubPost.post)
+                            }
+                          ></CloseIcon>
+                        )}
+                      {pendingPostPubkey === hubPost.post && <Dots />}
                     </DashboardEntry>
                   )
                 })}

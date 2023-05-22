@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
-import { useWallet } from '@solana/wallet-adapter-react'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
@@ -17,36 +16,23 @@ import {
   faInstagramSquare,
   faDiscord,
 } from '@fortawesome/free-brands-svg-icons'
-
 import CloseIcon from '@mui/icons-material/Close'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 
 const linksConnected = [
   'home',
   'dashboard',
+  'feed',
   'all Releases',
   'hubs',
-
   'faq',
   'dev',
-  'radio',
-  'nina night',
-  'the soft lp',
 ]
 
-const linksNotConnected = [
-  'home',
-  'all Releases',
-  'hubs',
-
-  'faq',
-  'dev',
-  'radio',
-  'nina night',
-  'the soft lp',
-]
+const linksNotConnected = ['home', 'all Releases', 'hubs', 'faq', 'dev']
 
 const NavDrawer = () => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [links, setLinks] = useState(linksNotConnected)
 
@@ -93,7 +79,7 @@ const NavDrawer = () => {
                       className={`${classes.drawerLink}`}
                       passHref
                     >
-                      Nina Dev
+                      For Developers
                     </a>
                   </StyledListItemText>
                 </ListItem>
@@ -135,7 +121,7 @@ const NavDrawer = () => {
                 <ListItem button key={link}>
                   <StyledListItemText>
                     <a
-                      href="https://nina-protocol.notion.site/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612"
+                      href="https://help.ninaprotocol.com"
                       target="_blank"
                       rel="noreferrer"
                       className={`${classes.drawerLink}`}
@@ -207,10 +193,7 @@ const NavDrawer = () => {
                     passHref
                   >
                     <a>
-                      <StyledListItemText
-                        disablePadding
-                        primary={'Create Hub'}
-                      />
+                      <StyledListItemText disablePadding primary={'Create'} />
                     </a>
                   </Link>
                 </ListItem>

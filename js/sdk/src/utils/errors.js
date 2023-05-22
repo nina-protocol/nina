@@ -34,6 +34,8 @@ export const ninaErrorHandler = (error, errorString) => {
     msg = 'Transaction failed: please disconnect and reconnect your wallet.'
   } else if (error.msg) {
     msg = `Transaction failed: ${error.msg}`
+  } else if (error.response?.data.error) {
+    msg = error.response?.data.error
   } else if (errorString) {
     msg = errorString
   }

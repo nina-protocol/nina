@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles'
 
 const DevnetIndicator = () => {
   if (process.env.SOLANA_CLUSTER === 'devnet') {
-    return <DevnetIndicatorStyled>[DEVNET]</DevnetIndicatorStyled>
+    return <DevnetIndicatorStyled>[DEVNET-56]</DevnetIndicatorStyled>
   } else {
     return null
   }

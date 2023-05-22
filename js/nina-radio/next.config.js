@@ -22,6 +22,7 @@ module.exports = withTM({
       crypto: false,
       stream: false,
       https: false,
+      http: false,
     };
     config.resolve.alias = {
       ...config.resolve.alias,

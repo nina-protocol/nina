@@ -4,18 +4,28 @@ import { styled } from '@mui/material/styles'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import Typography from '@mui/material/Typography'
 import { useRouter } from 'next/router'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 
+const NoSolWarning = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/NoSolWarning')
+)
+const RedeemReleaseCode = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/RedeemReleaseCode')
+)
 const HubsModal = dynamic(() => import('./HubsModal'))
+
+const WalletConnectModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
+)
 
 import dynamic from 'next/dynamic'
 
@@ -31,12 +41,13 @@ const ReleasePurchase = (props) => {
     amountHeld,
   } = props
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
+  const { wallet, pendingTransactionMessage } = useContext(Wallet.Context)
   const {
     releasePurchaseViaHub,
     releasePurchasePending,
     releasePurchaseTransactionPending,
     releaseState,
+    gatesState,
   } = useContext(Release.Context)
   const { hubState } = useContext(Hub.Context)
   const {
@@ -44,11 +55,15 @@ const ReleasePurchase = (props) => {
     usdcBalance,
     ninaClient,
     checkIfHasBalanceToCompleteAction,
+    solBalance,
     NinaProgramAction,
+    getUserBalances,
   } = useContext(Nina.Context)
   const [release, setRelease] = useState(undefined)
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [publishedHub, setPublishedHub] = useState()
+  const [showNoSolModal, setShowNoSolModal] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
 
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
@@ -59,11 +74,20 @@ const ReleasePurchase = (props) => {
     [releasePubkey, releasePurchasePending]
   )
 
+  useEffect(() => {
+    getUserBalances()
+  }, [])
+
   const isAuthority = useMemo(() => {
     if (wallet.connected) {
       return release?.authority === wallet?.publicKey.toBase58()
     }
   }, [release, wallet.connected])
+
+  const releaseGates = useMemo(
+    () => gatesState[releasePubkey],
+    [gatesState, releasePubkey]
+  )
 
   useEffect(() => {
     if (releaseState.tokenData[releasePubkey]) {
@@ -93,13 +117,16 @@ const ReleasePurchase = (props) => {
     e.preventDefault()
 
     if (!wallet?.connected) {
-      enqueueSnackbar('Please connect your wallet to purchase', {
-        variant: 'error',
-      })
+      setShowWalletModal(true)
       logEvent('release_purchase_failure_not_connected', 'engagement', {
         publicKey: releasePubkey,
         hub: hubPubkey,
       })
+      return
+    }
+
+    if (solBalance === 0) {
+      setShowNoSolModal(true)
       return
     }
 
@@ -168,6 +195,19 @@ const ReleasePurchase = (props) => {
 
   return (
     <ReleasePurchaseWrapper mt={1}>
+      <NoSolWarning
+        action="purchase"
+        open={showNoSolModal}
+        setOpen={setShowNoSolModal}
+      />
+
+      <WalletConnectModal
+        inOnboardingFlow={false}
+        forceOpen={showWalletModal}
+        setForceOpen={setShowWalletModal}
+        action={release.price > 0 ? 'purchase' : 'collect'}
+      />
+
       <AmountRemaining variant="body2" align="left">
         {release.editionType === 'open' ? (
           <Typography variant="body2" align="left">
@@ -202,11 +242,10 @@ const ReleasePurchase = (props) => {
         </Typography>
       )}
       <HubsModal releasePubkey={releasePubkey} metadata={metadata} />
-      <Box display="flex" flexDirection="row" justifyContent="space-between">
+      <Box display="flex" flexDirection="column" justifyContent="space-between">
         <Box
           sx={{
             width: '50%',
-            paddingRight: '4px',
           }}
         >
           <BuyButton
@@ -221,16 +260,19 @@ const ReleasePurchase = (props) => {
               variant="body2"
               align="left"
             >
-              {txPending && <Dots msg="Preparing transaction" />}
-              {!txPending && pending && <Dots msg="Awaiting wallet approval" />}
-              {!txPending && !pending && buttonText}
+              {(txPending || pending) && (
+                <Dots msg={pendingTransactionMessage} />
+              )}
+              {!txPending && !pending && (
+                <Typography variant="body2">{buttonText}</Typography>
+              )}
             </BuyButtonTypography>
           </BuyButton>
         </Box>
         <Box
           sx={{
             width: '50%',
-            paddingLeft: '4px',
+            marginTop: '10px',
           }}
         >
           <Gates
@@ -242,6 +284,24 @@ const ReleasePurchase = (props) => {
             inSettings={false}
             inHubs={true}
           />
+          <Box sx={{ paddingTop: '8px' }}>
+            {amountHeld === 0 && release.remainingSupply !== 0 && (
+              <>
+                {releaseGates?.length > 0 && (
+                  <StyledTypographyButtonSub>
+                    {`There ${releaseGates?.length > 1 ? 'are' : 'is'} ${
+                      releaseGates?.length
+                    } ${
+                      releaseGates?.length > 1 ? 'files' : 'file'
+                    } available for download exclusively to owners of this release.`}
+                  </StyledTypographyButtonSub>
+                )}
+                {release.price > 0 && (
+                  <RedeemReleaseCode releasePubkey={releasePubkey} />
+                )}
+              </>
+            )}
+          </Box>
         </Box>
       </Box>
     </ReleasePurchaseWrapper>
@@ -274,6 +334,11 @@ const AmountRemaining = styled(Typography)(({ theme }) => ({
   '& span': {
     color: theme.palette.text.primary,
   },
+}))
+const StyledTypographyButtonSub = styled(Typography)(({ theme }) => ({
+  color: theme.palette.grey[500],
+  textAlign: 'center',
+  fontSize: '12px',
 }))
 
 const StyledUserAmount = styled(Box)(({ theme }) => ({
