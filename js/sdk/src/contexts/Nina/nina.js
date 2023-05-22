@@ -271,7 +271,6 @@ const ninaContextHelper = ({
 
   const subscriptionSubscribe = async (subscribeToAccount, hubHandle) => {
     try {
-      console.log('second')
       logEvent(
         `subscription_subscribe_${hubHandle ? 'hub' : 'account'}_initiated`,
         'engagement',
@@ -282,8 +281,9 @@ const ninaContextHelper = ({
       )
 
       const { subscription } = await NinaSdk.Subscription.subscriptionSubscribe(
+        ninaClient,
         subscribeToAccount,
-        hubHandle,
+        hubHandle
       )
       await getSubscription(subscription.publicKey)
 
@@ -321,11 +321,9 @@ const ninaContextHelper = ({
     try {
       const { subscription } =
         await NinaSdk.Subscription.subscriptionUnsubscribe(
-          unsubscribeAccount,
-          provider.wallet,
-          provider.connection
+          ninaClient,
+          unsubscribeAccount
         )
-
       if (hubHandle) {
         await getSubscriptionsForHub(hubHandle)
       } else {
