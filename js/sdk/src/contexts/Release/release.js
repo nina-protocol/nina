@@ -352,7 +352,7 @@ const releaseContextHelper = ({
         [releasePubkey]: false,
       })
 
-      const txid = await releasePurchaseHelper(
+      const txId = await releasePurchaseHelper(
         releasePubkey,
         provider,
         ninaClient,
@@ -360,7 +360,7 @@ const releaseContextHelper = ({
         hubPubkey
       )
 
-      await getConfirmTransaction(txid, provider.connection)
+      await getConfirmTransaction(txId, provider.connection)
 
       setReleasePurchasePending({
         ...releasePurchasePending,
@@ -371,7 +371,7 @@ const releaseContextHelper = ({
       await axios.get(
         `${
           process.env.NINA_API_ENDPOINT
-        }/accounts/${provider.wallet.publicKey.toBase58()}/collected?txId=${txid}`
+        }/accounts/${provider.wallet.publicKey.toBase58()}/collected?txId=${txId}`
       )
       await getRelease(releasePubkey)
       addReleaseToCollection(releasePubkey)
