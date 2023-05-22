@@ -20,20 +20,28 @@ const Releases = ({ type }) => {
   const [listView, setListView] = useState(false)
   const [releases, setReleases] = useState([])
   const { enqueueSnackbar } = useSnackbar()
-
+  const [loaded, setLoaded] = useState(false)
   const titleString = type === 'new' ? 'New Releases' : 'Highlights'
 
   useEffect(() => {
-    getReleasesRecent()
+    console.log('calling getReleasesRecent')
+    const handleGetReleasesRecent = async () => {
+      await getReleasesRecent()
+      setLoaded(true)
+    }
+    handleGetReleasesRecent()
   }, [])
 
   useEffect(() => {
-    if (type === 'new') {
-      setReleases(filterReleasesRecent().published)
-    } else {
-      setReleases(filterReleasesRecent().highlights)
+    if (loaded) {
+      console.log('releasesRecentState', releasesRecentState)
+      if (type === 'new') {
+        setReleases(filterReleasesRecent().published)
+      } else {
+        setReleases(filterReleasesRecent().highlights)
+      }
     }
-  }, [releasesRecentState])
+  }, [releasesRecentState, loaded])
 
   const handleViewChange = () => {
     setListView(!listView)

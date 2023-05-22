@@ -16,16 +16,16 @@ import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 
 const { getImageFromCDN, loader } = imageManager
 
-const RecentlyPublished = () => {
-  const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
-    useContext(Release.Context)
-  useEffect(() => {
-    getReleasesRecent()
-  }, [])
+const RecentlyPublished = ({ releases }) => {
+  // const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
+  //   useContext(Release.Context)
+  // useEffect(() => {
+  //   getReleasesRecent()
+  // }, [])
 
-  const releases = useMemo(() => {
-    return filterReleasesRecent().highlights.slice(0, 12)
-  }, [releasesRecentState])
+  // const releases = useMemo(() => {
+  //   return filterReleasesRecent().highlights.slice(0, 12)
+  // }, [releasesRecentState])
 
   const responsiveSettings = [
     {
@@ -106,7 +106,7 @@ const RecentlyPublished = () => {
                         src={getImageFromCDN(
                           imageUrl,
                           400,
-                          new Date(release.tokenData.releaseDatetime)
+                          new Date(release.metadata.properties.date)
                         )}
                         loader={loader}
                         height={100}

@@ -29,7 +29,7 @@ const HomePage = ({ loading }) => {
   useEffect(() => {
     getSolPrice()
     if (!loading) {
-      getReleasesRecent({ limit: 12 })
+      getReleasesRecent({ limit: 12 }, false)
     }
   }, [loading])
 
