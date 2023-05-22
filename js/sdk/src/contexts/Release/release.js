@@ -584,16 +584,15 @@ const releaseContextHelper = ({
       const { release } = await NinaSdk.Release.collectRoyaltyForRelease(
         ninaClient,
         recipient,
-        releasePubkey
+        releasePubkey,
+        releaseState
       )
-      console.log('release in client:>> ', release)
-      const paymentMint = release.accountData.release.paymentMint
 
-      await getRelease(releasePubkey)
+      await getRelease(release.publicKey)
       await getUserBalances()
       return {
         success: true,
-        msg: `You collected ${nativeToUiString(recipient.owed, paymentMint)}`,
+        msg: `You collected $${nativeToUi(recipient.owed, ids.mints.usdc)}`,
       }
     } catch (error) {
       console.warn(error)
