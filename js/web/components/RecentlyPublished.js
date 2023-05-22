@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useMemo } from 'react'
+import React from 'react'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Slider from 'react-slick'
@@ -12,20 +12,10 @@ import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
-import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 
 const { getImageFromCDN, loader } = imageManager
 
 const RecentlyPublished = ({ releases }) => {
-  // const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
-  //   useContext(Release.Context)
-  // useEffect(() => {
-  //   getReleasesRecent()
-  // }, [])
-
-  // const releases = useMemo(() => {
-  //   return filterReleasesRecent().highlights.slice(0, 12)
-  // }, [releasesRecentState])
 
   const responsiveSettings = [
     {

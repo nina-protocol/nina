@@ -38,7 +38,8 @@ const Releases = ({ type }) => {
       if (type === 'new') {
         setReleases(filterReleasesRecent().published)
       } else {
-        setReleases(filterReleasesRecent().highlights)
+        console.log('filterReleasesRecent().highlights.sort((a, b) => b.metadata.properties.date - a.metadata.properties.date)', filterReleasesRecent().highlights.sort((a, b) => new Date(a.metadata.properties.date) - new Date(b.metadata.properties.date)))
+        setReleases(filterReleasesRecent().highlights.sort((a, b) => new Date(b.metadata.properties.date) - new Date(a.metadata.properties.date)))
       }
     }
   }, [releasesRecentState, loaded])
