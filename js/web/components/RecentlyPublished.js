@@ -16,7 +16,6 @@ import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 const { getImageFromCDN, loader } = imageManager
 
 const RecentlyPublished = ({ releases }) => {
-
   const responsiveSettings = [
     {
       breakpoint: 1024,

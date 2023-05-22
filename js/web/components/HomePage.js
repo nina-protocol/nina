@@ -18,8 +18,7 @@ const HomePage = ({ loading }) => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
     useContext(Release.Context)
-  const { getSolPrice } =
-    useContext(Nina.Context)
+  const { getSolPrice } = useContext(Nina.Context)
   const [releasesRecent, setReleasesRecent] = useState({})
   const [hubs, setHubs] = useState(undefined)
 

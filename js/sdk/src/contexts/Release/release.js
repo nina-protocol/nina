@@ -1227,7 +1227,10 @@ const releaseContextHelper = ({
     return updatedReleaseState
   }
 
-  const getReleasesRecent = async (params = undefined, withAccountData=true) => {
+  const getReleasesRecent = async (
+    params = undefined,
+    withAccountData = true
+  ) => {
     try {
       await initSdkIfNeeded()
       const highlightsHubPubkey =
@@ -1237,7 +1240,11 @@ const releaseContextHelper = ({
       const published = []
 
       let highlights = (
-        await NinaSdk.Hub.fetchReleases(highlightsHubPubkey, withAccountData, params)
+        await NinaSdk.Hub.fetchReleases(
+          highlightsHubPubkey,
+          withAccountData,
+          params
+        )
       ).releases
 
       const allReleases = [...published, ...highlights]
@@ -1254,9 +1261,7 @@ const releaseContextHelper = ({
       }))
 
       highlights = highlights.sort(
-        (a, b) =>
-          b.metadata.properties.date -
-          a.metadata.properties.date
+        (a, b) => b.metadata.properties.date - a.metadata.properties.date
       )
       setReleasesRecentState({
         published: published.map((release) => release.publicKey),

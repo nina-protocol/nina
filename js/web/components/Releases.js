@@ -24,7 +24,6 @@ const Releases = ({ type }) => {
   const titleString = type === 'new' ? 'New Releases' : 'Highlights'
 
   useEffect(() => {
-    console.log('calling getReleasesRecent')
     const handleGetReleasesRecent = async () => {
       await getReleasesRecent()
       setLoaded(true)
@@ -34,12 +33,16 @@ const Releases = ({ type }) => {
 
   useEffect(() => {
     if (loaded) {
-      console.log('releasesRecentState', releasesRecentState)
       if (type === 'new') {
         setReleases(filterReleasesRecent().published)
       } else {
-        console.log('filterReleasesRecent().highlights.sort((a, b) => b.metadata.properties.date - a.metadata.properties.date)', filterReleasesRecent().highlights.sort((a, b) => new Date(a.metadata.properties.date) - new Date(b.metadata.properties.date)))
-        setReleases(filterReleasesRecent().highlights.sort((a, b) => new Date(b.metadata.properties.date) - new Date(a.metadata.properties.date)))
+        setReleases(
+          filterReleasesRecent().highlights.sort(
+            (a, b) =>
+              new Date(b.metadata.properties.date) -
+              new Date(a.metadata.properties.date)
+          )
+        )
       }
     }
   }, [releasesRecentState, loaded])
