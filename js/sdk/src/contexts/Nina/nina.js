@@ -13,6 +13,7 @@ import { truncateAddress } from '../../utils/truncateManager'
 import Airtable from 'airtable'
 import { getConfirmTransaction } from '../../utils'
 import { encodeBase64 } from 'tweetnacl-util'
+import { initSdkIfNeeded } from '../../utils/sdkInit'
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -52,7 +53,6 @@ const NinaProgramActionCost = {
 }
 
 const MAX_AUDIO_FILE_UPLOAD_SIZE = 500
-const MAX_IMAGE_FILE_UPLOAD_SIZE = 10
 
 const NinaContext = createContext()
 const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
@@ -233,7 +233,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         solBalanceFetched,
         getUsdcToSolSwapData,
         MAX_AUDIO_FILE_UPLOAD_SIZE,
-        MAX_IMAGE_FILE_UPLOAD_SIZE,
         subscriptionSubscribeDelegated,
         subscriptionUnsubscribeDelegated,
         sendUsdc,
@@ -1178,6 +1177,7 @@ const ninaContextHelper = ({
 
   const getSubscriptionsForUser = async (accountPubkey) => {
     try {
+      await initSdkIfNeeded()
       const { subscriptions } = await NinaSdk.Account.fetchSubscriptions(
         accountPubkey,
         false
