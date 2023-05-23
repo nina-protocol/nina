@@ -13,6 +13,7 @@ import { truncateAddress } from '../../utils/truncateManager'
 import Airtable from 'airtable'
 import { getConfirmTransaction } from '../../utils'
 import { encodeBase64 } from 'tweetnacl-util'
+import { initSdkIfNeeded } from '../../utils/sdkInit'
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -1176,6 +1177,7 @@ const ninaContextHelper = ({
 
   const getSubscriptionsForUser = async (accountPubkey) => {
     try {
+      await initSdkIfNeeded()
       const { subscriptions } = await NinaSdk.Account.fetchSubscriptions(
         accountPubkey,
         false

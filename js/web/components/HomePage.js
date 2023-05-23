@@ -16,11 +16,9 @@ import HubSlider from './HubSlider'
 
 const HomePage = ({ loading }) => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
-  const { getHubs, hubState, filterFeaturedHubs } = useContext(Hub.Context)
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
     useContext(Release.Context)
-  const { solPrice, NinaProgramAction, NinaProgramActionCost, getSolPrice } =
-    useContext(Nina.Context)
+  const { getSolPrice } = useContext(Nina.Context)
   const [releasesRecent, setReleasesRecent] = useState({})
   const [hubs, setHubs] = useState(undefined)
 
@@ -29,7 +27,7 @@ const HomePage = ({ loading }) => {
   useEffect(() => {
     getSolPrice()
     if (!loading) {
-      getReleasesRecent()
+      getReleasesRecent({ limit: 12 }, false)
     }
   }, [loading])
 
