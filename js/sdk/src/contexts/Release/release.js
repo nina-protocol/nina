@@ -6,13 +6,12 @@ import promiseRetry from 'promise-retry'
 import Nina from '../Nina'
 import Wallet from '../Wallet'
 import {
-  createMintInstructions,
   findOrCreateAssociatedTokenAccount,
   TOKEN_PROGRAM_ID,
 } from '../../utils/web3'
 import axios from 'axios'
 import { ninaErrorHandler } from '../../utils/errors'
-import { encryptData, decodeNonEncryptedByteArray } from '../../utils/encrypt'
+import { encryptData } from '../../utils/encrypt'
 import releasePurchaseHelper from '../../utils/releasePurchaseHelper'
 import { logEvent } from '../../utils/event'
 import { initSdkIfNeeded } from '../../utils/sdkInit'
@@ -256,23 +255,9 @@ const releaseContextHelper = ({
   setGatesState,
   gatesState,
 }) => {
-  const {
-    provider,
-    ids,
-    nativeToUi,
-    uiToNative,
-    isSol,
-    isUsdc,
-    endpoints,
-    nativeToUiString,
-  } = ninaClient
+  const { provider, ids, nativeToUi, isSol, isUsdc, endpoints } = ninaClient
   const initializeReleaseAndMint = async (hubPubkey) => {
-    return await NinaSdk.Release.initializeReleaseAndMint(
-      hubPubkey,
-      provider.wallet,
-      provider.connection,
-      provider.program
-    )
+    return await NinaSdk.Release.initializeReleaseAndMint(ninaClient, hubPubkey)
   }
 
   const releaseInitViaHub = async ({
@@ -522,19 +507,19 @@ const releaseContextHelper = ({
         [releasePubkey]: false,
       })
 
-      const txid = await releasePurchaseHelper(
+      const txId = await releasePurchaseHelper(
         releasePubkey,
         provider,
         ninaClient,
         usdcBalance
       )
-      await getConfirmTransaction(txid, provider.connection)
+      await getConfirmTransaction(txId, provider.connection)
       await getUserBalances()
 
       await axios.get(
         `${
           process.env.NINA_API_ENDPOINT
-        }/accounts/${provider.wallet.publicKey.toBase58()}/collected?txId=${txid}`
+        }/accounts/${provider.wallet.publicKey.toBase58()}/collected?txId=${txId}`
       )
       await getRelease(releasePubkey)
       await addReleaseToCollection(releasePubkey)

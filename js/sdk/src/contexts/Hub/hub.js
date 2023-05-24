@@ -432,143 +432,49 @@ const hubContextHelper = ({
 
   const postUpdateViaHubPost = async (hubPubkey, slug, uri) => {
     try {
-      const program = await ninaClient.useProgram()
-      const hub = await program.account.hub.fetch(hubPubkey)
-      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
-
-      const [post] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-post')),
-          hubPubkey.toBuffer(),
-          Buffer.from(anchor.utils.bytes.utf8.encode(slug)),
-        ],
-        program.programId
-      )
-
-      const [hubPost] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-post')),
-          hubPubkey.toBuffer(),
-          post.toBuffer(),
-        ],
-        program.programId
-      )
-
-      const [hubCollaborator] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-collaborator')),
-          hubPubkey.toBuffer(),
-          provider.wallet.publicKey.toBuffer(),
-        ],
-        program.programId
-      )
-
-      const tx = await program.transaction.postUpdateViaHubPost(
-        hub.handle,
+      const updatedPost = await NinaSdk.Hub.postUpdateViaHub(
+        ninaClient,
+        hubPubkey,
         slug,
-        uri,
-        {
-          accounts: {
-            author: provider.wallet.publicKey,
-            hub: hubPubkey,
-            post,
-            hubPost,
-            hubCollaborator,
-          },
-        }
+        uri
       )
-      tx.recentBlockhash = (
-        await provider.connection.getRecentBlockhash()
-      ).blockhash
-      tx.feePayer = provider.wallet.publicKey
-      const txid = await provider.wallet.sendTransaction(
-        tx,
-        provider.connection
-      )
-
-      await getConfirmTransaction(txid, provider.connection)
       await getHub(hubPubkey)
 
       return {
         success: true,
-        msg: 'Post updated.',
+        msg: `Post updated. ${updatedPost.slug}`,
       }
     } catch (error) {
       return ninaErrorHandler(error)
     }
   }
 
-  const collectRoyaltyForReleaseViaHub = async (releasePubkey, hubPubkey) => {
+  const collectRoyaltyForReleaseViaHub = async (
+    releasePubkey,
+    hubPubkey,
+    slug,
+    uri
+  ) => {
     try {
-      const program = await ninaClient.useProgram()
-      releasePubkey = new anchor.web3.PublicKey(releasePubkey)
-      hubPubkey = new anchor.web3.PublicKey(hubPubkey)
+      const royaltyForRelease =
+        await NinaSdk.Hub.collectRoyaltyForReleaseViaHub(
+          ninaClient,
+          releasePubkey,
+          hubPubkey,
+          slug,
+          uri
+        )
 
-      let release = await program.account.release.fetch(releasePubkey)
-      let hub = await program.account.hub.fetch(hubPubkey)
-      const recipient = release.royaltyRecipients.find(
-        (recipient) =>
-          recipient.recipientAuthority.toBase58() === hub.hubSigner.toBase58()
-      )
+      await getHub(hubPubkey)
 
-      const [hubWallet] = await findOrCreateAssociatedTokenAccount(
-        provider.connection,
-        provider.wallet.publicKey,
-        new anchor.web3.PublicKey(hub.hubSigner),
-        anchor.web3.SystemProgram.programId,
-        anchor.web3.SYSVAR_RENT_PUBKEY,
-        release.paymentMint
-      )
-      const [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-hub-release')),
-          hubPubkey.toBuffer(),
-          releasePubkey.toBuffer(),
-        ],
-        program.programId
-      )
-
-      const request = {
-        accounts: {
-          authority: provider.wallet.publicKey,
-          royaltyTokenAccount: release.royaltyTokenAccount,
-          release: releasePubkey,
-          releaseSigner: release.releaseSigner,
-          releaseMint: release.releaseMint,
-          hub: hubPubkey,
-          hubRelease,
-          hubSigner: hub.hubSigner,
-          hubWallet,
-          tokenProgram: ids.programs.token,
-        },
-      }
-
-      const tx = await program.transaction.releaseRevenueShareCollectViaHub(
-        decodeNonEncryptedByteArray(hub.handle),
-        request
-      )
-      tx.recentBlockhash = (
-        await provider.connection.getRecentBlockhash()
-      ).blockhash
-      tx.feePayer = provider.wallet.publicKey
-
-      const txid = await provider.wallet.sendTransaction(
-        tx,
-        provider.connection
-      )
-      await getConfirmTransaction(txid, provider.connection)
-
-      getRelease(releasePubkey.toBase58())
-      getHub(hubPubkey.toBase58())
       return {
         success: true,
         msg: `You collected $${ninaClient.nativeToUi(
-          recipient.owed.toNumber(),
-          release.paymentMint
+          royaltyForRelease.recipient.owed.toNumber(),
+          royaltyForRelease.paymentMint
         )} to the hub`,
       }
     } catch (error) {
-      getRelease(releasePubkey.toBase58())
       return ninaErrorHandler(error)
     }
   }
