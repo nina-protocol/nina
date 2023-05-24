@@ -588,83 +588,20 @@ const releaseContextHelper = ({
   }
 
   const addRoyaltyRecipient = async (release, updateData, releasePubkey) => {
-    const program = await ninaClient.useProgram()
-    const releasePublicKey = new anchor.web3.PublicKey(releasePubkey)
     try {
-      if (!release) {
-        release = await program.account.release.fetch(releasePublicKey)
-      }
-
-      const recipientPublicKey = new anchor.web3.PublicKey(
-        updateData.recipientAddress
+      const royaltyRecipient = await NinaSdk.Release.addRoyaltyRecipient(
+        ninaClient,
+        release,
+        updateData,
+        releasePubkey
       )
-
-      const updateAmount = updateData.percentShare * 10000
-
-      let [newRoyaltyRecipientTokenAccount, newRoyaltyRecipientTokenAccountIx] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          recipientPublicKey,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          new anchor.web3.PublicKey(release.paymentMint)
-        )
-
-      let [authorityTokenAccount, authorityTokenAccountIx] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          provider.wallet.publicKey,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          new anchor.web3.PublicKey(release.paymentMint)
-        )
-
-      const request = {
-        accounts: {
-          authority: provider.wallet.publicKey,
-          authorityTokenAccount,
-          release: releasePublicKey,
-          releaseMint: new anchor.web3.PublicKey(release.releaseMint),
-          releaseSigner: new anchor.web3.PublicKey(release.releaseSigner),
-          royaltyTokenAccount: release.royaltyTokenAccount,
-          newRoyaltyRecipient: recipientPublicKey,
-          newRoyaltyRecipientTokenAccount,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        },
-      }
-
-      if (newRoyaltyRecipientTokenAccountIx) {
-        request.instructions = [newRoyaltyRecipientTokenAccountIx]
-      }
-
-      if (authorityTokenAccountIx) {
-        request.instructions = [authorityTokenAccountIx]
-      }
-
-      const tx = await program.transaction.releaseRevenueShareTransfer(
-        new anchor.BN(updateAmount),
-        request
-      )
-      tx.recentBlockhash = (
-        await provider.connection.getRecentBlockhash()
-      ).blockhash
-      tx.feePayer = provider.wallet.publicKey
-      const txid = await provider.wallet.sendTransaction(
-        tx,
-        provider.connection
-      )
-
-      await getConfirmTransaction(txid, provider.connection)
 
       getRelease(releasePubkey)
       getUserBalances()
 
       return {
         success: true,
-        msg: `Revenue share transferred`,
+        msg: `Revenue share transferred to ${royaltyRecipient}`,
       }
     } catch (error) {
       getRelease(releasePubkey)
