@@ -379,7 +379,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
             const info = await initializeReleaseAndMint(
               hubPubkey ? hubPubkey : undefined
             )
-            console.log('info top:>> ', info)
 
             setReleaseInfo(info)
             setReleasePubkey(info.release)
@@ -428,7 +427,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
               let result
 
               if (hubPubkey) {
-                console.log('info :>> ', info)
                 result = await releaseInitViaHub({
                   hubPubkey,
                   ...formValues.releaseForm,
@@ -438,7 +436,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                   metadataUri: `https://arweave.net/${metadataResult}`,
                 })
               } else if (selectedHub && selectedHub !== '') {
-                console.log('info 11111:>> ', info)
                 result = await releaseInitViaHub({
                   ...formValues.releaseForm,
                   hubPubkey: selectedHub,
@@ -457,7 +454,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
                 })
               }
 
-              console.log('result !!!!:>> ', result)
               if (result) {
                 enqueueSnackbar('Release Created!', {
                   variant: 'success',

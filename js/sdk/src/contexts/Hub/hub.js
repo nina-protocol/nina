@@ -1,19 +1,13 @@
 import React, { createContext, useContext, useState } from 'react'
 import * as anchor from '@project-serum/anchor'
 import { ninaErrorHandler } from '../../utils/errors'
-import {
-  findAssociatedTokenAddress,
-  findOrCreateAssociatedTokenAccount,
-} from '../../utils/web3'
-import { decodeNonEncryptedByteArray } from '../../utils/encrypt'
+import { findAssociatedTokenAddress } from '../../utils/web3'
 import Release from '../Release'
 import Nina from '../Nina'
 import NinaSdk from '@nina-protocol/js-sdk'
-import { getConfirmTransaction, shuffle } from '../../utils'
-import MD5 from 'crypto-js/md5'
+import { shuffle } from '../../utils'
 import { logEvent } from '../../utils/event'
 import { initSdkIfNeeded } from '../../utils/sdkInit'
-const axios = require('axios')
 
 const HubContext = createContext()
 const HubContextProvider = ({ children }) => {
@@ -150,7 +144,6 @@ const hubContextHelper = ({
   setHubContentState,
   postState,
   setPostState,
-  getRelease,
   addToHubQueue,
   setAddToHubQueue,
   allHubs,
@@ -167,7 +160,7 @@ const hubContextHelper = ({
   setVerificationState,
   solBalance,
 }) => {
-  const { ids, provider, endpoints } = ninaClient
+  const { ids, provider } = ninaClient
 
   const hubInit = async (hubParams) => {
     try {
@@ -740,10 +733,8 @@ const hubContextHelper = ({
       hub.hubSigner,
       new anchor.web3.PublicKey(ids.mints.usdc)
     )
-    console.log('hubTokenAccount :>> ', hubTokenAccount.toBase58())
     const hubFeePendingAmount =
       await provider.connection.getTokenAccountBalance(hubTokenAccount)
-    console.log('hubFeePendingAmount.value.uiAmount :>> ', hubFeePendingAmount)
     return hubFeePendingAmount.value.uiAmount
   }
 

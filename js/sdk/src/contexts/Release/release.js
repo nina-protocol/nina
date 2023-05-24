@@ -5,10 +5,6 @@ import promiseRetry from 'promise-retry'
 
 import Nina from '../Nina'
 import Wallet from '../Wallet'
-import {
-  findOrCreateAssociatedTokenAccount,
-  TOKEN_PROGRAM_ID,
-} from '../../utils/web3'
 import axios from 'axios'
 import { ninaErrorHandler } from '../../utils/errors'
 import { encryptData } from '../../utils/encrypt'
@@ -16,8 +12,6 @@ import releasePurchaseHelper from '../../utils/releasePurchaseHelper'
 import { logEvent } from '../../utils/event'
 import { initSdkIfNeeded } from '../../utils/sdkInit'
 import { getConfirmTransaction } from '../../utils'
-
-const MAX_INT = '18446744073709551615'
 
 const ReleaseContext = createContext()
 const ReleaseContextProvider = ({ children }) => {

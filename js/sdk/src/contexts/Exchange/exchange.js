@@ -1,13 +1,8 @@
 import React, { createContext, useState, useContext } from 'react'
-import * as anchor from '@project-serum/anchor'
 import Audio from '../Audio'
 import Nina from '../Nina'
 import Release from '../Release'
-import {
-  findOrCreateAssociatedTokenAccount,
-  wrapSol,
-  TOKEN_PROGRAM_ID,
-} from '../../utils/web3'
+
 import { ninaErrorHandler } from '../../utils/errors'
 import NinaSdk from '@nina-protocol/js-sdk'
 
@@ -94,8 +89,6 @@ const exchangeContextHelper = ({
         exchange,
         releasePubkey
       )
-      console.log('exchange.publicKey', exchange.publicKey)
-      console.log('exchangeAccept.txid', exchangeAccept)
       if (exchange.isSelling) {
         addReleaseToCollection(releasePubkey)
       } else {
@@ -164,7 +157,6 @@ const exchangeContextHelper = ({
         exchange,
         releasePubkey
       )
-      console.log('exchangeCancel.txid', exchangeCancel.txid)
       if (exchange.isSelling) {
         addReleaseToCollection(releasePubkey)
       }
