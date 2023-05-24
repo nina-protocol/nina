@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, useMemo } from 'react'
 import * as anchor from '@project-serum/anchor'
 import NinaSdk from '@nina-protocol/js-sdk'
 import axios from 'axios'
+import { getAccount } from '@solana/spl-token'
 import {
   findOrCreateAssociatedTokenAccount,
   TOKEN_PROGRAM_ID,
@@ -12,6 +13,7 @@ import { truncateAddress } from '../../utils/truncateManager'
 import Airtable from 'airtable'
 import { getConfirmTransaction } from '../../utils'
 import { encodeBase64 } from 'tweetnacl-util'
+import { initSdkIfNeeded } from '../../utils/sdkInit'
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -51,7 +53,6 @@ const NinaProgramActionCost = {
 }
 
 const MAX_AUDIO_FILE_UPLOAD_SIZE = 500
-const MAX_IMAGE_FILE_UPLOAD_SIZE = 10
 
 const NinaContext = createContext()
 const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
@@ -136,6 +137,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     getUsdcToSolSwapData,
     subscriptionSubscribeDelegated,
     subscriptionUnsubscribeDelegated,
+    sendUsdc,
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -231,9 +233,9 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         solBalanceFetched,
         getUsdcToSolSwapData,
         MAX_AUDIO_FILE_UPLOAD_SIZE,
-        MAX_IMAGE_FILE_UPLOAD_SIZE,
         subscriptionSubscribeDelegated,
         subscriptionUnsubscribeDelegated,
+        sendUsdc,
       }}
     >
       {children}
@@ -631,6 +633,7 @@ const ninaContextHelper = ({
   }
 
   const getAmountHeld = async (releaseMint) => {
+    let amount = 0
     if (provider.wallet?.connected) {
       let tokenAccounts =
         await provider.connection.getParsedTokenAccountsByOwner(
@@ -640,11 +643,11 @@ const ninaContextHelper = ({
       tokenAccounts.value.forEach((value) => {
         const account = value.account.data.parsed.info
         if (account.mint === releaseMint) {
-          return account.tokenAmount.uiAmount
+          amount = account.tokenAmount.uiAmount
         }
       })
     }
-    return 0
+    return amount
   }
   const getSolBalance = async () => {
     let solUsdcBalanceResult = await provider.connection.getBalance(
@@ -960,6 +963,111 @@ const ninaContextHelper = ({
       return
     }
   }
+
+  const sendUsdc = async (amount, destination) => {
+    try {
+      const destinationInfo = await provider.connection.getAccountInfo(
+        new anchor.web3.PublicKey(destination)
+      )
+
+      let isSystemAccount = false
+      let isUsdcTokenAccount = false
+      let toUsdcTokenAccount = null
+      let toUsdcTokenAccountIx = null
+
+      if (
+        destinationInfo.owner.toBase58() ===
+        anchor.web3.SystemProgram.programId.toBase58()
+      ) {
+        isSystemAccount = true
+      }
+
+      if (!isSystemAccount) {
+        if (destinationInfo.owner.toBase58() === TOKEN_PROGRAM_ID.toBase58()) {
+          const tokenAccount = await getAccount(
+            provider.connection,
+            new anchor.web3.PublicKey(destination)
+          )
+          if (tokenAccount.mint.toBase58() === ids.mints.usdc) {
+            isUsdcTokenAccount = true
+          }
+        }
+      }
+
+      if (!isSystemAccount && !isUsdcTokenAccount) {
+        throw new Error(
+          'Destination is not a valid Solana address or USDC account'
+        )
+      }
+
+      let [fromUsdcTokenAccount, fromUsdcTokenAccountIx] =
+        await findOrCreateAssociatedTokenAccount(
+          provider.connection,
+          provider.wallet.publicKey,
+          provider.wallet.publicKey,
+          anchor.web3.SystemProgram.programId,
+          anchor.web3.SYSVAR_RENT_PUBKEY,
+          new anchor.web3.PublicKey(ids.mints.usdc)
+        )
+
+      isSystemAccount
+        ? ([toUsdcTokenAccount, toUsdcTokenAccountIx] =
+            await findOrCreateAssociatedTokenAccount(
+              provider.connection,
+              provider.wallet.publicKey,
+              new anchor.web3.PublicKey(destination),
+              anchor.web3.SystemProgram.programId,
+              anchor.web3.SYSVAR_RENT_PUBKEY,
+              new anchor.web3.PublicKey(ids.mints.usdc)
+            ))
+        : (toUsdcTokenAccount = new anchor.web3.PublicKey(destination))
+
+      const program = anchor.Spl.token({
+        provider,
+      })
+
+      const instructions = []
+
+      if (fromUsdcTokenAccountIx) {
+        instructions.push(fromUsdcTokenAccountIx)
+      }
+
+      if (toUsdcTokenAccountIx) {
+        instructions.push(toUsdcTokenAccountIx)
+      }
+
+      const tx = await program.methods
+        .transfer(new anchor.BN(ninaClient.uiToNative(amount, ids.mints.usdc)))
+        .accounts({
+          source: fromUsdcTokenAccount,
+          destination: toUsdcTokenAccount,
+          authority: provider.wallet.publicKey,
+        })
+        .preInstructions(instructions)
+        .transaction()
+
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
+
+      await getConfirmTransaction(txid, provider.connection)
+      await getUserBalances()
+      return {
+        success: true,
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: ninaErrorHandler(error),
+      }
+    }
+  }
+
   const checkIfHasBalanceToCompleteAction = async (action) => {
     const solUsdcBalanceResult = await getSolBalance()
     if (
@@ -1009,6 +1117,7 @@ const ninaContextHelper = ({
 
   const getSubscriptionsForUser = async (accountPubkey) => {
     try {
+      await initSdkIfNeeded()
       const { subscriptions } = await NinaSdk.Account.fetchSubscriptions(
         accountPubkey,
         false
@@ -1201,6 +1310,7 @@ const ninaContextHelper = ({
     getUsdcToSolSwapData,
     subscriptionSubscribeDelegated,
     subscriptionUnsubscribeDelegated,
+    sendUsdc,
   }
 }
 

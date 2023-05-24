@@ -15,7 +15,6 @@ import NavSearch from './NavSearch'
 import SearchIcon from '@mui/icons-material/Search'
 import DevnetIndicator from '@nina-protocol/nina-internal-sdk/esm/DevnetIndicator'
 import PendingReleasesIndicator from '@nina-protocol/nina-internal-sdk/esm/PendingReleasesIndicator'
-import FeedDrawer from './FeedDrawer'
 import WalletButton from '@nina-protocol/nina-internal-sdk/esm/WalletButton'
 import { fontFamily, fontSize } from '@material-ui/system'
 
@@ -114,7 +113,6 @@ const NavBar = () => {
         </DesktopWalletWrapper>
       </NavRight>
       <PendingReleasesIndicator />
-      <FeedDrawer override={true} />
     </Root>
   )
 }

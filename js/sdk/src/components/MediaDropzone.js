@@ -24,9 +24,7 @@ const MediaDropzone = ({
   currentImageUrl,
   closedBundlrModal,
 }) => {
-  const { MAX_AUDIO_FILE_UPLOAD_SIZE, MAX_IMAGE_FILE_UPLOAD_SIZE } = useContext(
-    Nina.Context
-  )
+  const { MAX_AUDIO_FILE_UPLOAD_SIZE } = useContext(Nina.Context)
   const styles = inHubCreate
     ? {
         dropzone: {
@@ -107,11 +105,6 @@ const MediaDropzone = ({
             )
             return
           }
-        } else if (type === 'artwork') {
-          alert(
-            `your image is ${size} mb... \nPlease upload an image smaller than ${MAX_IMAGE_FILE_UPLOAD_SIZE} mbs`
-          )
-          return
         }
       }
 
@@ -181,12 +174,7 @@ const MediaDropzone = ({
   }
 
   const validateImage = (fileWithMeta) => {
-    const size = fileWithMeta.file.size / 1000000
     if (fileWithMeta.file.type !== 'image/png') {
-      return true
-    }
-
-    if (size > MAX_IMAGE_FILE_UPLOAD_SIZE) {
       return true
     }
     return false

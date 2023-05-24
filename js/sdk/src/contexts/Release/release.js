@@ -847,46 +847,46 @@ const releaseContextHelper = ({
     return updatedReleaseState
   }
 
-  const getReleasesRecent = async () => {
+  const getReleasesRecent = async (
+    params = undefined,
+    withAccountData = true
+  ) => {
     try {
-      if (
-        !releasesRecentState.highlights ||
-        releasesRecentState.highlights.length === 0
-      ) {
-        await initSdkIfNeeded()
-        const highlightsHubPubkey =
-          process.env.REACT_APP_CLUSTER === 'devnet'
-            ? '4xHeZW8BK8HeCinoDLsGiGwtYsjQ9zBb71m5vdDa5ceS'
-            : '4QECgzp8hjknK3pvPEMoXATywcsNnH4MU49tVvDWLgKg'
-        const published = (await NinaSdk.Release.fetchAll({ limit: 25 }, true))
-          .releases
-        let highlights = (
-          await NinaSdk.Hub.fetchReleases(highlightsHubPubkey, true)
-        ).releases
+      await initSdkIfNeeded()
+      const highlightsHubPubkey =
+        process.env.REACT_APP_CLUSTER === 'devnet'
+          ? '4xHeZW8BK8HeCinoDLsGiGwtYsjQ9zBb71m5vdDa5ceS'
+          : '4QECgzp8hjknK3pvPEMoXATywcsNnH4MU49tVvDWLgKg'
+      const published = []
 
-        const allReleases = [...published, ...highlights]
-        setAllReleasesCount(published.total)
-        const newState = updateStateForReleases(allReleases)
-        setReleaseState((prevState) => ({
-          ...prevState,
-          tokenData: { ...prevState.tokenData, ...newState.tokenData },
-          metadata: { ...prevState.metadata, ...newState.metadata },
-          releaseMintMap: {
-            ...prevState.releaseMintMap,
-            ...newState.releaseMintMap,
-          },
-        }))
-
-        highlights = highlights.sort(
-          (a, b) =>
-            b.accountData.release.releaseDatetime -
-            a.accountData.release.releaseDatetime
+      let highlights = (
+        await NinaSdk.Hub.fetchReleases(
+          highlightsHubPubkey,
+          withAccountData,
+          params
         )
-        setReleasesRecentState({
-          published: published.map((release) => release.publicKey),
-          highlights: highlights.map((release) => release.publicKey),
-        })
-      }
+      ).releases
+
+      const allReleases = [...published, ...highlights]
+      setAllReleasesCount(published.total)
+      const newState = updateStateForReleases(allReleases)
+      setReleaseState((prevState) => ({
+        ...prevState,
+        tokenData: { ...prevState.tokenData, ...newState.tokenData },
+        metadata: { ...prevState.metadata, ...newState.metadata },
+        releaseMintMap: {
+          ...prevState.releaseMintMap,
+          ...newState.releaseMintMap,
+        },
+      }))
+
+      highlights = highlights.sort(
+        (a, b) => b.metadata.properties.date - a.metadata.properties.date
+      )
+      setReleasesRecentState({
+        published: published.map((release) => release.publicKey),
+        highlights: highlights.map((release) => release.publicKey),
+      })
     } catch (error) {
       console.warn(error)
     }
@@ -944,6 +944,7 @@ const releaseContextHelper = ({
       const { data } = await axios.get(
         `${process.env.NINA_API_ENDPOINT}/accounts/${publicKey}/feed?offset=${offset}`
       )
+
       const releases = []
       const updatedVerificationState = {}
 
