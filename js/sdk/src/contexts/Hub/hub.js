@@ -192,14 +192,15 @@ const hubContextHelper = ({
   const hubUpdateConfig = async (hubPubkey, uri, publishFee, referralFee) => {
     try {
       await initSdkIfNeeded()
-      await NinaSdk.Hub.hubUpdateConfig(
+      const updatedConfig = await NinaSdk.Hub.hubUpdateConfig(
         ninaClient,
         hubPubkey,
         uri,
         publishFee,
         referralFee
       )
-      await getHub(hubPubkey)
+
+      await getHub(updatedConfig.hub.publicKey)
 
       return {
         success: true,
@@ -218,7 +219,7 @@ const hubContextHelper = ({
     allowance = 1
   ) => {
     try {
-      await NinaSdk.Hub.hubAddCollaborator(
+      const hubCollaborator = await NinaSdk.Hub.hubAddCollaborator(
         ninaClient,
         hubPubkey,
         collaboratorPubkey,
@@ -226,8 +227,8 @@ const hubContextHelper = ({
         canAddCollaborator,
         allowance
       )
-
-      await getHub(hubPubkey)
+      // returning hubPublicKey until endpoint is updated
+      await getHub(hubCollaborator.toBase58())
       //TODO: State needs to update in UI
       return {
         success: true,
@@ -246,16 +247,17 @@ const hubContextHelper = ({
     allowance = 1
   ) => {
     try {
-      await NinaSdk.Hub.hubUpdateCollaboratorPermission(
-        ninaClient,
-        hubPubkey,
-        collaboratorPubkey,
-        canAddContent,
-        canAddCollaborator,
-        allowance
-      )
-
-      await getHub(hubPubkey)
+      const updatedCollaborator =
+        await NinaSdk.Hub.hubUpdateCollaboratorPermission(
+          ninaClient,
+          hubPubkey,
+          collaboratorPubkey,
+          canAddContent,
+          canAddCollaborator,
+          allowance
+        )
+      // returning hubPublicKey until endpoint is updated
+      await getHub(updatedCollaborator.toBase58())
       return {
         success: true,
         msg: 'Hub Collaborator Permissions Updated',
@@ -277,7 +279,7 @@ const hubContextHelper = ({
       queue.add(releasePubkey)
       setAddToHubQueue(queue)
 
-      await NinaSdk.Hub.hubAddRelease(
+      const release = await NinaSdk.Hub.hubAddRelease(
         ninaClient,
         hubPubkey,
         releasePubkey,
@@ -285,8 +287,7 @@ const hubContextHelper = ({
         provider.wallet,
         provider.connection
       )
-
-      await getHubsForRelease(releasePubkey)
+      await getHubsForRelease(release.release.publicKey)
       queue = new Set(addToHubQueue)
       queue.delete(releasePubkey)
       setAddToHubQueue(queue)

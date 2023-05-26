@@ -251,7 +251,11 @@ const releaseContextHelper = ({
 }) => {
   const { provider, ids, nativeToUi, isSol, isUsdc, endpoints } = ninaClient
   const initializeReleaseAndMint = async (hubPubkey) => {
-    return await NinaSdk.Release.initializeReleaseAndMint(ninaClient, hubPubkey)
+    const release = await NinaSdk.Release.initializeReleaseAndMint(
+      ninaClient,
+      hubPubkey
+    )
+    return release
   }
 
   const releaseInitViaHub = async ({
@@ -467,8 +471,11 @@ const releaseContextHelper = ({
 
   const closeRelease = async (releasePubkey) => {
     try {
-      await NinaSdk.Release.closeRelease(ninaClient, releasePubkey)
-      await getRelease(releasePubkey)
+      const closedRelease = await NinaSdk.Release.closeRelease(
+        ninaClient,
+        releasePubkey
+      )
+      await getRelease(closedRelease.release.publicKey)
 
       return {
         success: true,
