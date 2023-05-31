@@ -405,8 +405,8 @@ const hubContextHelper = ({
   const hubWithdraw = async (hubPubkey) => {
     try {
       const hubWithdrawal = await NinaSdk.Hub.hubWithdraw(ninaClient, hubPubkey)
-      const hubPublicKey = hubWithdrawal.hub.hub.publicKey
-      await getHub(hubPublicKey)
+      hubPubkey = hubWithdrawal.hub.hub.publicKey
+      await getHub(hubPubkey)
       return {
         success: true,
         msg: 'Withdraw from Hub Successful.',
