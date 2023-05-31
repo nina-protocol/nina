@@ -84,7 +84,7 @@ const exchangeContextHelper = ({
 
   const exchangeAccept = async (exchange, releasePubkey) => {
     try {
-      const exchangeAccept = await NinaSdk.Exchange.exchangeAccept(
+      const { exchangePublicKey } = await NinaSdk.Exchange.exchangeAccept(
         ninaClient,
         exchange,
         releasePubkey
@@ -95,8 +95,8 @@ const exchangeContextHelper = ({
         removeReleaseFromCollection(releasePubkey, exchange.releaseMint)
       }
       await getUserBalances()
-      await getExchange(exchange.publicKey, false, exchangeAccept.txid)
-      await getExchangesForRelease(releasePubkey, exchange.publicKey)
+      await getExchange(exchangePublicKey, false)
+      await getExchangesForRelease(releasePubkey, exchangePublicKey)
 
       return {
         success: true,
@@ -115,24 +115,27 @@ const exchangeContextHelper = ({
       [releasePubkey]: true,
     })
     try {
-      const exchange = await NinaSdk.Exchange.exchangeInit(
+      const exchangeResult = await NinaSdk.Exchange.exchangeInit(
         ninaClient,
         amount,
         isSelling,
         releasePubkey
       )
-
+      const { exchange } = exchangeResult.exchange
       setExchangeInitPending({
         ...exchangeInitPending,
         [releasePubkey]: false,
       })
 
       if (isSelling) {
-        removeReleaseFromCollection(releasePubkey, exchange.releaseMint)
+        removeReleaseFromCollection(
+          releasePubkey,
+          exchange.accountData.releaseMint
+        )
       }
 
       await getUserBalances()
-      await getExchange(exchange.publicKey, true, exchange.txid)
+      await getExchange(exchange.publicKey, true)
 
       return {
         success: true,
@@ -152,7 +155,7 @@ const exchangeContextHelper = ({
 
   const exchangeCancel = async (exchange, releasePubkey) => {
     try {
-      const exchangeCancel = await NinaSdk.Exchange.exchangeCancel(
+      const { exchangePublicKey } = await NinaSdk.Exchange.exchangeCancel(
         ninaClient,
         exchange,
         releasePubkey
@@ -162,11 +165,7 @@ const exchangeContextHelper = ({
       }
 
       await getUserBalances()
-      await getExchange(
-        exchangeCancel.exchangePubkey.toBase58(),
-        false,
-        exchangeCancel.txid
-      )
+      await getExchange(exchangePublicKey, false)
       await getExchangesForRelease(releasePubkey)
 
       return {

@@ -301,6 +301,7 @@ const HubPostCreate = ({
                       postCreated={postCreated}
                       hubReleasesToReference={hubReleasesToReference}
                       preloadedRelease={preloadedRelease}
+                      inHubDashboard={inHubDashboard}
                     />
                   </PostFormWrapper>
 

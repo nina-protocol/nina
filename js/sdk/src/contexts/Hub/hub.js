@@ -168,16 +168,17 @@ const hubContextHelper = ({
         wallet: provider.wallet.publicKey.toBase58(),
       })
       await initSdkIfNeeded()
-      const { hub } = await NinaSdk.Hub.hubInit(ninaClient, hubParams)
+      const createdHub = await NinaSdk.Hub.hubInit(ninaClient, hubParams)
+      const hubPubkey = createdHub.createdHub.hub.publicKey
       logEvent('hub_init_with_credit_success', 'engagement', {
-        hub: hub.publicKey,
+        hub: hubPubkey,
         wallet: provider.wallet.publicKey.toBase58(),
       })
-      await getHub(hub.publicKey)
+      await getHub(hubPubkey)
       return {
         success: true,
         msg: 'Hub Created',
-        hubPubkey: hub.publicKey,
+        hubPubkey: hubPubkey,
       }
     } catch (error) {
       logEvent('hub_init_with_credit_failure', 'engagement', {
@@ -192,15 +193,15 @@ const hubContextHelper = ({
   const hubUpdateConfig = async (hubPubkey, uri, publishFee, referralFee) => {
     try {
       await initSdkIfNeeded()
-      const updatedConfig = await NinaSdk.Hub.hubUpdateConfig(
+      const updatedHub = await NinaSdk.Hub.hubUpdateConfig(
         ninaClient,
         hubPubkey,
         uri,
         publishFee,
         referralFee
       )
-
-      await getHub(updatedConfig.hub.publicKey)
+      hubPubkey = updatedHub.updatedHub.hub.publicKey
+      await getHub(hubPubkey)
 
       return {
         success: true,
@@ -227,8 +228,9 @@ const hubContextHelper = ({
         canAddCollaborator,
         allowance
       )
+      const hubPublicKey = hubCollaborator.hubPublicKey
       // returning hubPublicKey until endpoint is updated
-      await getHub(hubCollaborator.toBase58())
+      await getHub(hubPublicKey)
       //TODO: State needs to update in UI
       return {
         success: true,
@@ -256,8 +258,9 @@ const hubContextHelper = ({
           canAddCollaborator,
           allowance
         )
+      const hubPublicKey = updatedCollaborator.hubPublicKey
       // returning hubPublicKey until endpoint is updated
-      await getHub(updatedCollaborator.toBase58())
+      await getHub(hubPublicKey)
       return {
         success: true,
         msg: 'Hub Collaborator Permissions Updated',
@@ -287,10 +290,16 @@ const hubContextHelper = ({
         provider.wallet,
         provider.connection
       )
-      await getHubsForRelease(release.release.publicKey)
+
+      releasePubkey = release.hubRelease.release.publicKey
+      hubPubkey = release.hubRelease.hub.publicKey
+
+      await getHubsForRelease(releasePubkey)
+
       queue = new Set(addToHubQueue)
       queue.delete(releasePubkey)
       setAddToHubQueue(queue)
+
       logEvent('hub_add_release_initiated', 'engagement', {
         release: releasePubkey,
         hub: hubPubkey,
@@ -323,11 +332,12 @@ const hubContextHelper = ({
         hubPubkey,
         collaboratorPubkey
       )
-      await getHub(hubPubkey)
+      const hubPublicKey = removedCollaborator.hubPublicKey
+      const collaboratorPublicKey = removedCollaborator.collaboratorPublicKey
       const hubCollaboratorsStateCopy = { ...hubCollaboratorsState }
-      delete hubCollaboratorsStateCopy[removedCollaborator.toBase58()]
+      await getHub(hubPublicKey)
+      delete hubCollaboratorsStateCopy[collaboratorPublicKey]
       setHubCollaboratorsState(hubCollaboratorsStateCopy)
-
       return {
         success: true,
         msg: 'Collaborator Removed From Hub',
@@ -343,16 +353,20 @@ const hubContextHelper = ({
     type
   ) => {
     try {
-      const toggledContentPubkey = await NinaSdk.Hub.hubContentToggleVisibility(
+      const toggledContentResult = await NinaSdk.Hub.hubContentToggleVisibility(
         ninaClient,
         hubPubkey,
         contentAccountPubkey,
         type
       )
 
-      if (toggledContentPubkey) {
-        const toggledContent = Object.values(hubContentState).filter(
-          (c) => c.publicKey === toggledContentPubkey.toBase58()
+      let toggledContentPublicKey
+      let toggledContent
+
+      if (type === 'Post') {
+        toggledContentPublicKey = toggledContentResult.hubRelease.post.publicKey
+        toggledContent = Object.values(hubContentState).filter(
+          (c) => c.post === toggledContentPublicKey
         )[0]
         toggledContent.visible = !toggledContent.visible
         const hubContentStateCopy = { ...hubContentState }
@@ -361,7 +375,24 @@ const hubContextHelper = ({
         setHubContentState(hubContentStateCopy)
         return {
           success: true,
-          msg: `${type} has been ${
+          msg: `Post has been ${
+            toggledContent.visible ? 'unarchived' : 'archived'
+          }`,
+        }
+      } else if (type === 'Release') {
+        toggledContentPublicKey =
+          toggledContentResult.hubRelease.release.publicKey
+        toggledContent = Object.values(hubContentState).filter(
+          (c) => c.release === toggledContentPublicKey
+        )[0]
+        toggledContent.visible = !toggledContent.visible
+        const hubContentStateCopy = { ...hubContentState }
+
+        hubContentState[toggledContent.publicKey] = toggledContent
+        setHubContentState(hubContentStateCopy)
+        return {
+          success: true,
+          msg: `Release has been ${
             toggledContent.visible ? 'unarchived' : 'archived'
           }`,
         }
@@ -374,8 +405,8 @@ const hubContextHelper = ({
   const hubWithdraw = async (hubPubkey) => {
     try {
       const hubWithdrawal = await NinaSdk.Hub.hubWithdraw(ninaClient, hubPubkey)
-
-      await getHub(hubWithdrawal.toBase58())
+      const hubPublicKey = hubWithdrawal.hub.hub.publicKey
+      await getHub(hubPublicKey)
       return {
         success: true,
         msg: 'Withdraw from Hub Successful.',
@@ -402,24 +433,21 @@ const hubContextHelper = ({
         fromHub
       )
 
-      await NinaSdk.Hub.fetchHubPost(
-        hubPubkey,
-        initializedPost.hubPost.toBase58()
-      )
       if (referenceRelease) {
-        await NinaSdk.Hub.fetchHubRelease(
-          hubPubkey,
-          initializedPost.referenceReleaseHubRelease.toBase58()
-        )
+        referenceRelease = initializedPost.post.post.data.reference
         await getHubsForRelease(referenceRelease)
       }
+      hubPubkey = initializedPost.post.hub.publicKey
       await getHub(hubPubkey)
-
       return {
         success: true,
         msg: 'Post created.',
       }
     } catch (error) {
+      if (referenceRelease) {
+        await getHubsForRelease(referenceRelease)
+      }
+      await getHub(hubPubkey)
       return ninaErrorHandler(error)
     }
   }
@@ -432,11 +460,12 @@ const hubContextHelper = ({
         slug,
         uri
       )
+      hubPubkey = updatedPost.post.hub.publicKey
       await getHub(hubPubkey)
 
       return {
         success: true,
-        msg: `Post updated. ${updatedPost.slug}`,
+        msg: `Post updated.`,
       }
     } catch (error) {
       return ninaErrorHandler(error)
@@ -458,14 +487,20 @@ const hubContextHelper = ({
           slug,
           uri
         )
-
+      const recipient =
+        royaltyForRelease.release.release.accountData.release.revenueShareRecipients.filter(
+          (rec) =>
+            rec.recipientAuthority === provider.wallet.publicKey.toBase58()
+        )[0]
+      const paymentMint =
+        royaltyForRelease.release.release.accountData.release.paymentMint
+      hubPubkey = royaltyForRelease.release.release.publishedThroughHub
       await getHub(hubPubkey)
-
       return {
         success: true,
         msg: `You collected $${ninaClient.nativeToUi(
-          royaltyForRelease.recipient.owed.toNumber(),
-          royaltyForRelease.paymentMint
+          recipient.owed.toNumber(),
+          paymentMint.toBase58()
         )} to the hub`,
       }
     } catch (error) {
