@@ -274,6 +274,10 @@ const releaseContextHelper = ({
     isOpen,
   }) => {
     try {
+      logEvent('release_init_initiated', 'engagement', {
+        publicKey: release.toBase58(),
+        wallet: provider.wallet.publicKey.toBase58(),
+      })
       const newRelease = await NinaSdk.Release.releaseInitViaHub(
         ninaClient,
         hubPubkey,
@@ -290,6 +294,17 @@ const releaseContextHelper = ({
         releaseMint,
         isOpen
       )
+
+      setPressingState({
+        ...pressingState,
+        pending: false,
+        completed: true,
+      })
+
+      logEvent('release_init_success', 'engagement', {
+        publicKey: release.toBase58(),
+        wallet: provider.wallet.publicKey.toBase58(),
+      })
 
       return newRelease
     } catch (error) {
@@ -429,8 +444,8 @@ const releaseContextHelper = ({
         releaseMint,
         isOpen
       )
-
-      await getRelease(release)
+      const releasePubkey = newRelease.release.release.publicKey
+      await getRelease(releasePubkey)
 
       setPressingState({
         ...pressingState,
@@ -475,7 +490,8 @@ const releaseContextHelper = ({
         ninaClient,
         releasePubkey
       )
-      await getRelease(closedRelease.release.publicKey)
+      releasePubkey = closedRelease.release.release.publicKey
+      await getRelease(releasePubkey)
 
       return {
         success: true,
@@ -567,14 +583,14 @@ const releaseContextHelper = ({
       return
     }
     try {
-      const { release } = await NinaSdk.Release.collectRoyaltyForRelease(
+      const collectedRelease = await NinaSdk.Release.collectRoyaltyForRelease(
         ninaClient,
         recipient,
         releasePubkey,
         releaseState
       )
-
-      await getRelease(release.publicKey)
+      releasePubkey = collectedRelease.release.release.publicKey
+      await getRelease(releasePubkey)
       await getUserBalances()
       return {
         success: true,
@@ -596,13 +612,13 @@ const releaseContextHelper = ({
         updateData,
         releasePubkey
       )
-
+      releasePubkey = royaltyRecipient.release.release.publicKey
       getRelease(releasePubkey)
       getUserBalances()
 
       return {
         success: true,
-        msg: `Revenue share transferred to ${royaltyRecipient}`,
+        msg: `Revenue share transferred.`,
       }
     } catch (error) {
       getRelease(releasePubkey)
