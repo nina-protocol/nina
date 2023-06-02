@@ -287,7 +287,7 @@ const ninaContextHelper = ({
         subscribeToAccount,
         hubHandle
       )
-      const publicKey = subscription.subscriptionData.subscription.publicKey
+      const publicKey = subscription.subscription.subscription.publicKey
       await getSubscription(publicKey)
 
       logEvent(
@@ -326,8 +326,8 @@ const ninaContextHelper = ({
         ninaClient,
         unsubscribeAccount
       )
-      const publicKey = subscription.subscriptionData.subscription.publicKey
-      hubHandle = subscription.subscriptionData.subscription.to.handle
+      const publicKey = subscription.subscription.subscription.publicKey
+      hubHandle = subscription.subscription.subscription.to.handle
       if (hubHandle) {
         await getSubscriptionsForHub(hubHandle)
       } else {
