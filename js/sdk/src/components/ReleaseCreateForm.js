@@ -444,7 +444,7 @@ export default withFormik({
       amount: '',
       retailPrice: undefined,
       resalePercentage: 10,
-      isOpen: false,
+      isOpen: true,
       isUsdc: true,
     }
   },
