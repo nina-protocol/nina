@@ -27,7 +27,7 @@ const BundlrModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/BundlrModal')
 )
 
-const Onboard = () => {
+const Onboard = ({ customCode }) => {
   const router = useRouter()
   const {
     bundlrBalance,
@@ -74,6 +74,12 @@ const Onboard = () => {
   }, [router.isReady])
 
   useEffect(() => {
+    if (customCode) {
+      setCode(customCode)
+    }
+  }, [customCode])
+
+  useEffect(() => {
     if (verificationState[profilePubkey]) {
       setProfileVerifications(verificationState[profilePubkey])
     }
@@ -112,18 +118,21 @@ const Onboard = () => {
       ),
     },
     {
-      title: 'Claim your onboarding code',
+      title: 'Claim your invite code',
       content: `By claiming this code you'll receive 0.15 SOL to get started in the Nina ecosystem.`,
 
       cta: (
         <>
           <Typography mb={1}>
-            Your onboarding code is:
+            Your invite code is:
             <Typography mb={1} mt={1} sx={{ fontFamily: 'monospace' }}>
               {code}
             </Typography>
           </Typography>
-          <Button variant="outlined" onClick={() => handleClaimCode(code)}>
+          <Button
+            variant="outlined"
+            onClick={() => handleClaimCode(code, customCode)}
+          >
             {pending ? (
               <Dots size="40px" msg={pendingTransactionMessage} />
             ) : (
@@ -346,7 +355,7 @@ const Onboard = () => {
     },
   ]
 
-  const handleClaimCode = async (code) => {
+  const handleClaimCode = async (code, customCode) => {
     const message = new TextEncoder().encode(wallet.publicKey.toBase58())
     const messageBase64 = encodeBase64(message)
     const signature = await wallet.signMessage(message)
@@ -355,10 +364,14 @@ const Onboard = () => {
       wallet: wallet?.publicKey?.toBase58(),
     })
 
+    const url = customCode
+      ? `bulkOnboardingCodes/${customCode}`
+      : `onboardingCodes/${code}`
+
     try {
       setPending(true)
       const response = await axios.post(
-        `${process.env.NINA_IDENTITY_ENDPOINT}/onboardingCodes/${code}`,
+        `${process.env.NINA_IDENTITY_ENDPOINT}/${url}`,
         {
           message: messageBase64,
           signature: signatureBase64,
@@ -434,19 +447,25 @@ const Onboard = () => {
         <GetStartedPageWrapper>
           <>
             <Box mb={2}>
-              <Typography variant="h1" mb={1}>
-                Welcome to Nina.
-              </Typography>
+              {!customCode && (
+                <Typography variant="h1" mb={1}>
+                  Welcome to Nina.
+                </Typography>
+              )}
               {code !== undefined && (
                 <>
                   <>
-                    <Typography variant="h3" mb={1}>
-                      You are receiving complimentary SOL to create your Hub and
-                      start uploading your music.
-                    </Typography>
-                    <Typography variant="h3" mb={1}>
-                      Please follow the steps below to get started.
-                    </Typography>
+                    {!customCode && (
+                      <>
+                        <Typography variant="h3" mb={1}>
+                          You are receiving complimentary SOL to create your Hub
+                          and start uploading your music.
+                        </Typography>
+                        <Typography variant="h3" mb={1}>
+                          Please follow the steps below to get started.
+                        </Typography>
+                      </>
+                    )}
                     {renderSteps(onboardingSteps)}
                   </>
                 </>

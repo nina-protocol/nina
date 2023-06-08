@@ -78,7 +78,7 @@ const Admin = () => {
         message: messageBase64,
         signature: signatureBase64,
         publicKey: wallet.publicKey.toBase58(),
-        uses: bulkCodeUses,
+        uses: parseInt(bulkCodeUses),
         description: bulkCodeDescription,
         createdFor: bulkCodeCreatedFor,
         value: bulkCode,
@@ -99,32 +99,35 @@ const Admin = () => {
     const signature = await wallet.signMessage(message)
     const signatureBase64 = encodeBase64(signature)
 
-    const response = await axios.post(
-      `${process.env.NINA_IDENTITY_ENDPOINT}/bulkOnboardingCodes/${bulkCode}`,
-      {
-        message: messageBase64,
-        signature: signatureBase64,
-        publicKey: wallet.publicKey.toBase58(),
-      }
-    ).catch((error) => {
-      console.warn(error)
-      if (error.response) {
-        console.warn(error.response.data)
-        console.warn(error.response.status)
-        console.warn(error.response.headers)
-        enqueueSnackbar(`Failed to claim code: ${bulkCode}. ${error.response.data.error}`, {
-          variant: 'error',
-        })
-      }
-    })
+    const response = await axios
+      .post(
+        `${process.env.NINA_IDENTITY_ENDPOINT}/bulkOnboardingCodes/${bulkCode}`,
+        {
+          message: messageBase64,
+          signature: signatureBase64,
+          publicKey: wallet.publicKey.toBase58(),
+        }
+      )
+      .catch((error) => {
+        console.warn(error)
+        if (error.response) {
+          console.warn(error.response.data)
+          console.warn(error.response.status)
+          console.warn(error.response.headers)
+          enqueueSnackbar(
+            `Failed to claim code: ${bulkCode}. ${error.response.data.error}`,
+            {
+              variant: 'error',
+            }
+          )
+        }
+      })
     if (response?.data?.status === 'success') {
       enqueueSnackbar(`Successfully claimed code: ${bulkCode}`, {
         variant: 'success',
       })
     }
   }
-
-
 
   // placeholder for restricted handler
   const handleRestricted = async (value, type) => {
@@ -159,7 +162,7 @@ const Admin = () => {
   return (
     <ScrollablePageWrapper>
       {hasAccess && (
-        <Box>
+        <Box sx={{ width: '60vw', margin: 'auto' }}>
           <Box>
             <a
               href={`https://explorer.solana.com/address/${ONBOARDING_ACCOUNT}?cluster=${process.env.SOLANA_CLUSTER}`}
@@ -198,19 +201,22 @@ const Admin = () => {
               </Typography>
             </a>
           </Box>
-          <Box>
-            <Input
-              type="text"
-              id="code"
-              name="code"
-              value={code}
-              onChange={(event) => setCode(event.target.value)}
-              sx={{ width: '40vw' }}
-            />
-            <Button variant="outlined" onClick={() => handleGenerateCode()}>
-              Click Here to Generate an Onboarding Code
-            </Button>
-          </Box>
+
+          <Input
+            type="text"
+            id="code"
+            name="code"
+            value={code}
+            onChange={(event) => setCode(event.target.value)}
+            sx={{ width: '40vw' }}
+          />
+          <Button
+            variant="outlined"
+            style={{ width: '200px' }}
+            onClick={() => handleGenerateCode()}
+          >
+            Click Here to Generate an Onboarding Code
+          </Button>
 
           <Box mt={1}>
             <Input
@@ -296,12 +302,22 @@ const Admin = () => {
                 sx={{ margin: '0 8px', width: '40vw' }}
               />
             </Box>
-            <Button variant="outlined" onClick={() => handleGenerateBulkCode()}>
-              Generate Bulk Onboarding Code
-            </Button>
-            <Button variant='outlined' onClick={() => handleBulkCodeClaim()}>
-              Test Bulk Code Claim
-            </Button>
+
+            <Box sx={{ mt: 1 }}>
+              <Button
+                variant="outlined"
+                onClick={() => handleGenerateBulkCode()}
+              >
+                Generate Bulk Onboarding Code
+              </Button>
+              <Button
+                sx={{ ml: 1 }}
+                variant="outlined"
+                onClick={() => handleBulkCodeClaim()}
+              >
+                Test Bulk Code Claim
+              </Button>
+            </Box>
           </Box>
         </Box>
       )}
