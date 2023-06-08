@@ -32,7 +32,7 @@ const ReleaseCreateForm = ({
   disabled,
 }) => {
   const { wallet } = useContext(Wallet.Context)
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(true)
   const [isUsdc, setIsUsdc] = useState(true)
   const [isFree, setIsFree] = useState(false)
   const [inputValue, setInputValue] = useState(undefined)
@@ -444,7 +444,7 @@ export default withFormik({
       amount: '',
       retailPrice: undefined,
       resalePercentage: 10,
-      isOpen: false,
+      isOpen: true,
       isUsdc: true,
     }
   },
