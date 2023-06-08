@@ -6,9 +6,6 @@ import Box from '@mui/system/Box'
 import { styled } from '@mui/material/styles'
 
 const StartPage = () => {
-  const customSuccess = () => {
-    ;<a> Visit Avyss</a>
-  }
   return (
     <>
       <Head>
