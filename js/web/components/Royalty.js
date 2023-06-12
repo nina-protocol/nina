@@ -10,11 +10,12 @@ import Typography from '@mui/material/Typography'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import RoyaltyRecipientForm from './RoyaltyRecipientForm'
 import Link from 'next/link'
+import NinaSdk from '@nina-protocol/js-sdk'
+
 const Royalty = (props) => {
   const { release, releasePubkey } = props
 
@@ -28,7 +29,6 @@ const Royalty = (props) => {
   const [formToggleText, setFormToggleText] = useState(
     'Add Revenue Split Recipient'
   )
-  const { ninaClient } = useContext(Nina.Context)
   const { collectRoyaltyForRelease } = useContext(Release.Context)
 
   useEffect(() => {
@@ -146,7 +146,7 @@ const Royalty = (props) => {
 
                     const owed =
                       walletAuthorizedToCollect && recipient.owed > 0
-                        ? `owed: ${ninaClient.nativeToUiString(
+                        ? `owed: ${NinaSdk.utils.nativeToUiString(
                             recipient.owed,
                             release.paymentMint
                           )}`

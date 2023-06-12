@@ -16,7 +16,7 @@ export const getServerSideProps = async (context) => {
 
   try {
     await initSdkIfNeeded(true)
-    const { release } = await NinaSdk.Release.fetch(releasePubkey)
+    const { release } = await NinaSdk.client.Release.fetch(releasePubkey)
     return {
       props: {
         publisher: release.publisher,

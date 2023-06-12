@@ -42,6 +42,8 @@ import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 // import { downloadWithFallback } from '@nina-protocol/nina-internal-sdk/esm/utils/downloadHelper'
 import openInNewTab from '@nina-protocol/nina-internal-sdk/src/utils/openInNewTab'
 import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
+import NinaSdk from '@nina-protocol/js-sdk'
+
 const { getImageFromCDN, loader } = imageManager
 const { downloadWithFallback } = downloadHelper
 
@@ -259,7 +261,7 @@ const ReusableTableBody = (props) => {
     setInitialized,
     audioPlayerRef,
   } = useContext(Audio.Context)
-  const { ninaClient, displayNameForAccount, displayImageForAccount } =
+  const { displayNameForAccount, displayImageForAccount } =
     useContext(Nina.Context)
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
@@ -383,7 +385,7 @@ const ReusableTableBody = (props) => {
           (recipient) => recipient.recipientAuthority === dashboardPublicKey
         )
         const collectable = recipient?.owed > 0
-        const collectableAmount = ninaClient.nativeToUiString(
+        const collectableAmount = NinaSdk.utils.nativeToUiString(
           recipient?.owed,
           data.tokenData.paymentMint
         )
@@ -402,7 +404,7 @@ const ReusableTableBody = (props) => {
             {collectable && <span>{collectableAmount}</span>}
           </StyledCollectButton>
         )
-        formattedData.price = ninaClient.nativeToUiString(
+        formattedData.price = NinaSdk.utils.nativeToUiString(
           data.tokenData.price,
           data.tokenData.paymentMint
         )
@@ -410,7 +412,7 @@ const ReusableTableBody = (props) => {
           data.tokenData.remainingSupply < 0
             ? infinityUnicode
             : `${data.tokenData.remainingSupply} / ${data.tokenData.totalSupply}`
-        formattedData.collected = ninaClient.nativeToUiString(
+        formattedData.collected = NinaSdk.utils.nativeToUiString(
           recipient?.collected + recipient?.owed,
           data.tokenData.paymentMint
         )

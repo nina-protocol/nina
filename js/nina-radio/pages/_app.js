@@ -5,7 +5,6 @@ import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@mui/material/styles";
 import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
-import NinaClient from "@nina-protocol/nina-internal-sdk/esm/client";
 import { CacheProvider } from "@emotion/react";
 import createCache from '@emotion/cache';
 import { NinaTheme } from "../../NinaTheme";
@@ -14,6 +13,7 @@ import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import WalletWrapper from '@nina-protocol/nina-internal-sdk/esm/WalletWrapper'
 import { useConnection } from '@solana/wallet-adapter-react'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const createEmotionCache = () => {
   return createCache({key: 'css'});
@@ -73,21 +73,25 @@ function Application({ Component, pageProps }) {
 }
 
 const NinaWrapper = ({children}) => {
-  const { wallet } = useContext(Wallet.Context)
-  const connection = useConnection();
-  const provider = new AnchorProvider(
-    connection,
-    wallet,
-    {
-      commitment: 'confirmed',
-      preflightCommitment: 'processed'
-    }
-  )  
+  const { wallet, connection } = useContext(Wallet.Context)
 
-  const ninaClient = NinaClient(provider, process.env.REACT_APP_CLUSTER)
+  const refreshNinaSdkClient = async () => {
+    await NinaSdk.client.init(
+      process.env.NINA_API_ENDPOINT,
+      process.env.SOLANA_CLUSTER_URL,
+      process.env.NINA_PROGRAM_ID,
+      process.env.NINA_API_KEY,
+      wallet,
+      connection
+    )
+  }
+
+  useEffect(() => {
+    refreshNinaSdkClient()
+  }, [wallet, connection])
 
   return (
-    <Nina.Provider ninaClient={ninaClient}>
+    <Nina.Provider>
       <Release.Provider>
         {children}
       </Release.Provider>

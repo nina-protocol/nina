@@ -28,6 +28,8 @@ import rehypeExternalLinks from 'rehype-external-links'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
 import AddToHubModal from '@nina-protocol/nina-internal-sdk/esm/AddToHubModal'
+import NinaSdk from '@nina-protocol/js-sdk'
+
 const Gates = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/Gates')
 )
@@ -66,7 +68,6 @@ const ReleasePurchase = (props) => {
   const {
     getAmountHeld,
     collection,
-    ninaClient,
     usdcBalance,
     solBalance,
     checkIfHasBalanceToCompleteAction,
@@ -192,9 +193,9 @@ const ReleasePurchase = (props) => {
 
     if (!release.pending) {
       if (
-        !ninaClient.isSol(release.paymentMint) &&
+        !NinaSdk.utils.isSol(release.paymentMint) &&
         usdcBalance <
-          ninaClient.nativeToUi(release.price, ninaClient.ids.mints.usdc)
+        NinaSdk.utils.nativeToUi(release.price, NinaSdk.utils.NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER].mints.usdc)
       ) {
         enqueueSnackbar('Calculating SOL - USDC Swap...', {
           variant: 'info',
@@ -228,13 +229,13 @@ const ReleasePurchase = (props) => {
     release.remainingSupply > 0 || release.remainingSupply === -1
       ? `${
           release.price > 0
-            ? `Buy ${ninaClient.nativeToUiString(
+            ? `Buy ${NinaSdk.utils.nativeToUiString(
                 release.price,
                 release.paymentMint
               )}`
             : 'Collect For Free'
         }`
-      : `Sold Out ($${ninaClient
+      : `Sold Out ($${NinaSdk.utils
           .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`
 
@@ -249,7 +250,7 @@ const ReleasePurchase = (props) => {
     <Box sx={{ position: 'relative', height: '100%' }}>
       {release.price > 0 && (
         <NoSolWarning
-          requiredSol={ninaClient.nativeToUiString(
+          requiredSol={NinaSdk.utils.nativeToUiString(
             release.price,
             release.paymentMint
           )}

@@ -15,7 +15,7 @@ import Nina from '../contexts/Nina'
 import { useSnackbar } from 'notistack'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Dots from './Dots'
-
+import NinaSdk from '@nina-protocol/js-sdk'
 const BundlrModalBody = ({
   open,
   setOpen,
@@ -37,13 +37,12 @@ const BundlrModalBody = ({
     getSolPrice,
     initBundlr,
     NinaProgramActionCost,
-    ninaClient,
     solBalance,
   } = useContext(Nina.Context)
   const releaseCreateFee = NinaProgramActionCost?.RELEASE_INIT_WITH_CREDIT
-  const formattedSolBalance = ninaClient.nativeToUi(
+  const formattedSolBalance = NinaSdk.utils.nativeToUi(
     solBalance,
-    ninaClient.ids.mints.wsol
+    NinaSdk.utils.NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER].mints.wsol
   )
 
   const [amount, setAmount] = useState(0)

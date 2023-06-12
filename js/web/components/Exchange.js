@@ -21,6 +21,7 @@ import ExchangeHistoryModal from './ExchangeHistoryModal'
 import ExchangeList from './ExchangeList'
 import ExchangeModal from './ExchangeModal'
 import dynamic from 'next/dynamic'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const NoSolWarning = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/NoSolWarning')
@@ -37,7 +38,6 @@ const ExchangeComponent = (props) => {
   const { wallet } = useContext(Wallet.Context)
   const { enqueueSnackbar } = useSnackbar()
   const {
-    ninaClient,
     solBalance,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
@@ -152,7 +152,7 @@ const ExchangeComponent = (props) => {
     let result
     const data = {
       releasePubkey,
-      amount: ninaClient.uiToNative(amount, release.paymentMint),
+      amount: NinaSdk.utils.uiToNative(amount, release.paymentMint),
       isSelling: !isBuy,
       isInit: true,
     }
@@ -354,7 +354,7 @@ const ExchangeComponent = (props) => {
             release={release}
             onSubmit={() => handleExchangeAction(exchangeAwaitingConfirm)}
             amount={
-              ninaClient.uiToNative(
+              NinaSdk.utils.uiToNative(
                 exchangeAwaitingConfirm?.initializerAmount,
                 release.paymentMint
               ) || exchangeAwaitingConfirm?.amount

@@ -5,13 +5,12 @@ import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import ReleaseListTable from './ReleaseListTable'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const HubOverview = ({ hubPubkey, isAuthority }) => {
   const { releaseState } = useContext(Release.Context)
-  const { ninaClient } = useContext(Nina.Context)
   const {
     hubState,
     hubContentState,
@@ -87,7 +86,7 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
         revenue += recipient.collected
       }
     })
-    revenue = ninaClient.nativeToUi(revenue, ninaClient.ids.mints.usdc)
+    revenue = NinaSdk.utils.nativeToUi(revenue, NinaSdk.utils.NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER].mints.usdc)
     return revenue
   }, [releases])
 
@@ -140,9 +139,9 @@ const HubOverview = ({ hubPubkey, isAuthority }) => {
                   action={`Withdraw $${hubFeePending} to wallet`}
                   title="Total Hub Fee Revenue"
                   count={`$${(
-                    ninaClient.nativeToUi(
+                    NinaSdk.utils.nativeToUi(
                       hubData.totalFeesEarned,
-                      ninaClient.ids.mints.usdc
+                      NinaSdk.utils.NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER].mints.usdc
                     ) + releaseRevenueTotal
                   ).toFixed(4)}`}
                 />

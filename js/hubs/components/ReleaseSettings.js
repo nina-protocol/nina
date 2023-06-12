@@ -5,13 +5,13 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import NinaSdk from '@nina-protocol/js-sdk'
+
 const Royalty = dynamic(() => import('./Royalty.js'))
 
 const ReleaseSettings = (props) => {
   const { releasePubkey, tempMetadata, inCreateFlow } = props
-  const { ninaClient } = useContext(Nina.Context)
   const { releaseState } = useContext(Release.Context)
   const [release, setRelease] = useState(releaseState.tokenData[releasePubkey])
   const [metadata, setMetadata] = useState(releaseState.metadata[releasePubkey])
@@ -75,7 +75,7 @@ const ReleaseSettings = (props) => {
           <ReleaseStat variant="body1" component="p">
             <ReleaseStatLeft variant="subtitle1">Cost USD</ReleaseStatLeft>
             <ReleaseStatRight variant="subtitle1">
-              {ninaClient.nativeToUiString(
+              {NinaSdk.utils.nativeToUiString(
                 release?.price,
                 release?.paymentMint,
                 false,
@@ -114,7 +114,7 @@ const ReleaseSettings = (props) => {
                   Total Earnings
                 </ReleaseStatLeft>
                 <ReleaseStatRight variant="subtitle1">
-                  {ninaClient.nativeToUiString(
+                  {NinaSdk.utils.nativeToUiString(
                     release?.totalCollected,
                     release?.paymentMint
                   )}

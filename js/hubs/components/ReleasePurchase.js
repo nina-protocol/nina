@@ -14,6 +14,7 @@ import { useRouter } from 'next/router'
 import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const NoSolWarning = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/NoSolWarning')
@@ -53,7 +54,6 @@ const ReleasePurchase = (props) => {
   const {
     collection,
     usdcBalance,
-    ninaClient,
     checkIfHasBalanceToCompleteAction,
     solBalance,
     NinaProgramAction,
@@ -64,6 +64,7 @@ const ReleasePurchase = (props) => {
   const [publishedHub, setPublishedHub] = useState()
   const [showNoSolModal, setShowNoSolModal] = useState(false)
   const [showWalletModal, setShowWalletModal] = useState(false)
+  const ids = NinaSdk.utils.NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER]
 
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
@@ -139,15 +140,15 @@ const ReleasePurchase = (props) => {
       return
     }
     if (!release.pending) {
-      let releasePriceUi = ninaClient.nativeToUi(
+      let releasePriceUi = NinaSdk.utils.nativeToUi(
         release.price,
-        ninaClient.ids.mints.usdc
+        ids.mints.usdc
       )
       let convertAmount =
         releasePriceUi +
         (releasePriceUi * hubState[hubPubkey].referralFee) / 100
       if (
-        !ninaClient.isSol(release.releaseMint) &&
+        !NinaSdk.utils.isSol(release.releaseMint) &&
         usdcBalance < convertAmount
       ) {
         enqueueSnackbar('Calculating SOL - USDC Swap...', {
@@ -183,13 +184,13 @@ const ReleasePurchase = (props) => {
     release.remainingSupply > 0 || release.remainingSupply === -1
       ? `${
           release.price > 0
-            ? `Buy ${ninaClient.nativeToUiString(
+            ? `Buy ${NinaSdk.utils.nativeToUiString(
                 release.price,
                 release.paymentMint
               )}`
             : 'Collect For Free'
         }`
-      : `Sold Out (${ninaClient
+      : `Sold Out (${NinaSdk.utils
           .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`
 

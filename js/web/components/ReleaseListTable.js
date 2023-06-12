@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { formatDuration } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -19,6 +18,7 @@ import PlayCircleOutlineOutlinedIcon from '@mui/icons-material/PlayCircleOutline
 import PauseCircleOutlineOutlinedIcon from '@mui/icons-material/PauseCircleOutlineOutlined'
 import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import { useRouter } from 'next/router'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const descendingComparator = (a, b, orderBy) => {
   switch (orderBy) {
@@ -164,7 +164,6 @@ const ReleaseListTable = (props) => {
     setInitialized,
     audioPlayerRef,
   } = useContext(Audio.Context)
-  const { ninaClient } = useContext(Nina.Context)
   const router = useRouter()
 
   const [order, setOrder] = useState('asc')
@@ -230,7 +229,7 @@ const ReleaseListTable = (props) => {
     }
 
     if (tableType === 'allReleases') {
-      rowData['price'] = `${ninaClient.nativeToUiString(
+      rowData['price'] = `${NinaSdk.utils.nativeToUiString(
         tokenData.price,
         tokenData.paymentMint
       )}`
@@ -254,7 +253,7 @@ const ReleaseListTable = (props) => {
           Collect
           {collectable && (
             <span>
-              {ninaClient.nativeToUiString(
+              {NinaSdk.utils.nativeToUiString(
                 recipient.owed,
                 tokenData.paymentMint
               )}
@@ -263,7 +262,7 @@ const ReleaseListTable = (props) => {
         </StyledCollectButton>
       )
 
-      rowData['price'] = `${ninaClient.nativeToUiString(
+      rowData['price'] = `${NinaSdk.utils.nativeToUiString(
         tokenData.price,
         tokenData.paymentMint
       )}`
@@ -274,7 +273,7 @@ const ReleaseListTable = (props) => {
       rowData['date'] = `${
         new Date(tokenData.releaseDatetime).toISOString().split('T')[0]
       }`
-      rowData['collected'] = `${ninaClient.nativeToUiString(
+      rowData['collected'] = `${NinaSdk.utils.nativeToUiString(
         recipient.collected,
         tokenData.paymentMint
       )}`

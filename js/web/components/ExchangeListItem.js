@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const ExchangeListItem = (props) => {
   const {
@@ -17,8 +17,7 @@ const ExchangeListItem = (props) => {
     amount,
   } = props
   const { wallet } = useContext(Wallet.Context)
-  const { ninaClient } = useContext(Nina.Context)
-  const displayPrice = ninaClient.nativeToUiString(amount, release.paymentMint)
+  const displayPrice = NinaSdk.utils.nativeToUiString(amount, release.paymentMint)
   const itemData = (
     <Root>
       <Typography>
@@ -35,12 +34,12 @@ const ExchangeListItem = (props) => {
           {displayPrice}
         </span>
       </Typography>
-      {ninaClient.isSol(release.paymentMint) && (
+      {NinaSdk.utils.isSol(release.paymentMint) && (
         <Typography
           className={`${classes.exchangeListItemPrice} ${classes.exchangeListItemPrice}--usd`}
         >
           {(
-            ninaClient.nativeToUi(
+            NinaSdk.utils.nativeToUi(
               isSelling ? expectedAmount : amount,
               release.paymentMint
             ) * solPrice

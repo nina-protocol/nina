@@ -28,7 +28,6 @@ export default [
       Release: 'src/contexts/Release/index.js',
       Wallet: 'src/contexts/Wallet/index.js',
       WalletWrapper: 'src/contexts/WalletWrapper/index.js',
-      client: 'src/client.js',
       utils: 'src/utils/index.js',
       AudioPlayer: 'src/components/AudioPlayer.js',
       Dots: 'src/components/Dots.js',

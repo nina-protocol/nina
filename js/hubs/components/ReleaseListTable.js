@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -16,7 +15,7 @@ import { visuallyHidden } from '@mui/utils'
 import Box from '@mui/material/Box'
 import Fade from '@mui/material/Fade'
 import { useRouter } from 'next/router'
-
+import NinaSdk from '@nina-protocol/js-sdk'
 const infinityUnicode = '\u221e'
 
 const descendingComparator = (a, b, orderBy) => {
@@ -146,7 +145,6 @@ const EnhancedTableHead = (props) => {
 
 const ReleaseListTable = (props) => {
   const { releases, tableType, hubPubkey, hubData } = props
-  const { ninaClient } = useContext(Nina.Context)
   const { collectRoyaltyForReleaseViaHub } = useContext(Hub.Context)
   const router = useRouter()
 
@@ -201,7 +199,7 @@ const ReleaseListTable = (props) => {
           Collect
           {collectable && (
             <span>
-              {ninaClient.nativeToUiString(
+              {NinaSdk.utils.nativeToUiString(
                 recipient.owed,
                 tokenData.paymentMint
               )}
@@ -210,7 +208,7 @@ const ReleaseListTable = (props) => {
         </StyledCollectButton>
       )
 
-      rowData['price'] = `${ninaClient.nativeToUiString(
+      rowData['price'] = `${NinaSdk.utils.nativeToUiString(
         tokenData.price,
         tokenData.paymentMint
       )}`
@@ -222,7 +220,7 @@ const ReleaseListTable = (props) => {
       rowData['date'] = `${
         new Date(tokenData.releaseDatetime).toISOString().split('T')[0]
       }`
-      rowData['collected'] = `${ninaClient.nativeToUiString(
+      rowData['collected'] = `${NinaSdk.utils.nativeToUiString(
         recipient.collected,
         tokenData.paymentMint
       )}`

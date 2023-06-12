@@ -16,7 +16,6 @@ import { getConfirmTransaction } from '../../utils'
 const ReleaseContext = createContext()
 const ReleaseContextProvider = ({ children }) => {
   const {
-    ninaClient,
     addReleaseToCollection,
     collection,
     getUserBalances,
@@ -98,7 +97,6 @@ const ReleaseContextProvider = ({ children }) => {
     removePendingRelease,
     fetchGatesForRelease,
   } = releaseContextHelper({
-    ninaClient,
     releaseState,
     setReleaseState,
     pressingState,
@@ -222,7 +220,6 @@ const ReleaseContextProvider = ({ children }) => {
 }
 
 const releaseContextHelper = ({
-  ninaClient,
   releaseState,
   setReleaseState,
   pressingState,
@@ -249,10 +246,12 @@ const releaseContextHelper = ({
   setGatesState,
   gatesState,
 }) => {
-  const { provider, ids, nativeToUi, isSol, isUsdc, endpoints } = ninaClient
+  const {  NINA_CLIENT_IDS, nativeToUi, isSol, isUsdc } = NinaSdk.utils
+  const { provider } = NinaSdk.client
+  const ids = NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER]
+
   const initializeReleaseAndMint = async (hubPubkey) => {
-    const release = await NinaSdk.Release.initializeReleaseAndMint(
-      ninaClient,
+    const release = await NinaSdk.client.Release.initializeReleaseAndMint(
       hubPubkey
     )
     return release
@@ -278,8 +277,7 @@ const releaseContextHelper = ({
         publicKey: release.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
       })
-      const newRelease = await NinaSdk.Release.releaseInitViaHub(
-        ninaClient,
+      const newRelease = await NinaSdk.client.Release.releaseInitViaHub(
         hubPubkey,
         retailPrice,
         amount,
@@ -353,7 +351,6 @@ const releaseContextHelper = ({
       const txId = await releasePurchaseHelper(
         releasePubkey,
         provider,
-        ninaClient,
         usdcBalance,
         hubPubkey
       )
@@ -429,8 +426,7 @@ const releaseContextHelper = ({
         publicKey: release.toBase58(),
         wallet: provider.wallet.publicKey.toBase58(),
       })
-      const newRelease = await NinaSdk.Release.releaseInit(
-        ninaClient,
+      const newRelease = await NinaSdk.client.Release.releaseInit(
         retailPrice,
         amount,
         resalePercentage,
@@ -486,8 +482,7 @@ const releaseContextHelper = ({
 
   const closeRelease = async (releasePubkey) => {
     try {
-      const closedRelease = await NinaSdk.Release.closeRelease(
-        ninaClient,
+      const closedRelease = await NinaSdk.client.Release.closeRelease(
         releasePubkey
       )
       releasePubkey = closedRelease.release.release.publicKey
@@ -527,7 +522,6 @@ const releaseContextHelper = ({
       const txId = await releasePurchaseHelper(
         releasePubkey,
         provider,
-        ninaClient,
         usdcBalance
       )
       await getConfirmTransaction(txId, provider.connection)
@@ -583,8 +577,7 @@ const releaseContextHelper = ({
       return
     }
     try {
-      const collectedRelease = await NinaSdk.Release.collectRoyaltyForRelease(
-        ninaClient,
+      const collectedRelease = await NinaSdk.client.Release.collectRoyaltyForRelease(
         recipient,
         releasePubkey,
         releaseState
@@ -606,8 +599,7 @@ const releaseContextHelper = ({
 
   const addRoyaltyRecipient = async (release, updateData, releasePubkey) => {
     try {
-      const royaltyRecipient = await NinaSdk.Release.addRoyaltyRecipient(
-        ninaClient,
+      const royaltyRecipient = await NinaSdk.client.Release.addRoyaltyRecipient(
         release,
         updateData,
         releasePubkey
@@ -635,7 +627,7 @@ const releaseContextHelper = ({
 
   const getRelease = async (releasePubkey) => {
     try {
-      const { release } = await NinaSdk.Release.fetch(releasePubkey, true)
+      const { release } = await NinaSdk.client.Release.fetch(releasePubkey, true)
       const newState = updateStateForReleases([release])
       setReleaseState((prevState) => ({
         ...prevState,
@@ -656,7 +648,7 @@ const releaseContextHelper = ({
     withAccountData = false
   ) => {
     try {
-      const { published } = await NinaSdk.Account.fetchPublished(
+      const { published } = await NinaSdk.client.Account.fetchPublished(
         publicKey,
         withAccountData
       )
@@ -677,7 +669,7 @@ const releaseContextHelper = ({
 
   const getReleasesCollectedByUser = async (publicKey) => {
     try {
-      const { collected } = await NinaSdk.Account.fetchCollected(publicKey)
+      const { collected } = await NinaSdk.client.Account.fetchCollected(publicKey)
       const newState = updateStateForReleases(collected)
       setReleaseState((prevState) => ({
         ...prevState,
@@ -698,15 +690,15 @@ const releaseContextHelper = ({
     withAccountData = false
   ) => {
     try {
-      const { collected } = await NinaSdk.Account.fetchCollected(
+      const { collected } = await NinaSdk.client.Account.fetchCollected(
         publicKey,
         withAccountData
       )
-      const { published } = await NinaSdk.Account.fetchPublished(
+      const { published } = await NinaSdk.client.Account.fetchPublished(
         publicKey,
         withAccountData
       )
-      const { revenueShares } = await NinaSdk.Account.fetchRevenueShares(
+      const { revenueShares } = await NinaSdk.client.Account.fetchRevenueShares(
         publicKey,
         withAccountData
       )
@@ -756,7 +748,7 @@ const releaseContextHelper = ({
 
   const getReleaseRoyaltiesByUser = async (publicKey) => {
     try {
-      const { revenueShares } = await NinaSdk.Account.fetchRevenueShares(
+      const { revenueShares } = await NinaSdk.client.Account.fetchRevenueShares(
         publicKey,
         true
       )
@@ -814,7 +806,7 @@ const releaseContextHelper = ({
       const published = []
 
       let highlights = (
-        await NinaSdk.Hub.fetchReleases(
+        await NinaSdk.client.Hub.fetchReleases(
           highlightsHubPubkey,
           withAccountData,
           params
@@ -851,12 +843,12 @@ const releaseContextHelper = ({
       const all = [...allReleases]
 
       const releases = (
-        await NinaSdk.Release.fetchAll(
+        await NinaSdk.client.Release.fetchAll(
           { limit: 25, offset: allReleases.length },
           true
         )
       ).releases
-
+      console.log('releases', releases)
       all.push(...releases.map((release) => release.publicKey))
 
       const newState = updateStateForReleases(releases)
@@ -879,7 +871,7 @@ const releaseContextHelper = ({
   }
 
   const getCollectorsForRelease = async (releasePubkey) => {
-    const { collectors } = await NinaSdk.Release.fetchCollectors(releasePubkey)
+    const { collectors } = await NinaSdk.client.Release.fetchCollectors(releasePubkey)
     const updatedVerificationState = { ...verificationState }
     return collectors.map((collector) => {
       if (collector.verifications.length > 0) {
@@ -1277,7 +1269,7 @@ const releaseContextHelper = ({
       if (process.env.SOLANA_CLUSTER === 'devnet') {
         return false
       }
-      let path = endpoints.api + `/hash/${hash}`
+      let path = process.env.NINA_IDENTITY_ENDPOINT + `/hash/${hash}`
       const response = await fetch(path)
       const { release } = await response.json()
       if (release) {
@@ -1394,7 +1386,7 @@ const releaseContextHelper = ({
       'confirmed'
     )
     const releasePublicKeyString = releasePublicKey.toBase58()
-    const ninaRelease = await NinaSdk.Release.fetch(releasePublicKeyString)
+    const ninaRelease = await NinaSdk.client.Release.fetch(releasePublicKeyString)
     let releaseCreationPending = localStorage.getItem(
       'release_creation_pending'
     )

@@ -10,6 +10,7 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import onboardingCodeWhitelist from '@nina-protocol/nina-internal-sdk/src/utils/onboardingCodeWhitelist'
 import { useSnackbar } from 'notistack'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const ONBOARDING_ACCOUNT = 'B9TUbCJV5mpmgBzuqNBpsAnSTqzXZ4S6FxpPtcFPMps3'
 const ID_ACCOUNT = 'idHukURpSwMbvcRER9pN97tBSsH4pdLSUhnHYwHftd5'
@@ -23,11 +24,11 @@ const Admin = () => {
   const [code, setCode] = useState()
   const [restrictedRelease, setRestrictedRelease] = useState()
   const [restrictedAccount, setRestrictedAccount] = useState()
-  const { getSolBalanceForPublicKey, ninaClient } = useContext(Nina.Context)
+  const { getSolBalanceForPublicKey } = useContext(Nina.Context)
   const [verificationBalance, setVerificationBalance] = useState(0)
   const [dispatcherBalance, setDispatcherBalance] = useState(0)
   const [onboardingBalance, setOnboardingBalance] = useState(0)
-
+  const ids = NinaSdk.utils.NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER]
   useEffect(() => {
     const fetchBalances = async () => {
       setVerificationBalance(await getSolBalanceForPublicKey(ID_ACCOUNT))
@@ -101,9 +102,9 @@ const Admin = () => {
               rel="noopener noreferrer"
             >
               <Typography variant="h4" mb={2}>
-                {`Onboarding Account Balance: ${ninaClient.nativeToUiString(
+                {`Onboarding Account Balance: ${NinaSdk.utils.nativeToUiString(
                   onboardingBalance,
-                  ninaClient.ids.mints.wsol
+                  ids.mints.wsol
                 )}`}
               </Typography>
             </a>
@@ -113,9 +114,9 @@ const Admin = () => {
               rel="noopener noreferrer"
             >
               <Typography variant="h4" mb={2}>
-                {`Verification Account Balance: ${ninaClient.nativeToUiString(
+                {`Verification Account Balance: ${NinaSdk.utils.nativeToUiString(
                   verificationBalance,
-                  ninaClient.ids.mints.wsol
+                  ids.mints.wsol
                 )}`}
               </Typography>
             </a>
@@ -125,9 +126,9 @@ const Admin = () => {
               rel="noopener noreferrer"
             >
               <Typography variant="h4" mb={4}>
-                {`Dispatcher Account Balance: ${ninaClient.nativeToUiString(
+                {`Dispatcher Account Balance: ${NinaSdk.utils.nativeToUiString(
                   dispatcherBalance,
-                  ninaClient.ids.mints.wsol
+                  ids.mints.wsol
                 )}`}
               </Typography>
             </a>

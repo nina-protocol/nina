@@ -58,7 +58,8 @@ export default ReleasePage
 export const getStaticPaths = async () => {
   await initSdkIfNeeded(true)
   const paths = []
-  const { releases } = await NinaSdk.Release.fetchAll({ limit: 2000 })
+  console.log('NinaSdk.client.Release.fetchAll', NinaSdk.client)
+  const { releases } = await NinaSdk.client.Release.fetchAll({ limit: 2000 })
   releases.forEach((release) => {
     paths.push({
       params: {
@@ -78,7 +79,7 @@ export const getStaticProps = async (context) => {
 
   try {
     await initSdkIfNeeded(true)
-    const { release } = await NinaSdk.Release.fetch(releasePubkey)
+    const { release } = await NinaSdk.client.Release.fetch(releasePubkey)
 
     const metadata = release.metadata
     if (release.publishedThroughHub) {
@@ -87,7 +88,7 @@ export const getStaticProps = async (context) => {
 
     let hub
     if (release.publishedThroughHub) {
-      hub = await NinaSdk.Hub.fetch(release.publishedThroughHub)
+      hub = await NinaSdk.client.Hub.fetch(release.publishedThroughHub)
     }
 
     return {

@@ -8,6 +8,7 @@ import Box from '@mui/material/Box'
 import ReleaseListTable from './ReleaseListTable'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import Link from 'next/link'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const ReleaseList = () => {
   const {
@@ -16,7 +17,7 @@ const ReleaseList = () => {
     collectRoyaltyForRelease,
     releaseState,
   } = useContext(Release.Context)
-  const { collection, ninaClient } = useContext(Nina.Context)
+  const { collection } = useContext(Nina.Context)
 
   const { wallet } = useContext(Wallet.Context)
   const [userPublishedReleases, setUserPublishedReleases] = useState([])
@@ -26,7 +27,7 @@ const ReleaseList = () => {
   const [exchanges, setExchanges] = useState(0)
   const [exchangeSales, setExchangeSales] = useState(0)
 
-  const USDC_MINT_ID = ninaClient.ids.mints.usdc
+  const USDC_MINT_ID = NinaSdk.utils.NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER].mints.usdc
 
   useEffect(() => {
     if (wallet?.connected) {
@@ -76,13 +77,13 @@ const ReleaseList = () => {
                     <span> {sales}</span> of <span>{editionTotal} </span>{' '}
                     available editions for a total of{' '}
                     <span>
-                      {ninaClient.nativeToUiString(revenue, USDC_MINT_ID)}
+                      {NinaSdk.utils.nativeToUiString(revenue, USDC_MINT_ID)}
                     </span>
                     .{`  You've`} had <span>{exchanges}</span>{' '}
                     {exchanges === 1 ? 'sale' : 'sales'} on the secondary market
                     for a total of{' '}
                     <span>
-                      {ninaClient.nativeToUiString(exchangeSales, USDC_MINT_ID)}
+                      {NinaSdk.utils.nativeToUiString(exchangeSales, USDC_MINT_ID)}
                     </span>
                     .
                   </Typography>

@@ -12,7 +12,6 @@ const ExchangeContextProvider = ({ children }) => {
     addReleaseToCollection,
     removeReleaseFromCollection,
     getUserBalances,
-    ninaClient,
     setVerificationState,
   } = useContext(Nina.Context)
   const { getRelease } = useContext(Release.Context)
@@ -33,7 +32,6 @@ const ExchangeContextProvider = ({ children }) => {
     filterExchangesForReleaseMarketPrice,
     filterExchangeMatch,
   } = exchangeContextHelper({
-    ninaClient,
     exchangeState,
     setExchangeState,
     exchangeInitPending,
@@ -70,7 +68,6 @@ const ExchangeContextProvider = ({ children }) => {
 }
 
 const exchangeContextHelper = ({
-  ninaClient,
   exchangeState,
   setExchangeState,
   exchangeInitPending,
@@ -80,13 +77,12 @@ const exchangeContextHelper = ({
   getUserBalances,
   setVerificationState,
 }) => {
-  const { provider } = ninaClient
-
   const exchangeAccept = async (exchange, releasePubkey) => {
     try {
-      const { exchangePublicKey } = await NinaSdk.Exchange.exchangeAccept(
-        ninaClient,
-        exchange,
+      const { exchangePublicKey } = await NinaSdk.client.Exchange.exchangeAccept(
+        exchange.publicKey,
+        exchange.isSelling,
+        exchange.expectedAmount,
         releasePubkey
       )
       if (exchange.isSelling) {
@@ -115,8 +111,7 @@ const exchangeContextHelper = ({
       [releasePubkey]: true,
     })
     try {
-      const exchangeResult = await NinaSdk.Exchange.exchangeInit(
-        ninaClient,
+      const exchangeResult = await NinaSdk.client.Exchange.exchangeInit(
         amount,
         isSelling,
         releasePubkey
@@ -155,8 +150,7 @@ const exchangeContextHelper = ({
 
   const exchangeCancel = async (exchange, releasePubkey) => {
     try {
-      const { exchangePublicKey } = await NinaSdk.Exchange.exchangeCancel(
-        ninaClient,
+      const { exchangePublicKey } = await NinaSdk.client.Exchange.exchangeCancel(
         exchange,
         releasePubkey
       )
@@ -189,7 +183,7 @@ const exchangeContextHelper = ({
     withAccountInfo = true,
     transactionId
   ) => {
-    const { exchange } = await NinaSdk.Exchange.fetch(
+    const { exchange } = await NinaSdk.client.Exchange.fetch(
       publicKey,
       withAccountInfo,
       transactionId
@@ -213,7 +207,7 @@ const exchangeContextHelper = ({
 
   const getExchangesForUser = async (publicKey, withAccountData = true) => {
     try {
-      const { exchanges } = await NinaSdk.Account.fetchExchanges(
+      const { exchanges } = await NinaSdk.client.Account.fetchExchanges(
         publicKey,
         withAccountData
       )
@@ -238,7 +232,7 @@ const exchangeContextHelper = ({
 
   const getExchangesForRelease = async (publicKey, withAccountData = true) => {
     try {
-      const { exchanges } = await NinaSdk.Release.fetchExchanges(
+      const { exchanges } = await NinaSdk.client.Release.fetchExchanges(
         publicKey,
         withAccountData
       )
@@ -286,7 +280,7 @@ const exchangeContextHelper = ({
       ...exchange,
       isCurrentUser:
         exchange.initializer.publicKey ===
-        provider.wallet?.publicKey?.toBase58(),
+        NinaSdk.client.provider.wallet?.publicKey?.toBase58(),
     }
     exchangeItem.amount = exchange.isSale
       ? exchange.expectedAmount * 1000000
@@ -299,7 +293,7 @@ const exchangeContextHelper = ({
   const filterExchangeMatch = (price, isBuy, releasePubkey) => {
     let match = undefined
     let exchanges = filterExchangesForReleaseBuySell(releasePubkey, !isBuy)
-    price = ninaClient.nativeToUi(price, ninaClient.ids.mints.usdc)
+    price = NinaSdk.utils.nativeToUi(price, NinaSdk.utils.NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER].mints.usdc)
     exchanges?.forEach((exchange) => {
       // If the exchanges are on opposite sides of the market
       if (exchange.isSelling === isBuy) {
@@ -395,12 +389,12 @@ const exchangeContextHelper = ({
   ) => {
     let exchanges = filterExchangesForRelease(releasePubkey)
     if (isUser) {
-      if (!provider.wallet?.connected) {
+      if (!NinaSdk.client.provider.wallet?.connected) {
         return []
       }
 
       exchanges = exchanges.filter(
-        (e) => e.initializer === provider.wallet?.publicKey.toBase58()
+        (e) => e.initializer === NinaSdk.client.wallet?.publicKey.toBase58()
       )
     }
 

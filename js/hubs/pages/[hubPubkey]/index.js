@@ -62,7 +62,7 @@ const HubPage = (props) => {
 export const getStaticPaths = async () => {
   await initSdkIfNeeded(true)
   const paths = []
-  const { hubs } = await NinaSdk.Hub.fetchAll({ limit: 1000 })
+  const { hubs } = await NinaSdk.client.Hub.fetchAll({ limit: 1000 })
   hubs.forEach((hub) => {
     paths.push({
       params: { hubPubkey: hub.publicKey },
@@ -82,7 +82,7 @@ export const getStaticProps = async (context) => {
   if (hubPubkey && hubPubkey !== 'manifest.json' && hubPubkey !== 'undefined') {
     try {
       await initSdkIfNeeded(true)
-      const { hub } = await NinaSdk.Hub.fetch(hubPubkey)
+      const { hub } = await NinaSdk.client.Hub.fetch(hubPubkey)
       return {
         props: {
           hub,

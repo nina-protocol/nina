@@ -34,6 +34,7 @@ import {
   uploadHasItemForType,
 } from '../utils/uploadManager'
 import roundUp from '../utils/formatting'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const NoSolWarning = dynamic(() => import('./NoSolWarning'), { ssr: false })
 const BundlrModal = dynamic(() => import('./BundlrModal'), { ssr: false })
@@ -77,7 +78,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     NinaProgramAction,
     NinaProgramActionCost,
     solBalance,
-    ninaClient,
     getUserBalances,
     solBalanceFetched,
   } = useContext(Nina.Context)
@@ -90,8 +90,8 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     3
   )
 
-  const formattedSolBalance = ninaClient
-    .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
+  const formattedSolBalance = NinaSdk.utils
+    .nativeToUi(solBalance, NinaSdk.utils.NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER].mints.wsol)
     .toFixed(3)
   const [track, setTrack] = useState(undefined)
   const [artwork, setArtwork] = useState(undefined)

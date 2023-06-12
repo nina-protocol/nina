@@ -15,7 +15,6 @@ const HubContextProvider = ({ children }) => {
     Release.Context
   )
   const {
-    ninaClient,
     savePostsToState,
     postState,
     setPostState,
@@ -59,7 +58,6 @@ const HubContextProvider = ({ children }) => {
     filterHubsAll,
     getHubFeePending,
   } = hubContextHelper({
-    ninaClient,
     savePostsToState,
     hubState,
     setHubState,
@@ -135,7 +133,6 @@ const HubContextProvider = ({ children }) => {
 }
 
 const hubContextHelper = ({
-  ninaClient,
   hubState,
   setHubState,
   hubCollaboratorsState,
@@ -160,7 +157,9 @@ const hubContextHelper = ({
   setVerificationState,
   solBalance,
 }) => {
-  const { ids, provider } = ninaClient
+  const { NINA_CLIENT_IDS } = NinaSdk.utils
+  const { provider } = NinaSdk.client
+  const ids = NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER]
 
   const hubInit = async (hubParams) => {
     try {
@@ -168,7 +167,7 @@ const hubContextHelper = ({
         wallet: provider.wallet.publicKey.toBase58(),
       })
       await initSdkIfNeeded()
-      const createdHub = await NinaSdk.Hub.hubInit(ninaClient, hubParams)
+      const createdHub = await NinaSdk.client.Hub.hubInit(hubParams)
       const hubPubkey = createdHub.createdHub.hub.publicKey
       logEvent('hub_init_with_credit_success', 'engagement', {
         hub: hubPubkey,
@@ -193,8 +192,7 @@ const hubContextHelper = ({
   const hubUpdateConfig = async (hubPubkey, uri, publishFee, referralFee) => {
     try {
       await initSdkIfNeeded()
-      const updatedHub = await NinaSdk.Hub.hubUpdateConfig(
-        ninaClient,
+      const updatedHub = await NinaSdk.client.Hub.hubUpdateConfig(
         hubPubkey,
         uri,
         publishFee,
@@ -220,8 +218,7 @@ const hubContextHelper = ({
     allowance = 1
   ) => {
     try {
-      const hubCollaborator = await NinaSdk.Hub.hubAddCollaborator(
-        ninaClient,
+      const hubCollaborator = await NinaSdk.client.Hub.hubAddCollaborator(
         hubPubkey,
         collaboratorPubkey,
         canAddContent,
@@ -250,8 +247,7 @@ const hubContextHelper = ({
   ) => {
     try {
       const updatedCollaborator =
-        await NinaSdk.Hub.hubUpdateCollaboratorPermission(
-          ninaClient,
+        await NinaSdk.client.Hub.hubUpdateCollaboratorPermission(
           hubPubkey,
           collaboratorPubkey,
           canAddContent,
@@ -282,8 +278,7 @@ const hubContextHelper = ({
       queue.add(releasePubkey)
       setAddToHubQueue(queue)
 
-      const release = await NinaSdk.Hub.hubAddRelease(
-        ninaClient,
+      const release = await NinaSdk.client.Hub.hubAddRelease(
         hubPubkey,
         releasePubkey,
         fromHub,
@@ -327,8 +322,7 @@ const hubContextHelper = ({
   const hubRemoveCollaborator = async (hubPubkey, collaboratorPubkey) => {
     try {
       // endpoint in fetchHubCollaborator needs to be updated, currently returns {success: true}
-      const removedCollaborator = await NinaSdk.Hub.hubRemoveCollaborator(
-        ninaClient,
+      const removedCollaborator = await NinaSdk.client.Hub.hubRemoveCollaborator(
         hubPubkey,
         collaboratorPubkey
       )
@@ -353,8 +347,7 @@ const hubContextHelper = ({
     type
   ) => {
     try {
-      const toggledContentResult = await NinaSdk.Hub.hubContentToggleVisibility(
-        ninaClient,
+      const toggledContentResult = await NinaSdk.client.Hub.hubContentToggleVisibility(
         hubPubkey,
         contentAccountPubkey,
         type
@@ -404,7 +397,7 @@ const hubContextHelper = ({
 
   const hubWithdraw = async (hubPubkey) => {
     try {
-      const hubWithdrawal = await NinaSdk.Hub.hubWithdraw(ninaClient, hubPubkey)
+      const hubWithdrawal = await NinaSdk.client.Hub.hubWithdraw(hubPubkey)
       hubPubkey = hubWithdrawal.hub.hub.publicKey
       await getHub(hubPubkey)
       return {
@@ -424,8 +417,7 @@ const hubContextHelper = ({
     fromHub
   ) => {
     try {
-      const initializedPost = await NinaSdk.Hub.postInitViaHub(
-        ninaClient,
+      const initializedPost = await NinaSdk.client.Hub.postInitViaHub(
         hubPubkey,
         slug,
         uri,
@@ -454,8 +446,7 @@ const hubContextHelper = ({
 
   const postUpdateViaHubPost = async (hubPubkey, slug, uri) => {
     try {
-      const updatedPost = await NinaSdk.Hub.postUpdateViaHub(
-        ninaClient,
+      const updatedPost = await NinaSdk.client.Hub.postUpdateViaHub(
         hubPubkey,
         slug,
         uri
@@ -480,8 +471,7 @@ const hubContextHelper = ({
   ) => {
     try {
       const royaltyForRelease =
-        await NinaSdk.Hub.collectRoyaltyForReleaseViaHub(
-          ninaClient,
+        await NinaSdk.client.Release.collectRoyaltyForReleaseViaHub(
           releasePubkey,
           hubPubkey,
           slug,
@@ -498,7 +488,7 @@ const hubContextHelper = ({
       await getHub(hubPubkey)
       return {
         success: true,
-        msg: `You collected $${ninaClient.nativeToUi(
+        msg: `You collected $${NinaSdk.utils.nativeToUi(
           recipient.owed.toNumber(),
           paymentMint.toBase58()
         )} to the hub`,
@@ -512,7 +502,7 @@ const hubContextHelper = ({
     try {
       const updatedAllHubs = [...allHubs]
       await initSdkIfNeeded()
-      const { hubs } = await NinaSdk.Hub.fetchAll(
+      const { hubs } = await NinaSdk.client.Hub.fetchAll(
         { offset: allHubs.length, limit: 25 },
         true
       )
@@ -540,7 +530,7 @@ const hubContextHelper = ({
   const getHub = async (hubPubkey) => {
     try {
       await initSdkIfNeeded()
-      const hub = await NinaSdk.Hub.fetch(hubPubkey, true)
+      const hub = await NinaSdk.client.Hub.fetch(hubPubkey, true)
 
       const updatedHubState = { ...hubState }
       const hubData = hub.hub.accountData
@@ -615,7 +605,7 @@ const hubContextHelper = ({
   const getHubsForUser = async (publicKey) => {
     try {
       await initSdkIfNeeded()
-      const { hubs } = await NinaSdk.Account.fetchHubs(publicKey, true)
+      const { hubs } = await NinaSdk.client.Account.fetchHubs(publicKey, true)
       const updatedHubCollaboratorState = {}
       const updatedHubState = { ...hubState }
       hubs.forEach((hub) => {
@@ -645,7 +635,7 @@ const hubContextHelper = ({
   const getHubsForRelease = async (releasePubkey) => {
     try {
       await initSdkIfNeeded()
-      const { hubs } = await NinaSdk.Release.fetchHubs(releasePubkey, true)
+      const { hubs } = await NinaSdk.client.Release.fetchHubs(releasePubkey, true)
       const updatedHubState = {}
       const updatedHubContent = {}
       hubs.forEach((hub) => {
@@ -748,7 +738,7 @@ const hubContextHelper = ({
         )[0]
         if (!hub) {
           await initSdkIfNeeded()
-          hub = await NinaSdk.Hub.fetch(handle)
+          hub = await NinaSdk.client.Hub.fetch(handle)
         }
         return hub?.publicKey
       }
@@ -763,7 +753,7 @@ const hubContextHelper = ({
     if (typeof hubPubkey === 'string') {
       hubPubkey = new anchor.web3.PublicKey(hubPubkey)
     }
-    const program = await ninaClient.useProgram()
+    const program = NinaSdk.client.program
     const hub = await program.account.hub.fetch(hubPubkey)
     let hubTokenAccount = await findAssociatedTokenAddress(
       hub.hubSigner,
@@ -789,7 +779,7 @@ const hubContextHelper = ({
   const validateHubHandle = async (handle) => {
     try {
       await initSdkIfNeeded()
-      const hub = await NinaSdk.Hub.fetch(handle)
+      const hub = await NinaSdk.client.Hub.fetch(handle)
       if (hub) {
         alert(
           `A hub with the handle ${handle} all ready exists, please choose a different handle.`

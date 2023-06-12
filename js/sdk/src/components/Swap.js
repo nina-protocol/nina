@@ -12,21 +12,23 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 import Divider from '@mui/material/Divider'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const Swap = () => {
   const { enqueueSnackbar } = useSnackbar()
 
-  const { ninaClient, usdcBalance, solBalance, getUserBalances, sendUsdc } =
+  const { usdcBalance, solBalance, getUserBalances, sendUsdc } =
     useContext(Nina.Context)
+  const ids = NinaSdk.utils.NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER]
   const { wallet, connection, pendingTransactionMessage } = useContext(
     Wallet.Context
   )
   const [inputAmount, setInputAmount] = useState(0)
   const [quote, setQuote] = useState()
   const [isSolToUsdc, setIsSolToUsdc] = useState(false)
-  const [baseCurrency, setBaseCurrency] = useState(ninaClient.ids.mints.usdc)
+  const [baseCurrency, setBaseCurrency] = useState(ids.mints.usdc)
   const [outputCurrency, setOutputCurrency] = useState(
-    ninaClient.ids.mints.wsol
+    ids.mints.wsol
   )
   const [pending, setPending] = useState(false)
   const [withdrawPending, setWithdrawPending] = useState(false)
@@ -48,7 +50,7 @@ const Swap = () => {
     if (quote) {
       return (
         Math.floor(
-          ninaClient.nativeToUi(
+          NinaSdk.utils.nativeToUi(
             quote?.estimatedAmountOut.toNumber(),
             outputCurrency
           ) * multiplier
@@ -64,14 +66,14 @@ const Swap = () => {
 
   const refreshQuote = async () => {
     const newBaseCurrency = isSolToUsdc
-      ? ninaClient.ids.mints.wsol
-      : ninaClient.ids.mints.usdc
+      ? ids.mints.wsol
+      : ids.mints.usdc
     setBaseCurrency(newBaseCurrency)
     setOutputCurrency(
-      isSolToUsdc ? ninaClient.ids.mints.usdc : ninaClient.ids.mints.wsol
+      isSolToUsdc ? ids.mints.usdc : ids.mints.wsol
     )
 
-    const sol = ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol)
+    const sol = NinaSdk.utils.nativeToUi(solBalance, ids.mints.wsol)
 
     let defaultInputAmount = 0
     if (isSolToUsdc) {
@@ -98,7 +100,7 @@ const Swap = () => {
         await swapQuote(
           wallet,
           connection,
-          ninaClient.uiToNative(amount, currency),
+          NinaSdk.utils.uiToNative(amount, currency),
           isSolToUsdc
         )
       )

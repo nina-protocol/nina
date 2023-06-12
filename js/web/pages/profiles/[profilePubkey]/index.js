@@ -77,7 +77,7 @@ export default ProfilePage
 export const getStaticPaths = async () => {
   await initSdkIfNeeded(true)
   const paths = []
-  const { accounts } = await NinaSdk.Account.fetchAll({ limit: 5000 })
+  const { accounts } = await NinaSdk.client.Account.fetchAll({ limit: 5000 })
   accounts.forEach((account) => {
     paths.push({
       params: {
