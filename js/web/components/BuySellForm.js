@@ -4,11 +4,11 @@ import { withFormik } from 'formik'
 import Button from '@mui/material/Button'
 import Input from '@mui/material/Input'
 import Box from '@mui/material/Box'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import dynamic from 'next/dynamic'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const WalletConnectModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
@@ -18,7 +18,6 @@ const BuySellForm = (props) => {
 
   const { wallet } = useContext(Wallet.Context)
   const { exchangeInitPending } = useContext(Exchange.Context)
-  const { ninaClient } = useContext(Nina.Context)
   const [pending, setPending] = useState(false)
   const [buyPending, setBuyPending] = useState(false)
   const [sellPending, setSellPending] = useState(false)
@@ -72,7 +71,7 @@ const BuySellForm = (props) => {
           onChange={(e) => handleChange(e)}
           disableUnderline={true}
           placeholder={`Enter price in ${
-            ninaClient.isUsdc(release.paymentMint) ? 'USDC' : 'SOL'
+            NinaSdk.utils.isUsdc(release.paymentMint) ? 'USDC' : 'SOL'
           }`}
           value={amount !== undefined ? amount : ''}
         />

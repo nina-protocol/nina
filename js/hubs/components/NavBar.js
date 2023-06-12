@@ -76,7 +76,7 @@ const NavBar = ({ hubPubkey }) => {
 
   useEffect(() => {
     const fetchHub = async () => {
-      const { hub } = await NinaSdk.Hub.fetch(hubPubkey)
+      const { hub } = await NinaSdk.client.Hub.fetch(hubPubkey)
       setHubData(hub)
     }
     if (hubPubkey) {

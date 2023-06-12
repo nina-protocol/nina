@@ -25,7 +25,7 @@ const Layout = ({ children, loading }) => {
     const getHubPubkey = async (handle) => {
       try {
         await initSdkIfNeeded()
-        const publicKey = (await NinaSdk.Hub.fetch(handle)).hub.publicKey
+        const publicKey = (await NinaSdk.client.Hub.fetch(handle)).hub.publicKey
         setHubPubkey(publicKey)
       } catch (error) {
         setHubPubkey(undefined)

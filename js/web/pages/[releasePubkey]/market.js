@@ -49,7 +49,7 @@ const ReleaseMarketPage = (props) => {
 export const getStaticPaths = async () => {
   await initSdkIfNeeded(true)
   const paths = []
-  const { releases } = await NinaSdk.Release.fetchAll({ limit: 2000 })
+  const { releases } = await NinaSdk.client.Release.fetchAll({ limit: 2000 })
   releases.forEach((release) => {
     paths.push({
       params: {
@@ -68,7 +68,7 @@ export const getStaticProps = async (context) => {
   const releasePubkey = context.params.releasePubkey
   try {
     await initSdkIfNeeded(true)
-    const { release } = await NinaSdk.Release.fetch(releasePubkey)
+    const { release } = await NinaSdk.client.Release.fetch(releasePubkey)
     return {
       props: {
         metadata: release.metadata,

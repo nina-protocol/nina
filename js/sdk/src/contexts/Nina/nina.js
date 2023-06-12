@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useMemo } from 'react'
+import React, { createContext, useState, useEffect, useMemo, useContext } from 'react'
 import * as anchor from '@project-serum/anchor'
 import NinaSdk from '@nina-protocol/js-sdk'
 import axios from 'axios'
@@ -14,6 +14,7 @@ import Airtable from 'airtable'
 import { getConfirmTransaction } from '../../utils'
 import { encodeBase64 } from 'tweetnacl-util'
 import { initSdkIfNeeded } from '../../utils/sdkInit'
+import Wallet from '../Wallet'
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -55,7 +56,7 @@ const NinaProgramActionCost = {
 const MAX_AUDIO_FILE_UPLOAD_SIZE = 500
 
 const NinaContext = createContext()
-const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
+const NinaContextProvider = ({ children, releasePubkey }) => {
   const [collection, setCollection] = useState({})
   const [postState, setPostState] = useState({})
   const [subscriptionState, setSubscriptionState] = useState({})
@@ -74,12 +75,13 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   const [fetchedHubs, setFetchedHubs] = useState(new Set())
   const [fetchedProfiles, setFetchedProfiles] = useState(new Set())
   const bundlrHttpAddress = 'https://node1.bundlr.network'
-  const { provider } = ninaClient
+  const { wallet } = useContext(Wallet.Context)
 
   useEffect(() => {
-    if (provider.wallet?.wallet && provider.wallet.publicKey) {
+    console.log('wallet: ', wallet)
+    if (wallet?.wallet && wallet.publicKey) {
       logEvent('wallet_connected', 'engagement', {
-        publicKey: provider.wallet.publicKey.toBase58(),
+        publicKey: wallet.publicKey.toBase58(),
       })
       getNpcAmountHeld()
       getUserBalances()
@@ -101,7 +103,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
       setNpcAmountHeld(0)
       setBundlrBalance(0.0)
     }
-  }, [provider.wallet.wallet, provider.wallet.publicKey])
+  }, [wallet, wallet.publicKey])
 
   const {
     subscriptionSubscribe,
@@ -139,7 +141,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     subscriptionUnsubscribeDelegated,
     sendUsdc,
   } = ninaContextHelper({
-    ninaClient,
     postState,
     setPostState,
     subscriptionState,
@@ -166,11 +167,11 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
   })
 
   const userSubscriptions = useMemo(() => {
-    if (provider.wallet?.wallet && provider.wallet.publicKey) {
-      return filterSubscriptionsForUser(provider.wallet.publicKey.toBase58())
+    if (wallet && wallet.publicKey) {
+      return filterSubscriptionsForUser(wallet.publicKey.toBase58())
     }
     return undefined
-  }, [subscriptionState, provider.wallet?.wallet, provider.wallet.publicKey])
+  }, [subscriptionState, wallet, wallet.publicKey])
 
   return (
     <NinaContext.Provider
@@ -196,7 +197,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         getUsdcBalanceForPublicKey,
         npcAmountHeld,
         healthOk,
-        ninaClient,
         bundlrFund,
         bundlrWithdraw,
         getBundlrBalance,
@@ -244,7 +244,6 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
 }
 
 const ninaContextHelper = ({
-  ninaClient,
   postState,
   setPostState,
   collection,
@@ -267,7 +266,10 @@ const ninaContextHelper = ({
   setVerificationState,
   setLowSolBalance,
 }) => {
-  const { provider, ids, uiToNative, nativeToUi } = ninaClient
+  const { provider } = NinaSdk.client
+  console.log('NinaSdk', NinaSdk)
+  const { NINA_CLIENT_IDS, uiToNative, nativeToUi } = NinaSdk.utils
+  const ids = NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER]
 
   //Subscrition
 
@@ -282,48 +284,13 @@ const ninaContextHelper = ({
         }
       )
 
-      const program = await ninaClient.useProgram()
-      subscribeToAccount = new anchor.web3.PublicKey(subscribeToAccount)
-      const [subscription] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-subscription')),
-          provider.wallet.publicKey.toBuffer(),
-          subscribeToAccount.toBuffer(),
-        ],
-        program.programId
+      const subscription = await NinaSdk.client.Subscription.subscriptionSubscribe(
+        subscribeToAccount,
+        hubHandle
       )
+      const publicKey = subscription.subscription.subscription.publicKey
+      await getSubscription(publicKey)
 
-      const request = {
-        accounts: {
-          payer: provider.wallet.publicKey,
-          from: provider.wallet.publicKey,
-          subscription,
-          to: subscribeToAccount,
-          systemProgram: anchor.web3.SystemProgram.programId,
-        },
-      }
-
-      let tx
-      if (hubHandle) {
-        tx = await program.transaction.subscriptionSubscribeHub(
-          hubHandle,
-          request
-        )
-      } else {
-        tx = await program.transaction.subscriptionSubscribeAccount(request)
-      }
-
-      tx.recentBlockhash = (
-        await provider.connection.getRecentBlockhash()
-      ).blockhash
-      tx.feePayer = provider.wallet.publicKey
-      const txid = await provider.wallet.sendTransaction(
-        tx,
-        provider.connection
-      )
-
-      await getConfirmTransaction(txid, provider.connection)
-      await getSubscription(subscription.toBase58())
       logEvent(
         `subscription_subscribe_${hubHandle ? 'hub' : 'account'}_success`,
         'engagement',
@@ -356,42 +323,17 @@ const ninaContextHelper = ({
 
   const subscriptionUnsubscribe = async (unsubscribeAccount, hubHandle) => {
     try {
-      const program = await ninaClient.useProgram()
-      unsubscribeAccount = new anchor.web3.PublicKey(unsubscribeAccount)
-      const [subscription] = await anchor.web3.PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode('nina-subscription')),
-          provider.wallet.publicKey.toBuffer(),
-          unsubscribeAccount.toBuffer(),
-        ],
-        program.programId
+      const subscription = await NinaSdk.client.Subscription.subscriptionUnsubscribe(
+        unsubscribeAccount
       )
-      const tx = await program.transaction.subscriptionUnsubscribe({
-        accounts: {
-          payer: provider.wallet.publicKey,
-          from: provider.wallet.publicKey,
-          subscription,
-          to: unsubscribeAccount,
-          systemProgram: anchor.web3.SystemProgram.programId,
-        },
-      })
-      tx.recentBlockhash = (
-        await provider.connection.getRecentBlockhash()
-      ).blockhash
-      tx.feePayer = provider.wallet.publicKey
-      const txid = await provider.wallet.sendTransaction(
-        tx,
-        provider.connection
-      )
-
-      await getConfirmTransaction(txid, provider.connection)
-      await getSubscription(subscription.toBase58(), txid)
+      const publicKey = subscription.subscription.subscription.publicKey
+      hubHandle = subscription.subscription.subscription.to.handle
       if (hubHandle) {
         await getSubscriptionsForHub(hubHandle)
       } else {
         await getSubscriptionsForUser(provider.wallet.publicKey.toBase58())
       }
-      removeSubScriptionFromState(subscription.toBase58())
+      removeSubScriptionFromState(publicKey)
 
       return {
         success: true,
@@ -536,7 +478,7 @@ const ninaContextHelper = ({
   const createCollection = async () => {
     if (provider.wallet?.connected) {
       try {
-        const program = await ninaClient.useProgram()
+        const program = NinaSdk.client.program
         const updatedCollection = {}
         let tokenAccounts =
           await provider.connection.getParsedTokenAccountsByOwner(
@@ -604,7 +546,7 @@ const ninaContextHelper = ({
     if (provider.wallet?.connected) {
       try {
         const updatedCollection = {}
-        const program = await ninaClient.useProgram()
+        const program = await NinaSdk.client.program
         const release = await program.account.release.fetch(
           new anchor.web3.PublicKey(releasePubkey)
         )
@@ -740,7 +682,7 @@ const ninaContextHelper = ({
         solBalanceResult = await getSolBalance()
         setSolUsdcBalance(
           Math.floor(
-            ninaClient.nativeToUi(solBalanceResult, ids.mints.wsol) *
+            NinaSdk.utils.nativeToUi(solBalanceResult, ids.mints.wsol) *
               solPrice.data.data.SOL.price *
               100
           ) / 100
@@ -773,7 +715,7 @@ const ninaContextHelper = ({
     }
     return {
       usdc,
-      sol: ninaClient.nativeToUi(solBalanceResult, ids.mints.wsol),
+      sol: NinaSdk.utils.nativeToUi(solBalanceResult, ids.mints.wsol),
     }
   }
 
@@ -1097,7 +1039,7 @@ const ninaContextHelper = ({
       }
 
       const tx = await program.methods
-        .transfer(new anchor.BN(ninaClient.uiToNative(amount, ids.mints.usdc)))
+        .transfer(new anchor.BN(NinaSdk.utils.uiToNative(amount, ids.mints.usdc)))
         .accounts({
           source: fromUsdcTokenAccount,
           destination: toUsdcTokenAccount,
@@ -1131,9 +1073,9 @@ const ninaContextHelper = ({
   const checkIfHasBalanceToCompleteAction = async (action) => {
     const solUsdcBalanceResult = await getSolBalance()
     if (
-      ninaClient.uiToNative(
+      NinaSdk.utils.uiToNative(
         NinaProgramActionCost[action],
-        ninaClient.ids.mints.wsol
+        ids.mints.wsol
       ) > solUsdcBalanceResult
     ) {
       const error = new Error(
@@ -1161,7 +1103,7 @@ const ninaContextHelper = ({
 
   const getSubscription = async (subscriptionPubkey, txid = undefined) => {
     try {
-      const { subscription } = await NinaSdk.Subscription.fetch(
+      const { subscription } = await NinaSdk.client.Subscription.fetch(
         subscriptionPubkey,
         false,
         txid
@@ -1178,7 +1120,7 @@ const ninaContextHelper = ({
   const getSubscriptionsForUser = async (accountPubkey) => {
     try {
       await initSdkIfNeeded()
-      const { subscriptions } = await NinaSdk.Account.fetchSubscriptions(
+      const { subscriptions } = await NinaSdk.client.client.Account.fetchSubscriptions(
         accountPubkey,
         false
       )
@@ -1192,7 +1134,7 @@ const ninaContextHelper = ({
 
   const getSubscriptionsForHub = async (hubPubkeyOrHandle) => {
     try {
-      const { subscriptions } = await NinaSdk.Hub.fetchSubscriptions(
+      const { subscriptions } = await NinaSdk.client.Hub.fetchSubscriptions(
         hubPubkeyOrHandle,
         false
       )
@@ -1284,7 +1226,7 @@ const ninaContextHelper = ({
 
   const getVerificationsForUser = async (accountPubkey) => {
     try {
-      const { verifications } = await NinaSdk.Account.fetchVerifications(
+      const { verifications } = await NinaSdk.client.Account.fetchVerifications(
         accountPubkey
       )
       setVerificationState((prevState) => ({

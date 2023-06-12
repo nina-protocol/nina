@@ -53,8 +53,8 @@ const CollaboratorPermissions = (props) => {
       } = values
       setPending(true)
       const result = await hubUpdateCollaboratorPermission(
-        collaboratorPubkey,
         hubPubkey,
+        collaboratorPubkey,
         canAddContent,
         canAddCollaborator,
         allowance

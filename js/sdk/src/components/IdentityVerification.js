@@ -29,6 +29,7 @@ import {
   faInstagram,
   faEthereum,
 } from '@fortawesome/free-brands-svg-icons'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const IdentityVerification = ({
   verifications,
@@ -39,8 +40,8 @@ const IdentityVerification = ({
   const router = useRouter()
   const { wallet } = useContext(Wallet.Context)
   const { publicKey, signTransaction, sendTransaction } = wallet
-  const { ninaClient, getVerificationsForUser } = useContext(Nina.Context)
-  const { provider } = ninaClient
+  const { getVerificationsForUser } = useContext(Nina.Context)
+  const { provider } = NinaSdk.client
 
   const [open, setOpen] = useState(false)
   const [openDisconnectModal, setOpenDisconnectModal] = useState(false)

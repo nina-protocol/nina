@@ -16,6 +16,7 @@ import {
 
 import { decodeNonEncryptedByteArray } from './encrypt'
 import { encodeBase64 } from 'tweetnacl-util'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const PRIORITY_SWAP_FEE = 7500
 const WHIRLPOOL_PROGRAM_ID = new anchor.web3.PublicKey(
@@ -25,11 +26,11 @@ const SOL_USDC_WHIRLPOOL = new anchor.web3.PublicKey(
   'HJPjoWUrhoZzkNfRpHuieeFk9WcZWjwy6PBjZ81ngndJ'
 )
 
-const requiresSwap = (release, price, usdcBalance, ninaClient) => {
+const requiresSwap = (release, price, usdcBalance) => {
   return (
-    !ninaClient.isSol(release.paymentMint) &&
+    !NinaSdk.utils.isSol(release.paymentMint) &&
     usdcBalance <
-      ninaClient.nativeToUi(price.toNumber(), ninaClient.ids.mints.usdc)
+    NinaSdk.utils.nativeToUi(price.toNumber(), NinaSdk.utils.NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER].mints.usdc)
   )
 }
 
@@ -37,7 +38,6 @@ const releasePurchaseWithOrcaSwap = async (
   release,
   price,
   provider,
-  ninaClient,
   instructions,
   request,
   hub
@@ -88,7 +88,7 @@ const releasePurchaseWithOrcaSwap = async (
   if (instructions) {
     txBuilder.addInstructions(instructions)
   }
-  const program = await ninaClient.useProgram()
+  const program = NinaSdk.client.program
   let purchaseIx
   if (hub) {
     purchaseIx = await program.instruction.releasePurchaseViaHub(
@@ -122,13 +122,12 @@ const releasePurchaseWithOrcaSwap = async (
 const releasePurchaseHelper = async (
   releasePubkey,
   provider,
-  ninaClient,
   usdcBalance,
   hubPubkey = null
 ) => {
   let hub
   releasePubkey = new anchor.web3.PublicKey(releasePubkey)
-  const program = await ninaClient.useProgram()
+  const program = NinaSdk.client.program
   const release = await program.account.release.fetch(releasePubkey)
 
   if (release.price.toNumber() === 0) {
@@ -237,7 +236,7 @@ const releasePurchaseHelper = async (
 
   let price = release.price
   if (hub && hub.referralFee.toNumber() > 0) {
-    let releasePriceUi = ninaClient.nativeToUi(
+    let releasePriceUi = NinaSdk.utils.nativeToUi(
       release.price.toNumber(),
       release.paymentMint
     )
@@ -245,16 +244,15 @@ const releasePurchaseHelper = async (
     let convertAmount =
       releasePriceUi + (releasePriceUi * hub.referralFee.toNumber()) / 1000000
     price = new anchor.BN(
-      ninaClient.uiToNative(convertAmount, release.paymentMint)
+      NinaSdk.utils.uiToNative(convertAmount, release.paymentMint)
     )
   }
-  const isUsdc = ninaClient.isUsdc(release.paymentMint)
-  if (isUsdc && requiresSwap(release, price, usdcBalance, ninaClient)) {
+  const isUsdc = NinaSdk.utils.isUsdc(release.paymentMint)
+  if (isUsdc && requiresSwap(release, price, usdcBalance)) {
     return releasePurchaseWithOrcaSwap(
       release,
       price,
       provider,
-      ninaClient,
       instructions,
       request,
       hub
@@ -267,7 +265,7 @@ const releasePurchaseHelper = async (
       })
       request.instructions = formattedInstructions
     }
-    if (ninaClient.isSol(release.paymentMint)) {
+    if (NinaSdk.utils.isSol(release.paymentMint)) {
       const [wrappedSolAccount, wrappedSolInstructions] = await wrapSol(
         provider,
         release.price,

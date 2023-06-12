@@ -65,9 +65,9 @@ export default PostPage
 export const getStaticPaths = async () => {
   await initSdkIfNeeded(true)
   const paths = []
-  const { hubs } = await NinaSdk.Hub.fetchAll({ limit: 1000 })
+  const { hubs } = await NinaSdk.client.Hub.fetchAll({ limit: 1000 })
   for await (const hub of hubs) {
-    const { posts } = await NinaSdk.Hub.fetchPosts(hub.publicKey)
+    const { posts } = await NinaSdk.client.Hub.fetchPosts(hub.publicKey)
     posts.forEach((post) => {
       paths.push({
         params: {
@@ -89,7 +89,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (context) => {
   try {
     await initSdkIfNeeded(true)
-    const { hub, post } = await NinaSdk.Hub.fetchHubPost(
+    const { hub, post } = await NinaSdk.client.Hub.fetchHubPost(
       context.params.hubPubkey,
       context.params.hubPostPubkey
     )
@@ -105,7 +105,7 @@ export const getStaticProps = async (context) => {
   } catch (error) {
     console.warn(error)
     try {
-      const hub = await NinaSdk.Hub.fetchHub(context.params.hubPubkey)
+      const hub = await NinaSdk.client.Hub.fetchHub(context.params.hubPubkey)
 
       if (hub) {
         return {

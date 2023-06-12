@@ -7,12 +7,14 @@ import React, {
 } from 'react'
 import Nina from '../Nina'
 import Release from '../Release'
+import Wallet from '../Wallet'
 import { logEvent } from '../../utils/event'
 
 const AudioPlayerContext = createContext()
 const AudioPlayerContextProvider = ({ children }) => {
-  const { collection, shouldRemainInCollectionAfterSale, ninaClient } =
+  const { collection, shouldRemainInCollectionAfterSale } =
     useContext(Nina.Context)
+  const { wallet } = useContext(Wallet.Context)
   const { releaseState } = useContext(Release.Context)
   const [track, setTrack] = useState(null)
   const [playlist, setPlaylist] = useState([])
@@ -113,8 +115,8 @@ const AudioPlayerContextProvider = ({ children }) => {
         params.hub = hubPublicKey
       }
 
-      if (ninaClient.provider.wallet?.connected) {
-        params.wallet = ninaClient.provider.wallet.publicKey.toBase58()
+      if (wallet?.connected) {
+        params.wallet = wallet.publicKey.toBase58()
       }
 
       logEvent('track_play', 'engagement', params)
@@ -159,7 +161,6 @@ const audioPlayerContextHelper = ({
   setIsPlaying,
   setTrack,
   track,
-  ninaClient,
   setInitialized,
   broadcastChannel,
 }) => {
@@ -261,8 +262,8 @@ const audioPlayerContextHelper = ({
     const params = {
       publicKey: releasePubkey,
     }
-    if (ninaClient.provider.wallet?.connected) {
-      params.wallet = ninaClient.provider.wallet.publicKey.toBase58()
+    if (wallet?.connected) {
+      params.wallet = wallet.publicKey.toBase58()
     }
     logEvent('add_track_to_queue', 'engagement', params)
   }

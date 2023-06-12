@@ -40,7 +40,6 @@ const HubPostCreateForm = ({
       resetForm()
     }
   }, [postCreated])
-
   return (
     <Root>
       {update && <Typography>Updating {hubData.name}</Typography>}

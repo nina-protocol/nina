@@ -99,18 +99,7 @@ const NavBar = () => {
                 </BlueTypography>
               )}
             </UploadWrapper>
-
-            {!wallet?.connected && (
-              <>
-                <Link href="/start" style={{ textTransform: 'none' }}>
-                  <SignUpLink variant="body1" component={'a'}>
-                    Sign Up
-                  </SignUpLink>
-                </Link>
-              </>
-            )}
-
-            {wallet?.wallets && (
+            {wallet.wallets && (
               <StyledWalletDialogProvider featuredWallets={4}>
                 <StyledWalletButton router={router}>
                   {wallet?.connected &&
@@ -297,15 +286,6 @@ const StyledWalletButton = styled(WalletButton)(({ theme }) => ({
 const BlueTypography = styled(Typography)(({ theme }) => ({
   '& a': { color: theme.palette.blue },
   cursor: 'pointer',
-}))
-
-const SignUpLink = styled(Typography)(({ theme }) => ({
-  color: `${theme.palette.blue} !important`,
-  border: '1px solid blue',
-  padding: '4px',
-  [theme.breakpoints.down('md')]: {
-    fontSize: '12px !important',
-  },
 }))
 
 export default withFormik({

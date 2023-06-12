@@ -1,13 +1,8 @@
 import React, { createContext, useState, useContext } from 'react'
-import * as anchor from '@project-serum/anchor'
 import Audio from '../Audio'
 import Nina from '../Nina'
 import Release from '../Release'
-import {
-  findOrCreateAssociatedTokenAccount,
-  wrapSol,
-  TOKEN_PROGRAM_ID,
-} from '../../utils/web3'
+
 import { ninaErrorHandler } from '../../utils/errors'
 import NinaSdk from '@nina-protocol/js-sdk'
 
@@ -17,7 +12,6 @@ const ExchangeContextProvider = ({ children }) => {
     addReleaseToCollection,
     removeReleaseFromCollection,
     getUserBalances,
-    ninaClient,
     setVerificationState,
   } = useContext(Nina.Context)
   const { getRelease } = useContext(Release.Context)
@@ -38,7 +32,6 @@ const ExchangeContextProvider = ({ children }) => {
     filterExchangesForReleaseMarketPrice,
     filterExchangeMatch,
   } = exchangeContextHelper({
-    ninaClient,
     exchangeState,
     setExchangeState,
     exchangeInitPending,
@@ -75,7 +68,6 @@ const ExchangeContextProvider = ({ children }) => {
 }
 
 const exchangeContextHelper = ({
-  ninaClient,
   exchangeState,
   setExchangeState,
   exchangeInitPending,
@@ -85,138 +77,22 @@ const exchangeContextHelper = ({
   getUserBalances,
   setVerificationState,
 }) => {
-  const { provider } = ninaClient
-
   const exchangeAccept = async (exchange, releasePubkey) => {
     try {
-      const program = await ninaClient.useProgram()
-      const VAULT_ID = new anchor.web3.PublicKey(ninaClient.ids.accounts.vault)
-      const vault = await program.account.vault.fetch(VAULT_ID)
-      const release = await program.account.release.fetch(
-        new anchor.web3.PublicKey(releasePubkey)
+      const { exchangePublicKey } = await NinaSdk.client.Exchange.exchangeAccept(
+        exchange.publicKey,
+        exchange.isSelling,
+        exchange.expectedAmount,
+        releasePubkey
       )
-      const exchangeAccount = await program.account.exchange.fetch(
-        new anchor.web3.PublicKey(exchange.publicKey)
-      )
-      const [takerSendingTokenAccount, takerSendingTokenAccountIx] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          provider.wallet.publicKey,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          exchangeAccount.initializerExpectedMint
-        )
-
-      const [takerExpectedTokenAccount, takerExpectedTokenAccountIx] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          provider.wallet.publicKey,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          exchangeAccount.initializerSendingMint
-        )
-
-      const [
-        initializerExpectedTokenAccount,
-        initializerExpectedTokenAccountIx,
-      ] = await findOrCreateAssociatedTokenAccount(
-        provider.connection,
-        provider.wallet.publicKey,
-        exchangeAccount.initializer,
-        anchor.web3.SystemProgram.programId,
-        anchor.web3.SYSVAR_RENT_PUBKEY,
-        exchangeAccount.initializerExpectedMint
-      )
-
-      const exchangeHistory = anchor.web3.Keypair.generate()
-      const createExchangeHistoryIx =
-        await program.account.exchangeHistory.createInstruction(exchangeHistory)
-
-      const request = {
-        accounts: {
-          initializer: exchangeAccount.initializer,
-          initializerExpectedTokenAccount,
-          takerExpectedTokenAccount,
-          takerSendingTokenAccount,
-          exchangeEscrowTokenAccount:
-            exchangeAccount.exchangeEscrowTokenAccount,
-          exchangeSigner: exchangeAccount.exchangeSigner,
-          taker: provider.wallet.publicKey,
-          exchange: new anchor.web3.PublicKey(exchange.publicKey),
-          exchangeHistory: exchangeHistory.publicKey,
-          release: new anchor.web3.PublicKey(releasePubkey),
-          vault: VAULT_ID,
-          vaultTokenAccount: ninaClient.isUsdc(release.paymentMint)
-            ? vault.usdcVault
-            : vault.wrappedSolVault,
-          vaultSigner: vault.vaultSigner,
-          royaltyTokenAccount: release.royaltyTokenAccount,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: anchor.web3.SystemProgram.programId,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        },
-        signers: [exchangeHistory],
-        instructions: [createExchangeHistoryIx],
-      }
-
-      if (takerSendingTokenAccountIx) {
-        request.instructions.push(takerSendingTokenAccountIx)
-      }
-      if (takerExpectedTokenAccountIx) {
-        request.instructions.push(takerExpectedTokenAccountIx)
-      }
-      if (initializerExpectedTokenAccountIx) {
-        request.instructions.push(initializerExpectedTokenAccountIx)
-      }
-
-      if (ninaClient.isSol(release.paymentMint) && exchange.isSelling) {
-        const [wrappedSolAccount, wrappedSolInstructions] = await wrapSol(
-          provider,
-          exchange.expectedAmount,
-          release.paymentMint
-        )
-        request.instructions.push(...wrappedSolInstructions)
-        request.accounts.takerSendingTokenAccount = wrappedSolAccount
-      }
-
-      const params = {
-        expectedAmount: exchangeAccount.expectedAmount,
-        initializerAmount: exchangeAccount.initializerAmount,
-        resalePercentage: release.resalePercentage,
-        datetime: new anchor.BN(Date.now() / 1000),
-      }
-
-      const tx = await program.methods
-        .exchangeAccept(params)
-        .accounts(request.accounts)
-        .preInstructions(request.instructions)
-        .signers(request.signers)
-        .transaction()
-      tx.recentBlockhash = (
-        await provider.connection.getRecentBlockhash()
-      ).blockhash
-      tx.feePayer = provider.wallet.publicKey
-
-      for await (let signer of request.signers) {
-        tx.partialSign(signer)
-      }
-
-      const txid = await provider.wallet.sendTransaction(
-        tx,
-        provider.connection
-      )
-      await provider.connection.getParsedTransaction(txid, 'confirmed')
-
       if (exchange.isSelling) {
         addReleaseToCollection(releasePubkey)
       } else {
         removeReleaseFromCollection(releasePubkey, exchange.releaseMint)
       }
       await getUserBalances()
-      await getExchange(exchange.publicKey, false, txid)
-      await getExchangesForRelease(releasePubkey, exchange.publicKey)
+      await getExchange(exchangePublicKey, false)
+      await getExchangesForRelease(releasePubkey, exchangePublicKey)
 
       return {
         success: true,
@@ -235,152 +111,26 @@ const exchangeContextHelper = ({
       [releasePubkey]: true,
     })
     try {
-      const program = await ninaClient.useProgram()
-      let initializerSendingMint = null
-      let initializerExpectedMint = null
-      let expectedAmount = null
-      let initializerAmount = null
-
-      const release = new anchor.web3.PublicKey(releasePubkey)
-      const releaseAccount = await program.account.release.fetch(release)
-      const releaseMint = releaseAccount.releaseMint
-
-      if (isSelling) {
-        expectedAmount = new anchor.BN(amount)
-        initializerSendingMint = releaseMint
-        initializerAmount = new anchor.BN(1)
-        initializerExpectedMint = releaseAccount.paymentMint
-      } else {
-        expectedAmount = new anchor.BN(1)
-        initializerSendingMint = releaseAccount.paymentMint
-        initializerAmount = new anchor.BN(amount)
-        initializerExpectedMint = releaseMint
-      }
-
-      const exchange = anchor.web3.Keypair.generate()
-
-      const [exchangeSigner, bump] =
-        await anchor.web3.PublicKey.findProgramAddress(
-          [exchange.publicKey.toBuffer()],
-          program.programId
-        )
-
-      const [initializerSendingTokenAccount, initializerSendingTokenAccountIx] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          provider.wallet.publicKey,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          initializerSendingMint
-        )
-
-      const [exchangeEscrowTokenAccount, exchangeEscrowTokenAccountIx] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          exchangeSigner,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          initializerSendingMint
-        )
-
-      const [
-        initializerExpectedTokenAccount,
-        initializerExpectedTokenAccountIx,
-      ] = await findOrCreateAssociatedTokenAccount(
-        provider.connection,
-        provider.wallet.publicKey,
-        provider.wallet.publicKey,
-        anchor.web3.SystemProgram.programId,
-        anchor.web3.SYSVAR_RENT_PUBKEY,
-        initializerExpectedMint
-      )
-
-      const exchangeCreateIx = await program.account.exchange.createInstruction(
-        exchange
-      )
-
-      const request = {
-        accounts: {
-          initializer: provider.wallet.publicKey,
-          releaseMint,
-          initializerExpectedTokenAccount,
-          initializerSendingTokenAccount,
-          initializerExpectedMint,
-          initializerSendingMint,
-          exchangeEscrowTokenAccount,
-          exchangeSigner,
-          exchange: exchange.publicKey,
-          release,
-          systemProgram: anchor.web3.SystemProgram.programId,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        },
-        signers: [exchange],
-        instructions: [exchangeCreateIx, exchangeEscrowTokenAccountIx],
-      }
-
-      if (initializerExpectedTokenAccountIx) {
-        request.instructions.push(initializerExpectedTokenAccountIx)
-      }
-
-      if (initializerSendingTokenAccountIx) {
-        request.instructions.push(initializerSendingTokenAccountIx)
-      }
-
-      if (ninaClient.isSol(releaseAccount.paymentMint) && !isSelling) {
-        const [wrappedSolAccount, wrappedSolInstructions] = await wrapSol(
-          provider,
-          initializerAmount,
-          new anchor.web3.PublicKey(ninaClient.ids.mints.wsol)
-        )
-        if (!request.instructions) {
-          request.instructions = [...wrappedSolInstructions]
-        } else {
-          request.instructions.push(...wrappedSolInstructions)
-        }
-        request.accounts.initializerSendingTokenAccount = wrappedSolAccount
-      }
-
-      const config = {
-        expectedAmount,
-        initializerAmount,
+      const exchangeResult = await NinaSdk.client.Exchange.exchangeInit(
+        amount,
         isSelling,
-      }
-
-      const tx = await program.methods
-        .exchangeInit(config, bump)
-        .accounts(request.accounts)
-        .preInstructions(request.instructions)
-        .signers(request.signers)
-        .transaction()
-
-      tx.recentBlockhash = (
-        await provider.connection.getRecentBlockhash()
-      ).blockhash
-      tx.feePayer = provider.wallet.publicKey
-      for await (let signer of request.signers) {
-        tx.partialSign(signer)
-      }
-
-      const txid = await provider.wallet.sendTransaction(
-        tx,
-        provider.connection
+        releasePubkey
       )
-      await provider.connection.getParsedTransaction(txid, 'confirmed')
-
+      const { exchange } = exchangeResult.exchange
       setExchangeInitPending({
         ...exchangeInitPending,
         [releasePubkey]: false,
       })
 
       if (isSelling) {
-        removeReleaseFromCollection(releasePubkey, releaseMint.toBase58())
+        removeReleaseFromCollection(
+          releasePubkey,
+          exchange.accountData.releaseMint
+        )
       }
 
       await getUserBalances()
-      await getExchange(exchange.publicKey.toBase58(), true, txid)
+      await getExchange(exchange.publicKey, true)
 
       return {
         success: true,
@@ -400,69 +150,16 @@ const exchangeContextHelper = ({
 
   const exchangeCancel = async (exchange, releasePubkey) => {
     try {
-      const exchangePubkey = new anchor.web3.PublicKey(exchange.publicKey)
-      const program = await ninaClient.useProgram()
-      exchange = await program.account.exchange.fetch(exchangePubkey)
-      const [initializerReturnTokenAccount, initializerReturnTokenAccountIx] =
-        await findOrCreateAssociatedTokenAccount(
-          provider.connection,
-          provider.wallet.publicKey,
-          provider.wallet.publicKey,
-          anchor.web3.SystemProgram.programId,
-          anchor.web3.SYSVAR_RENT_PUBKEY,
-          exchange.initializerSendingMint
-        )
-      const request = {
-        accounts: {
-          initializer: provider.wallet.publicKey,
-          initializerSendingTokenAccount: initializerReturnTokenAccount,
-          exchangeEscrowTokenAccount: exchange.exchangeEscrowTokenAccount,
-          exchangeSigner: exchange.exchangeSigner,
-          exchange: exchangePubkey,
-          tokenProgram: TOKEN_PROGRAM_ID,
-        },
-      }
-
-      if (initializerReturnTokenAccountIx) {
-        request.instructions = [initializerReturnTokenAccountIx]
-      }
-
-      let tx
-      const params = new anchor.BN(
-        exchange.isSelling ? 1 : exchange.initializerAmount.toNumber()
+      const { exchangePublicKey } = await NinaSdk.client.Exchange.exchangeCancel(
+        exchange,
+        releasePubkey
       )
-      if (ninaClient.isSol(exchange.initializerSendingMint)) {
-        tx = await program.methods
-          .exchangeCancelSol(params)
-          .accounts(request.accounts)
-          .preInstructions(request.instructions || [])
-          .signers(request.signers || [])
-          .transaction()
-      } else {
-        tx = await program.methods
-          .exchangeCancel(params)
-          .accounts(request.accounts)
-          .preInstructions(request.instructions || [])
-          .signers(request.signers || [])
-          .transaction()
-      }
-
-      tx.recentBlockhash = (
-        await provider.connection.getRecentBlockhash()
-      ).blockhash
-      tx.feePayer = provider.wallet.publicKey
-
-      const txid = await provider.wallet.sendTransaction(
-        tx,
-        provider.connection
-      )
-      await provider.connection.getParsedTransaction(txid, 'confirmed')
       if (exchange.isSelling) {
         addReleaseToCollection(releasePubkey)
       }
 
       await getUserBalances()
-      await getExchange(exchangePubkey.toBase58(), false, txid)
+      await getExchange(exchangePublicKey, false)
       await getExchangesForRelease(releasePubkey)
 
       return {
@@ -486,7 +183,7 @@ const exchangeContextHelper = ({
     withAccountInfo = true,
     transactionId
   ) => {
-    const { exchange } = await NinaSdk.Exchange.fetch(
+    const { exchange } = await NinaSdk.client.Exchange.fetch(
       publicKey,
       withAccountInfo,
       transactionId
@@ -510,7 +207,7 @@ const exchangeContextHelper = ({
 
   const getExchangesForUser = async (publicKey, withAccountData = true) => {
     try {
-      const { exchanges } = await NinaSdk.Account.fetchExchanges(
+      const { exchanges } = await NinaSdk.client.Account.fetchExchanges(
         publicKey,
         withAccountData
       )
@@ -535,7 +232,7 @@ const exchangeContextHelper = ({
 
   const getExchangesForRelease = async (publicKey, withAccountData = true) => {
     try {
-      const { exchanges } = await NinaSdk.Release.fetchExchanges(
+      const { exchanges } = await NinaSdk.client.Release.fetchExchanges(
         publicKey,
         withAccountData
       )
@@ -583,7 +280,7 @@ const exchangeContextHelper = ({
       ...exchange,
       isCurrentUser:
         exchange.initializer.publicKey ===
-        provider.wallet?.publicKey?.toBase58(),
+        NinaSdk.client.provider.wallet?.publicKey?.toBase58(),
     }
     exchangeItem.amount = exchange.isSale
       ? exchange.expectedAmount * 1000000
@@ -596,7 +293,7 @@ const exchangeContextHelper = ({
   const filterExchangeMatch = (price, isBuy, releasePubkey) => {
     let match = undefined
     let exchanges = filterExchangesForReleaseBuySell(releasePubkey, !isBuy)
-    price = ninaClient.nativeToUi(price, ninaClient.ids.mints.usdc)
+    price = NinaSdk.utils.nativeToUi(price, NinaSdk.utils.NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER].mints.usdc)
     exchanges?.forEach((exchange) => {
       // If the exchanges are on opposite sides of the market
       if (exchange.isSelling === isBuy) {
@@ -692,12 +389,12 @@ const exchangeContextHelper = ({
   ) => {
     let exchanges = filterExchangesForRelease(releasePubkey)
     if (isUser) {
-      if (!provider.wallet?.connected) {
+      if (!NinaSdk.client.provider.wallet?.connected) {
         return []
       }
 
       exchanges = exchanges.filter(
-        (e) => e.initializer === provider.wallet?.publicKey.toBase58()
+        (e) => e.initializer === NinaSdk.client.wallet?.publicKey.toBase58()
       )
     }
 

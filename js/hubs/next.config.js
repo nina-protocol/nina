@@ -74,6 +74,7 @@ const moduleExports = withTM({
   env: {
     IMGIX_URL,
     NEXT_PUBLIC_IMGIX_TOKEN,
+    REACT_APP_CLUSTER: cluster,
     NINA_API_ENDPOINT: process.env.NINA_API_ENDPOINT,
     NINA_PROGRAM_ID: process.env.NINA_PROGRAM_ID,
     NINA_SUBSCRIPTION_PUBKEY: process.env.NINA_SUBSCRIPTION_PUBKEY,

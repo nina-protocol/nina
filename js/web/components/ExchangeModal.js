@@ -4,8 +4,9 @@ import { Typography, Box } from '@mui/material'
 import Button from '@mui/material/Button'
 import Fade from '@mui/material/Fade'
 import Modal from '@mui/material/Modal'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import NinaSdk from '@nina-protocol/js-sdk'
+
 const ExchangeModal = (props) => {
   const {
     toggleOverlay,
@@ -16,7 +17,6 @@ const ExchangeModal = (props) => {
     isAccept,
     metadata,
   } = props
-  const { ninaClient } = useContext(Nina.Context)
   const [pendingConfirm, setPendingConfirm] = useState(false)
   const { pendingTransactionMessage } = useContext(Wallet.Context)
   const artistFee = (amount * release.resalePercentage) / 1000000
@@ -43,12 +43,12 @@ const ExchangeModal = (props) => {
           <Typography variant="overline">
             YOU ARE {isAccept ? 'SELLING' : 'CREATING A LISTING TO SELL'} 1{' '}
             {`${metadata?.symbol} `}
-            FOR {` ${ninaClient.nativeToUiString(amount, release.paymentMint)}`}
+            FOR {` ${NinaSdk.utils.nativeToUiString(amount, release.paymentMint)}`}
             .
           </Typography>
           <Typography variant="subtitle" className={classes.receivingAmount}>
             {isAccept ? '' : 'UPON SALE '}YOU WILL RECEIVE
-            {` ${ninaClient.nativeToUiString(
+            {` ${NinaSdk.utils.nativeToUiString(
               sellerAmount,
               release.paymentMint
             )}`}
@@ -56,7 +56,7 @@ const ExchangeModal = (props) => {
           </Typography>
           <Typography variant="overline">
             THE ARTIST WILL RECEIVE A ROYALTY OF
-            {` ${ninaClient.nativeToUiString(
+            {` ${NinaSdk.utils.nativeToUiString(
               artistFee,
               release.paymentMint
             )}`}{' '}

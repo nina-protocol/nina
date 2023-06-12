@@ -12,6 +12,7 @@ import {
 import { styled } from '@mui/system'
 import Swap from '@nina-protocol/nina-internal-sdk/esm/Swap'
 import Divider from '@mui/material/Divider'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const Balance = ({
   profilePublishedReleases,
@@ -20,7 +21,6 @@ const Balance = ({
   isAdmin,
 }) => {
   const {
-    ninaClient,
     solBalance,
     usdcBalance,
     bundlrBalance,
@@ -37,6 +37,8 @@ const Balance = ({
   const [userUsdcBalance, setUserUsdcBalance] = useState(0)
   const [userBundlrBalance, setUserBundlrBalance] = useState(0)
   const [open, setOpen] = useState(false)
+
+  const ids = NinaSdk.utils.NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER]
 
   const availableStorage = useMemo(
     () => (isAdmin ? userBundlrBalance : bundlrBalance) / bundlrPricePerMb,
@@ -55,7 +57,7 @@ const Balance = ({
 
   useEffect(() => {
     setUserSolBalance(
-      ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol).toFixed(3)
+      NinaSdk.utils.nativeToUi(solBalance, ids.mints.wsol).toFixed(3)
     )
   }, [solBalance])
 
@@ -76,12 +78,12 @@ const Balance = ({
 
         setUserUsdcBalance(usdcBalance)
         setUserSolBalance(
-          ninaClient
-            .nativeToUi(solBalance, ninaClient.ids.mints.wsol)
+          NinaSdk.utils
+            .nativeToUi(solBalance, ids.mints.wsol)
             .toFixed(3)
         )
         setUserBundlrBalance(
-          ninaClient.nativeToUi(bundlrBalance, ninaClient.ids.mints.wsol)
+          NinaSdk.utils.nativeToUi(bundlrBalance, ids.mints.wsol)
         )
       }
       handleUserBalanceLookup()
@@ -153,10 +155,10 @@ const Balance = ({
               <Typography variant="string" sx={{ pr: 1 }}>
                 {`Available To Collect: $${
                   revenueSumForArtist > 0
-                    ? ninaClient
+                    ? NinaSdk.utils
                         .nativeToUi(
                           revenueSumForArtist,
-                          ninaClient.ids.mints.usdc
+                          ids.mints.usdc
                         )
                         .toFixed(2)
                     : '0'

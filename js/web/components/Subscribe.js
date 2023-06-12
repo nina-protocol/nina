@@ -43,11 +43,9 @@ const Subscribe = ({
   const handleSubscribe = async (e, accountAddress, hubHandle) => {
     e.preventDefault()
     e.stopPropagation()
-
     setPending(true)
     const result = await subscriptionSubscribeDelegated(
       accountAddress,
-      hubHandle ? 'hub' : 'account',
       hubHandle
     )
     if (result.success) {

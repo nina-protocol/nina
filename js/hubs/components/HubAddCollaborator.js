@@ -60,8 +60,8 @@ const HubAddCollaborator = (props) => {
         return
       }
       const result = await hubAddCollaborator(
-        collaboratorPubkey,
         hubPubkey,
+        collaboratorPubkey,
         canAddContent,
         canAddCollaborator,
         allowance

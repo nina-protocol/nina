@@ -3,7 +3,6 @@ import React, {
   useEffect,
   createElement,
   Fragment,
-  useContext,
 } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -21,7 +20,7 @@ import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import { parseChecker } from '../utils'
-import Nina from '../contexts/Nina'
+import NinaSdk from '@nina-protocol/js-sdk'
 
 const style = {
   position: 'absolute',
@@ -58,7 +57,7 @@ const ReleaseCreateConfirm = (props) => {
     hubPubkey,
     awaitingPendingReleases,
   } = props
-  const { ninaClient } = useContext(Nina.Context)
+  const ids = NinaSdk.utils.NINA_CLIENT_IDS[process.env.SOLANA_CLUSTER]
   const [open, setOpen] = useState(false)
   const [sortedHubs, setSortedHubs] = useState([])
   const handleOpen = () => setOpen(true)
@@ -67,8 +66,8 @@ const ReleaseCreateConfirm = (props) => {
   const [confirm, setConfirm] = useState()
   const data = formValues.releaseForm
   const paymentMint = data.isUsdc
-    ? ninaClient.ids.mints.usdc
-    : ninaClient.ids.mints.wsol
+    ? ids.mints.usdc
+    : ids.mints.wsol
   const submitAndCloseModal = (e) => {
     e.preventDefault()
     setFormValuesConfirmed(true)
@@ -153,8 +152,8 @@ const ReleaseCreateConfirm = (props) => {
               Retail Price:
               <span>
                 {data.retailPrice > 0
-                  ? `${ninaClient.nativeToUiString(
-                      ninaClient.uiToNative(data.retailPrice, paymentMint),
+                  ? `${NinaSdk.utils.nativeToUiString(
+                      NinaSdk.utils.uiToNative(data.retailPrice, paymentMint),
                       paymentMint
                     )}`
                   : 'Free'}
