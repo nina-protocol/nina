@@ -20,14 +20,14 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import IdentityVerification from '@nina-protocol/nina-internal-sdk/esm/IdentityVerification'
 import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
-
+import LocalizedStrings from 'react-localization'
 import dynamic from 'next/dynamic'
 
 const BundlrModal = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/BundlrModal')
 )
 
-const Onboard = () => {
+const Onboard = ({ customCode }) => {
   const router = useRouter()
   const {
     bundlrBalance,
@@ -74,6 +74,12 @@ const Onboard = () => {
   }, [router.isReady])
 
   useEffect(() => {
+    if (customCode) {
+      setCode(customCode)
+    }
+  }, [customCode])
+
+  useEffect(() => {
     if (verificationState[profilePubkey]) {
       setProfileVerifications(verificationState[profilePubkey])
     }
@@ -97,10 +103,46 @@ const Onboard = () => {
     }
   }, [bundlrUsdBalance])
 
+  const onboardingCopy = new LocalizedStrings({
+    en: {
+      title: 'Welcome to Nina.',
+      header1: 'Sign In / Sign Up',
+      header2: 'Claim your onboarding code',
+      header3: 'Fund your Upload Account',
+      header4: 'Verify your Account (optional)',
+      header5: 'Success',
+      content1: 'To get started, please sign in or sign up below.',
+      content2: `By claiming this code you'll receive 0.15 SOL to get started in the Nina ecosystem.`,
+      content3: `  You now have 0.15 SOL into your account. SOL is used to pay storage and transaction fees on Nina. Once you've claimed your code, you'll need to fund your Upload`,
+      content4: `        Now that you have claimed your code and funded your account, you can verify your account via your Soundcloud or Twitter profile.`,
+      content5: `You're all set. ${
+        solBalance > 0 ? 'You can now start uploading your music to Nina.' : ''
+      }`,
+    },
+    ja: {
+      title: 'Welcome to Nina.',
+      header1: `サインインまたは登録してください。`,
+      header2: `Invite codeを入力してください`,
+      header3: `アップロードアカウントに供給する`,
+      header4: `アカウントを照合する（オプション`,
+      header5: `成功`,
+      content1: `サインインまたは登録してください。`,
+      content2: `このコードを入力することによって、Ninaを始めるために必要な0.15 SOLを受け取ることができます。`,
+      content3: `今アカウントに0.15 SOLはいっています。SOLはNina上で保存と取引に使用されます。一度コードを入力したら、アップロードアカウントに供給する必要があります。このアカウントはNina上で保存し取引するために使用されます。`,
+      content4: `コードを入力し、アカウントに供給したら、SoundcloudやTwitterのプロフィールを照合することができます。`,
+      content5: `準備ができました。${
+        solBalance > 0 ? 'Ninaに音楽をアップロードすることができます。' : ''
+      }`,
+    },
+  })
+
+  // uncomment to see japanese copy
+  // onboardingCopy.setLanguage('ja')
+
   const onboardingSteps = [
     {
-      title: 'Sign In / Sign Up',
-      content: `To get started, please sign in or sign up below.`,
+      title: onboardingCopy.header1,
+      content: onboardingCopy.content1,
       cta: (
         <WalletConnectModal
           inOnboardingFlow={true}
@@ -112,18 +154,21 @@ const Onboard = () => {
       ),
     },
     {
-      title: 'Claim your onboarding code',
-      content: `By claiming this code you'll receive 0.15 SOL to get started in the Nina ecosystem.`,
+      title: onboardingCopy.header2,
+      content: onboardingCopy.content2,
 
       cta: (
         <>
           <Typography mb={1}>
-            Your onboarding code is:
+            Your invite code is:
             <Typography mb={1} mt={1} sx={{ fontFamily: 'monospace' }}>
               {code}
             </Typography>
           </Typography>
-          <Button variant="outlined" onClick={() => handleClaimCode(code)}>
+          <Button
+            variant="outlined"
+            onClick={() => handleClaimCode(code, customCode)}
+          >
             {pending ? (
               <Dots size="40px" msg={pendingTransactionMessage} />
             ) : (
@@ -148,16 +193,13 @@ const Onboard = () => {
       ),
     },
     {
-      title: 'Fund your Upload Account',
-      content: `  You now have 0.15 SOL into your account. SOL is used to pay storage and transaction fees on Nina. Once you've claimed your code, you'll need to fund your Upload
-          Account. This account is used to pay for storage and transaction fees
-          on Nina.`,
+      title: onboardingCopy.header3,
+      content: onboardingCopy.content3,
       cta: <BundlrModal inOnboardFlow={true} />,
     },
     {
-      title: 'Verify your Account (optional)',
-      content: `        Now that you have claimed your code and funded your account, you can
-            verify your account via your Soundcloud or Twitter profile.`,
+      title: onboardingCopy.header4,
+      content: onboardingCopy.content4,
       cta: (
         <>
           <IdentityVerification
@@ -177,8 +219,8 @@ const Onboard = () => {
       ),
     },
     {
-      title: `Success`,
-      content: `You're all set. You can now start uploading your music to Nina.`,
+      title: onboardingCopy.header5,
+      content: onboardingCopy.content5,
       cta: (
         <>
           {solBalance > 0 && (
@@ -243,8 +285,8 @@ const Onboard = () => {
 
   const signUpSteps = [
     {
-      title: 'Sign in / Sign up',
-      content: `To get started, please sign up below.`,
+      title: onboardingCopy.header1,
+      content: onboardingCopy.content1,
       cta: (
         <>
           <WalletConnectModal
@@ -258,9 +300,8 @@ const Onboard = () => {
       ),
     },
     {
-      title: 'Verify your Account (optional)',
-      content: `        Now that you have set up your account, you can
-            verify it via your Soundcloud or Twitter profile.`,
+      title: onboardingCopy.header4,
+      content: onboardingCopy.header4,
       cta: (
         <>
           <IdentityVerification
@@ -280,10 +321,8 @@ const Onboard = () => {
       ),
     },
     {
-      title: `Success`,
-      content: `You're all set. ${
-        solBalance > 0 ? 'You can now start uploading your music to Nina' : ''
-      }`,
+      title: onboardingCopy.header5,
+      content: onboardingCopy.content5,
       cta: (
         <>
           {solBalance > 0 && (
@@ -346,7 +385,7 @@ const Onboard = () => {
     },
   ]
 
-  const handleClaimCode = async (code) => {
+  const handleClaimCode = async (code, customCode) => {
     const message = new TextEncoder().encode(wallet.publicKey.toBase58())
     const messageBase64 = encodeBase64(message)
     const signature = await wallet.signMessage(message)
@@ -355,10 +394,14 @@ const Onboard = () => {
       wallet: wallet?.publicKey?.toBase58(),
     })
 
+    const url = customCode
+      ? `bulkOnboardingCodes/${customCode}`
+      : `onboardingCodes/${code}`
+
     try {
       setPending(true)
       const response = await axios.post(
-        `${process.env.NINA_IDENTITY_ENDPOINT}/onboardingCodes/${code}`,
+        `${process.env.NINA_IDENTITY_ENDPOINT}/${url}`,
         {
           message: messageBase64,
           signature: signatureBase64,
@@ -434,19 +477,25 @@ const Onboard = () => {
         <GetStartedPageWrapper>
           <>
             <Box mb={2}>
-              <Typography variant="h1" mb={1}>
-                Welcome to Nina.
-              </Typography>
+              {!customCode && (
+                <Typography variant="h1" mb={1}>
+                  Welcome to Nina.
+                </Typography>
+              )}
               {code !== undefined && (
                 <>
                   <>
-                    <Typography variant="h3" mb={1}>
-                      You are receiving complimentary SOL to create your Hub and
-                      start uploading your music.
-                    </Typography>
-                    <Typography variant="h3" mb={1}>
-                      Please follow the steps below to get started.
-                    </Typography>
+                    {!customCode && (
+                      <>
+                        <Typography variant="h3" mb={1}>
+                          You are receiving complimentary SOL to create your Hub
+                          and start uploading your music.
+                        </Typography>
+                        <Typography variant="h3" mb={1}>
+                          Please follow the steps below to get started.
+                        </Typography>
+                      </>
+                    )}
                     {renderSteps(onboardingSteps)}
                   </>
                 </>
