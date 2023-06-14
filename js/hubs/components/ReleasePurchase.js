@@ -212,7 +212,7 @@ const ReleasePurchase = (props) => {
         {release.editionType === 'open' ? (
           <Typography variant="body2" align="left">
             Open Edition:{' '}
-            {`${release?.saleCounter > 0 ? release?.saleCounter : 0} Sold`}
+            {`${release?.saleCounter > 0 ? release?.saleCounter : 0} Collected`}
           </Typography>
         ) : (
           <>
