@@ -28,6 +28,11 @@ const Admin = () => {
   const [dispatcherBalance, setDispatcherBalance] = useState(0)
   const [onboardingBalance, setOnboardingBalance] = useState(0)
 
+  const [bulkCode, setBulkCode] = useState()
+  const [bulkCodeCreatedFor, setBulkCodeCreatedFor] = useState()
+  const [bulkCodeUses, setBulkCodeUses] = useState(50)
+  const [bulkCodeDescription, setBulkCodeDescription] = useState()
+
   useEffect(() => {
     const fetchBalances = async () => {
       setVerificationBalance(await getSolBalanceForPublicKey(ID_ACCOUNT))
@@ -57,6 +62,70 @@ const Admin = () => {
       setCode(
         `https://ninaprotocol.com/start?claim=${response.data.onboardingCode.code}/`
       )
+    }
+  }
+
+  const handleGenerateBulkCode = async () => {
+    const message = new TextEncoder().encode(wallet.publicKey.toBase58())
+
+    const messageBase64 = encodeBase64(message)
+    const signature = await wallet.signMessage(message)
+    const signatureBase64 = encodeBase64(signature)
+
+    const response = await axios.post(
+      `${process.env.NINA_IDENTITY_ENDPOINT}/bulkOnboardingCodes`,
+      {
+        message: messageBase64,
+        signature: signatureBase64,
+        publicKey: wallet.publicKey.toBase58(),
+        uses: parseInt(bulkCodeUses),
+        description: bulkCodeDescription,
+        createdFor: bulkCodeCreatedFor,
+        value: bulkCode,
+      }
+    )
+
+    if (response.data) {
+      enqueueSnackbar(`Successfully generated bulk code: ${bulkCode}`, {
+        variant: 'success',
+      })
+    }
+  }
+
+  const handleBulkCodeClaim = async () => {
+    const message = new TextEncoder().encode(wallet.publicKey.toBase58())
+
+    const messageBase64 = encodeBase64(message)
+    const signature = await wallet.signMessage(message)
+    const signatureBase64 = encodeBase64(signature)
+
+    const response = await axios
+      .post(
+        `${process.env.NINA_IDENTITY_ENDPOINT}/bulkOnboardingCodes/${bulkCode}`,
+        {
+          message: messageBase64,
+          signature: signatureBase64,
+          publicKey: wallet.publicKey.toBase58(),
+        }
+      )
+      .catch((error) => {
+        console.warn(error)
+        if (error.response) {
+          console.warn(error.response.data)
+          console.warn(error.response.status)
+          console.warn(error.response.headers)
+          enqueueSnackbar(
+            `Failed to claim code: ${bulkCode}. ${error.response.data.error}`,
+            {
+              variant: 'error',
+            }
+          )
+        }
+      })
+    if (response?.data?.status === 'success') {
+      enqueueSnackbar(`Successfully claimed code: ${bulkCode}`, {
+        variant: 'success',
+      })
     }
   }
 
@@ -93,7 +162,7 @@ const Admin = () => {
   return (
     <ScrollablePageWrapper>
       {hasAccess && (
-        <Box>
+        <Box sx={{ width: '60vw', margin: 'auto' }}>
           <Box>
             <a
               href={`https://explorer.solana.com/address/${ONBOARDING_ACCOUNT}?cluster=${process.env.SOLANA_CLUSTER}`}
@@ -132,14 +201,6 @@ const Admin = () => {
               </Typography>
             </a>
           </Box>
-          <Box mb={2}>
-            <Button variant="outlined" onClick={() => handleGenerateCode()}>
-              Click Here to Generate an Onboarding Code
-            </Button>
-          </Box>
-          <Typography for="code" mb={1}>
-            If generated successfully, onboarding Code should print below
-          </Typography>
 
           <Input
             type="text"
@@ -149,20 +210,23 @@ const Admin = () => {
             onChange={(event) => setCode(event.target.value)}
             sx={{ width: '40vw' }}
           />
+          <Button
+            variant="outlined"
+            style={{ width: '200px' }}
+            onClick={() => handleGenerateCode()}
+          >
+            Click Here to Generate an Onboarding Code
+          </Button>
 
-          <Typography for="code" mt={4} mb={1}>
-            If you have a release that needs to be restricted, please enter its
-            ID below.
-          </Typography>
-          <Input
-            type="text"
-            id="code"
-            name="code"
-            value={restrictedRelease}
-            onChange={(event) => setRestrictedRelease(event.target.value)}
-            sx={{ width: '40vw' }}
-          />
           <Box mt={1}>
+            <Input
+              type="text"
+              id="code"
+              name="code"
+              value={restrictedRelease}
+              onChange={(event) => setRestrictedRelease(event.target.value)}
+              sx={{ width: '40vw' }}
+            />
             <Button
               variant="outlined"
               onClick={() => {
@@ -172,19 +236,15 @@ const Admin = () => {
               Restrict Release
             </Button>
           </Box>
-          <Typography for="code" mt={4} mb={1}>
-            If you have an account that needs to be restricted, please enter its
-            ID below.
-          </Typography>
-          <Input
-            type="text"
-            id="code"
-            name="code"
-            value={restrictedAccount}
-            onChange={(event) => setRestrictedAccount(event.target.value)}
-            sx={{ width: '40vw' }}
-          />
           <Box mt={1}>
+            <Input
+              type="text"
+              id="code"
+              name="code"
+              value={restrictedAccount}
+              onChange={(event) => setRestrictedAccount(event.target.value)}
+              sx={{ width: '40vw' }}
+            />
             <Button
               variant="outlined"
               onClick={() => {
@@ -193,6 +253,71 @@ const Admin = () => {
             >
               Restrict Account
             </Button>
+          </Box>
+          <Box mb={2}>
+            <h2>
+              <b>Bulk Code Generator</b>
+            </h2>
+            <Box>
+              <label for="bulkCode">Bulk Code</label>
+              <Input
+                type="text"
+                id="bulkCode"
+                name="bulkCode"
+                value={bulkCode}
+                onChange={(event) => setBulkCode(event.target.value)}
+                sx={{ margin: '0 8px', width: '40vw' }}
+              />
+            </Box>
+            <Box>
+              <label for="bulkCodeCreatedFor">Bulk Code Created For</label>
+              <Input
+                type="text"
+                id="bulkCodeCreatedFor"
+                name="bulkCodeCreatedFor"
+                value={bulkCodeCreatedFor}
+                onChange={(event) => setBulkCodeCreatedFor(event.target.value)}
+                sx={{ margin: '0 8px', width: '40vw' }}
+              />
+            </Box>
+            <Box>
+              <label for="bulkCodeDescription">Bulk Code Description</label>
+              <Input
+                type="text"
+                id="bulkCodeDescription"
+                name="bulkCodeDescription"
+                value={bulkCodeDescription}
+                onChange={(event) => setBulkCodeDescription(event.target.value)}
+                sx={{ margin: '0 8px', width: '40vw' }}
+              />
+            </Box>
+            <Box>
+              <label for="bulkCodeUses">Bulk Code Uses</label>
+              <Input
+                type="number"
+                id="bulkCodeUses"
+                name="bulkCodeUses"
+                value={bulkCodeUses}
+                onChange={(event) => setBulkCodeUses(event.target.value)}
+                sx={{ margin: '0 8px', width: '40vw' }}
+              />
+            </Box>
+
+            <Box sx={{ mt: 1 }}>
+              <Button
+                variant="outlined"
+                onClick={() => handleGenerateBulkCode()}
+              >
+                Generate Bulk Onboarding Code
+              </Button>
+              <Button
+                sx={{ ml: 1 }}
+                variant="outlined"
+                onClick={() => handleBulkCodeClaim()}
+              >
+                Test Bulk Code Claim
+              </Button>
+            </Box>
           </Box>
         </Box>
       )}
