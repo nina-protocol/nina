@@ -45,11 +45,5 @@ pub fn handler (
         return Err(error!(ErrorCode::HubCollaboratorCannotRemoveAuthorityFromHub));
     }
 
-    emit!(HubCollaboratorRemoved {
-        public_key: ctx.accounts.hub_collaborator.key(),
-        hub: ctx.accounts.hub.key(),
-        collaborator: ctx.accounts.collaborator.key(),
-    });
-
     Ok(())
 }

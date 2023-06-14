@@ -9,7 +9,6 @@ import Typography from '@mui/material/Typography'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import LockIcon from '@mui/icons-material/Lock'
 import CloseIcon from '@mui/icons-material/Close'
-
 import Dots from './Dots'
 import Box from '@mui/material/Box'
 import List from '@mui/material/List'
@@ -117,15 +116,17 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate, inHubs }) => {
                               primary={
                                 <StyledTypography
                                   sx={{
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
+                                    wordBreak: 'break-word',
                                   }}
                                 >
                                   {gate.fileName} {`(${fileSize} mb)`}
                                 </StyledTypography>
                               }
-                              secondary={gate.description}
+                              secondary={
+                                <Box sx={{ wordBreak: 'break-word' }}>
+                                  {gate.description}
+                                </Box>
+                              }
                             />
                           </ListItemButton>
                         </ListItem>
@@ -138,30 +139,13 @@ const GateUnlockModal = ({ gates, amountHeld, unlockGate, inHubs }) => {
           </Fade>
         </StyledModal>
       </Root>
-      {amountHeld === 0 && !inHubs && (
-        <Box sx={{ position: 'absolute', top: '110%' }}>
-          <StyledTypographyButtonSub>
-            {`There ${gates.length > 1 ? 'are' : 'is'} ${gates.length} ${
-              gates.length > 1 ? 'files' : 'file'
-            } available for download exclusively to owners of this release.`}
-          </StyledTypographyButtonSub>
-        </Box>
-      )}
     </>
   )
 }
 
 const Root = styled('div')(() => ({
   display: 'flex',
-  alignItems: 'center',
   width: '100%',
-}))
-
-const StyledTypographyButtonSub = styled(Typography)(({ theme }) => ({
-  color: theme.palette.grey[500],
-  textAlign: 'center',
-  paddingTop: '8px',
-  fontSize: '12px',
 }))
 
 const StyledTypography = styled(Typography)(({ theme }) => ({

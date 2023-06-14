@@ -2,7 +2,10 @@ import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { styled } from '@mui/material/styles'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+import {
+  imageManager,
+  downloadHelper,
+} from '@nina-protocol/nina-internal-sdk/src/utils'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -13,14 +16,14 @@ import Image from 'next/image'
 import DownloadIcon from '@mui/icons-material/Download'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import axios from 'axios'
-import AddToHubModal from './AddToHubModal.js'
-// import ReleaseSettingsModal from './ReleaseSettingsModal.js'
+import AddToHubModal from '@nina-protocol/nina-internal-sdk/esm/AddToHubModal'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
 
 import Link from 'next/link'
 import { useSnackbar } from 'notistack'
 
 const { getImageFromCDN, loader } = imageManager
+const { downloadWithFallback } = downloadHelper
 
 const ReleaseCard = (props) => {
   const {
@@ -62,26 +65,15 @@ const ReleaseCard = (props) => {
       publicKey: releasePubkey,
     })
 
-    try {
-      const response = await axios.get(url, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/octet-stream',
-        },
-        responseType: 'blob',
+    const success = await downloadWithFallback(url, name)
+    if (success) {
+      enqueueSnackbar('Download complete', {
+        variant: 'success',
       })
-
-      if (response?.data) {
-        const a = document.createElement('a')
-        const url = window.URL.createObjectURL(response.data)
-        a.href = url
-        a.download = name
-        a.click()
-      }
-      enqueueSnackbar('Release Downloaded', { variant: 'success' })
-    } catch (error) {
-      enqueueSnackbar('Release Downloaded', { variant: 'error' })
+    } else {
+      enqueueSnackbar('Download failed', {
+        variant: 'error',
+      })
     }
   }
 
@@ -237,6 +229,10 @@ const CtaWrapper = styled(Box)(() => ({
   '& .MuiButton-root:not(:last-child)': {
     width: '21px',
     marginRight: '10px',
+  },
+  '& .MuiButton-root:not(:nth-last-child(3))': {
+    width: '21px',
+    marginRight: '8px',
   },
   svg: {
     color: 'white',

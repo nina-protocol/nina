@@ -13,15 +13,12 @@ import RecentlyPublished from './RecentlyPublished'
 import Link from 'next/link'
 import ScrollablePageWrapper from './ScrollablePageWrapper'
 import HubSlider from './HubSlider'
-import EmailCapture from '@nina-protocol/nina-internal-sdk/esm/EmailCapture'
 
 const HomePage = ({ loading }) => {
   const { resetQueueWithPlaylist } = useContext(Audio.Context)
-  const { getHubs, hubState, filterFeaturedHubs } = useContext(Hub.Context)
   const { getReleasesRecent, releasesRecentState, filterReleasesRecent } =
     useContext(Release.Context)
-  const { solPrice, NinaProgramAction, NinaProgramActionCost, getSolPrice } =
-    useContext(Nina.Context)
+  const { getSolPrice } = useContext(Nina.Context)
   const [releasesRecent, setReleasesRecent] = useState({})
   const [hubs, setHubs] = useState(undefined)
 
@@ -30,7 +27,7 @@ const HomePage = ({ loading }) => {
   useEffect(() => {
     getSolPrice()
     if (!loading) {
-      getReleasesRecent()
+      getReleasesRecent({ limit: 12 }, false)
     }
   }, [loading])
 
@@ -120,7 +117,10 @@ const HomePage = ({ loading }) => {
             >
               Learn More
             </a>{' '}
-            or <EmailCapture size="large" />
+            or{' '}
+            <Link href="/start">
+              <a>Sign up</a>
+            </Link>
           </BlueTypography>
         </Box>
       </HomePageContainer>

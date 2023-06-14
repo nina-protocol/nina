@@ -54,6 +54,5 @@ pub fn handler(
     description[..description_bytes.len()].copy_from_slice(description_bytes);
     redeemable.description = description;
 
-
     Ok(())
 }

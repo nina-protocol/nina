@@ -8,14 +8,14 @@ import Link from 'next/link'
 import Image from 'next/image'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+
 const { getImageFromCDN, loader } = imageManager
 
-const RecentlyPublished = (props) => {
-  const { releases } = props
+const RecentlyPublished = ({ releases }) => {
   const responsiveSettings = [
     {
       breakpoint: 1024,
@@ -95,7 +95,7 @@ const RecentlyPublished = (props) => {
                         src={getImageFromCDN(
                           imageUrl,
                           400,
-                          new Date(release.tokenData.releaseDatetime)
+                          new Date(release.metadata.properties.date)
                         )}
                         loader={loader}
                         height={100}

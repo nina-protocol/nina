@@ -71,11 +71,5 @@ pub fn handler(
         amount,
     )?;
 
-    emit!(ReleaseSold {
-        public_key: *ctx.accounts.release.to_account_info().key,
-        purchaser: *ctx.accounts.receiver.to_account_info().key,
-        date: Clock::get()?.unix_timestamp
-    });
-
     Ok(())
 }

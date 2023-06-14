@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useContext } from "react";
 import {AnchorProvider} from '@project-serum/anchor'
 import Router from "next/router";
 import { SnackbarProvider } from "notistack";
@@ -7,21 +7,13 @@ import Nina from "@nina-protocol/nina-internal-sdk/esm/Nina";
 import Release from "@nina-protocol/nina-internal-sdk/esm/Release";
 import NinaClient from "@nina-protocol/nina-internal-sdk/esm/client";
 import { CacheProvider } from "@emotion/react";
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
-import { ConnectionProvider, WalletProvider, useWallet, useConnection } from '@solana/wallet-adapter-react';
-import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
-import {
-    PhantomWalletAdapter,
-    SolflareWalletAdapter,
-    SolletExtensionWalletAdapter,
-    SolletWalletAdapter,
-} from '@solana/wallet-adapter-wallets'
-import { clusterApiUrl } from '@solana/web3.js'
-import { isMobile } from 'react-device-detect'
 import createCache from '@emotion/cache';
 import { NinaTheme } from "../../NinaTheme";
 import Layout from "../components/Layout";
-import Dots from '../components/Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
+import WalletWrapper from '@nina-protocol/nina-internal-sdk/esm/WalletWrapper'
+import { useConnection } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 
 const createEmotionCache = () => {
   return createCache({key: 'css'});
@@ -53,35 +45,6 @@ function Application({ Component, pageProps }) {
     };
   }, []);
 
-  // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
-  const network = process.env.REACT_CLUSTER === 'devnet' ? 
-    WalletAdapterNetwork.Devnet : 
-    WalletAdapterNetwork.MainnetBeta
-
-  // You can also provide a custom RPC endpoint
-  const endpoint = useMemo(() => {
-    if (network === WalletAdapterNetwork.MainnetBeta) {
-      return 'https://nina.rpcpool.com'
-    }
-    return clusterApiUrl(network)
-  }, [network]);
-
-  const walletOptions = [
-    new PhantomWalletAdapter({ network }),
-    new SolflareWalletAdapter({ network }),
-  ]
-
-  if (!isMobile) {
-    walletOptions.push(
-      new SolletWalletAdapter({ network }),
-      new SolletExtensionWalletAdapter({ network })
-    )
-  }
-  const wallets = useMemo(
-    () => walletOptions,
-    [network]
-  );
-
   return (
     <SnackbarProvider
       maxSnack={3}
@@ -90,31 +53,27 @@ function Application({ Component, pageProps }) {
         horizontal: "left",
       }}
     >
-      <ConnectionProvider endpoint={endpoint}>
-        <WalletProvider wallets={wallets}>
-          <WalletModalProvider>
-            <NinaWrapper>
-              <CacheProvider value={clientSideEmotionCache}>
-                <ThemeProvider theme={NinaTheme}>
-                  <Layout>
-                    {loading ? (
-                      <Dots size="80px" />
-                    ) : (
-                      <Component {...pageProps} />
-                    )}
-                  </Layout>
-                </ThemeProvider>
-              </CacheProvider>
-            </NinaWrapper>
-          </WalletModalProvider>
-        </WalletProvider>
-      </ConnectionProvider>
+      <WalletWrapper.Provider>
+        <NinaWrapper>
+          <CacheProvider value={clientSideEmotionCache}>
+            <ThemeProvider theme={NinaTheme}>
+              <Layout>
+                {loading ? (
+                  <Dots size="80px" />
+                ) : (
+                  <Component {...pageProps} />
+                )}
+              </Layout>
+            </ThemeProvider>
+          </CacheProvider>
+        </NinaWrapper>
+      </WalletWrapper.Provider>
     </SnackbarProvider>
   );
 }
 
 const NinaWrapper = ({children}) => {
-  const wallet = useWallet();
+  const { wallet } = useContext(Wallet.Context)
   const connection = useConnection();
   const provider = new AnchorProvider(
     connection,

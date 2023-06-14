@@ -1,6 +1,5 @@
 import { useEffect, useContext, useState, useMemo, useRef } from 'react'
 import dynamic from 'next/dynamic'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { Box, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
@@ -8,20 +7,22 @@ import { styled } from '@mui/system'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
-import IdentityVerification from './IdentityVerification'
-import CreateHub from './CreateHub'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
+import IdentityVerification from '@nina-protocol/nina-internal-sdk/esm/IdentityVerification'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
+import onboardingCodeWhitelist from '@nina-protocol/nina-internal-sdk/src/utils/onboardingCodeWhitelist'
 
+import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+import Balance from './Balance'
 const { getImageFromCDN, loader } = imageManager
 
-const Dots = dynamic(() => import('./Dots'))
 const TabHeader = dynamic(() => import('./TabHeader'))
 const ReusableTable = dynamic(() => import('./ReusableTable'))
 const Subscribe = dynamic(() => import('./Subscribe'))
 const NewProfileCtas = dynamic(() => import('./NewProfileCtas'))
 
 const Profile = ({ profilePubkey }) => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
   const tableContainerRef = useRef(null)
   const {
@@ -46,7 +47,9 @@ const Profile = ({ profilePubkey }) => {
     verificationState,
     displayImageForAccount,
   } = useContext(Nina.Context)
+  const walletPubkey = wallet.publicKey?.toBase58()
 
+  const isAdmin = onboardingCodeWhitelist.includes(walletPubkey)
   const [profilePublishedReleases, setProfilePublishedReleases] =
     useState(undefined)
   const [profileCollectionReleases, setProfileCollectionReleases] =
@@ -56,7 +59,7 @@ const Profile = ({ profilePubkey }) => {
   const [profileSubscriptions, setProfileSubscriptions] = useState()
   const [profileSubscriptionsTo, setProfileSubscriptionsTo] = useState()
   const [profileSubscriptionsFrom, setProfileSubscriptionsFrom] = useState()
-  const [profileVerifications, setProfileVerifications] = useState()
+  const [profileVerifications, setProfileVerifications] = useState([])
 
   const [inDashboard, setInDashboard] = useState(false)
   const [inCollection, setInCollection] = useState(false)
@@ -85,24 +88,12 @@ const Profile = ({ profilePubkey }) => {
     }
   }, [fetchedProfiles, fetched, profilePubkey])
 
-  const artistNames = useMemo(() => {
-    if (profilePublishedReleases?.length > 0) {
-      return [
-        ...new Set(
-          profilePublishedReleases?.map(
-            (release) => release.metadata.properties.artist
-          )
-        ),
-      ]
-    }
-  }, [profilePublishedReleases])
-
   useEffect(() => {
     getUserData(profilePubkey)
   }, [profilePubkey])
 
   useEffect(() => {
-    if (wallet.connected && profilePubkey === wallet.publicKey?.toBase58()) {
+    if (wallet.connected && profilePubkey === walletPubkey) {
       setInDashboard(true)
       setInCollection(true)
     }
@@ -382,7 +373,12 @@ const Profile = ({ profilePubkey }) => {
             <Box display="flex">
               {profilePubkey && (
                 <>
-                  <Box>
+                  <Box
+                    display="flex"
+                    sx={{
+                      flexDirection: 'row',
+                    }}
+                  >
                     {profileImage && profileImage?.includes('https') ? (
                       <Image
                         height={100}
@@ -397,6 +393,9 @@ const Profile = ({ profilePubkey }) => {
                     ) : (
                       <img src={profileImage} height={100} width={100} />
                     )}
+                    <Typography ml={1}>
+                      {displayNameForAccount(profilePubkey)}
+                    </Typography>
                   </Box>
                   <Box
                     sx={{
@@ -406,21 +405,24 @@ const Profile = ({ profilePubkey }) => {
                     }}
                     display="flex"
                     alignItems={'start'}
+                    flexWrap={'wrap'}
                   >
-                    <Typography>
-                      {displayNameForAccount(profilePubkey)}
-                    </Typography>
-
                     {wallet.connected && (
                       <Subscribe accountAddress={profilePubkey} />
                     )}
-                    {profileVerifications && (
-                      <IdentityVerification
-                        verifications={profileVerifications}
-                        profilePublicKey={profilePubkey}
+                    <IdentityVerification
+                      verifications={profileVerifications}
+                      profilePubkey={profilePubkey}
+                    />
+
+                    {(inDashboard || isAdmin) && (
+                      <Balance
+                        profilePublishedReleases={profilePublishedReleases}
+                        inDashboard={inDashboard}
+                        profilePubkey={profilePubkey}
+                        isAdmin={isAdmin && !inDashboard}
                       />
                     )}
-                    {inDashboard && <CreateHub />}
                   </Box>
                 </>
               )}

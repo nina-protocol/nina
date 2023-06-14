@@ -8,6 +8,7 @@ import React, {
 import * as Yup from 'yup'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { useSnackbar } from 'notistack'
 import { styled } from '@mui/material/styles'
 import Button from '@mui/material/Button'
@@ -18,19 +19,11 @@ import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
-import { useWallet } from '@solana/wallet-adapter-react'
 import HubPostCreateForm from './HubPostCreateForm'
-
-import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import Grid from '@mui/material/Grid'
 import BundlrModal from '@nina-protocol/nina-internal-sdk/esm/BundlrModal'
-import {
-  createUpload,
-  updateUpload,
-  removeUpload,
-  UploadType,
-  uploadHasItemForType,
-} from '../utils/uploadManager'
+import { createUpload, removeUpload, UploadType } from '../utils/uploadManager'
+import Dots from './Dots'
 
 const PostCreateSchema = Yup.object().shape({
   title: Yup.string().required('Title is Required'),
@@ -46,14 +39,16 @@ const HubPostCreate = ({
   selectedHubId,
   setParentOpen,
   userHasHubs,
+  inHubDashboard,
 }) => {
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
-  const { postInitViaHub, hubState, getHub, getHubsForRelease } = useContext(
+  const { wallet, pendingTransactionMessage, shortPendingTransactionMessage } =
+    useContext(Wallet.Context)
+  const { postInitViaHub, hubState, getHubsForRelease } = useContext(
     Hub.Context
   )
   const hubData = useMemo(
-    () => hubState[hubPubkey || selectedHubId],
+    () => hubState[selectedHubId || hubPubkey],
     [hubState, hubPubkey, selectedHubId]
   )
   const {
@@ -68,16 +63,15 @@ const HubPostCreate = ({
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
   } = useContext(Nina.Context)
-  const [uploadSize, setUploadSize] = useState()
+  const [uploadSize] = useState()
   const [buttonText, setButtonText] = useState(
     update ? 'Update Post' : 'Create Post'
   )
-  const [pending, setPending] = useState(false)
+  const [pending] = useState(false)
   const [formIsValid, setFormIsValid] = useState(false)
   const [formValues, setFormValues] = useState({
     postForm: {},
   })
-  const [formValuesConfirmed, setFormValuesConfirmed] = useState(false)
   const [isPublishing, setIsPublishing] = useState(false)
   const [metadataTx, setMetadataTx] = useState()
   const [postCreated, setPostCreated] = useState(false)
@@ -110,26 +104,27 @@ const HubPostCreate = ({
       if (!update) {
         if (!metadataTx) {
           setPublishingStepText(
-            '1/2 Uploading Metadata.  Please confirm in wallet and do not close this window.'
+            `1/2 Uploading Metadata.  ${pendingTransactionMessage}, do not close this window.`
           )
         } else {
           setPublishingStepText(
-            '2/2 Finalizing Post.  Please confirm in wallet and do not close this window.'
-          )
-        }
-      } else {
-        if (!metadataTx) {
-          setButtonText('Restart 2/3: Upload Metadata.')
-        } else if (artworkTx && !metadataTx) {
-          setButtonText('Restart 3/4: Upload Metadata.')
-        } else if (artworkTx && metadataTx && !hubCreated) {
-          setButtonText('Restart 4/4: Finalize Hub')
-        } else if (mbs < uploadSize) {
-          setButtonText(
-            `Release requires more storage than available in your bundlr account, please top up`
+            `2/2 Finalizing Post.  ${pendingTransactionMessage}, do not close this window.`
           )
         }
       }
+      //   else {
+      //     if (!metadataTx) {
+      //       setButtonText('Restart 2/3: Upload Metadata.')
+      //     } else if (artworkTx && !metadataTx) {
+      //       setButtonText('Restart 3/4: Upload Metadata.')
+      //     } else if (artworkTx && metadataTx) {
+      //       setButtonText('Restart 3/4: Finalize Hub')
+      //     } else if (mbs < uploadSize) {
+      //       setButtonText(
+      //         `Release requires more storage than available in your bundlr account, please top up`
+      //       )
+      //     }
+      //   }
     } else {
       setButtonText(
         preloadedRelease
@@ -184,7 +179,7 @@ const HubPostCreate = ({
         if (!uploadId) {
           setIsPublishing(true)
           enqueueSnackbar(
-            'Uploading Post to Arweave.  Please confirm in wallet.',
+            `Uploading Post to Arweave. ${shortPendingTransactionMessage}`,
             {
               variant: 'info',
             }
@@ -194,7 +189,6 @@ const HubPostCreate = ({
             title: formValues.postForm.title,
             body: formValues.postForm.body,
           }
-
           if (formValues.postForm.reference) {
             metadataJson.reference = formValues.postForm.reference
           }
@@ -203,13 +197,11 @@ const HubPostCreate = ({
             metadataJson.reference = preloadedRelease
             formValues.postForm.reference = preloadedRelease
           }
-
           metadataResult = await bundlrUpload(
             new Blob([JSON.stringify(metadataJson)], {
               type: 'application/json',
             })
           )
-
           setMetadataTx(metadataResult)
 
           upload = createUpload(
@@ -226,7 +218,7 @@ const HubPostCreate = ({
           let result
           if (metadataJson.reference) {
             result = await postInitViaHub(
-              hubPubkey || selectedHubId,
+              selectedHubId || hubPubkey,
               slug,
               uri,
               metadataJson.reference
@@ -234,9 +226,10 @@ const HubPostCreate = ({
           } else {
             result = await postInitViaHub(hubPubkey, slug, uri)
           }
-
           if (result?.success) {
-            await getHubsForRelease(metadataJson.reference)
+            if (metadataJson.reference) {
+              await getHubsForRelease(metadataJson.reference)
+            }
             enqueueSnackbar(result.msg, {
               variant: 'info',
             })
@@ -253,12 +246,20 @@ const HubPostCreate = ({
           setFormValues({ postForm: {} })
           setPostCreated(true)
           setOpen(false)
-          setParentOpen(false)
+          if (setParentOpen) {
+            setParentOpen(false)
+          }
         }
       }
     } catch (error) {
-      setParentOpen(false)
       console.warn(error)
+      setIsPublishing(false)
+      if (setParentOpen) {
+        setParentOpen(false)
+      }
+      enqueueSnackbar(error.msg, {
+        variant: 'failure',
+      })
     }
   }
 
@@ -314,23 +315,36 @@ const HubPostCreate = ({
                         disabled={
                           isPublishing ||
                           !formIsValid ||
-                          !preloadedRelease ||
+                          (!preloadedRelease &&
+                            !formValues.postForm.reference &&
+                            !inHubDashboard) ||
                           bundlrBalance === 0 ||
                           mbs < uploadSize
                         }
                         sx={{ height: '54px' }}
                       >
-                        {isPublishing && <Dots msg={publishingStepText} />}
-                        {!isPublishing && buttonText}
+                        {isPublishing ? (
+                          <Dots msg={publishingStepText} />
+                        ) : (
+                          <StyledTypography
+                            disabled={
+                              isPublishing ||
+                              !formIsValid ||
+                              (!preloadedRelease &&
+                                !formValues.postForm.reference &&
+                                !inHubDashboard) ||
+                              bundlrBalance === 0 ||
+                              mbs < uploadSize
+                            }
+                            variant="body2"
+                          >
+                            {buttonText}
+                          </StyledTypography>
+                        )}
                       </Button>
                     )}
 
-                    {pending && (
-                      <LinearProgress
-                        variant="determinate"
-                        value={audioProgress || imageProgress}
-                      />
-                    )}
+                    {pending && <LinearProgress variant="determinate" />}
 
                     <Box display="flex" justifyContent="space-between">
                       {bundlrBalance > 0 && (
@@ -395,12 +409,12 @@ const CreateCta = styled(Box)(({ theme }) => ({
   },
 }))
 
-const BundlrBalanceInfo = styled(Typography)(({ theme }) => ({
+const BundlrBalanceInfo = styled(Typography)(() => ({
   whiteSpace: 'nowrap',
   margin: '5px 0',
 }))
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
@@ -410,6 +424,10 @@ const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+}))
+
+const StyledTypography = styled(Typography)(({ theme, disabled }) => ({
+  color: disabled ? theme.palette.grey.primary : theme.palette.black,
 }))
 
 export default HubPostCreate

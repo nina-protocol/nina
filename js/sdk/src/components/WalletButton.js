@@ -1,10 +1,7 @@
 import { Button, Collapse, Fade, Menu, MenuItem, styled } from '@mui/material'
-import { useWallet } from '@solana/wallet-adapter-react'
-import React, { useMemo, useState } from 'react'
-import {
-  WalletDialogButton,
-  useWalletDialog,
-} from '@solana/wallet-adapter-material-ui'
+import React, { useMemo, useState, useContext } from 'react'
+import WalletConnectModal from './WalletConnectModal'
+import Wallet from '../contexts/Wallet'
 
 const StyledMenu = styled(Menu)(({ theme }) => ({
   '& .MuiList-root': {
@@ -46,30 +43,29 @@ const WalletButton = ({
   variant = 'contained',
   type = 'button',
   router,
+  inHubs,
   children,
   ...props
 }) => {
-  const { publicKey, wallet, disconnect } = useWallet()
-  const { setOpen } = useWalletDialog()
+  const { wallet } = useContext(Wallet.Context)
   const [anchor, setAnchor] = useState()
-
-  const base58 = useMemo(() => publicKey?.toBase58(), [publicKey])
+  const [showWalletModal, setShowWalletModal] = useState(false)
+  const base58 = useMemo(() => wallet.publicKey?.toBase58(), [wallet.publicKey])
   const content = useMemo(() => {
     if (children) return children
     if (!wallet || !base58) return null
     return base58.slice(0, 4) + '..' + base58.slice(-4)
   }, [children, wallet, base58])
 
-  if (!wallet) {
+  if (!wallet.wallet) {
     return (
-      <WalletDialogButton
-        color={color}
-        variant={variant}
-        type={type}
-        {...props}
+      <WalletConnectModal
+        inOnboardingFlow={false}
+        forceOpen={showWalletModal}
+        setForceOpen={setShowWalletModal}
       >
         {children}
-      </WalletDialogButton>
+      </WalletConnectModal>
     )
   }
   return (
@@ -108,18 +104,20 @@ const WalletButton = ({
             fullWidth
             {...props}
           >
-            {wallet.adapter.name}
+            {wallet.wallet.adapter.name}
           </Button>
         </WalletMenuItem>
         <Collapse in={!!anchor}>
-          <WalletActionMenuItem
-            onClick={async () => {
-              setAnchor(undefined)
-              router.push('/dashboard')
-            }}
-          >
-            View Dashboard
-          </WalletActionMenuItem>
+          {!inHubs && (
+            <WalletActionMenuItem
+              onClick={async () => {
+                setAnchor(undefined)
+                router.push('/dashboard')
+              }}
+            >
+              View Dashboard
+            </WalletActionMenuItem>
+          )}
           <WalletActionMenuItem
             onClick={async () => {
               setAnchor(undefined)
@@ -131,21 +129,13 @@ const WalletButton = ({
           <WalletActionMenuItem
             onClick={() => {
               setAnchor(undefined)
-              setOpen(true)
-            }}
-          >
-            Change wallet
-          </WalletActionMenuItem>
-          <WalletActionMenuItem
-            onClick={() => {
-              setAnchor(undefined)
               // eslint-disable-next-line @typescript-eslint/no-empty-function
-              disconnect().catch(() => {
+              wallet.disconnect().catch(() => {
                 // Silently catch because any errors are caught by the context `onError` handler
               })
             }}
           >
-            Disconnect
+            Sign Out
           </WalletActionMenuItem>
         </Collapse>
       </StyledMenu>

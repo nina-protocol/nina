@@ -8,7 +8,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Dots from './Dots'
 
-const IdentityVerificationModal = ({ action, type, value, open, setOpen }) => {
+const IdentityDisconnectModal = ({ action, type, value, open, setOpen }) => {
   const [inProgress, setInProgress] = useState(false)
 
   const handleClose = () => {
@@ -16,14 +16,14 @@ const IdentityVerificationModal = ({ action, type, value, open, setOpen }) => {
   }
 
   const titleForType = (type) => {
-    return `Complete ${
+    return `Disconnect ${
       type.charAt(0).toUpperCase() + type.slice(1)
     } Verification for: ${value}`
   }
 
-  const handleAction = async () => {
+  const handleAction = async (type) => {
     setInProgress(true)
-    await action()
+    await action(type)
     handleClose()
     setInProgress(false)
   }
@@ -51,10 +51,6 @@ const IdentityVerificationModal = ({ action, type, value, open, setOpen }) => {
             >
               {titleForType(type)}
             </Typography>
-            <Typography align="center" id="transition-modal-title" gutterBottom>
-              You will need to sign a transaction to complete the verification
-              process
-            </Typography>
             <Button
               style={{ marginTop: '15px' }}
               color="primary"
@@ -63,7 +59,7 @@ const IdentityVerificationModal = ({ action, type, value, open, setOpen }) => {
               onClick={handleAction}
             >
               <Typography>
-                {!inProgress && 'Verify'}
+                {!inProgress && 'Disconnect'}
                 {inProgress && (
                   <Dots
                     msg={'Verification Transaction Pending... Please wait'}
@@ -78,7 +74,7 @@ const IdentityVerificationModal = ({ action, type, value, open, setOpen }) => {
   )
 }
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
   width: '100%',
@@ -108,4 +104,4 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   },
 }))
 
-export default IdentityVerificationModal
+export default IdentityDisconnectModal

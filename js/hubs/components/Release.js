@@ -12,7 +12,10 @@ import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import {
+  imageManager,
+  downloadHelper,
+} from '@nina-protocol/nina-internal-sdk/esm/utils'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
@@ -21,13 +24,12 @@ import Typography from '@mui/material/Typography'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline'
 import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline'
 import DownloadIcon from '@mui/icons-material/Download'
-import { useWallet } from '@solana/wallet-adapter-react'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
-const { getImageFromCDN, loader } = imageManager
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { useSnackbar } from 'notistack'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
@@ -35,10 +37,15 @@ import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSe
 
 const Button = dynamic(() => import('@mui/material/Button'))
 const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
-const AddToHubModal = dynamic(() => import('./AddToHubModal'))
+const AddToHubModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/AddToHubModal')
+)
+
+const { getImageFromCDN, loader } = imageManager
+const { downloadWithFallback } = downloadHelper
 
 const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const { enqueueSnackbar } = useSnackbar()
   const { updateTrack, track, isPlaying, setInitialized, audioPlayerRef } =
     useContext(Audio.Context)
@@ -146,20 +153,15 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       wallet: wallet?.publicKey?.toBase58(),
     })
 
-    const response = await axios.get(url, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/octet-stream',
-      },
-      responseType: 'blob',
-    })
-    if (response?.data) {
-      const a = document.createElement('a')
-      const url = window.URL.createObjectURL(response.data)
-      a.href = url
-      a.download = name
-      a.click()
+    const success = await downloadWithFallback(url, name)
+    if (success) {
+      enqueueSnackbar('Download complete', {
+        variant: 'success',
+      })
+    } else {
+      enqueueSnackbar('Download failed', {
+        variant: 'error',
+      })
     }
   }
 
@@ -344,6 +346,9 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
   marginTop: '15px',
   '&::-webkit-scrollbar': {
     display: 'none',
+  },
+  '& pre': {
+    whiteSpace: 'pre-wrap',
   },
   [theme.breakpoints.up('md')]: {
     maxHeight: '275px',

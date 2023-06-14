@@ -5,7 +5,7 @@ use anchor_lang::solana_program::{
 use mpl_token_metadata::{
     self,
     state::{Creator, DataV2},
-    instruction::{create_metadata_accounts_v2, update_metadata_accounts_v2},
+    instruction::{create_metadata_accounts_v3, update_metadata_accounts_v2},
 };
 use anchor_spl::token::{self, TokenAccount, MintTo, Transfer, Token, Mint, SetAuthority};
 use spl_token::instruction::{close_account};
@@ -208,12 +208,6 @@ impl Release {
 
         // Make sure royalty shares of all recipients does not exceed 1000000
         if release.royalty_equals_1000000() {
-            if !is_init {
-                emit!(RoyaltyRecipientAdded {
-                    authority: new_royalty_recipient,
-                    public_key: release_loader.key(),
-                });
-            }
             Ok(())
         } else {
             return Err(error!(ErrorCode::RoyaltyExceeds100Percent));
@@ -298,7 +292,7 @@ impl Release {
         ];
     
         invoke_signed(
-            &create_metadata_accounts_v2(
+            &create_metadata_accounts_v3(
                 metadata_program.key(),
                 metadata.key(),
                 release_mint.key(),
@@ -312,6 +306,7 @@ impl Release {
                 metadata_data.seller_fee_basis_points,
                 true,
                 true,
+                None,
                 None,
                 None
             ),
@@ -336,6 +331,13 @@ impl Release {
         metadata_data: ReleaseMetadataData,
         bumps: ReleaseBumps,
     ) -> Result<()> {
+        let creators: Vec<Creator> =
+        vec![Creator {
+            address: *release_signer.to_account_info().key,
+            verified: true,
+            share: 100,
+        }];
+
         let metadata_infos = vec![
             metadata.clone(),
             release_mint.to_account_info().clone(),
@@ -364,7 +366,7 @@ impl Release {
                     symbol: metadata_data.symbol,
                     uri: metadata_data.uri.clone(),
                     seller_fee_basis_points: metadata_data.seller_fee_basis_points,
-                    creators: None,
+                    creators: Some(creators),
                     collection: None,
                     uses: None
                 }),
@@ -581,39 +583,3 @@ impl From<AuthorityType> for spl_token::instruction::AuthorityType {
         }
     }
 }
-
-#[event]
-pub struct ReleaseCreated {
-    pub authority: Pubkey,
-    pub datetime: i64,
-    pub mint: Pubkey,
-    #[index]
-    pub public_key: Pubkey,
-    pub metadata_public_key: Pubkey,
-    pub uri: String,
-}
-
-#[event]
-pub struct RoyaltyRecipientAdded {
-    pub authority: Pubkey,
-    pub public_key: Pubkey,
-}
-
-#[event]
-pub struct ReleaseSold {
-    pub public_key: Pubkey,
-    pub purchaser: Pubkey,
-    #[index]
-    pub date: i64,
-}
-
-#[event]
-pub struct ReleaseSoldViaHub {
-    pub public_key: Pubkey,
-    pub purchaser: Pubkey,
-    pub hub: Pubkey,
-    #[index]
-    pub date: i64,
-}
-
-

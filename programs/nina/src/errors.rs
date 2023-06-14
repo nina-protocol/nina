@@ -70,4 +70,10 @@ pub enum ErrorCode {
     HubPublishFeeInvalidValue,
     #[msg("HubReferralFeeInvalidValue must be between 0 and 1000000")]
     HubReferralFeeInvalidValue,
+    #[msg("ReleaseAlreadyOwned Cannot Claim Release Already Owned")]
+    ReleaseAlreadyOwned,
+    #[msg("Subscription Payer Mismatch")]
+    SubscriptionPayerMismatch,
+    #[msg("Subscription Delegated Payer Mismatch")]
+    SubscriptionDelegatedPayerMismatch,
 }

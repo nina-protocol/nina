@@ -6,9 +6,7 @@ import React, {
   createElement,
   Fragment,
 } from 'react'
-import axios from 'axios'
 import { styled } from '@mui/material/styles'
-import { useWallet } from '@solana/wallet-adapter-react'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
@@ -17,17 +15,33 @@ import Link from 'next/link'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import CollectorModal from './CollectorModal'
 import HubsModal from './HubsModal'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import { unified } from 'unified'
 import rehypeParse from 'rehype-parse'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
-import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
+import dynamic from 'next/dynamic'
+import AddToHubModal from '@nina-protocol/nina-internal-sdk/esm/AddToHubModal'
+const Gates = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/Gates')
+)
+const RedeemReleaseCode = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/RedeemReleaseCode')
+)
+
+const NoSolWarning = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/NoSolWarning')
+)
+
+const WalletConnectModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
+)
 
 const ReleasePurchase = (props) => {
   const {
@@ -38,8 +52,9 @@ const ReleasePurchase = (props) => {
     setAmountHeld,
     isAuthority,
   } = props
+
   const { enqueueSnackbar } = useSnackbar()
-  const wallet = useWallet()
+  const { wallet, pendingTransactionMessage } = useContext(Wallet.Context)
   const {
     releasePurchase,
     releasePurchasePending,
@@ -53,6 +68,7 @@ const ReleasePurchase = (props) => {
     collection,
     ninaClient,
     usdcBalance,
+    solBalance,
     checkIfHasBalanceToCompleteAction,
     NinaProgramAction,
   } = useContext(Nina.Context)
@@ -62,12 +78,15 @@ const ReleasePurchase = (props) => {
     getExchangesForRelease,
   } = useContext(Exchange.Context)
   const [release, setRelease] = useState(undefined)
+  const [code, setCode] = useState()
   const [amountPendingBuys, setAmountPendingBuys] = useState(0)
   const [amountPendingSales, setAmountPendingSales] = useState(0)
   const [exchangeTotalBuys, setExchangeTotalBuys] = useState(0)
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
   const [publishedHub, setPublishedHub] = useState()
   const [description, setDescription] = useState()
+  const [showNoSolModal, setShowNoSolModal] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
     [releasePubkey, releasePurchaseTransactionPending]
@@ -97,12 +116,15 @@ const ReleasePurchase = (props) => {
   }, [releaseState.tokenData[releasePubkey]])
 
   useEffect(() => {
-    setAmountHeld(collection[releasePubkey] || 0)
-  }, [collection[releasePubkey]])
-
-  useEffect(() => {
-    getAmountHeld(releaseState.releaseMintMap[releasePubkey], releasePubkey)
-  }, [releasePubkey])
+    const handleFetchAmount = async () => {
+      const amount = await getAmountHeld(
+        releaseState.releaseMintMap[releasePubkey],
+        releasePubkey
+      )
+      setAmountHeld(amount)
+    }
+    handleFetchAmount()
+  }, [releasePubkey, releaseState.releaseMintMap, collection])
 
   useEffect(() => {
     setAmountPendingBuys(
@@ -145,16 +167,20 @@ const ReleasePurchase = (props) => {
     e.preventDefault()
 
     if (!wallet?.connected) {
-      enqueueSnackbar('Please connect your wallet to purchase', {
-        variant: 'error',
-      })
+      setShowWalletModal(true)
       logEvent('release_purchase_failure_not_connected', 'engagement', {
         publicKey: releasePubkey,
       })
       return
     }
+
+    if (release.price > 0 && solBalance === 0) {
+      setShowNoSolModal(true)
+      return
+    }
+
     let result
-    if (!amountHeld || amountHeld === 0) {
+    if ((!amountHeld || amountHeld === 0) && release.price > 0) {
       const error = await checkIfHasBalanceToCompleteAction(
         NinaProgramAction.RELEASE_PURCHASE
       )
@@ -221,6 +247,25 @@ const ReleasePurchase = (props) => {
 
   return (
     <Box sx={{ position: 'relative', height: '100%' }}>
+      {release.price > 0 && (
+        <NoSolWarning
+          requiredSol={ninaClient.nativeToUiString(
+            release.price,
+            release.paymentMint
+          )}
+          action={'purchase'}
+          open={showNoSolModal}
+          setOpen={setShowNoSolModal}
+        />
+      )}
+
+      <WalletConnectModal
+        inOnboardingFlow={false}
+        forceOpen={showWalletModal}
+        setForceOpen={setShowWalletModal}
+        action={release.price > 0 ? 'purchase' : 'collect'}
+      />
+
       <Box>
         <AmountRemaining variant="body2" align="left">
           {release.editionType === 'open' ? (
@@ -230,7 +275,9 @@ const ReleasePurchase = (props) => {
               sx={{ color: '#black !important' }}
             >
               Open Edition:{' '}
-              {`${release?.saleCounter > 0 ? release?.saleCounter : 0} Sold`}
+              {`${
+                release?.saleCounter > 0 ? release?.saleCounter : 0
+              } Collected`}
             </Typography>
           ) : (
             <>
@@ -317,7 +364,7 @@ const ReleasePurchase = (props) => {
           background: 'white',
         }}
       >
-        <Box sx={{ mb: 0, mt: 1 }}>
+        <Box sx={{ mt: 1 }}>
           <form onSubmit={handleSubmit}>
             <Button
               variant="outlined"
@@ -326,16 +373,16 @@ const ReleasePurchase = (props) => {
               disabled={release.remainingSupply === 0 ? true : false}
             >
               <Typography variant="body2">
-                {txPending && <Dots msg="preparing transaction" />}
-                {!txPending && pending && (
-                  <Dots msg="awaiting wallet approval" />
+                {(txPending || pending) && (
+                  <Dots msg={pendingTransactionMessage} />
                 )}
-                {!txPending && !pending && buttonText}
+                {!txPending && !pending && (
+                  <Typography variant="body2">{buttonText}</Typography>
+                )}
               </Typography>
             </Button>
           </form>
         </Box>
-
         <Gates
           release={release}
           metadata={metadata}
@@ -345,6 +392,23 @@ const ReleasePurchase = (props) => {
           inSettings={false}
           releaseGates={releaseGates}
         />
+        {amountHeld === 0 && release.remainingSupply !== 0 && (
+          <GatesNotification gates={releaseGates?.length}>
+            {releaseGates && (
+              <StyledTypographyButtonSub>
+                {`There ${releaseGates?.length > 1 ? 'are' : 'is'} ${
+                  releaseGates?.length
+                } ${
+                  releaseGates?.length > 1 ? 'files' : 'file'
+                } available for download exclusively to owners of this release.`}
+              </StyledTypographyButtonSub>
+            )}
+
+            {release.price > 0 && (
+              <RedeemReleaseCode releasePubkey={releasePubkey} />
+            )}
+          </GatesNotification>
+        )}
       </Box>
     </Box>
   )
@@ -371,6 +435,12 @@ const StyledUserAmount = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
 }))
 
+const StyledTypographyButtonSub = styled(Typography)(({ theme }) => ({
+  color: theme.palette.grey[500],
+  textAlign: 'center',
+  fontSize: '12px',
+}))
+
 const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({
   overflowWrap: 'anywhere',
   fontSize: '18px !important',
@@ -378,10 +448,20 @@ const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({
   '&::-webkit-scrollbar': {
     display: 'none',
   },
+  '& pre': {
+    whiteSpace: 'pre-wrap',
+  },
   [theme.breakpoints.up('md')]: {
     maxHeight: releaseGates ? '182px' : '256px',
     overflowY: 'scroll',
   },
+}))
+
+const GatesNotification = styled(Box)(({ theme, gates }) => ({
+  alignItems: 'center',
+  position: 'absolute',
+  top: '110%',
+  width: gates ? 'auto' : '100%',
 }))
 
 export default ReleasePurchase

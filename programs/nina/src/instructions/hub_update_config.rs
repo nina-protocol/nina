@@ -40,11 +40,6 @@ pub fn handler (
     hub.uri = uri_array;
     hub.publish_fee = publish_fee;
     hub.referral_fee = referral_fee;
-
-    emit!(HubConfigUpdated {
-        public_key: ctx.accounts.hub.key(),
-        uri: uri,
-    });
     
     Ok(())
 }

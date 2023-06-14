@@ -4,20 +4,25 @@ import { withFormik } from 'formik'
 import Button from '@mui/material/Button'
 import Input from '@mui/material/Input'
 import Box from '@mui/material/Box'
-import { useWallet } from '@solana/wallet-adapter-react'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
+import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Exchange from '@nina-protocol/nina-internal-sdk/esm/Exchange'
-import Dots from './Dots'
+import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
+import dynamic from 'next/dynamic'
 
+const WalletConnectModal = dynamic(() =>
+  import('@nina-protocol/nina-internal-sdk/esm/WalletConnectModal')
+)
 const BuySellForm = (props) => {
   const { onSubmit, isBuy, release, amount, setAmount } = props
 
-  const wallet = useWallet()
+  const { wallet } = useContext(Wallet.Context)
   const { exchangeInitPending } = useContext(Exchange.Context)
   const { ninaClient } = useContext(Nina.Context)
   const [pending, setPending] = useState(false)
   const [buyPending, setBuyPending] = useState(false)
   const [sellPending, setSellPending] = useState(false)
+  const [showWalletModal, setShowWalletModal] = useState(false)
 
   useEffect(() => {
     setPending(exchangeInitPending[release.publicKey])
@@ -36,7 +41,10 @@ const BuySellForm = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
+    if (!wallet.connected) {
+      setShowWalletModal(true)
+      return
+    }
     await onSubmit(e, isBuy, amount)
     setAmount()
   }
@@ -71,7 +79,6 @@ const BuySellForm = (props) => {
         <Button
           variant="contained"
           type="submit"
-          disabled={!wallet?.connected}
           disableRipple={true}
           sx={{ width: '20%' }}
         >
@@ -82,6 +89,12 @@ const BuySellForm = (props) => {
           {!isBuy && !sellPending && 'Submit'}
         </Button>
       </InputWrapper>
+      <WalletConnectModal
+        inOnboardingFlow={false}
+        forceOpen={showWalletModal}
+        setForceOpen={setShowWalletModal}
+        action={isBuy ? 'buyOffer' : 'sellOffer'}
+      />
     </StyledForm>
   )
 }
