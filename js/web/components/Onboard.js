@@ -286,7 +286,7 @@ const Onboard = ({ customCode }) => {
   const signUpSteps = [
     {
       title: onboardingCopy.header1,
-      content: onboardingCopy.header2,
+      content: onboardingCopy.content2,
       cta: (
         <>
           <WalletConnectModal
