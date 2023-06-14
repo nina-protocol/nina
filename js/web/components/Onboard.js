@@ -277,7 +277,7 @@ const Onboard = () => {
   const signUpSteps = [
     {
       title: onboardingCopy.header1,
-      content: onboardingCopy.header2,
+      content: onboardingCopy.content1,
       cta: (
         <>
           <WalletConnectModal
