@@ -4,8 +4,17 @@ import Onboard from '../../components/Onboard'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/system/Box'
 import { styled } from '@mui/material/styles'
+import LocalizedStrings from 'react-localization'
 
 const StartPage = () => {
+  const welcomeString = new LocalizedStrings({
+    en: {
+      header: 'Follow the steps below to get started on Nina:',
+    },
+    ja: {
+      header: '下の手順に沿って進んでください。',
+    },
+  })
   return (
     <>
       <Head>
@@ -44,9 +53,7 @@ const StartPage = () => {
         <Typography mb={1} variant="h3">
           Welcome to Nina from Avyss
         </Typography>
-        <Typography variant="body1">
-          Follow the steps below to get started on Nina:
-        </Typography>
+        <Typography variant="body1">{welcomeString.header}</Typography>
       </CustomHeader>
       <Onboard customCode={'yung-tito'} />
     </>
