@@ -275,7 +275,9 @@ const ReleasePurchase = (props) => {
               sx={{ color: '#black !important' }}
             >
               Open Edition:{' '}
-              {`${release?.saleCounter > 0 ? release?.saleCounter : 0} Collected`}
+              {`${
+                release?.saleCounter > 0 ? release?.saleCounter : 0
+              } Collected`}
             </Typography>
           ) : (
             <>
