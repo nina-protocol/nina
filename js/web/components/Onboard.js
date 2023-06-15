@@ -106,33 +106,55 @@ const Onboard = ({ customCode }) => {
   const onboardingCopy = new LocalizedStrings({
     en: {
       title: 'Welcome to Nina.',
-      signInStepHeader: 'Sign In / Sign Up',
-      claimStepHeader: 'Claim your invite code',
-      fundUploadAccountStepHeader: 'Fund your Upload Account',
-      verifyAccountStepHeader: 'Verify your Account (optional)',
-      successStepHeader: 'Success',
-      signInStepContent: 'To get started, please sign in or sign up below.',
-      claimStepContent: `By claiming this code you'll receive 0.15 SOL to get started in the Nina ecosystem.`,
-      fundUploadAccountStepContent: `You now have 0.15 SOL into your account. SOL is used to pay storage and transaction fees on Nina. Once you've claimed your code, you'll need to fund your Upload`,
-      verifyAccountStepContent: `Now that you have claimed your code and funded your account, you can verify your account via your Soundcloud or Twitter profile.`,
-      successStepContent: `You're all set. ${
-        solBalance > 0 ? 'You can now start uploading your music to Nina.' : ''
-      }`,
+      signInStep: {
+        header: 'Sign In / Sign Up',
+        content: 'To get started, please sign in or sign up below.',
+      },
+      claimStep: {
+        header: 'Claim your invite code',
+        context: `By claiming this code you'll receive 0.15 SOL to get started in the Nina ecosystem.`,
+      },
+      fundUploadAccountStep: {
+        header: 'Fund your Upload Account',
+        content: `You now have 0.15 SOL into your account. SOL is used to pay storage and transaction fees on Nina. Once you've claimed your code, you'll need to fund your Upload Account.`,
+      },
+      verifyAccountStep: {
+        header: 'Verify your Account (optional)',
+        content: `Now that you have claimed your code and funded your account, you can verify your account via your Soundcloud or Twitter profile.`,
+      },
+      successStep: {
+        header: 'Success',
+        content: `You're all set. ${
+          solBalance > 0
+            ? 'You can now start uploading your music to Nina.'
+            : ''
+        }`,
+      },
     },
     ja: {
       title: 'Welcome to Nina.',
-      signInStepHeader: `Sign In / Sign Up`,
-      claimStepHeader: `Invite codeを入力してください`,
-      fundUploadAccountStepHeader: `アップロードアカウントに供給する`,
-      verifyAccountStepHeader: `アカウントを照合する（オプション`,
-      successStepHeader: `成功`,
-      signInStepContent: `サインインまたは登録してください。`,
-      claimStepContent: `このコードを入力することによって、Ninaを始めるために必要な0.15 SOLを受け取ることができます。`,
-      fundUploadAccountStepContent: `今アカウントに0.15 SOLはいっています。SOLはNina上で保存と取引に使用されます。一度コードを入力したら、アップロードアカウントに供給する必要があります。このアカウントはNina上で保存し取引するために使用されます。`,
-      verifyAccountStepContent: `コードを入力し、アカウントに供給したら、SoundcloudやTwitterのプロフィールを照合することができます。`,
-      successStepContent: `準備ができました。${
-        solBalance > 0 ? 'Ninaに音楽をアップロードすることができます。' : ''
-      }`,
+      signInStep: {
+        header: 'Sign In / Sign Up',
+        content: `サインインまたは登録してください。`,
+      },
+      claimStep: {
+        header: 'Invite codeを入力してください',
+        content: `このコードを入力することによって、Ninaを始めるために必要な0.15 SOLを受け取ることができます。`,
+      },
+      fundUploadAccountStep: {
+        header: `アップロードアカウントに供給する`,
+        content: `今アカウントに0.15 SOLはいっています。SOLはNina上で保存と取引に使用されます。一度コードを入力したら、アップロードアカウントに供給する必要があります。このアカウントはNina上で保存し取引するために使用されます。`,
+      },
+      verifyAccountStep: {
+        header: `アカウントを照合する（オプション`,
+        content: `コードを入力し、アカウントに供給したら、SoundcloudやTwitterのプロフィールを照合することができます。`,
+      },
+      successStep: {
+        header: `成功`,
+        content: `準備ができました。${
+          solBalance > 0 ? 'Ninaに音楽をアップロードすることができます。' : ''
+        }`,
+      },
     },
   })
 
@@ -141,8 +163,8 @@ const Onboard = ({ customCode }) => {
 
   const onboardingSteps = [
     {
-      title: onboardingCopy.signInStepHeader,
-      content: onboardingCopy.signInStepContent,
+      title: onboardingCopy.signInStep.header,
+      content: onboardingCopy.signInStep.content,
       cta: (
         <WalletConnectModal
           inOnboardingFlow={true}
@@ -154,8 +176,8 @@ const Onboard = ({ customCode }) => {
       ),
     },
     {
-      title: onboardingCopy.claimStepHeader,
-      content: onboardingCopy.claimStepContent,
+      title: onboardingCopy.claimStep.header,
+      content: onboardingCopy.claimStep.content,
 
       cta: (
         <>
@@ -193,13 +215,13 @@ const Onboard = ({ customCode }) => {
       ),
     },
     {
-      title: onboardingCopy.fundUploadAccountStepHeader,
-      content: onboardingCopy.fundUploadAccountStepContent,
+      title: onboardingCopy.fundUploadAccountStep.header,
+      content: onboardingCopy.fundUploadAccountStep.content,
       cta: <BundlrModal inOnboardFlow={true} />,
     },
     {
-      title: onboardingCopy.verifyAccountStepHeader,
-      content: onboardingCopy.verifyAccountStepContent,
+      title: onboardingCopy.verifyAccountStep.header,
+      content: onboardingCopy.verifyAccountStep.content,
       cta: (
         <>
           <IdentityVerification
@@ -219,8 +241,8 @@ const Onboard = ({ customCode }) => {
       ),
     },
     {
-      title: onboardingCopy.successStepHeader,
-      content: onboardingCopy.successStepContent,
+      title: onboardingCopy.successStep.header,
+      content: onboardingCopy.successStep.content,
       cta: (
         <>
           {solBalance > 0 && (
@@ -285,8 +307,8 @@ const Onboard = ({ customCode }) => {
 
   const signUpSteps = [
     {
-      title: onboardingCopy.signInStepHeader,
-      content: onboardingCopy.signInStepContent,
+      title: onboardingCopy.signInStep.header,
+      content: onboardingCopy.signInStep.content,
       cta: (
         <>
           <WalletConnectModal
@@ -300,8 +322,8 @@ const Onboard = ({ customCode }) => {
       ),
     },
     {
-      title: onboardingCopy.verifyAccountStepHeader,
-      content: onboardingCopy.verifyAccountStepContent,
+      title: onboardingCopy.verifyAccountStep.header,
+      content: onboardingCopy.verifyAccountStep.content,
       cta: (
         <>
           <IdentityVerification
@@ -321,8 +343,8 @@ const Onboard = ({ customCode }) => {
       ),
     },
     {
-      title: onboardingCopy.successStepHeader,
-      content: onboardingCopy.successStepContent,
+      title: onboardingCopy.successStep.header,
+      content: onboardingCopy.successStep.content,
       cta: (
         <>
           {solBalance > 0 && (
