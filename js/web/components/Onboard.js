@@ -301,7 +301,7 @@ const Onboard = ({ customCode }) => {
     },
     {
       title: onboardingCopy.verifyAccountStepHeader,
-      content: onboardingCopy.verifyAccountStepHeader,
+      content: onboardingCopy.verifyAccountStepContent,
       cta: (
         <>
           <IdentityVerification
