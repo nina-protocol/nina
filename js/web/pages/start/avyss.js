@@ -55,7 +55,7 @@ const StartPage = () => {
         </Typography>
         <Typography variant="body1">{welcomeString.header}</Typography>
       </CustomHeader>
-      <Onboard customCode={'yung-tito'} />
+      <Onboard customCode={'avyss'} />
     </>
   )
 }

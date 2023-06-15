@@ -106,31 +106,31 @@ const Onboard = ({ customCode }) => {
   const onboardingCopy = new LocalizedStrings({
     en: {
       title: 'Welcome to Nina.',
-      header1: 'Sign In / Sign Up',
-      header2: 'Claim your onboarding code',
-      header3: 'Fund your Upload Account',
-      header4: 'Verify your Account (optional)',
-      header5: 'Success',
-      content1: 'To get started, please sign in or sign up below.',
-      content2: `By claiming this code you'll receive 0.15 SOL to get started in the Nina ecosystem.`,
-      content3: `  You now have 0.15 SOL into your account. SOL is used to pay storage and transaction fees on Nina. Once you've claimed your code, you'll need to fund your Upload`,
-      content4: `        Now that you have claimed your code and funded your account, you can verify your account via your Soundcloud or Twitter profile.`,
-      content5: `You're all set. ${
+      signInStepHeader: 'Sign In / Sign Up',
+      claimStepHeader: 'Claim your invite code',
+      fundUploadAccountStepHeader: 'Fund your Upload Account',
+      verifyAccountStepHeader: 'Verify your Account (optional)',
+      successStepHeader: 'Success',
+      signInStepContent: 'To get started, please sign in or sign up below.',
+      claimStepContent: `By claiming this code you'll receive 0.15 SOL to get started in the Nina ecosystem.`,
+      fundUploadAccountStepContent: `You now have 0.15 SOL into your account. SOL is used to pay storage and transaction fees on Nina. Once you've claimed your code, you'll need to fund your Upload`,
+      verifyAccountStepContent: `Now that you have claimed your code and funded your account, you can verify your account via your Soundcloud or Twitter profile.`,
+      successStepContent: `You're all set. ${
         solBalance > 0 ? 'You can now start uploading your music to Nina.' : ''
       }`,
     },
     ja: {
       title: 'Welcome to Nina.',
-      header1: `サインインまたは登録してください。`,
-      header2: `Invite codeを入力してください`,
-      header3: `アップロードアカウントに供給する`,
-      header4: `アカウントを照合する（オプション`,
-      header5: `成功`,
-      content1: `サインインまたは登録してください。`,
-      content2: `このコードを入力することによって、Ninaを始めるために必要な0.15 SOLを受け取ることができます。`,
-      content3: `今アカウントに0.15 SOLはいっています。SOLはNina上で保存と取引に使用されます。一度コードを入力したら、アップロードアカウントに供給する必要があります。このアカウントはNina上で保存し取引するために使用されます。`,
-      content4: `コードを入力し、アカウントに供給したら、SoundcloudやTwitterのプロフィールを照合することができます。`,
-      content5: `準備ができました。${
+      signInStepHeader: `Sign In / Sign Up`,
+      claimStepHeader: `Invite codeを入力してください`,
+      fundUploadAccountStepHeader: `アップロードアカウントに供給する`,
+      verifyAccountStepHeader: `アカウントを照合する（オプション`,
+      successStepHeader: `成功`,
+      signInStepContent: `サインインまたは登録してください。`,
+      claimStepContent: `このコードを入力することによって、Ninaを始めるために必要な0.15 SOLを受け取ることができます。`,
+      fundUploadAccountStepContent: `今アカウントに0.15 SOLはいっています。SOLはNina上で保存と取引に使用されます。一度コードを入力したら、アップロードアカウントに供給する必要があります。このアカウントはNina上で保存し取引するために使用されます。`,
+      verifyAccountStepContent: `コードを入力し、アカウントに供給したら、SoundcloudやTwitterのプロフィールを照合することができます。`,
+      successStepContent: `準備ができました。${
         solBalance > 0 ? 'Ninaに音楽をアップロードすることができます。' : ''
       }`,
     },
@@ -141,8 +141,8 @@ const Onboard = ({ customCode }) => {
 
   const onboardingSteps = [
     {
-      title: onboardingCopy.header1,
-      content: onboardingCopy.content1,
+      title: onboardingCopy.signInStepHeader,
+      content: onboardingCopy.signInStepContent,
       cta: (
         <WalletConnectModal
           inOnboardingFlow={true}
@@ -154,8 +154,8 @@ const Onboard = ({ customCode }) => {
       ),
     },
     {
-      title: onboardingCopy.header2,
-      content: onboardingCopy.content2,
+      title: onboardingCopy.claimStepHeader,
+      content: onboardingCopy.claimStepContent,
 
       cta: (
         <>
@@ -193,13 +193,13 @@ const Onboard = ({ customCode }) => {
       ),
     },
     {
-      title: onboardingCopy.header3,
-      content: onboardingCopy.content3,
+      title: onboardingCopy.fundUploadAccountStepHeader,
+      content: onboardingCopy.fundUploadAccountStepContent,
       cta: <BundlrModal inOnboardFlow={true} />,
     },
     {
-      title: onboardingCopy.header4,
-      content: onboardingCopy.content4,
+      title: onboardingCopy.verifyAccountStepHeader,
+      content: onboardingCopy.verifyAccountStepContent,
       cta: (
         <>
           <IdentityVerification
@@ -219,8 +219,8 @@ const Onboard = ({ customCode }) => {
       ),
     },
     {
-      title: onboardingCopy.header5,
-      content: onboardingCopy.content5,
+      title: onboardingCopy.successStepHeader,
+      content: onboardingCopy.successStepContent,
       cta: (
         <>
           {solBalance > 0 && (
@@ -285,8 +285,8 @@ const Onboard = ({ customCode }) => {
 
   const signUpSteps = [
     {
-      title: onboardingCopy.header1,
-      content: onboardingCopy.content1,
+      title: onboardingCopy.signInStepHeader,
+      content: onboardingCopy.signInStepContent,
       cta: (
         <>
           <WalletConnectModal
@@ -300,8 +300,8 @@ const Onboard = ({ customCode }) => {
       ),
     },
     {
-      title: onboardingCopy.header4,
-      content: onboardingCopy.header4,
+      title: onboardingCopy.verifyAccountStepHeader,
+      content: onboardingCopy.verifyAccountStepHeader,
       cta: (
         <>
           <IdentityVerification
@@ -321,8 +321,8 @@ const Onboard = ({ customCode }) => {
       ),
     },
     {
-      title: onboardingCopy.header5,
-      content: onboardingCopy.content5,
+      title: onboardingCopy.successStepHeader,
+      content: onboardingCopy.successStepContent,
       cta: (
         <>
           {solBalance > 0 && (
@@ -397,7 +397,6 @@ const Onboard = ({ customCode }) => {
     const url = customCode
       ? `bulkOnboardingCodes/${customCode}`
       : `onboardingCodes/${code}`
-
     try {
       setPending(true)
       const response = await axios.post(
@@ -503,12 +502,10 @@ const Onboard = ({ customCode }) => {
 
               {code === undefined && (
                 <>
-                  <>
-                    <Typography variant="h3" mb={1}>
-                      Follow the steps below to get started.
-                    </Typography>
-                    {renderSteps(signUpSteps)}
-                  </>
+                  <Typography variant="h3" mb={1}>
+                    Follow the steps below to get started.
+                  </Typography>
+                  {renderSteps(signUpSteps)}
                 </>
               )}
             </Box>
