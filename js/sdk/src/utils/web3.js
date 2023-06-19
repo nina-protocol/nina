@@ -237,14 +237,19 @@ export const apiPost = async (url, body, headers) => {
 export const wrapSol = async (provider, amount, mint) => {
   const wrappedSolInstructions = []
 
-  let [wrappedSolAccount] = await findOrCreateAssociatedTokenAccount(
-    provider.connection,
-    provider.wallet.publicKey,
-    provider.wallet.publicKey,
-    anchor.web3.SystemProgram.programId,
-    anchor.web3.SYSVAR_RENT_PUBKEY,
-    mint
-  )
+  let [wrappedSolAccount, wrappedSolAccountIx] =
+    await findOrCreateAssociatedTokenAccount(
+      provider.connection,
+      provider.wallet.publicKey,
+      provider.wallet.publicKey,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      mint
+    )
+
+  if (wrappedSolAccountIx) {
+    wrappedSolInstructions.push(wrappedSolAccountIx)
+  }
 
   const wrappedSolTransferIx = anchor.web3.SystemProgram.transfer({
     fromPubkey: provider.wallet.publicKey,
