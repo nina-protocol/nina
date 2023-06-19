@@ -237,14 +237,15 @@ export const apiPost = async (url, body, headers) => {
 export const wrapSol = async (provider, amount, mint) => {
   const wrappedSolInstructions = []
 
-  let [wrappedSolAccount, wrappedSolAccountIx] = await findOrCreateAssociatedTokenAccount(
-    provider.connection,
-    provider.wallet.publicKey,
-    provider.wallet.publicKey,
-    anchor.web3.SystemProgram.programId,
-    anchor.web3.SYSVAR_RENT_PUBKEY,
-    mint
-  )
+  let [wrappedSolAccount, wrappedSolAccountIx] =
+    await findOrCreateAssociatedTokenAccount(
+      provider.connection,
+      provider.wallet.publicKey,
+      provider.wallet.publicKey,
+      anchor.web3.SystemProgram.programId,
+      anchor.web3.SYSVAR_RENT_PUBKEY,
+      mint
+    )
 
   if (wrappedSolAccountIx) {
     wrappedSolInstructions.push(wrappedSolAccountIx)
@@ -253,7 +254,7 @@ export const wrapSol = async (provider, amount, mint) => {
   const wrappedSolTransferIx = anchor.web3.SystemProgram.transfer({
     fromPubkey: provider.wallet.publicKey,
     toPubkey: wrappedSolAccount,
-    lamports: new anchor.BN(amount),git
+    lamports: new anchor.BN(amount),
   })
   // sync wrapped SOL balance
   const syncNativeIx = createSyncNativeInstruction(wrappedSolAccount)
