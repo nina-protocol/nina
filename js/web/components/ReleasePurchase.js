@@ -454,9 +454,9 @@ const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({
   [theme.breakpoints.up('md')]: {
     maxHeight: releaseGates ? '182px' : '256px',
     overflowY: 'scroll',
-  },
-  '& p:nth-of-type(1)': {
-    paddingBottom: releaseGates ? '10px' : '0px',
+    '& p:nth-of-type(1)': {
+      paddingBottom: releaseGates ? '10px' : '0px',
+    },
   },
 }))
 
