@@ -13,7 +13,7 @@ export default function Home() {
       router.push(`/dashboard?code=${router.query.code}`)
     }
   }, [wallet, router, router.query.code])
-  
+
   return (
     <>
       <Head>
