@@ -455,6 +455,9 @@ const StyledDescription = styled(Typography)(({ theme, releaseGates }) => ({
     maxHeight: releaseGates ? '182px' : '256px',
     overflowY: 'scroll',
   },
+  '& p:nth-of-type(1)': {
+    paddingBottom: releaseGates ? '10px' : '0px',
+  },
 }))
 
 const GatesNotification = styled(Box)(({ theme, gates }) => ({
