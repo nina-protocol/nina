@@ -9,16 +9,15 @@ import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
 import Box from '@mui/material/Box'
 import {CoinflowEnvs, CoinflowPurchase} from '@coinflowlabs/react';
-// import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import releasePurchaseHelperTransactionBuilder  from '../utils/releasePurchaseHelperTransactionBuilder'
 
-const CoinflowModal = ({ release, releasePubkey }) => {
+const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
   const [open, setOpen] = useState(false)
   const [transaction, setTransaction] = useState()
   const { wallet, connection } = useContext(Wallet.Context)
-  // const { releasePurchaseHelperTransactionBuilder } = useContext(Release.Context)
   const { ninaClient } = useContext(Nina.Context)
 
   const handleClose = () => {
@@ -26,15 +25,12 @@ const CoinflowModal = ({ release, releasePubkey }) => {
   }
 
   useEffect(() => {
-    console.log('BRO')
     const buildTransaction = async () => {
       const transaction = await releasePurchaseHelperTransactionBuilder(
         releasePubkey,
         ninaClient.provider,
         ninaClient
       )
-      await wallet.signTransaction(transaction, connection)
-      console.log('transaction', transaction)
       setTransaction(transaction)
     }
     buildTransaction()
@@ -72,13 +68,15 @@ const CoinflowModal = ({ release, releasePubkey }) => {
         >
           <Fade in={open}>
             <StyledPaper>
+              <StyledCloseIcon onClick={() => handleClose()} />
               <CoinflowPurchase
                 wallet={wallet}
                 merchantId={'nina'}
                 env={'sandbox'}
                 connection={connection}
-                onSuccess={() => {
-                  console.log('Purchase Success');
+                onSuccess={async () => {
+                  await onSuccess()
+                  handleClose()
                 }}
                 blockchain={'solana'}
                 webhookInfo={{item: 'sword'}}
@@ -107,7 +105,6 @@ const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  height: '80%',
 }))
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -116,7 +113,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   boxShadow: theme.shadows[5],
   padding: theme.spacing(2, 4, 3),
   width: '40vw',
-  maxHeight: '90vh',
+  height: '85vh',
   overflowY: 'auto',
   zIndex: '10',
   display: 'flex',
@@ -137,9 +134,9 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   cursor: 'pointer',
 }))
 
-const GateWrapper = styled(Box)(() => ({
-  maxHeight: '350px',
-  overflowY: 'auto',
-}))
+// const GateWrapper = styled(Box)(() => ({
+//   height: '80%',
+//   overflowY: 'auto',
+// }))
 
 export default CoinflowModal

@@ -29,6 +29,7 @@ import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
 import AddToHubModal from '@nina-protocol/nina-internal-sdk/esm/AddToHubModal'
 import CoinflowModal  from '@nina-protocol/nina-internal-sdk/esm/CoinflowModal'
+import { on } from 'events'
 
 const Gates = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/Gates')
@@ -215,6 +216,13 @@ const ReleasePurchase = (props) => {
     })
   }
 
+  const onCoinflowSuccess = async () => {
+    await getRelease(releasePubkey)
+    enqueueSnackbar('Release purchased!', {
+      variant: 'success',
+    })
+  }
+
   if (!release) {
     return (
       <>
@@ -379,7 +387,11 @@ const ReleasePurchase = (props) => {
             </Button>
           </form>
         </Box>
-        <CoinflowModal release={release} releasePubkey={releasePubkey} />
+        <CoinflowModal
+          release={release}
+          releasePubkey={releasePubkey}
+          onSuccess={onCoinflowSuccess}
+        />
         <Gates
           release={release}
           metadata={metadata}

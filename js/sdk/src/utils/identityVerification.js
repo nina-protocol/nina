@@ -532,7 +532,7 @@ const verifyTwitter = async (
       publicKey,
       LAMPORTS_FOR_NAME_ACCOUNT,
       NINA_ID,
-      NINA_ID_TW_TLD
+      NINA_ID_SC_TLD
     )
     // Create Reverse Lookup Account Registry
     const [createIx, reverseRegistryIx] =

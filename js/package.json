@@ -20,7 +20,7 @@
     "check-lint-format": "yarn hubs check-lint-format && yarn sdk check-lint-format && yarn web check-lint-format"
   },
   "dependencies": {
-    "@coinflowlabs/react": "^2.1.1",
+    "@coinflowlabs/react": "^2.3.0",
     "@emotion/cache": "^11.7.1",
     "@emotion/react": "^11.7.1",
     "@emotion/server": "^11.4.0",

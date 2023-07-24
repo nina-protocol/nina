@@ -1109,13 +1109,14 @@
     "@chainsafe/persistent-merkle-tree" "^0.4.2"
     case "^1.6.3"
 
-"@coinflowlabs/react@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@coinflowlabs/react/-/react-2.1.1.tgz#51768e06941851fb598295aff246e7dd0b723b05"
-  integrity sha512-KWP8fVxZHj6Prl7wxwvPcrX+vwPN5A7kbB3iqLYjg0RJ381ICxMUo70Yb4cPHI7Fa7aJmk4e1nlTAx87z03w1g==
+"@coinflowlabs/react@^2.3.0":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@coinflowlabs/react/-/react-2.3.1.tgz#2c5c1f5d75e26dc67a02a018d507e36556f90dcc"
+  integrity sha512-8LE+P28BQIV8EUAVeBGqAL6nBntMfCRRv9+d786T+ZWibq4XHv+ALtf01JOJE6CoXOOUrwNS7aBIbvqAK/RK7A==
   dependencies:
     bn.js "^5.2.1"
     bs58 "^5.0.0"
+    socket.io-client "^4.6.1"
 
 "@emotion/babel-plugin@^11.10.6":
   version "11.10.6"
