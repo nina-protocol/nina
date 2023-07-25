@@ -8,11 +8,11 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
 import Box from '@mui/material/Box'
-import {CoinflowEnvs, CoinflowPurchase} from '@coinflowlabs/react';
+import { CoinflowEnvs, CoinflowPurchase } from '@coinflowlabs/react'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import releasePurchaseHelperTransactionBuilder  from '../utils/releasePurchaseHelperTransactionBuilder'
+import releasePurchaseHelperTransactionBuilder from '../utils/releasePurchaseHelperTransactionBuilder'
 
 const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
   const [open, setOpen] = useState(false)
@@ -79,10 +79,13 @@ const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
                   handleClose()
                 }}
                 blockchain={'solana'}
-                webhookInfo={{item: 'sword'}}
+                webhookInfo={{ item: 'sword' }}
                 email={'user-email@email.com'}
                 transaction={transaction}
-                amount={ninaClient.nativeToUi(release.price, release.paymentMint)}
+                amount={ninaClient.nativeToUi(
+                  release.price,
+                  release.paymentMint
+                )}
               />
             </StyledPaper>
           </Fade>

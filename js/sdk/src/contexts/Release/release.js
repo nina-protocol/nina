@@ -474,7 +474,12 @@ const releaseContextHelper = ({
       }
 
       const tx = await program.methods
-        .releaseInitViaHub(config, bumps, metadataData, decodeNonEncryptedByteArray(hub.handle))
+        .releaseInitViaHub(
+          config,
+          bumps,
+          metadataData,
+          decodeNonEncryptedByteArray(hub.handle)
+        )
         .accounts(request.accounts)
         .preInstructions(request.instructions)
         .transaction()
@@ -729,7 +734,7 @@ const releaseContextHelper = ({
           metadataProgram,
           systemProgram: anchor.web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY
+          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         })
         .preInstructions(instructions)
         .transaction()

@@ -161,10 +161,7 @@ const releasePurchaseHelperTransactionBuilder = async (
     tx.feePayer = provider.wallet.publicKey
     return tx
   } else {
-    const tx = await program.transaction.releasePurchase(
-      release.price,
-      request
-    )
+    const tx = await program.transaction.releasePurchase(release.price, request)
     tx.recentBlockhash = (
       await provider.connection.getRecentBlockhash()
     ).blockhash
