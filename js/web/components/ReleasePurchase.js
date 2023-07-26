@@ -217,9 +217,7 @@ const ReleasePurchase = (props) => {
 
   const PurchaseModalButtonContents = () => (
     <Typography variant="body2">
-      {(txPending || pending) && (
-        <Dots msg={pendingTransactionMessage} />
-      )}
+      {(txPending || pending) && <Dots msg={pendingTransactionMessage} />}
       {!txPending && !pending && (
         <Typography variant="body2">{buttonText}</Typography>
       )}

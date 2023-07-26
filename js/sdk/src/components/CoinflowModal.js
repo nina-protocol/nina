@@ -5,11 +5,8 @@ import Modal from '@mui/material/Modal'
 import Backdrop from '@mui/material/Backdrop'
 import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
-import Box from '@mui/material/Box'
-import { CoinflowEnvs, CoinflowPurchase } from '@coinflowlabs/react'
-import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import { CoinflowPurchase } from '@coinflowlabs/react'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import releasePurchaseHelperTransactionBuilder from '../utils/releasePurchaseHelperTransactionBuilder'
@@ -101,10 +98,6 @@ const Root = styled('div')(() => ({
   width: '100%',
 }))
 
-const StyledTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.black,
-}))
-
 const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
@@ -137,10 +130,5 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   color: theme.palette.black,
   cursor: 'pointer',
 }))
-
-// const GateWrapper = styled(Box)(() => ({
-//   height: '80%',
-//   overflowY: 'auto',
-// }))
 
 export default CoinflowModal

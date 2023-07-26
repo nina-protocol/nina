@@ -7,11 +7,10 @@ import Fade from '@mui/material/Fade'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
-import Box  from '@mui/material/Box'
+import Box from '@mui/material/Box'
 import Image from 'next/image'
 import { imageManager } from '../utils'
 import CoinflowModal from './CoinflowModal'
-import NoSolWarning from './NoSolWarning'
 import Nina from '../contexts/Nina'
 
 const { getImageFromCDN, loader } = imageManager
@@ -22,15 +21,11 @@ const PurchaseModal = ({
   metadata,
   payWithUSDC,
   payWithCardCallback,
-  Contents
+  Contents,
 }) => {
   const [open, setOpen] = useState(false)
-  const [showNoSolModal, setShowNoSolModal] = useState(false)
 
-  const {
-    ninaClient,
-    solBalance,
-  } = useContext(Nina.Context)
+  const { ninaClient } = useContext(Nina.Context)
 
   const handleClose = () => {
     setOpen(false)
@@ -40,13 +35,6 @@ const PurchaseModal = ({
     handleClose()
   }
 
-  if (release.price > 0 && solBalance === 0) {
-    setShowNoSolModal(true)
-    return
-  }
-
-
-  console.log('metadata', metadata)
   return (
     <Root>
       <Button
@@ -62,7 +50,7 @@ const PurchaseModal = ({
           },
         }}
         fullWidth
-    >
+      >
         <Contents />
       </Button>
 
@@ -93,17 +81,18 @@ const PurchaseModal = ({
                 />
               </AlbumArt>
               <Box>
-                <Typography variant='h3'>
+                <Typography variant="h3">
                   {metadata.properties.artist}
                 </Typography>
-                <Typography variant='h4'>
+                <Typography variant="h4">
                   {metadata.properties.title}
                 </Typography>
-                <Typography variant='subtitle1'>
-                  Price: {ninaClient.nativeToUiString(
-                  release.price,
-                  release.paymentMint
-                )}
+                <Typography variant="subtitle1">
+                  Price:{' '}
+                  {ninaClient.nativeToUiString(
+                    release.price,
+                    release.paymentMint
+                  )}
                 </Typography>
               </Box>
             </Wrapper>
@@ -122,8 +111,8 @@ const PurchaseModal = ({
                 '&:hover': {
                   opacity: '50%',
                 },
-                marginBottom: '8px'
-              }}      
+                marginBottom: '8px',
+              }}
               disabled={release.remainingSupply === 0 ? true : false}
             >
               Pay with {ninaClient.isUsdc(release.paymentMint) ? 'USDC' : 'SOL'}
@@ -189,12 +178,12 @@ const AlbumArt = styled(Box)(() => ({
 }))
 
 const Wrapper = styled(Box)({
-  display: "grid",
-  gridTemplateColumns: "100px auto",
+  display: 'grid',
+  gridTemplateColumns: '100px auto',
   gridGap: 8,
   marginTop: 8,
   marginBottom: 8,
   alignContent: 'start',
-});
+})
 
 export default PurchaseModal

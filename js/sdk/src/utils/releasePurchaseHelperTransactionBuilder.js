@@ -113,20 +113,6 @@ const releasePurchaseHelperTransactionBuilder = async (
     })
   }
 
-  let price = release.price
-  if (hub && hub.referralFee.toNumber() > 0) {
-    let releasePriceUi = ninaClient.nativeToUi(
-      release.price.toNumber(),
-      release.paymentMint
-    )
-
-    let convertAmount =
-      releasePriceUi + (releasePriceUi * hub.referralFee.toNumber()) / 1000000
-    price = new anchor.BN(
-      ninaClient.uiToNative(convertAmount, release.paymentMint)
-    )
-  }
-
   if (instructions.length > 0) {
     const formattedInstructions = []
     instructions.forEach((instruction) => {
