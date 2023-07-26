@@ -58,7 +58,8 @@ export default [
       Swap: 'src/components/Swap.js',
       IdentityVerification: 'src/components/IdentityVerification.js',
       AddToHubModal: 'src/components/AddToHubModal.js',
-      HubPostCreate: 'src/components/HubPostCreate',
+      HubPostCreate: 'src/components/HubPostCreate.js',
+      CoinflowModal: 'src/components/CoinflowModal.js',
     },
     output: [
       {
