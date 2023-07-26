@@ -27,7 +27,7 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
-import AddToHubModal from '@nina-protocol/nina-internal-sdk/esm/AddToHubModal'
+import PurchaseModal from '@nina-protocol/nina-internal-sdk/esm/PurchaseModal'
 import CoinflowModal from '@nina-protocol/nina-internal-sdk/esm/CoinflowModal'
 
 const Gates = dynamic(() =>
@@ -35,10 +35,6 @@ const Gates = dynamic(() =>
 )
 const RedeemReleaseCode = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/RedeemReleaseCode')
-)
-
-const NoSolWarning = dynamic(() =>
-  import('@nina-protocol/nina-internal-sdk/esm/NoSolWarning')
 )
 
 const WalletConnectModal = dynamic(() =>
@@ -87,7 +83,6 @@ const ReleasePurchase = (props) => {
   const [exchangeTotalSells, setExchangeTotalSells] = useState(0)
   const [publishedHub, setPublishedHub] = useState()
   const [description, setDescription] = useState()
-  const [showNoSolModal, setShowNoSolModal] = useState(false)
   const [showWalletModal, setShowWalletModal] = useState(false)
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
@@ -175,12 +170,6 @@ const ReleasePurchase = (props) => {
       })
       return
     }
-
-    if (release.price > 0 && solBalance === 0) {
-      setShowNoSolModal(true)
-      return
-    }
-
     let result
     if ((!amountHeld || amountHeld === 0) && release.price > 0) {
       const error = await checkIfHasBalanceToCompleteAction(
@@ -226,6 +215,16 @@ const ReleasePurchase = (props) => {
     })
   }
 
+  const PurchaseModalButtonContents = () => (
+    <Typography variant="body2">
+      {(txPending || pending) && (
+        <Dots msg={pendingTransactionMessage} />
+      )}
+      {!txPending && !pending && (
+        <Typography variant="body2">{buttonText}</Typography>
+      )}
+    </Typography>
+  )
   if (!release) {
     return (
       <>
@@ -257,18 +256,6 @@ const ReleasePurchase = (props) => {
 
   return (
     <Box sx={{ position: 'relative', height: '100%' }}>
-      {release.price > 0 && (
-        <NoSolWarning
-          requiredSol={ninaClient.nativeToUiString(
-            release.price,
-            release.paymentMint
-          )}
-          action={'purchase'}
-          open={showNoSolModal}
-          setOpen={setShowNoSolModal}
-        />
-      )}
-
       <WalletConnectModal
         inOnboardingFlow={false}
         forceOpen={showWalletModal}
@@ -375,29 +362,36 @@ const ReleasePurchase = (props) => {
         }}
       >
         <Box sx={{ mt: 1 }}>
-          <form onSubmit={handleSubmit}>
-            <Button
-              variant="outlined"
-              type="submit"
-              fullWidth
-              disabled={release.remainingSupply === 0 ? true : false}
-            >
-              <Typography variant="body2">
-                {(txPending || pending) && (
-                  <Dots msg={pendingTransactionMessage} />
-                )}
-                {!txPending && !pending && (
-                  <Typography variant="body2">{buttonText}</Typography>
-                )}
-              </Typography>
-            </Button>
-          </form>
+          {release.price === 0 && (
+            <form onSubmit={handleSubmit}>
+              <Button
+                variant="outlined"
+                type="submit"
+                fullWidth
+                disabled={release.remainingSupply === 0 ? true : false}
+              >
+                <Typography variant="body2">
+                  {(txPending || pending) && (
+                    <Dots msg={pendingTransactionMessage} />
+                  )}
+                  {!txPending && !pending && (
+                    <Typography variant="body2">{buttonText}</Typography>
+                  )}
+                </Typography>
+              </Button>
+            </form>
+          )}
+          {release.price > 0 && (
+            <PurchaseModal
+              release={release}
+              metadata={metadata}
+              releasePubkey={releasePubkey}
+              payWithUSDC={handleSubmit}
+              payWithCardCallback={onCoinflowSuccess}
+              Contents={PurchaseModalButtonContents}
+            />
+          )}
         </Box>
-        <CoinflowModal
-          release={release}
-          releasePubkey={releasePubkey}
-          onSuccess={onCoinflowSuccess}
-        />
         <Gates
           release={release}
           metadata={metadata}

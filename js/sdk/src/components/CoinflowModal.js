@@ -51,8 +51,9 @@ const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
               opacity: '50%',
             },
           }}
+          disabled={release.remainingSupply === 0 ? true : false}
         >
-          Pay with Credit Card
+          Pay with Card
         </Button>
 
         <StyledModal
