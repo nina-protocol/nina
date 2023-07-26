@@ -14,6 +14,7 @@ import { useRouter } from 'next/router'
 import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
+import PurchaseModal from '@nina-protocol/nina-internal-sdk/esm/PurchaseModal'
 
 const NoSolWarning = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/NoSolWarning')
@@ -48,6 +49,7 @@ const ReleasePurchase = (props) => {
     releasePurchaseTransactionPending,
     releaseState,
     gatesState,
+    getRelease,
   } = useContext(Release.Context)
   const { hubState } = useContext(Hub.Context)
   const {
@@ -193,6 +195,25 @@ const ReleasePurchase = (props) => {
           .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`
 
+  const PurchaseModalButtonContents = () => (
+    <BuyButtonTypography
+      soldOut={release.remainingSupply === 0}
+      variant="body2"
+      align="left"
+    >
+      {(txPending || pending) && <Dots msg={pendingTransactionMessage} />}
+      {!txPending && !pending && (
+        <Typography variant="body2">{buttonText}</Typography>
+      )}
+    </BuyButtonTypography>
+  )
+  const onCoinflowSuccess = async () => {
+    await getRelease(releasePubkey)
+    enqueueSnackbar('Release purchased!', {
+      variant: 'success',
+    })
+  }
+
   return (
     <ReleasePurchaseWrapper mt={1}>
       <NoSolWarning
@@ -248,26 +269,38 @@ const ReleasePurchase = (props) => {
             width: '50%',
           }}
         >
-          <BuyButton
-            fullWidth
-            variant="outlined"
-            soldOut={release.remainingSupply === 0}
-            disabled={release.remainingSupply === 0}
-            onClick={(e) => handleSubmit(e)}
-          >
-            <BuyButtonTypography
+          {release.price === 0 && (
+            <BuyButton
+              fullWidth
+              variant="outlined"
               soldOut={release.remainingSupply === 0}
-              variant="body2"
-              align="left"
+              disabled={release.remainingSupply === 0}
+              onClick={(e) => handleSubmit(e)}
             >
-              {(txPending || pending) && (
-                <Dots msg={pendingTransactionMessage} />
-              )}
-              {!txPending && !pending && (
-                <Typography variant="body2">{buttonText}</Typography>
-              )}
-            </BuyButtonTypography>
-          </BuyButton>
+              <BuyButtonTypography
+                soldOut={release.remainingSupply === 0}
+                variant="body2"
+                align="left"
+              >
+                {(txPending || pending) && (
+                  <Dots msg={pendingTransactionMessage} />
+                )}
+                {!txPending && !pending && (
+                  <Typography variant="body2">{buttonText}</Typography>
+                )}
+              </BuyButtonTypography>
+            </BuyButton>
+          )}
+          {release.price > 0 && (
+            <PurchaseModal
+              release={release}
+              metadata={metadata}
+              releasePubkey={releasePubkey}
+              payWithUSDC={handleSubmit}
+              payWithCardCallback={onCoinflowSuccess}
+              Contents={PurchaseModalButtonContents}
+            />
+          )}
         </Box>
         <Box
           sx={{
