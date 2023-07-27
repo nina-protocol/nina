@@ -70,7 +70,9 @@ const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
               <CoinflowPurchase
                 wallet={wallet}
                 merchantId={'nina'}
-                env={process.env.SOLANA_CLUSTER === 'devnet' ? 'sandbox' : 'prod'}
+                env={
+                  process.env.SOLANA_CLUSTER === 'devnet' ? 'sandbox' : 'prod'
+                }
                 connection={connection}
                 onSuccess={async () => {
                   await onSuccess()
