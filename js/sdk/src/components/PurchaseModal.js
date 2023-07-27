@@ -12,7 +12,7 @@ import Image from 'next/image'
 import { imageManager } from '../utils'
 import CoinflowModal from './CoinflowModal'
 import Nina from '../contexts/Nina'
-
+import Wallet from '../contexts/Wallet'
 const { getImageFromCDN, loader } = imageManager
 
 const PurchaseModal = ({
@@ -22,8 +22,11 @@ const PurchaseModal = ({
   payWithUSDC,
   payWithCardCallback,
   Contents,
+  setShowWalletModal,
 }) => {
   const [open, setOpen] = useState(false)
+
+  const { wallet } = useContext(Wallet.Context)
 
   const { ninaClient } = useContext(Nina.Context)
 
@@ -35,10 +38,18 @@ const PurchaseModal = ({
     handleClose()
   }
 
+  const handleOpen = () => {
+    if (!wallet.connected) {
+      setShowWalletModal(true)
+    } else {
+      setOpen(true)
+    }
+  }
+
   return (
     <Root>
       <Button
-        onClick={() => setOpen(true)}
+        onClick={() => handleOpen()}
         variant="outlined"
         color="primary"
         type="submit"

@@ -299,6 +299,7 @@ const ReleasePurchase = (props) => {
               payWithUSDC={handleSubmit}
               payWithCardCallback={onCoinflowSuccess}
               Contents={PurchaseModalButtonContents}
+              setShowWalletModal={setShowWalletModal}
             />
           )}
         </Box>
