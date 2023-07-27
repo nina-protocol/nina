@@ -116,7 +116,9 @@ const ReleasePurchase = (props) => {
   }, [release?.royaltyRecipients, wallet?.connected, wallet?.publicKey])
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    if (e) {
+      e.preventDefault()
+    }
 
     if (!wallet?.connected) {
       setShowWalletModal(true)
@@ -269,39 +271,16 @@ const ReleasePurchase = (props) => {
             width: '50%',
           }}
         >
-          {release.price === 0 && (
-            <BuyButton
-              fullWidth
-              variant="outlined"
-              soldOut={release.remainingSupply === 0}
-              disabled={release.remainingSupply === 0}
-              onClick={(e) => handleSubmit(e)}
-            >
-              <BuyButtonTypography
-                soldOut={release.remainingSupply === 0}
-                variant="body2"
-                align="left"
-              >
-                {(txPending || pending) && (
-                  <Dots msg={pendingTransactionMessage} />
-                )}
-                {!txPending && !pending && (
-                  <Typography variant="body2">{buttonText}</Typography>
-                )}
-              </BuyButtonTypography>
-            </BuyButton>
-          )}
-          {release.price > 0 && (
-            <PurchaseModal
-              release={release}
-              metadata={metadata}
-              releasePubkey={releasePubkey}
-              payWithUSDC={handleSubmit}
-              payWithCardCallback={onCoinflowSuccess}
-              Contents={PurchaseModalButtonContents}
-              setShowWalletModal={setShowWalletModal}
-            />
-          )}
+          <PurchaseModal
+            release={release}
+            metadata={metadata}
+            releasePubkey={releasePubkey}
+            payWithUSDC={handleSubmit}
+            payWithCardCallback={onCoinflowSuccess}
+            Contents={PurchaseModalButtonContents}
+            showWalletModal={showWalletModal}
+            setShowWalletModal={setShowWalletModal}
+          />
         </Box>
         <Box
           sx={{

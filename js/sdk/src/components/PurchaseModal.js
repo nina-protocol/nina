@@ -13,6 +13,7 @@ import { imageManager } from '../utils'
 import CoinflowModal from './CoinflowModal'
 import Nina from '../contexts/Nina'
 import Wallet from '../contexts/Wallet'
+import { useEffect } from 'react'
 const { getImageFromCDN, loader } = imageManager
 
 const PurchaseModal = ({
@@ -22,6 +23,7 @@ const PurchaseModal = ({
   payWithUSDC,
   payWithCardCallback,
   Contents,
+  showWalletModal,
   setShowWalletModal,
 }) => {
   const [open, setOpen] = useState(false)
@@ -38,18 +40,33 @@ const PurchaseModal = ({
     handleClose()
   }
 
-  const handleOpen = () => {
+  const handleOpen = (e) => {
     if (!wallet.connected) {
       setShowWalletModal(true)
     } else {
-      setOpen(true)
+      if (release.price === 0) {
+        payWithUSDC(e)
+      } else {
+        setOpen(true)
+      }
     }
   }
+
+  useEffect(() => {
+    if (showWalletModal && wallet.connected) {
+      setShowWalletModal(false)
+      if (release.price === 0) {
+        payWithUSDC()
+      } else {
+        setOpen(true)
+      }
+    }
+  }, [showWalletModal, wallet.connected])
 
   return (
     <Root>
       <Button
-        onClick={() => handleOpen()}
+        onClick={(e) => handleOpen(e)}
         variant="outlined"
         color="primary"
         type="submit"

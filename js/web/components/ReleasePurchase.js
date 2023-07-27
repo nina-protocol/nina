@@ -161,7 +161,9 @@ const ReleasePurchase = (props) => {
   }, [metadata?.description])
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    if (e) {
+      e.preventDefault()
+    }
 
     if (!wallet?.connected) {
       setShowWalletModal(true)
@@ -360,36 +362,16 @@ const ReleasePurchase = (props) => {
         }}
       >
         <Box sx={{ mt: 1 }}>
-          {release.price === 0 && (
-            <form onSubmit={handleSubmit}>
-              <Button
-                variant="outlined"
-                type="submit"
-                fullWidth
-                disabled={release.remainingSupply === 0 ? true : false}
-              >
-                <Typography variant="body2">
-                  {(txPending || pending) && (
-                    <Dots msg={pendingTransactionMessage} />
-                  )}
-                  {!txPending && !pending && (
-                    <Typography variant="body2">{buttonText}</Typography>
-                  )}
-                </Typography>
-              </Button>
-            </form>
-          )}
-          {release.price > 0 && (
-            <PurchaseModal
-              release={release}
-              metadata={metadata}
-              releasePubkey={releasePubkey}
-              payWithUSDC={handleSubmit}
-              payWithCardCallback={onCoinflowSuccess}
-              Contents={PurchaseModalButtonContents}
-              setShowWalletModal={setShowWalletModal}
-            />
-          )}
+          <PurchaseModal
+            release={release}
+            metadata={metadata}
+            releasePubkey={releasePubkey}
+            payWithUSDC={handleSubmit}
+            payWithCardCallback={onCoinflowSuccess}
+            Contents={PurchaseModalButtonContents}
+            showWalletModal={showWalletModal}
+            setShowWalletModal={setShowWalletModal}
+          />
         </Box>
         <Gates
           release={release}
