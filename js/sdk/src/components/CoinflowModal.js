@@ -57,9 +57,8 @@ const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
           }}
           disabled={release.remainingSupply === 0 ? true : false}
         >
-          Pay with card{' '}
+          Pay with card
           <StyledCcContainter>
-            {' '}
             <FontAwesomeIcon
               size="2x"
               icon={faCcVisa}
