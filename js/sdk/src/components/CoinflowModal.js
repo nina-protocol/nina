@@ -10,6 +10,13 @@ import { CoinflowPurchase } from '@coinflowlabs/react'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import releasePurchaseHelperTransactionBuilder from '../utils/releasePurchaseHelperTransactionBuilder'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faCcVisa,
+  faCcMastercard,
+  faCcAmex,
+  faCcDiscover,
+} from '@fortawesome/free-brands-svg-icons'
 
 const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
   const [open, setOpen] = useState(false)
@@ -50,7 +57,30 @@ const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
           }}
           disabled={release.remainingSupply === 0 ? true : false}
         >
-          Pay with Card
+          Pay with card{' '}
+          <StyledCcContainter>
+            {' '}
+            <FontAwesomeIcon
+              size="2x"
+              icon={faCcVisa}
+              style={{ paddingRight: '8px' }}
+            />
+            <FontAwesomeIcon
+              size="2x"
+              icon={faCcDiscover}
+              style={{ paddingRight: '8px' }}
+            />
+            <FontAwesomeIcon
+              size="2x"
+              icon={faCcAmex}
+              style={{ paddingRight: '8px' }}
+            />
+            <FontAwesomeIcon
+              size="2x"
+              icon={faCcMastercard}
+              style={{ paddingRight: '8px' }}
+            />
+          </StyledCcContainter>
         </Button>
 
         <StyledModal
@@ -110,7 +140,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   border: '2px solid #000',
   boxShadow: theme.shadows[5],
-  padding: theme.spacing(2, 4, 3),
+  padding: theme.spacing(3, 4, 3),
   width: '40vw',
   height: '85vh',
   overflowY: 'auto',
@@ -131,6 +161,13 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   top: theme.spacing(1),
   color: theme.palette.black,
   cursor: 'pointer',
+}))
+
+const StyledCcContainter = styled('span')(() => ({
+  paddingLeft: '8px',
+  position: 'absolute',
+  right: '5px',
+  display: 'flex',
 }))
 
 export default CoinflowModal
