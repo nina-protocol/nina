@@ -177,7 +177,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   border: '2px solid #000',
   boxShadow: theme.shadows[5],
-  padding: theme.spacing(2, 4, 3),
+  padding: theme.spacing(3, 4, 3),
   width: '40vw',
   maxHeight: '90vh',
   overflowY: 'auto',
@@ -209,8 +209,7 @@ const Wrapper = styled(Box)({
   display: 'grid',
   gridTemplateColumns: '100px auto',
   gridGap: 8,
-  marginTop: 8,
-  marginBottom: 8,
+  margin: '15px 0px',
   alignContent: 'start',
 })
 
