@@ -55,10 +55,19 @@ const WalletContextProvider = ({ children }) => {
     transactionMessage()
   }, [wallet])
 
+  const email = useMemo(() => {
+    if (magicWallet?.wallet.adapter.user.email) {
+      return magicWallet?.wallet.adapter.user.email
+    } else {
+      return 'n/a0'
+    }
+  }, [magicWallet])
+
   return (
     <WalletContext.Provider
       value={{
         connection,
+        email,
         wallet,
         walletExtension,
         connectMagicWallet,

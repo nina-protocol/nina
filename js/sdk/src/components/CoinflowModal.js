@@ -14,7 +14,7 @@ import releasePurchaseHelperTransactionBuilder from '../utils/releasePurchaseHel
 const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
   const [open, setOpen] = useState(false)
   const [transaction, setTransaction] = useState()
-  const { wallet, connection } = useContext(Wallet.Context)
+  const { wallet, connection, email } = useContext(Wallet.Context)
   const { ninaClient } = useContext(Nina.Context)
 
   const handleClose = () => {
@@ -78,9 +78,10 @@ const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
                   await onSuccess()
                   handleClose()
                 }}
+                token={release.paymentMint}
                 blockchain={'solana'}
-                webhookInfo={{ item: 'sword' }}
-                email={'user-email@email.com'}
+                webhookInfo={{ item: 'releasePubkey' }}
+                email={email}
                 transaction={transaction}
                 amount={ninaClient.nativeToUi(
                   release.price,
