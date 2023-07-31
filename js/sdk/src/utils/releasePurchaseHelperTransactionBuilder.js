@@ -53,6 +53,7 @@ const releasePurchaseHelperTransactionBuilder = async (
       releaseMint: release.releaseMint,
       tokenProgram: TOKEN_PROGRAM_ID,
     },
+    instructions: [],
   }
 
   if (hubPubkey) {
@@ -131,22 +132,43 @@ const releasePurchaseHelperTransactionBuilder = async (
   }
 
   if (hub) {
-    const tx = await program.transaction.releasePurchaseViaHub(
-      release.price,
-      decodeNonEncryptedByteArray(hub.handle),
-      request
+    const releasePurchaseViaHubIx = await program.methods
+      .releasePurchaseViaHub(
+        release.price,
+        decodeNonEncryptedByteArray(hub.handle)
+      )
+      .accounts(request.accounts)
+      .instruction()
+    request.instructions.push(releasePurchaseViaHubIx)
+
+    let latestBlockhash = await provider.connection.getLatestBlockhash(
+      'confirmed'
     )
-    tx.recentBlockhash = (
-      await provider.connection.getRecentBlockhash()
-    ).blockhash
-    tx.feePayer = provider.wallet.publicKey
+
+    const messageV0 = new anchor.web3.TransactionMessage({
+      payerKey: provider.wallet.publicKey,
+      recentBlockhash: latestBlockhash.blockhash,
+      instructions: request.instructions,
+    }).compileToV0Message()
+    const tx = new anchor.web3.VersionedTransaction(messageV0)
     return tx
   } else {
-    const tx = await program.transaction.releasePurchase(release.price, request)
-    tx.recentBlockhash = (
-      await provider.connection.getRecentBlockhash()
-    ).blockhash
-    tx.feePayer = provider.wallet.publicKey
+    const releasePurchaseIx = await program.methods
+      .releasePurchase(release.price)
+      .accounts(request.accounts)
+      .instruction()
+    request.instructions.push(releasePurchaseIx)
+
+    let latestBlockhash = await provider.connection.getLatestBlockhash(
+      'confirmed'
+    )
+
+    const messageV0 = new anchor.web3.TransactionMessage({
+      payerKey: provider.wallet.publicKey,
+      recentBlockhash: latestBlockhash.blockhash,
+      instructions: request.instructions,
+    }).compileToV0Message()
+    const tx = new anchor.web3.VersionedTransaction(messageV0)
     return tx
   }
 }

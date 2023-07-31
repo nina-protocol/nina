@@ -59,7 +59,7 @@ const WalletContextProvider = ({ children }) => {
     if (magicWallet?.wallet.adapter.user.email) {
       return magicWallet?.wallet.adapter.user.email
     } else {
-      return 'n/a0'
+      return 'n/a'
     }
   }, [magicWallet])
 
@@ -120,21 +120,32 @@ const walletContextHelper = ({
           return await magic.solana.signMessage(message)
         },
         signTransaction: async (transaction) => {
-          const serializeConfig = {
-            requireAllSignatures: false,
-            verifySignatures: true,
+          if (transaction instanceof anchor.web3.VersionedTransaction) {
+            const message = transaction.message.serialize()
+            const signedMessage = await magic.solana.signMessage(message)
+            transaction.addSignature(
+              new anchor.web3.PublicKey(user.publicAddress),
+              signedMessage
+            )
+            return transaction
+          } else {
+            const serializeConfig = {
+              requireAllSignatures: false,
+              verifySignatures: true,
+            }
+            const signedTransaction = await magic.solana.signTransaction(
+              transaction,
+              serializeConfig
+            )
+            return signedTransaction
           }
-          const signedTransaction = await magic.solana.signTransaction(
-            transaction,
-            serializeConfig
-          )
-          return signedTransaction
         },
         sendTransaction: async (transaction) => {
           const serializeConfig = {
             requireAllSignatures: false,
             verifySignatures: true,
           }
+
           const signedTransaction = await magic.solana.signTransaction(
             transaction,
             serializeConfig
@@ -168,6 +179,7 @@ const walletContextHelper = ({
           },
         },
         wallets: [],
+        supportedTransactionVersions: ['legacy', 0],
       }
       setMagicWallet(wallet)
     }

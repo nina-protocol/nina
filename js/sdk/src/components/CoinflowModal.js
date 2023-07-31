@@ -107,9 +107,11 @@ const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
                   await onSuccess()
                   handleClose()
                 }}
+                debugTx={true}
                 token={release.paymentMint}
+                supportsVersionedTransactions={true}
                 blockchain={'solana'}
-                webhookInfo={{ item: 'releasePubkey' }}
+                webhookInfo={{ item: releasePubkey }}
                 email={email}
                 transaction={transaction}
                 amount={ninaClient.nativeToUi(
