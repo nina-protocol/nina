@@ -28,7 +28,7 @@ import rehypeExternalLinks from 'rehype-external-links'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
 import PurchaseModal from '@nina-protocol/nina-internal-sdk/esm/PurchaseModal'
-import CoinflowModal from '@nina-protocol/nina-internal-sdk/esm/CoinflowModal'
+import axios from 'axios'
 
 const Gates = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/Gates')
@@ -211,6 +211,11 @@ const ReleasePurchase = (props) => {
   }
 
   const onCoinflowSuccess = async () => {
+    await axios.get(
+      `${
+        process.env.NINA_API_ENDPOINT
+      }/accounts/${wallet.publicKey.toBase58()}/collected?releasePublicKey=${releasePubkey}`
+    )
     await getRelease(releasePubkey)
     enqueueSnackbar('Release purchased!', {
       variant: 'success',
