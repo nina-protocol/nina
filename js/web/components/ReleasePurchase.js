@@ -211,15 +211,15 @@ const ReleasePurchase = (props) => {
   }
 
   const onCoinflowSuccess = async () => {
-    enqueueSnackbar('Release purchased!', {
-      variant: 'success',
-    })
     await axios.get(
       `${
         process.env.NINA_API_ENDPOINT
       }/accounts/${wallet.publicKey.toBase58()}/collected?releasePublicKey=${releasePubkey}`
     )
     await getRelease(releasePubkey)
+    enqueueSnackbar('Release purchased!', {
+      variant: 'success',
+    })
   }
 
   const PurchaseModalButtonContents = () => (
