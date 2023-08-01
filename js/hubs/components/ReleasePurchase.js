@@ -14,6 +14,7 @@ import { useRouter } from 'next/router'
 import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import Gates from '@nina-protocol/nina-internal-sdk/esm/Gates'
+import PurchaseModal from '@nina-protocol/nina-internal-sdk/esm/PurchaseModal'
 
 const NoSolWarning = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/NoSolWarning')
@@ -48,6 +49,7 @@ const ReleasePurchase = (props) => {
     releasePurchaseTransactionPending,
     releaseState,
     gatesState,
+    getRelease,
   } = useContext(Release.Context)
   const { hubState } = useContext(Hub.Context)
   const {
@@ -64,6 +66,7 @@ const ReleasePurchase = (props) => {
   const [publishedHub, setPublishedHub] = useState()
   const [showNoSolModal, setShowNoSolModal] = useState(false)
   const [showWalletModal, setShowWalletModal] = useState(false)
+  const [coinflowPurchasePending, setCoinflowPurchasePending] = useState(false)
 
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
@@ -114,7 +117,9 @@ const ReleasePurchase = (props) => {
   }, [release?.royaltyRecipients, wallet?.connected, wallet?.publicKey])
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    if (e) {
+      e.preventDefault()
+    }
 
     if (!wallet?.connected) {
       setShowWalletModal(true)
@@ -193,6 +198,34 @@ const ReleasePurchase = (props) => {
           .nativeToUi(release.price, release.paymentMint)
           .toFixed(2)})`
 
+  const PurchaseModalButtonContents = () => (
+    <BuyButtonTypography
+      soldOut={release.remainingSupply === 0}
+      variant="body2"
+      align="left"
+    >
+      {coinflowPurchasePending && <Dots msg="Processing..." />}
+      {(txPending || pending) && <Dots msg={pendingTransactionMessage} />}
+      {!txPending && !pending && !coinflowPurchasePending && (
+        <Typography variant="body2">{buttonText}</Typography>
+      )}
+    </BuyButtonTypography>
+  )
+
+  const onCoinflowSuccess = async () => {
+    setCoinflowPurchasePending(true)
+    await axios.get(
+      `${
+        process.env.NINA_API_ENDPOINT
+      }/accounts/${wallet.publicKey.toBase58()}/collected?releasePublicKey=${releasePubkey}`
+    )
+    await getRelease(releasePubkey)
+    setCoinflowPurchasePending(false)
+    enqueueSnackbar('Release purchased!', {
+      variant: 'success',
+    })
+  }
+
   return (
     <ReleasePurchaseWrapper mt={1}>
       <NoSolWarning
@@ -248,26 +281,16 @@ const ReleasePurchase = (props) => {
             width: '50%',
           }}
         >
-          <BuyButton
-            fullWidth
-            variant="outlined"
-            soldOut={release.remainingSupply === 0}
-            disabled={release.remainingSupply === 0}
-            onClick={(e) => handleSubmit(e)}
-          >
-            <BuyButtonTypography
-              soldOut={release.remainingSupply === 0}
-              variant="body2"
-              align="left"
-            >
-              {(txPending || pending) && (
-                <Dots msg={pendingTransactionMessage} />
-              )}
-              {!txPending && !pending && (
-                <Typography variant="body2">{buttonText}</Typography>
-              )}
-            </BuyButtonTypography>
-          </BuyButton>
+          <PurchaseModal
+            release={release}
+            metadata={metadata}
+            releasePubkey={releasePubkey}
+            payWithUSDC={handleSubmit}
+            payWithCardCallback={onCoinflowSuccess}
+            Contents={PurchaseModalButtonContents}
+            showWalletModal={showWalletModal}
+            setShowWalletModal={setShowWalletModal}
+          />
         </Box>
         <Box
           sx={{
