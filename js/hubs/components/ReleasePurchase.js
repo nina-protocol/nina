@@ -66,6 +66,7 @@ const ReleasePurchase = (props) => {
   const [publishedHub, setPublishedHub] = useState()
   const [showNoSolModal, setShowNoSolModal] = useState(false)
   const [showWalletModal, setShowWalletModal] = useState(false)
+  const [coinflowPurchasePending, setCoinflowPurchasePending] = useState(false)
 
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
@@ -203,20 +204,23 @@ const ReleasePurchase = (props) => {
       variant="body2"
       align="left"
     >
+      {coinflowPurchasePending && <Dots msg="Processing..." />}
       {(txPending || pending) && <Dots msg={pendingTransactionMessage} />}
-      {!txPending && !pending && (
+      {!txPending && !pending && !coinflowPurchasePending && (
         <Typography variant="body2">{buttonText}</Typography>
       )}
     </BuyButtonTypography>
   )
 
   const onCoinflowSuccess = async () => {
+    setCoinflowPurchasePending(true)
     await axios.get(
       `${
         process.env.NINA_API_ENDPOINT
       }/accounts/${wallet.publicKey.toBase58()}/collected?releasePublicKey=${releasePubkey}`
     )
     await getRelease(releasePubkey)
+    setCoinflowPurchasePending(false)
     enqueueSnackbar('Release purchased!', {
       variant: 'success',
     })

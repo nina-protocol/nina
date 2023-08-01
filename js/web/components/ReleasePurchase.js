@@ -29,7 +29,6 @@ import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
 import PurchaseModal from '@nina-protocol/nina-internal-sdk/esm/PurchaseModal'
 import axios from 'axios'
-import { set } from 'lodash'
 
 const Gates = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/Gates')
