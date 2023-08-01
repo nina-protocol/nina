@@ -364,7 +364,7 @@ const ReleasePurchase = (props) => {
           background: 'white',
         }}
       >
-        <Box sx={{ mt: 1 }}>
+        <Box sx={{ mt: 0 }}>
           <form onSubmit={handleSubmit}>
             <Button
               variant="outlined"
