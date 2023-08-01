@@ -1,9 +1,5 @@
 import * as anchor from '@project-serum/anchor'
-import {
-  findOrCreateAssociatedTokenAccount,
-  TOKEN_PROGRAM_ID,
-  wrapSol,
-} from './web3'
+import { findOrCreateAssociatedTokenAccount, TOKEN_PROGRAM_ID } from './web3'
 
 import { decodeNonEncryptedByteArray } from './encrypt'
 
