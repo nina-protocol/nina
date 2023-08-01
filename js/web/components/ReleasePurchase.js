@@ -211,21 +211,15 @@ const ReleasePurchase = (props) => {
   }
 
   const onCoinflowSuccess = async () => {
-    console.log(`${
-      process.env.NINA_API_ENDPOINT
-    }/accounts/${wallet.publicKey.toBase58()}/collected?releasePublicKey=${releasePubkey}`)
-
     enqueueSnackbar('Release purchased!', {
       variant: 'success',
     })
-    await getRelease(releasePubkey) 
-    // sleep for 3 seconds to allow for the transaction to be processed
-    // await new Promise((resolve) => setTimeout(resolve, 3000))
     await axios.get(
       `${
         process.env.NINA_API_ENDPOINT
       }/accounts/${wallet.publicKey.toBase58()}/collected?releasePublicKey=${releasePubkey}`
     )
+    await getRelease(releasePubkey)
   }
 
   const PurchaseModalButtonContents = () => (
