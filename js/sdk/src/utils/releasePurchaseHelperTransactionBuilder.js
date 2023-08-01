@@ -116,20 +116,20 @@ const releasePurchaseHelperTransactionBuilder = async (
     })
     request.instructions = formattedInstructions
   }
-  if (ninaClient.isSol(release.paymentMint)) {
-    const [wrappedSolAccount, wrappedSolInstructions] = await wrapSol(
-      provider,
-      release.price,
-      release.paymentMint
-    )
+  // if (ninaClient.isSol(release.paymentMint)) {
+  //   const [wrappedSolAccount, wrappedSolInstructions] = await wrapSol(
+  //     provider,
+  //     release.price,
+  //     release.paymentMint
+  //   )
 
-    if (!request.instructions) {
-      request.instructions = [...wrappedSolInstructions]
-    } else {
-      request.instructions.push(...wrappedSolInstructions)
-    }
-    request.accounts.payerTokenAccount = wrappedSolAccount
-  }
+  //   if (!request.instructions) {
+  //     request.instructions = [...wrappedSolInstructions]
+  //   } else {
+  //     request.instructions.push(...wrappedSolInstructions)
+  //   }
+  //   request.accounts.payerTokenAccount = wrappedSolAccount
+  // }
 
   if (hub) {
     const releasePurchaseViaHubIx = await program.methods
