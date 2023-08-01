@@ -39,7 +39,7 @@ const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
     }
     buildTransaction()
   }, [release])
-
+  console.log('ninaClient.isSol(release.paymentMint)', ninaClient.isSol(release.paymentMint))
   return (
     <>
       <Root sx={{ mt: 0 }}>
@@ -55,9 +55,9 @@ const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
               opacity: '50%',
             },
           }}
-          disabled={release.remainingSupply === 0 ? true : false}
+          disabled={release.remainingSupply === 0 || ninaClient.isSol(release.paymentMint) ? true : false}
         >
-          Pay with card
+          Pay with card{ninaClient.isSol(release.paymentMint) ? ' (coming soon)' : ''}
           <StyledCcContainter>
             <FontAwesomeIcon
               size="2x"
