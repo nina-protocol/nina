@@ -29,6 +29,7 @@ import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import dynamic from 'next/dynamic'
 import PurchaseModal from '@nina-protocol/nina-internal-sdk/esm/PurchaseModal'
 import axios from 'axios'
+import { set } from 'lodash'
 
 const Gates = dynamic(() =>
   import('@nina-protocol/nina-internal-sdk/esm/Gates')
@@ -84,6 +85,8 @@ const ReleasePurchase = (props) => {
   const [publishedHub, setPublishedHub] = useState()
   const [description, setDescription] = useState()
   const [showWalletModal, setShowWalletModal] = useState(false)
+  const [coinflowPurchasePending, setCoinflowPurchasePending] = useState(false)
+
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
     [releasePubkey, releasePurchaseTransactionPending]
@@ -211,12 +214,14 @@ const ReleasePurchase = (props) => {
   }
 
   const onCoinflowSuccess = async () => {
+    setCoinflowPurchasePending(true)
     await axios.get(
       `${
         process.env.NINA_API_ENDPOINT
       }/accounts/${wallet.publicKey.toBase58()}/collected?releasePublicKey=${releasePubkey}`
     )
     await getRelease(releasePubkey)
+    setCoinflowPurchasePending(false)
     enqueueSnackbar('Release purchased!', {
       variant: 'success',
     })
@@ -224,8 +229,9 @@ const ReleasePurchase = (props) => {
 
   const PurchaseModalButtonContents = () => (
     <Typography variant="body2">
+      {coinflowPurchasePending && <Dots msg="Processing..." />}
       {(txPending || pending) && <Dots msg={pendingTransactionMessage} />}
-      {!txPending && !pending && (
+      {!txPending && !pending && !coinflowPurchasePending && (
         <Typography variant="body2">{buttonText}</Typography>
       )}
     </Typography>
