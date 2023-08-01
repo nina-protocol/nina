@@ -17,6 +17,8 @@ const metadataProgram = new anchor.web3.PublicKey('metaqbxxUerdq28cj1RbAWkYQm3yb
 let nina = anchor.workspace.Nina;
 let provider = anchor.AnchorProvider.env();
 
+let TOKEN_ACCOUNT_RENT_LAMPORTS = 2039280
+
 //Users
 let user1;
 let user2;
@@ -994,7 +996,7 @@ describe('Release', async () => {
     assert.ok(receiverReleaseTokenAccountAfter.amount.toNumber() === 1)
 
     const solAfterBalance = await provider.connection.getBalance(user1.publicKey);
-    assert.equal(solAfterBalance, solBeforeBalance - releasePrice);
+    assert.equal(solAfterBalance, solBeforeBalance - releasePrice - TOKEN_ACCOUNT_RENT_LAMPORTS);
 
     const releaseAfter = await nina.account.release.fetch(release);
     assert.ok(releaseAfter.remainingSupply.toNumber() === releaseBefore.remainingSupply.toNumber() - 1)
@@ -1055,7 +1057,7 @@ describe('Release', async () => {
     assert.ok(receiverReleaseTokenAccountAfter.amount.toNumber() === 1)
 
     const solAfterBalance = await provider.connection.getBalance(user1.publicKey);
-    assert.equal(solAfterBalance, solBeforeBalance - releasePrice);
+    assert.equal(solAfterBalance, solBeforeBalance - releasePrice - TOKEN_ACCOUNT_RENT_LAMPORTS);
 
     const releaseAfter = await nina.account.release.fetch(release2);
     assert.ok(releaseAfter.remainingSupply.toNumber() === releaseBefore.remainingSupply.toNumber() - 1)
