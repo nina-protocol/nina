@@ -11,6 +11,7 @@ import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import releasePurchaseHelperTransactionBuilder from '../utils/releasePurchaseHelperTransactionBuilder'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { logEvent } from '../utils/event'
 import {
   faCcVisa,
   faCcMastercard,
@@ -47,7 +48,13 @@ const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
           variant="outlined"
           color="primary"
           type="submit"
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            logEvent('release_purchase_card_initiated', 'engagement', {
+              wallet: wallet?.publicKey?.toBase58(),
+              publicKey: releasePubkey,
+            })
+            setOpen(true)
+          }}
           sx={{
             height: '55px',
             width: '100%',
