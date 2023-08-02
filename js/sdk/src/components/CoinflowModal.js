@@ -180,7 +180,6 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
 
 const StyledCcContainter = styled('span')(({ theme }) => ({
   paddingLeft: '8px',
-  position: 'absolute',
   right: '5px',
   display: 'flex',
   [theme.breakpoints.down('md')]: {
