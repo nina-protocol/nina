@@ -182,6 +182,7 @@ const StyledCcContainter = styled('span')(({ theme }) => ({
   paddingLeft: '8px',
   right: '5px',
   display: 'flex',
+  position: 'absolute',
   [theme.breakpoints.down('md')]: {
     display: 'none',
   },
