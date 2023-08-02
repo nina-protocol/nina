@@ -72,23 +72,13 @@ const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
           Pay with card
           {ninaClient.isSol(release.paymentMint) ? ' (coming soon)' : ''}
           <StyledCcContainter>
+            <FontAwesomeIcon icon={faCcVisa} style={{ paddingRight: '8px' }} />
             <FontAwesomeIcon
-              size="2x"
-              icon={faCcVisa}
-              style={{ paddingRight: '8px' }}
-            />
-            <FontAwesomeIcon
-              size="2x"
               icon={faCcDiscover}
               style={{ paddingRight: '8px' }}
             />
+            <FontAwesomeIcon icon={faCcAmex} style={{ paddingRight: '8px' }} />
             <FontAwesomeIcon
-              size="2x"
-              icon={faCcAmex}
-              style={{ paddingRight: '8px' }}
-            />
-            <FontAwesomeIcon
-              size="2x"
               icon={faCcMastercard}
               style={{ paddingRight: '8px' }}
             />
@@ -183,8 +173,13 @@ const StyledCcContainter = styled('span')(({ theme }) => ({
   right: '5px',
   display: 'flex',
   position: 'absolute',
+  '& svg': {
+    height: '20px',
+    width: '22.5px',
+  },
   [theme.breakpoints.down('md')]: {
-    display: 'none',
+    position: 'relative',
+    paddingLeft: '16px',
   },
 }))
 
