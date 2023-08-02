@@ -376,11 +376,7 @@ const ReleasePurchase = (props) => {
           background: 'white',
         }}
       >
-<<<<<<< HEAD
-        <Box sx={{ mt: 1 }}>
-=======
         <Box sx={{ mt: 0 }}>
->>>>>>> 56b01f94c5565485d1e147f70b3325a4901998ea
           <PurchaseModal
             release={release}
             metadata={metadata}
