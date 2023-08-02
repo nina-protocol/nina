@@ -376,7 +376,7 @@ const ReleasePurchase = (props) => {
           background: 'white',
         }}
       >
-        <Box sx={{ mt: 1 }}>
+        <Box sx={{ mt: 0 }}>
           <PurchaseModal
             release={release}
             metadata={metadata}
