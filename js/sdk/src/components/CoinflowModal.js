@@ -178,21 +178,14 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   cursor: 'pointer',
 }))
 
-<<<<<<< HEAD
-const StyledCcContainter = styled('span')(() => ({
-  paddingLeft: '8px',
-  position: 'absolute',
-  right: '5px',
-  display: 'flex',
-=======
 const StyledCcContainter = styled('span')(({ theme }) => ({
   paddingLeft: '8px',
   right: '5px',
   display: 'flex',
+  position: 'absolute',
   [theme.breakpoints.down('md')]: {
     display: 'none',
   },
->>>>>>> 56b01f94c5565485d1e147f70b3325a4901998ea
 }))
 
 export default CoinflowModal
