@@ -214,6 +214,11 @@ const ReleasePurchase = (props) => {
 
   const onCoinflowSuccess = async () => {
     setCoinflowPurchasePending(true)
+    logEvent('release_purchase_card_success', 'engagement', {
+      publicKey: releasePubkey,
+      wallet: wallet.publicKey.toBase58(),
+    })
+
     await axios.get(
       `${
         process.env.NINA_API_ENDPOINT
@@ -371,7 +376,11 @@ const ReleasePurchase = (props) => {
           background: 'white',
         }}
       >
+<<<<<<< HEAD
         <Box sx={{ mt: 1 }}>
+=======
+        <Box sx={{ mt: 0 }}>
+>>>>>>> 56b01f94c5565485d1e147f70b3325a4901998ea
           <PurchaseModal
             release={release}
             metadata={metadata}
