@@ -215,11 +215,6 @@ const Onboard = ({ customCode }) => {
       ),
     },
     {
-      title: onboardingCopy.fundUploadAccountStep.header,
-      content: onboardingCopy.fundUploadAccountStep.content,
-      cta: <BundlrModal inOnboardFlow={true} />,
-    },
-    {
       title: onboardingCopy.verifyAccountStep.header,
       content: onboardingCopy.verifyAccountStep.content,
       cta: (
