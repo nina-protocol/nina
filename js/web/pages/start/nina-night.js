@@ -55,7 +55,7 @@ const StartPage = () => {
         </Typography>
         <Typography variant="body1">{welcomeString.header}</Typography>
       </CustomHeader>
-      <Onboard customCode={'union-pool'} />
+      <Onboard customCode={'nina-night'} />
     </>
   )
 }
@@ -69,8 +69,8 @@ const CustomHeader = styled(Box)(({ theme }) => ({
   textAlign: 'left',
   [theme.breakpoints.down('md')]: {
     width: '80%',
-    margin: '25px auto',
-    paddingBottom: '100px',
+    margin: '25px auto 25px',
+    paddingTop: '100px',
   },
 }))
 
