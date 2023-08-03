@@ -105,7 +105,7 @@ const Onboard = ({ customCode }) => {
       },
       verifyAccountStep: {
         header: 'Verify your Account (optional)',
-        content: `Now that you have claimed your code and funded your account, you can verify your account via your Soundcloud or Twitter profile.`,
+        content: `You can verify your account via your Soundcloud or Twitter profile.`,
       },
       successStep: {
         header: 'Success',
@@ -132,7 +132,7 @@ const Onboard = ({ customCode }) => {
       },
       verifyAccountStep: {
         header: `アカウントを照合する（オプション`,
-        content: `コードを入力し、アカウントに供給したら、SoundcloudやTwitterのプロフィールを照合することができます。`,
+        content: `SoundcloudやTwitterのプロフィールを照合することができます。`,
       },
       successStep: {
         header: `成功`,
