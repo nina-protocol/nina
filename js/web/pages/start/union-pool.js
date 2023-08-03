@@ -51,7 +51,7 @@ const StartPage = () => {
 
       <CustomHeader>
         <Typography mb={1} variant="h3">
-          Welcome to Nina from Union Pool
+          Welcome to Nina
         </Typography>
         <Typography variant="body1">{welcomeString.header}</Typography>
       </CustomHeader>
