@@ -5,6 +5,9 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/system/Box'
 import { styled } from '@mui/material/styles'
 import LocalizedStrings from 'react-localization'
+import Image from 'next/image'
+import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+const { getImageFromCDN, loader } = imageManager
 
 const StartPage = () => {
   const welcomeString = new LocalizedStrings({
@@ -53,6 +56,16 @@ const StartPage = () => {
         <Typography mb={1} variant="h3">
           Welcome to Nina from ikj
         </Typography>
+        <Box mb={1}>
+          <Image
+            height={100}
+            width={100}
+            src={getImageFromCDN('https://pbs.twimg.com/profile_images/1397398067146641408/y0AxofCs.jpg', 400)}
+            priority={true}
+            loader={loader}
+            alt={'ikj'}
+          />
+        </Box>
         <Typography variant="body1">{welcomeString.header}</Typography>
       </CustomHeader>
       <Onboard customCode={'ikj'} />
