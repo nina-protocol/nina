@@ -473,48 +473,46 @@ const Onboard = ({ customCode }) => {
   }
 
   return (
-    <ScrollablePageWrapper>
-      <StyledGrid>
-        <GetStartedPageWrapper>
-          <>
-            <Box mb={2}>
-              {!customCode && (
-                <Typography variant="h1" mb={1}>
-                  Welcome to Nina.
-                </Typography>
-              )}
-              {code !== undefined && (
+    <StyledGrid>
+      <GetStartedPageWrapper>
+        <>
+          <Box mb={2}>
+            {!customCode && (
+              <Typography variant="h1" mb={1}>
+                Welcome to Nina.
+              </Typography>
+            )}
+            {code !== undefined && (
+              <>
                 <>
-                  <>
-                    {!customCode && (
-                      <>
-                        <Typography variant="h3" mb={1}>
-                          You are receiving complimentary SOL to create your Hub
-                          and start uploading your music.
-                        </Typography>
-                        <Typography variant="h3" mb={1}>
-                          Please follow the steps below to get started.
-                        </Typography>
-                      </>
-                    )}
-                    {renderSteps(onboardingSteps)}
-                  </>
+                  {!customCode && (
+                    <>
+                      <Typography variant="h3" mb={1}>
+                        You are receiving complimentary SOL to create your Hub
+                        and start uploading your music.
+                      </Typography>
+                      <Typography variant="h3" mb={1}>
+                        Please follow the steps below to get started.
+                      </Typography>
+                    </>
+                  )}
+                  {renderSteps(onboardingSteps)}
                 </>
-              )}
+              </>
+            )}
 
-              {code === undefined && (
-                <>
-                  <Typography variant="h3" mb={1}>
-                    Follow the steps below to get started.
-                  </Typography>
-                  {renderSteps(signUpSteps)}
-                </>
-              )}
-            </Box>
-          </>
-        </GetStartedPageWrapper>
-      </StyledGrid>
-    </ScrollablePageWrapper>
+            {code === undefined && (
+              <>
+                <Typography variant="h3" mb={1}>
+                  Follow the steps below to get started.
+                </Typography>
+                {renderSteps(signUpSteps)}
+              </>
+            )}
+          </Box>
+        </>
+      </GetStartedPageWrapper>
+    </StyledGrid>
   )
 }
 
@@ -523,6 +521,7 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
   maxHeight: '90vh',
   justifyContent: 'center',
   alignItems: 'center',
+  width: '100%',
   '& a': {
     textDecoration: 'none',
     color: theme.palette.blue,
