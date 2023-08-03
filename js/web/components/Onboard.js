@@ -23,17 +23,11 @@ import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import LocalizedStrings from 'react-localization'
 import dynamic from 'next/dynamic'
 
-const BundlrModal = dynamic(() =>
-  import('@nina-protocol/nina-internal-sdk/esm/BundlrModal')
-)
-
 const Onboard = ({ customCode }) => {
   const router = useRouter()
   const {
-    bundlrBalance,
     getBundlrBalance,
     getBundlrPricePerMb,
-    solPrice,
     getSolPrice,
     getUserBalances,
     verificationState,
@@ -50,10 +44,6 @@ const Onboard = ({ customCode }) => {
   const [profileVerifications, setProfileVerifications] = useState([])
   const [pending, setPending] = useState(false)
   const [showWalletModal, setShowWalletModal] = useState(false)
-  const bundlrUsdBalance = useMemo(
-    () => bundlrBalance * solPrice,
-    [bundlrBalance, solPrice]
-  )
   useEffect(() => {
     refreshBundlr()
     getUserBalances()
@@ -97,11 +87,6 @@ const Onboard = ({ customCode }) => {
       setActiveStep(2)
     }
   }, [claimedCodeSuccess])
-  useEffect(() => {
-    if (bundlrUsdBalance > 0.05) {
-      setActiveStep(3)
-    }
-  }, [bundlrUsdBalance])
 
   const onboardingCopy = new LocalizedStrings({
     en: {
@@ -227,7 +212,7 @@ const Onboard = ({ customCode }) => {
           <Box />
           <Button
             variant="outlined"
-            onClick={() => setActiveStep(4)}
+            onClick={() => setActiveStep(3)}
             sx={{ marginTop: '10px', width: '100%' }}
           >
             <Typography variant="body2">Continue</Typography>

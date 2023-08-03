@@ -60,7 +60,10 @@ const StartPage = () => {
           <Image
             height={100}
             width={100}
-            src={getImageFromCDN('https://pbs.twimg.com/profile_images/1397398067146641408/y0AxofCs.jpg', 400)}
+            src={getImageFromCDN(
+              'https://pbs.twimg.com/profile_images/1397398067146641408/y0AxofCs.jpg',
+              400
+            )}
             priority={true}
             loader={loader}
             alt={'ikj'}
