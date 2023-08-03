@@ -86,7 +86,7 @@ const CustomHeader = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     width: '80%',
     margin: '25px auto',
-    paddingBottom: '100px',
+    paddingTop: '200px',
   },
 }))
 
