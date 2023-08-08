@@ -88,7 +88,7 @@ const GateManageModal = ({
       })
 
       await fetchGatesForRelease(releasePubkey)
-      enqueueSnackbar('Gate Deleted', {
+      enqueueSnackbar('Bonus Material Deleted', {
         variant: 'info',
       })
     } catch (error) {
@@ -122,7 +122,7 @@ const GateManageModal = ({
           },
         }}
       >
-        <StyledTypography variant="body2">Manage Gates</StyledTypography>
+        <StyledTypography variant="body2">Manage Bonus Material</StyledTypography>
       </Button>
 
       <StyledModal
@@ -141,7 +141,7 @@ const GateManageModal = ({
             <StyledCloseIcon onClick={() => handleClose()} />
 
             <StyledTypography variant="h5" sx={{ mb: 1 }}>
-              Gate Manager
+              Bonus Material Manager
             </StyledTypography>
 
             <Box>
@@ -154,7 +154,7 @@ const GateManageModal = ({
 
               {gates.length > 0 && (
                 <StyledTypography variant="body1" sx={{ my: 1 }}>
-                  Existing Gates:
+                  Existing Bonus Material:
                 </StyledTypography>
               )}
 

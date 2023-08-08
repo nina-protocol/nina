@@ -131,9 +131,9 @@ const GateCreateModal = ({
         }}
       >
         <StyledTypography variant="body2">
-          {`Create ${
-            gates?.length > 0 ? 'another' : 'a'
-          } Gate for this Release`}
+          {`Add ${
+            gates?.length > 0 ? 'more' : ''
+          } bonus material for this release`}
         </StyledTypography>
       </Button>
 
@@ -263,7 +263,7 @@ const GateCreateModal = ({
               disabled={!file || !description}
             >
               {!inProgress ? (
-                'Create Gate'
+                'Add Bonus Material'
               ) : (
                 <Box
                   display="flex"
