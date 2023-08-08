@@ -2,6 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
 use solana_program::program_option::COption;
 use crate::state::*;
+use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
 pub struct ReleaseReopenEdition<'info> {
@@ -39,9 +40,9 @@ pub fn handler(
         return Err(ErrorCode::ReleaseSaleAlreadyStartedCannotReopen.into());
     }
 
-    release.total_supply = release.amount;
+    release.total_supply = amount;
+    release.remaining_supply = amount;
     release.price = price;
-    release.remaining_supply = 0;
 
     Ok(())
 }
