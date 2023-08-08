@@ -122,7 +122,9 @@ const GateManageModal = ({
           },
         }}
       >
-        <StyledTypography variant="body2">Manage Bonus Material</StyledTypography>
+        <StyledTypography variant="body2">
+          Manage Bonus Material
+        </StyledTypography>
       </Button>
 
       <StyledModal
