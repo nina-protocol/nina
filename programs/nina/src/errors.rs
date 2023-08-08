@@ -76,4 +76,6 @@ pub enum ErrorCode {
     SubscriptionPayerMismatch,
     #[msg("Subscription Delegated Payer Mismatch")]
     SubscriptionDelegatedPayerMismatch,
+    #[msg("Sale Has Stated Already, Cannot Reopen")]
+    ReleaseSaleAlreadyStartedCannotReopen,
 }
