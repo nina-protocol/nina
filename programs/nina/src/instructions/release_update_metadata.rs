@@ -1,7 +1,6 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, TokenAccount, Mint, Token, Burn};
+use anchor_spl::token::{self, Mint, Token};
 use solana_program::program_option::COption;
-use mpl_token_metadata::state::DataV2;
 
 use crate::state::*;
 
