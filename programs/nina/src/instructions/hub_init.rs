@@ -1,7 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Token};
 use crate::state::*;
-use crate::utils::{wrapped_sol};
 
 #[derive(Accounts)]
 #[instruction(params: HubInitParams)]

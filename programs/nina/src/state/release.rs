@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::{
-    program::{invoke, invoke_signed},
+    program::{invoke_signed},
 };
 use mpl_token_metadata::{
     self,
@@ -8,8 +8,6 @@ use mpl_token_metadata::{
     instruction::{create_metadata_accounts_v3, update_metadata_accounts_v2},
 };
 use anchor_spl::token::{self, TokenAccount, MintTo, Transfer, Token, Mint, SetAuthority};
-use spl_token::instruction::{close_account};
-use crate::utils::{wrapped_sol};
 
 use crate::errors::ErrorCode;
 
