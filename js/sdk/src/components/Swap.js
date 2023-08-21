@@ -30,7 +30,6 @@ const Swap = () => {
   )
   const [pending, setPending] = useState(false)
   const [withdrawPending, setWithdrawPending] = useState(false)
-  const [isWithdraw, setIsWithdraw] = useState(false)
   const [withdrawAmount, setWithdrawAmount] = useState(0)
   const [withdrawTarget, setWithdrawTarget] = useState('')
   const [activeTab, setActiveTab] = useState('withdrawBank')
@@ -162,135 +161,134 @@ const Swap = () => {
       case 'withdraw':
         return (
           <>
-          <WithdrawWrapper>
-            <TextField
-              id={'withdrawAmountInput'}
-              name={'withdrawAmountInput'}
-              onChange={(e) => setWithdrawAmount(e.target.value)}
-              value={withdrawAmount}
-              type="number"
-              variant="standard"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">Send:</InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="start">USDC</InputAdornment>
-                ),
-              }}
-            />
-            <Button onClick={() => setWithdrawAmount(usdcBalance)}>
-              MAX
+            <WithdrawWrapper>
+              <TextField
+                id={'withdrawAmountInput'}
+                name={'withdrawAmountInput'}
+                onChange={(e) => setWithdrawAmount(e.target.value)}
+                value={withdrawAmount}
+                type="number"
+                variant="standard"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">Send:</InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="start">USDC</InputAdornment>
+                  ),
+                }}
+              />
+              <Button onClick={() => setWithdrawAmount(usdcBalance)}>
+                MAX
+              </Button>
+              <TextField
+                id={'withdrawTargetInput'}
+                name={'withdrawTargetInput'}
+                onChange={(e) => setWithdrawTarget(e.target.value)}
+                value={withdrawTarget}
+                type="string"
+                variant="standard"
+                sx={{ width: '100%' }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">To:</InputAdornment>
+                  ),
+                }}
+              />
+            </WithdrawWrapper>
+            <Button
+              color="primary"
+              variant="outlined"
+              fullWidth
+              onClick={handleWithdraw}
+            >
+              {withdrawPending ? (
+                <Dots msg={pendingTransactionMessage} />
+              ) : (
+                <Typography variant="body2">Send</Typography>
+              )}
             </Button>
-            <TextField
-              id={'withdrawTargetInput'}
-              name={'withdrawTargetInput'}
-              onChange={(e) => setWithdrawTarget(e.target.value)}
-              value={withdrawTarget}
-              type="string"
-              variant="standard"
-              sx={{ width: '100%' }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">To:</InputAdornment>
-                ),
-              }}
-            />
-          </WithdrawWrapper>
-          <Button
-            color="primary"
-            variant="outlined"
-            fullWidth
-            onClick={handleWithdraw}
-          >
-            {withdrawPending ? (
-              <Dots msg={pendingTransactionMessage} />
-            ) : (
-              <Typography variant="body2">Send</Typography>
-            )}
-          </Button>
-        </>
+          </>
         )
       case 'swap':
         return (
           <>
-          <Typography
-            variant="h3"
-            sx={{
-              mb: 3,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {isSolToUsdc ? 'SOL to USDC' : 'USDC to SOL'}
-            <SwapHorizIcon
-              sx={{ marginLeft: '8px', marginBotton: '0px' }}
-              fontSize="large"
-              onClick={() => setIsSolToUsdc(!isSolToUsdc)}
-            />
-          </Typography>
-          <SwapWrapper>
-            <TextField
-              id={'swapInput'}
-              name={'swapInput'}
-              onChange={(e) => handleInputAmountChange(e.target.value)}
-              value={inputAmount}
-              type="number"
-              variant="standard"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="start">
-                    {isSolToUsdc ? 'SOL' : 'USDC'}
-                  </InputAdornment>
-                ),
+            <Typography
+              variant="h3"
+              sx={{
+                mb: 3,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
-            />
-            <Typography sx={{ margin: '0 10px' }}>For</Typography>
-            <TextField
-              id={'swapOutput'}
-              name={'swapOutput'}
-              value={outputAmount}
-              type="number"
-              variant="standard"
-              disabled
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="start">
-                    {!isSolToUsdc ? 'SOL' : 'USDC'}
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </SwapWrapper>
-          <Button
-            color="primary"
-            variant="outlined"
-            fullWidth
-            onClick={handleSwap}
-          >
-            {pending ? (
-              <Dots msg={pendingTransactionMessage} />
-            ) : (
-              <Typography variant="body2">Swap</Typography>
-            )}
-          </Button>
-        </>
+            >
+              {isSolToUsdc ? 'SOL to USDC' : 'USDC to SOL'}
+              <SwapHorizIcon
+                sx={{ marginLeft: '8px', marginBotton: '0px' }}
+                fontSize="large"
+                onClick={() => setIsSolToUsdc(!isSolToUsdc)}
+              />
+            </Typography>
+            <SwapWrapper>
+              <TextField
+                id={'swapInput'}
+                name={'swapInput'}
+                onChange={(e) => handleInputAmountChange(e.target.value)}
+                value={inputAmount}
+                type="number"
+                variant="standard"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      {isSolToUsdc ? 'SOL' : 'USDC'}
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <Typography sx={{ margin: '0 10px' }}>For</Typography>
+              <TextField
+                id={'swapOutput'}
+                name={'swapOutput'}
+                value={outputAmount}
+                type="number"
+                variant="standard"
+                disabled
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      {!isSolToUsdc ? 'SOL' : 'USDC'}
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </SwapWrapper>
+            <Button
+              color="primary"
+              variant="outlined"
+              fullWidth
+              onClick={handleSwap}
+            >
+              {pending ? (
+                <Dots msg={pendingTransactionMessage} />
+              ) : (
+                <Typography variant="body2">Swap</Typography>
+              )}
+            </Button>
+          </>
         )
       case 'withdrawBank':
         return (
           <>
-            <Typography
-              variant='h4'
-            >
-              You can withdraw your USDC balance to your bank account (currently only available in USA).
+            <Typography variant="h4">
+              You can withdraw your USDC balance to your bank account (currently
+              only available in USA).
             </Typography>
-            <Typography
-              variant='h4'
-            >
+            <Typography variant="h4">
               Withdraw instantly for a fee, or 3-4 business days for free.
             </Typography>
-            <CoinflowWithdrawModal onSuccess={() => onCoinflowWithdrawSuccess()}/>
+            <CoinflowWithdrawModal
+              onSuccess={() => onCoinflowWithdrawSuccess()}
+            />
           </>
         )
     }
@@ -300,7 +298,7 @@ const Swap = () => {
     <>
       <InputWrapper>
         <Box display="flex" alignItems={'center'}>
-        <Typography
+          <Typography
             variant="h3"
             sx={{
               display: 'inline',

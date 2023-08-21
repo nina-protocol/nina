@@ -10,7 +10,7 @@ import { CoinflowWithdraw } from '@coinflowlabs/react'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 import { logEvent } from '../utils/event'
 
-const CoinflowWithdrawModal = () => {
+const CoinflowWithdrawModal = ({ onSuccess }) => {
   const [open, setOpen] = useState(false)
   const { wallet, connection, email } = useContext(Wallet.Context)
 
@@ -68,7 +68,7 @@ const CoinflowWithdrawModal = () => {
                   await onSuccess()
                   logEvent('withdraw_success', 'engagement', {
                     wallet: wallet?.publicKey?.toBase58(),
-                  })      
+                  })
                   handleClose()
                 }}
                 blockchain={'solana'}
@@ -118,21 +118,6 @@ const StyledCloseIcon = styled(CloseIcon)(({ theme }) => ({
   top: theme.spacing(1),
   color: theme.palette.black,
   cursor: 'pointer',
-}))
-
-const StyledCcContainter = styled('span')(({ theme }) => ({
-  paddingLeft: '8px',
-  right: '5px',
-  display: 'flex',
-  position: 'absolute',
-  '& svg': {
-    height: '20px',
-    width: '22.5px',
-  },
-  [theme.breakpoints.down('md')]: {
-    position: 'relative',
-    paddingLeft: '16px',
-  },
 }))
 
 export default CoinflowWithdrawModal
