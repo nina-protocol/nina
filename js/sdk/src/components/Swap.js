@@ -12,7 +12,6 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 import Divider from '@mui/material/Divider'
-
 const Swap = () => {
   const { enqueueSnackbar } = useSnackbar()
 
@@ -178,7 +177,7 @@ const Swap = () => {
             }}
             onClick={() => setIsWithdraw(true)}
           >
-            Withdraw
+            Withdraw to Crypto
           </Typography>
         </Box>
 

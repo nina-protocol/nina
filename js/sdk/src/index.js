@@ -37,3 +37,5 @@ export { default as IdentityVerification } from './components/IndentityVerificat
 export { default as AddToHubModal } from './components/AddToHubModal'
 export { default as HubPostCreate } from './components/HubPostCreate'
 export { default as CoinflowModal } from './components/CoinflowModal'
+export { default as PurchaseModal } from './components/PurchaseModal'
+export { default as CoinflowWithdrawModal } from './components/CoinflowWithdrawModal'

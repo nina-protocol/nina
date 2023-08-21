@@ -61,6 +61,7 @@ export default [
       HubPostCreate: 'src/components/HubPostCreate.js',
       CoinflowModal: 'src/components/CoinflowModal.js',
       PurchaseModal: 'src/components/PurchaseModal.js',
+      CoinflowWithdrawModal: 'src/components/CoinflowWithdrawModal.js',
     },
     output: [
       {
