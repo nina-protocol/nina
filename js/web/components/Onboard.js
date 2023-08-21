@@ -23,17 +23,11 @@ import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import LocalizedStrings from 'react-localization'
 import dynamic from 'next/dynamic'
 
-const BundlrModal = dynamic(() =>
-  import('@nina-protocol/nina-internal-sdk/esm/BundlrModal')
-)
-
 const Onboard = ({ customCode }) => {
   const router = useRouter()
   const {
-    bundlrBalance,
     getBundlrBalance,
     getBundlrPricePerMb,
-    solPrice,
     getSolPrice,
     getUserBalances,
     verificationState,
@@ -50,10 +44,6 @@ const Onboard = ({ customCode }) => {
   const [profileVerifications, setProfileVerifications] = useState([])
   const [pending, setPending] = useState(false)
   const [showWalletModal, setShowWalletModal] = useState(false)
-  const bundlrUsdBalance = useMemo(
-    () => bundlrBalance * solPrice,
-    [bundlrBalance, solPrice]
-  )
   useEffect(() => {
     refreshBundlr()
     getUserBalances()
@@ -97,11 +87,6 @@ const Onboard = ({ customCode }) => {
       setActiveStep(2)
     }
   }, [claimedCodeSuccess])
-  useEffect(() => {
-    if (bundlrUsdBalance > 0.05) {
-      setActiveStep(3)
-    }
-  }, [bundlrUsdBalance])
 
   const onboardingCopy = new LocalizedStrings({
     en: {
@@ -120,7 +105,7 @@ const Onboard = ({ customCode }) => {
       },
       verifyAccountStep: {
         header: 'Verify your Account (optional)',
-        content: `Now that you have claimed your code and funded your account, you can verify your account via your Soundcloud or Twitter profile.`,
+        content: `You can verify your account via your Soundcloud or Twitter profile.`,
       },
       successStep: {
         header: 'Success',
@@ -147,7 +132,7 @@ const Onboard = ({ customCode }) => {
       },
       verifyAccountStep: {
         header: `アカウントを照合する（オプション`,
-        content: `コードを入力し、アカウントに供給したら、SoundcloudやTwitterのプロフィールを照合することができます。`,
+        content: `SoundcloudやTwitterのプロフィールを照合することができます。`,
       },
       successStep: {
         header: `成功`,
@@ -215,11 +200,6 @@ const Onboard = ({ customCode }) => {
       ),
     },
     {
-      title: onboardingCopy.fundUploadAccountStep.header,
-      content: onboardingCopy.fundUploadAccountStep.content,
-      cta: <BundlrModal inOnboardFlow={true} />,
-    },
-    {
       title: onboardingCopy.verifyAccountStep.header,
       content: onboardingCopy.verifyAccountStep.content,
       cta: (
@@ -232,7 +212,7 @@ const Onboard = ({ customCode }) => {
           <Box />
           <Button
             variant="outlined"
-            onClick={() => setActiveStep(4)}
+            onClick={() => setActiveStep(3)}
             sx={{ marginTop: '10px', width: '100%' }}
           >
             <Typography variant="body2">Continue</Typography>
@@ -493,48 +473,46 @@ const Onboard = ({ customCode }) => {
   }
 
   return (
-    <ScrollablePageWrapper>
-      <StyledGrid>
-        <GetStartedPageWrapper>
-          <>
-            <Box mb={2}>
-              {!customCode && (
-                <Typography variant="h1" mb={1}>
-                  Welcome to Nina.
-                </Typography>
-              )}
-              {code !== undefined && (
+    <StyledGrid>
+      <GetStartedPageWrapper>
+        <>
+          <Box mb={2}>
+            {!customCode && (
+              <Typography variant="h1" mb={1}>
+                Welcome to Nina.
+              </Typography>
+            )}
+            {code !== undefined && (
+              <>
                 <>
-                  <>
-                    {!customCode && (
-                      <>
-                        <Typography variant="h3" mb={1}>
-                          You are receiving complimentary SOL to create your Hub
-                          and start uploading your music.
-                        </Typography>
-                        <Typography variant="h3" mb={1}>
-                          Please follow the steps below to get started.
-                        </Typography>
-                      </>
-                    )}
-                    {renderSteps(onboardingSteps)}
-                  </>
+                  {!customCode && (
+                    <>
+                      <Typography variant="h3" mb={1}>
+                        You are receiving complimentary SOL to create your Hub
+                        and start uploading your music.
+                      </Typography>
+                      <Typography variant="h3" mb={1}>
+                        Please follow the steps below to get started.
+                      </Typography>
+                    </>
+                  )}
+                  {renderSteps(onboardingSteps)}
                 </>
-              )}
+              </>
+            )}
 
-              {code === undefined && (
-                <>
-                  <Typography variant="h3" mb={1}>
-                    Follow the steps below to get started.
-                  </Typography>
-                  {renderSteps(signUpSteps)}
-                </>
-              )}
-            </Box>
-          </>
-        </GetStartedPageWrapper>
-      </StyledGrid>
-    </ScrollablePageWrapper>
+            {code === undefined && (
+              <>
+                <Typography variant="h3" mb={1}>
+                  Follow the steps below to get started.
+                </Typography>
+                {renderSteps(signUpSteps)}
+              </>
+            )}
+          </Box>
+        </>
+      </GetStartedPageWrapper>
+    </StyledGrid>
   )
 }
 
@@ -543,6 +521,7 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
   maxHeight: '90vh',
   justifyContent: 'center',
   alignItems: 'center',
+  width: '100%',
   '& a': {
     textDecoration: 'none',
     color: theme.palette.blue,
