@@ -1,6 +1,5 @@
 import React from 'react'
 import { Box, Typography } from '@mui/material'
-import Button from '@mui/material/Button'
 import { styled } from '@mui/system'
 import Link from 'next/link'
 
@@ -76,10 +75,6 @@ const NewProfileCtas = ({ activeViewIndex, profilePubkey }) => {
         return (
           <>
             <Typography my={1}>You have not followed any one yet.</Typography>
-            <Typography my={1}>
-              View your suggestions in the drawer on the right to see relevant
-              Hubs and Profiles.
-            </Typography>
           </>
         )
     }

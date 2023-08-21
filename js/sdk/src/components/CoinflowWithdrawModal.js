@@ -8,13 +8,11 @@ import Button from '@mui/material/Button'
 import CloseIcon from '@mui/icons-material/Close'
 import { CoinflowWithdraw } from '@coinflowlabs/react'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
-import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import { logEvent } from '../utils/event'
 
 const CoinflowWithdrawModal = () => {
   const [open, setOpen] = useState(false)
   const { wallet, connection, email } = useContext(Wallet.Context)
-  const { ninaClient } = useContext(Nina.Context)
 
   const handleClose = () => {
     setOpen(false)
@@ -39,9 +37,10 @@ const CoinflowWithdrawModal = () => {
             '&:hover': {
               opacity: '50%',
             },
+            paddingRight: '8px',
           }}
         >
-          Withdraw to Bank (US Only)
+          Withdraw to Bank
         </Button>
 
         <StyledModal
@@ -67,6 +66,9 @@ const CoinflowWithdrawModal = () => {
                 connection={connection}
                 onSuccess={async () => {
                   await onSuccess()
+                  logEvent('withdraw_success', 'engagement', {
+                    wallet: wallet?.publicKey?.toBase58(),
+                  })      
                   handleClose()
                 }}
                 blockchain={'solana'}
