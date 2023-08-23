@@ -487,8 +487,8 @@ const Onboard = ({ customCode }) => {
                 {!customCode && (
                   <>
                     <Typography variant="h3" mb={1}>
-                      You are receiving complimentary SOL to create your Hub
-                      and start uploading your music.
+                      You are receiving complimentary SOL to create your Hub and
+                      start uploading your music.
                     </Typography>
                     <Typography variant="h3" mb={1}>
                       Please follow the steps below to get started.
@@ -501,11 +501,12 @@ const Onboard = ({ customCode }) => {
 
             {code === undefined && (
               <>
-                <Typography variant="h1" mb={1} sx={{ color: '#2D81FF'}}>
+                <Typography variant="h1" mb={1} sx={{ color: '#2D81FF' }}>
                   an independent music ecosystem.
                 </Typography>
                 <Typography variant="h3" mb={1}>
-                  To get started releasing, collecting, and discovering music, please sign in or sign up below.  
+                  To get started releasing, collecting, and discovering music,
+                  please sign in or sign up below.
                 </Typography>
                 {renderSteps(signUpSteps)}
               </>
