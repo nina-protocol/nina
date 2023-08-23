@@ -12,7 +12,7 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
 import { useSnackbar } from 'notistack'
 import Dots from './Dots'
 import Divider from '@mui/material/Divider'
-
+import CoinflowWithdrawModal from './CoinflowWithdrawModal'
 const Swap = () => {
   const { enqueueSnackbar } = useSnackbar()
 
@@ -30,18 +30,22 @@ const Swap = () => {
   )
   const [pending, setPending] = useState(false)
   const [withdrawPending, setWithdrawPending] = useState(false)
-  const [isWithdraw, setIsWithdraw] = useState(false)
   const [withdrawAmount, setWithdrawAmount] = useState(0)
   const [withdrawTarget, setWithdrawTarget] = useState('')
-
+  const [activeTab, setActiveTab] = useState('withdrawBank')
   const multiplier = useMemo(() => (isSolToUsdc ? 100 : 10000), [isSolToUsdc])
   const swapHeaderTextDecoration = useMemo(
-    () => (isWithdraw ? 'none' : 'underline'),
-    [isWithdraw]
+    () => (activeTab === 'swap' ? 'underline' : 'none'),
+    [activeTab]
   )
   const withdrawHeaderTextDecoration = useMemo(
-    () => (isWithdraw ? 'underline' : 'none'),
-    [isWithdraw]
+    () => (activeTab === 'withdraw' ? 'underline' : 'none'),
+    [activeTab]
+  )
+
+  const withdrawBankHeaderTextDecoration = useMemo(
+    () => (activeTab === 'withdrawBank' ? 'underline' : 'none'),
+    [activeTab]
   )
 
   const outputAmount = useMemo(() => {
@@ -146,43 +150,16 @@ const Swap = () => {
     }
     setWithdrawPending(false)
   }
+  const onCoinflowWithdrawSuccess = () => {
+    enqueueSnackbar('Withdrawal Successful', {
+      variant: 'success',
+    })
+  }
 
-  return (
-    <>
-      <InputWrapper>
-        <Box display="flex" alignItems={'center'}>
-          <Typography
-            variant="h3"
-            sx={{
-              display: 'inline',
-              alignItems: 'baseline',
-              textDecoration: swapHeaderTextDecoration,
-              mr: 1,
-              cursor: 'pointer',
-            }}
-            onClick={() => setIsWithdraw(false)}
-          >
-            Swap
-          </Typography>
-
-          <Divider orientation="vertical" flexItem />
-
-          <Typography
-            variant="h3"
-            sx={{
-              display: 'inline',
-              alignItems: 'baseline',
-              textDecoration: withdrawHeaderTextDecoration,
-              ml: 1,
-              cursor: 'pointer',
-            }}
-            onClick={() => setIsWithdraw(true)}
-          >
-            Withdraw
-          </Typography>
-        </Box>
-
-        {isWithdraw ? (
+  const displayForActiveTab = () => {
+    switch (activeTab) {
+      case 'withdraw':
+        return (
           <>
             <WithdrawWrapper>
               <TextField
@@ -232,7 +209,9 @@ const Swap = () => {
               )}
             </Button>
           </>
-        ) : (
+        )
+      case 'swap':
+        return (
           <>
             <Typography
               variant="h3"
@@ -296,7 +275,78 @@ const Swap = () => {
               )}
             </Button>
           </>
-        )}
+        )
+      case 'withdrawBank':
+        return (
+          <>
+            <Typography variant="h4">
+              You can withdraw your USDC balance to your bank account (currently
+              only available in USA).
+            </Typography>
+            <Typography variant="h4">
+              Withdraw instantly for a fee, or 3-4 business days for free.
+            </Typography>
+            <CoinflowWithdrawModal
+              onSuccess={() => onCoinflowWithdrawSuccess()}
+            />
+          </>
+        )
+    }
+  }
+
+  return (
+    <>
+      <InputWrapper>
+        <Box display="flex" alignItems={'center'}>
+          <Typography
+            variant="h3"
+            sx={{
+              display: 'inline',
+              alignItems: 'baseline',
+              textDecoration: withdrawBankHeaderTextDecoration,
+              mr: 1,
+              cursor: 'pointer',
+            }}
+            onClick={() => setActiveTab('withdrawBank')}
+          >
+            Withdraw to Bank
+          </Typography>
+
+          <Divider orientation="vertical" flexItem />
+
+          <Typography
+            variant="h3"
+            sx={{
+              display: 'inline',
+              alignItems: 'baseline',
+              textDecoration: swapHeaderTextDecoration,
+              mr: 1,
+              ml: 1,
+              cursor: 'pointer',
+            }}
+            onClick={() => setActiveTab('swap')}
+          >
+            Swap
+          </Typography>
+
+          <Divider orientation="vertical" flexItem />
+
+          <Typography
+            variant="h3"
+            sx={{
+              display: 'inline',
+              alignItems: 'baseline',
+              textDecoration: withdrawHeaderTextDecoration,
+              ml: 1,
+              cursor: 'pointer',
+            }}
+            onClick={() => setActiveTab('withdraw')}
+          >
+            Send
+          </Typography>
+        </Box>
+
+        {displayForActiveTab()}
       </InputWrapper>
     </>
   )
