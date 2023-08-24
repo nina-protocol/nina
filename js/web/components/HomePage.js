@@ -111,7 +111,7 @@ const HomePage = ({ loading }) => {
         <Box align="center" sx={{ paddingBottom: { md: '140px', xs: '30px' } }}>
           <BlueTypography variant="h1" align="center">
             <a
-              href="https://www.notion.so/nina-protocol/Nina-Protocol-FAQs-6aaeb02de9f5447494cc9dc304ffb612"
+              href="https://help.ninaprotocol.com/hc/en-us/articles/14331496823319-What-is-Nina-"
               target="_blank"
               rel="noreferrer"
             >
