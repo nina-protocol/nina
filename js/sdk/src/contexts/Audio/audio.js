@@ -43,13 +43,15 @@ const AudioPlayerContextProvider = ({ children }) => {
   }, [track])
 
   useEffect(() => {
-    var bc = new BroadcastChannel('nina_channel')
-    bc.onmessage = function (ev) {
-      if (ev.data.type === 'updateTabPlaying') {
-        setIsPlaying(false)
+    if ('BroadcastChannel' in self) {
+      var bc = new BroadcastChannel('nina_channel')
+      bc.onmessage = function (ev) {
+        if (ev.data.type === 'updateTabPlaying') {
+          setIsPlaying(false)
+        }
       }
+      setBroadcastChannel(bc)  
     }
-    setBroadcastChannel(bc)
   }, [])
 
   const {
@@ -83,7 +85,7 @@ const AudioPlayerContextProvider = ({ children }) => {
   ) => {
     setInitialized(true)
 
-    if (shouldPlay) {
+    if (shouldPlay && broadcastChannel) {
       broadcastChannel.postMessage({ type: 'updateTabPlaying' })
     }
 
@@ -277,7 +279,9 @@ const audioPlayerContextHelper = ({
     })
     setTrack(newPlaylist[0])
     setPlaylist(newPlaylist)
-    broadcastChannel.postMessage({ type: 'updateTabPlaying' })
+    if (broadcastChannel) {
+      broadcastChannel.postMessage({ type: 'updateTabPlaying' })
+    }
 
     setIsPlaying(true)
   }
