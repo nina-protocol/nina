@@ -50,7 +50,7 @@ const AudioPlayerContextProvider = ({ children }) => {
           setIsPlaying(false)
         }
       }
-      setBroadcastChannel(bc)  
+      setBroadcastChannel(bc)
     }
   }, [])
 
