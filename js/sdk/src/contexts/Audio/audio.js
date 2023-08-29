@@ -44,11 +44,6 @@ const AudioPlayerContextProvider = ({ children }) => {
 
   useEffect(() => {
     activeIndexRef.current = playlist.indexOf(track) || 0
-    console.log('\n\n')
-    playlist.forEach((item, index) => {
-      console.log(index, item.title)
-    })
-    console.log('\n\n')
   }, [track, playlist])
 
   useEffect(() => {
@@ -147,18 +142,11 @@ const AudioPlayerContextProvider = ({ children }) => {
           (item) => item.releasePubkey === release.publicKey
         )[0] === undefined
       ) {
-        console.log
         const playlistEntry = createPlaylistEntry(
           release.publicKey,
           release.metadata
         )
         newPlaylist.push(playlistEntry)
-        console.log(
-          'new one: ',
-          playlistEntry.title,
-          release.publicKey,
-          playlistEntry.releasePubkey
-        )
       }
     })
     setPlaylist((prevState) =>
