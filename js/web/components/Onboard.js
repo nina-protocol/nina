@@ -479,32 +479,34 @@ const Onboard = ({ customCode }) => {
           <Box mb={2}>
             {!customCode && (
               <Typography variant="h1" mb={1}>
-                Welcome to Nina.
+                Welcome to Nina{code !== undefined ? '.' : ','}
               </Typography>
             )}
             {code !== undefined && (
               <>
-                <>
-                  {!customCode && (
-                    <>
-                      <Typography variant="h3" mb={1}>
-                        You are receiving complimentary SOL to create your Hub
-                        and start uploading your music.
-                      </Typography>
-                      <Typography variant="h3" mb={1}>
-                        Please follow the steps below to get started.
-                      </Typography>
-                    </>
-                  )}
-                  {renderSteps(onboardingSteps)}
-                </>
+                {!customCode && (
+                  <>
+                    <Typography variant="h3" mb={1}>
+                      You are receiving complimentary SOL to create your Hub and
+                      start uploading your music.
+                    </Typography>
+                    <Typography variant="h3" mb={1}>
+                      Please follow the steps below to get started.
+                    </Typography>
+                  </>
+                )}
+                {renderSteps(onboardingSteps)}
               </>
             )}
 
             {code === undefined && (
               <>
+                <Typography variant="h1" mb={1} sx={{ color: '#2D81FF' }}>
+                  an independent music ecosystem.
+                </Typography>
                 <Typography variant="h3" mb={1}>
-                  Follow the steps below to get started.
+                  To get started releasing, collecting, and discovering music,
+                  please sign in or sign up below.
                 </Typography>
                 {renderSteps(signUpSteps)}
               </>

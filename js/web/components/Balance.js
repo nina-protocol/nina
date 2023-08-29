@@ -12,6 +12,8 @@ import {
 import { styled } from '@mui/system'
 import Swap from '@nina-protocol/nina-internal-sdk/esm/Swap'
 import Divider from '@mui/material/Divider'
+import CoinflowWithdrawModal from '@nina-protocol/nina-internal-sdk/esm/CoinflowWithdrawModal'
+import { useSnackbar } from 'notistack'
 
 const Balance = ({
   profilePublishedReleases,
@@ -37,6 +39,7 @@ const Balance = ({
   const [userUsdcBalance, setUserUsdcBalance] = useState(0)
   const [userBundlrBalance, setUserBundlrBalance] = useState(0)
   const [open, setOpen] = useState(false)
+  const { enqueueSnackbar } = useSnackbar()
 
   const availableStorage = useMemo(
     () => (isAdmin ? userBundlrBalance : bundlrBalance) / bundlrPricePerMb,
@@ -147,7 +150,6 @@ const Balance = ({
                   4
                 )} SOL / ${availableStorage.toFixed(2)} MB`}
               </Typography>
-
               <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
 
               <Typography variant="string" sx={{ pr: 1 }}>
@@ -162,6 +164,7 @@ const Balance = ({
                     : '0'
                 }`}
               </Typography>
+              <Divider orientation="vertical" flexItem sx={{ mr: 1 }} />
             </ResponsiveBox>
             {inDashboard && (
               <>
