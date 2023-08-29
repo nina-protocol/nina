@@ -30,12 +30,14 @@ const AudioPlayerContextProvider = ({ children }) => {
     }
   }
 
-  const playNext = (shouldPlay = false) => {
+  const playNext = (shouldPlay = false, hubPublicKey = null) => {
     if (playlistRef.current[activeIndexRef.current + 1]) {
       setTrack(playlistRef.current[activeIndexRef.current + 1])
-      getRecommendationsForTrackAndAddToPlaylist(
-        playlistRef.current[activeIndexRef.current + 1].releasePubkey
-      )
+      if (!hubPublicKey) {
+        getRecommendationsForTrackAndAddToPlaylist(
+          playlistRef.current[activeIndexRef.current + 1].releasePubkey
+        )
+      }
       setIsPlaying(shouldPlay)
     } else {
       setIsPlaying(false)
@@ -121,7 +123,9 @@ const AudioPlayerContextProvider = ({ children }) => {
       if (ninaClient.provider.wallet?.connected) {
         params.wallet = ninaClient.provider.wallet.publicKey.toBase58()
       }
-      getRecommendationsForTrackAndAddToPlaylist(releasePubkey)
+      if (!hubPublicKey) {
+        getRecommendationsForTrackAndAddToPlaylist(releasePubkey)
+      }
       logEvent('track_play', 'engagement', params)
     }
   }
