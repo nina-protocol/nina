@@ -22,7 +22,7 @@ const AudioPlayerContextProvider = ({ children }) => {
   const [broadcastChannel, setBroadcastChannel] = useState(null)
   const audioPlayerRef = useRef()
   const activeIndexRef = useRef()
-
+  const playlistRef = useRef()
   const playPrev = (shouldPlay = false) => {
     if (playlist[activeIndexRef.current - 1]) {
       setTrack(playlist[activeIndexRef.current - 1])
@@ -31,10 +31,10 @@ const AudioPlayerContextProvider = ({ children }) => {
   }
 
   const playNext = (shouldPlay = false) => {
-    if (playlist[activeIndexRef.current + 1]) {
-      setTrack(playlist[activeIndexRef.current + 1])
+    if (playlistRef.current[activeIndexRef.current + 1]) {
+      setTrack(playlistRef.current[activeIndexRef.current + 1])
       getRecommendationsForTrackAndAddToPlaylist(
-        playlist[activeIndexRef.current + 1].releasePubkey
+        playlistRef.current[activeIndexRef.current + 1].releasePubkey
       )
       setIsPlaying(shouldPlay)
     } else {
@@ -43,6 +43,7 @@ const AudioPlayerContextProvider = ({ children }) => {
   }
 
   useEffect(() => {
+    playlistRef.current = playlist
     activeIndexRef.current = playlist.indexOf(track) || 0
   }, [track, playlist])
 
