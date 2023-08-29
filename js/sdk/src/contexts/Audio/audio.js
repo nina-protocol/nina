@@ -8,6 +8,7 @@ import React, {
 import Nina from '../Nina'
 import Release from '../Release'
 import { logEvent } from '../../utils/event'
+import axios from 'axios'
 
 const AudioPlayerContext = createContext()
 const AudioPlayerContextProvider = ({ children }) => {
@@ -21,7 +22,7 @@ const AudioPlayerContextProvider = ({ children }) => {
   const [broadcastChannel, setBroadcastChannel] = useState(null)
   const audioPlayerRef = useRef()
   const activeIndexRef = useRef()
-
+  const playlistRef = useRef()
   const playPrev = (shouldPlay = false) => {
     if (playlist[activeIndexRef.current - 1]) {
       setTrack(playlist[activeIndexRef.current - 1])
@@ -29,9 +30,14 @@ const AudioPlayerContextProvider = ({ children }) => {
     }
   }
 
-  const playNext = (shouldPlay = false) => {
-    if (playlist[activeIndexRef.current + 1]) {
-      setTrack(playlist[activeIndexRef.current + 1])
+  const playNext = (shouldPlay = false, hubPublicKey = null) => {
+    if (playlistRef.current[activeIndexRef.current + 1]) {
+      setTrack(playlistRef.current[activeIndexRef.current + 1])
+      if (!hubPublicKey) {
+        getRecommendationsForTrackAndAddToPlaylist(
+          playlistRef.current[activeIndexRef.current + 1].releasePubkey
+        )
+      }
       setIsPlaying(shouldPlay)
     } else {
       setIsPlaying(false)
@@ -39,17 +45,20 @@ const AudioPlayerContextProvider = ({ children }) => {
   }
 
   useEffect(() => {
+    playlistRef.current = playlist
     activeIndexRef.current = playlist.indexOf(track) || 0
-  }, [track])
+  }, [track, playlist])
 
   useEffect(() => {
-    var bc = new BroadcastChannel('nina_channel')
-    bc.onmessage = function (ev) {
-      if (ev.data.type === 'updateTabPlaying') {
-        setIsPlaying(false)
+    if ('BroadcastChannel' in self) {
+      var bc = new BroadcastChannel('nina_channel')
+      bc.onmessage = function (ev) {
+        if (ev.data.type === 'updateTabPlaying') {
+          setIsPlaying(false)
+        }
       }
+      setBroadcastChannel(bc)
     }
-    setBroadcastChannel(bc)
   }, [])
 
   const {
@@ -83,7 +92,7 @@ const AudioPlayerContextProvider = ({ children }) => {
   ) => {
     setInitialized(true)
 
-    if (shouldPlay) {
+    if (shouldPlay && broadcastChannel) {
       broadcastChannel.postMessage({ type: 'updateTabPlaying' })
     }
 
@@ -116,9 +125,46 @@ const AudioPlayerContextProvider = ({ children }) => {
       if (ninaClient.provider.wallet?.connected) {
         params.wallet = ninaClient.provider.wallet.publicKey.toBase58()
       }
-
+      if (!hubPublicKey) {
+        getRecommendationsForTrackAndAddToPlaylist(releasePubkey)
+      }
       logEvent('track_play', 'engagement', params)
     }
+  }
+
+  const getRecommendationsForTrackAndAddToPlaylist = async (
+    releasePublicKey
+  ) => {
+    const recommendationsResponse = await axios.get(
+      `https://re.ninaprotocol.com/release/${releasePublicKey}?recommendations=15`
+    )
+    const releases = recommendationsResponse.data.data.recommendations
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value)
+    const newPlaylist = []
+    releases.forEach((release) => {
+      if (
+        playlist.filter(
+          (item) => item.releasePubkey === release.publicKey
+        )[0] === undefined
+      ) {
+        const playlistEntry = createPlaylistEntry(
+          release.publicKey,
+          release.metadata
+        )
+        newPlaylist.push(playlistEntry)
+      }
+    })
+    setPlaylist((prevState) =>
+      [...prevState, ...newPlaylist].filter(
+        (playListItem, index, self) =>
+          self.findIndex(
+            (playListItem2) =>
+              playListItem2.releasePubkey === playListItem.releasePubkey
+          ) === index
+      )
+    )
   }
 
   return (
@@ -277,14 +323,20 @@ const audioPlayerContextHelper = ({
     })
     setTrack(newPlaylist[0])
     setPlaylist(newPlaylist)
-    broadcastChannel.postMessage({ type: 'updateTabPlaying' })
+    if (broadcastChannel) {
+      broadcastChannel.postMessage({ type: 'updateTabPlaying' })
+    }
 
     setIsPlaying(true)
   }
 
-  const createPlaylistEntry = (releasePubkey) => {
+  const createPlaylistEntry = (releasePubkey, releaseMetadata) => {
     let playlistEntry = undefined
-    const releaseMetadata = releaseState.metadata[releasePubkey]
+
+    if (!releaseMetadata) {
+      releaseMetadata = releaseState.metadata[releasePubkey]
+    }
+
     if (releaseMetadata) {
       playlistEntry = {
         artist: releaseMetadata.properties.artist,

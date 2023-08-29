@@ -6,7 +6,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@project-serum/anchor": "^0.25.0",
+    "@coral-xyz/anchor": "0.28.1-beta.2",
     "@solana/spl-token": "^0.1.8",
     "@solana/wallet-adapter-backpack": "^0.1.13",
     "@solana/wallet-adapter-base": "^0.9.22",

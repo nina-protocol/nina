@@ -36,7 +36,7 @@
   "dependencies": {
     "@fontsource/roboto": "^4.5.3",
     "@next/bundle-analyzer": "^12.1.2",
-    "@project-serum/anchor": "^0.25.0",
+    "@coral-xyz/anchor": "0.28.1-beta.2",
     "@solana/wallet-adapter-backpack": "^0.1.13",
     "@solana/wallet-adapter-base": "^0.9.22",
     "@solana/wallet-adapter-material-ui": "^0.16.30",

@@ -68,7 +68,7 @@ const AudioPlayer = ({ hubPubkey = undefined, children }) => {
   )
   const hasPrevious = useMemo(
     () => activeIndexRef.current > 0,
-    [activeIndexRef.current]
+    [activeIndexRef.current, playlist]
   )
 
   useEffect(() => {
@@ -150,7 +150,7 @@ const AudioPlayer = ({ hubPubkey = undefined, children }) => {
   const next = () => {
     if (hasNext) {
       setTrackProgress(0)
-      playNext(true)
+      playNext(true, hubPubkey)
     } else {
       // This means we've reached the end of the playlist
       setTrackProgress(0)
