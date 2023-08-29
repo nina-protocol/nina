@@ -138,6 +138,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
     subscriptionSubscribeDelegated,
     subscriptionUnsubscribeDelegated,
     sendUsdc,
+    sendSol,
   } = ninaContextHelper({
     ninaClient,
     postState,
@@ -236,6 +237,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         subscriptionSubscribeDelegated,
         subscriptionUnsubscribeDelegated,
         sendUsdc,
+        sendSol,
       }}
     >
       {children}
@@ -1128,6 +1130,38 @@ const ninaContextHelper = ({
     }
   }
 
+  const sendSol = async (amount, destination) => {
+    try {
+      const desinationPublicKey = new anchor.web3.PublicKey(destination)
+      const tx = new anchor.web3.Transaction().add(
+        anchor.web3.SystemProgram.transfer({
+          fromPubkey: provider.wallet.publicKey,
+          toPubkey: desinationPublicKey,
+          lamports: ninaClient.uiToNative(amount, ids.mints.wsol),
+        })
+      )
+      tx.recentBlockhash = (
+        await provider.connection.getRecentBlockhash()
+      ).blockhash
+      tx.feePayer = provider.wallet.publicKey
+
+      const txid = await provider.wallet.sendTransaction(
+        tx,
+        provider.connection
+      )
+      await getConfirmTransaction(txid, provider.connection)
+      await getUserBalances()
+      return {
+        success: true,
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: ninaErrorHandler(error),
+      }
+    }
+  }
+
   const checkIfHasBalanceToCompleteAction = async (action) => {
     const solUsdcBalanceResult = await getSolBalance()
     if (
@@ -1371,6 +1405,7 @@ const ninaContextHelper = ({
     subscriptionSubscribeDelegated,
     subscriptionUnsubscribeDelegated,
     sendUsdc,
+    sendSol,
   }
 }
 

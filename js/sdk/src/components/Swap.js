@@ -16,7 +16,7 @@ import CoinflowWithdrawModal from './CoinflowWithdrawModal'
 const Swap = () => {
   const { enqueueSnackbar } = useSnackbar()
 
-  const { ninaClient, usdcBalance, solBalance, getUserBalances, sendUsdc } =
+  const { ninaClient, usdcBalance, solBalance, getUserBalances, sendUsdc, sendSol } =
     useContext(Nina.Context)
   const { wallet, connection, pendingTransactionMessage } = useContext(
     Wallet.Context
@@ -24,6 +24,7 @@ const Swap = () => {
   const [inputAmount, setInputAmount] = useState(0)
   const [quote, setQuote] = useState()
   const [isSolToUsdc, setIsSolToUsdc] = useState(false)
+  const [isUsdcWithdraw, setIsUsdcWithdraw] = useState(true)
   const [baseCurrency, setBaseCurrency] = useState(ninaClient.ids.mints.usdc)
   const [outputCurrency, setOutputCurrency] = useState(
     ninaClient.ids.mints.wsol
@@ -130,7 +131,13 @@ const Swap = () => {
   const handleWithdraw = async () => {
     setWithdrawPending(true)
     try {
-      const tx = await sendUsdc(withdrawAmount, withdrawTarget)
+      let tx
+      if (isUsdcWithdraw) {
+        tx = await sendUsdc(withdrawAmount, withdrawTarget)
+      } else {
+        tx = await sendSol(withdrawAmount, withdrawTarget)
+      }
+
       if (tx.success) {
         enqueueSnackbar('Withdraw Successful', {
           variant: 'success',
@@ -174,11 +181,14 @@ const Swap = () => {
                     <InputAdornment position="start">Send:</InputAdornment>
                   ),
                   endAdornment: (
-                    <InputAdornment position="start">USDC</InputAdornment>
+                    <InputAdornment position="start">{isUsdcWithdraw ? 'USDC' : 'SOL'}</InputAdornment>
                   ),
                 }}
               />
-              <Button onClick={() => setWithdrawAmount(usdcBalance)}>
+              <Button onClick={() => setIsUsdcWithdraw(!isUsdcWithdraw)}>
+                SWITCH TO {isUsdcWithdraw ? 'SOL' : 'USDC'}
+              </Button>
+              <Button onClick={() => setWithdrawAmount(isUsdcWithdraw ? usdcBalance : +(Math.round(ninaClient.nativeToUi(solBalance, ninaClient.ids.mints.wsol) - 0.04 + "e" + 4) + "e-" + 4))}>
                 MAX
               </Button>
               <TextField
@@ -205,7 +215,7 @@ const Swap = () => {
               {withdrawPending ? (
                 <Dots msg={pendingTransactionMessage} />
               ) : (
-                <Typography variant="body2">Send</Typography>
+                <Typography variant="body2">Send {isUsdcWithdraw ? 'USDC' : 'SOL'}</Typography>
               )}
             </Button>
           </>
