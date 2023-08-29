@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef, useMemo } from 'react'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
+import hub from '../contexts/Hub/hub'
 
 const AudioPlayer = ({ hubPubkey = undefined, children }) => {
   const audio = useContext(Audio.Context)
@@ -68,7 +69,7 @@ const AudioPlayer = ({ hubPubkey = undefined, children }) => {
   )
   const hasPrevious = useMemo(
     () => activeIndexRef.current > 0,
-    [activeIndexRef.current]
+    [activeIndexRef.current, playlist]
   )
 
   useEffect(() => {
@@ -150,7 +151,7 @@ const AudioPlayer = ({ hubPubkey = undefined, children }) => {
   const next = () => {
     if (hasNext) {
       setTrackProgress(0)
-      playNext(true)
+      playNext(true, hubPubkey)
     } else {
       // This means we've reached the end of the playlist
       setTrackProgress(0)
