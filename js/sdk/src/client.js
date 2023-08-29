@@ -90,7 +90,7 @@ const NinaClient = function (provider, network) {
 
     if (showCurrency) {
       amountString = `${isUsdc ? '$' : ''}${amountString} ${
-        isUsdc ? 'USDC' : 'SOL'
+        isUsdc ? 'USD' : 'SOL'
       }`
     }
     return amountString
