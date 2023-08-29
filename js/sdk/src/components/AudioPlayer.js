@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useRef, useMemo } from 'react'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import hub from '../contexts/Hub/hub'
 
 const AudioPlayer = ({ hubPubkey = undefined, children }) => {
   const audio = useContext(Audio.Context)
