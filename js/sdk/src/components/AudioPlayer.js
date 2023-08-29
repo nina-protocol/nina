@@ -68,7 +68,7 @@ const AudioPlayer = ({ hubPubkey = undefined, children }) => {
   )
   const hasPrevious = useMemo(
     () => activeIndexRef.current > 0,
-    [activeIndexRef.current]
+    [activeIndexRef.current, playlist]
   )
 
   useEffect(() => {

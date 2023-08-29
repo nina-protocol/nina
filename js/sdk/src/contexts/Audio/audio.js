@@ -8,6 +8,7 @@ import React, {
 import Nina from '../Nina'
 import Release from '../Release'
 import { logEvent } from '../../utils/event'
+import axios from 'axios'
 
 const AudioPlayerContext = createContext()
 const AudioPlayerContextProvider = ({ children }) => {
@@ -32,6 +33,9 @@ const AudioPlayerContextProvider = ({ children }) => {
   const playNext = (shouldPlay = false) => {
     if (playlist[activeIndexRef.current + 1]) {
       setTrack(playlist[activeIndexRef.current + 1])
+      getRecommendationsForTrackAndAddToPlaylist(
+        playlist[activeIndexRef.current + 1].releasePubkey
+      )
       setIsPlaying(shouldPlay)
     } else {
       setIsPlaying(false)
@@ -40,7 +44,12 @@ const AudioPlayerContextProvider = ({ children }) => {
 
   useEffect(() => {
     activeIndexRef.current = playlist.indexOf(track) || 0
-  }, [track])
+    console.log('\n\n')
+    playlist.forEach((item, index) => {
+      console.log(index, item.title)
+    })
+    console.log('\n\n')
+  }, [track, playlist])
 
   useEffect(() => {
     var bc = new BroadcastChannel('nina_channel')
@@ -116,9 +125,51 @@ const AudioPlayerContextProvider = ({ children }) => {
       if (ninaClient.provider.wallet?.connected) {
         params.wallet = ninaClient.provider.wallet.publicKey.toBase58()
       }
-
+      getRecommendationsForTrackAndAddToPlaylist(releasePubkey)
       logEvent('track_play', 'engagement', params)
     }
+  }
+
+  const getRecommendationsForTrackAndAddToPlaylist = async (
+    releasePublicKey
+  ) => {
+    const recommendationsResponse = await axios.get(
+      `https://re.ninaprotocol.com/release/${releasePublicKey}?recommendations=15`
+    )
+    const releases = recommendationsResponse.data.data.recommendations
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value)
+    const newPlaylist = []
+    releases.forEach((release) => {
+      if (
+        playlist.filter(
+          (item) => item.releasePubkey === release.publicKey
+        )[0] === undefined
+      ) {
+        console.log
+        const playlistEntry = createPlaylistEntry(
+          release.publicKey,
+          release.metadata
+        )
+        newPlaylist.push(playlistEntry)
+        console.log(
+          'new one: ',
+          playlistEntry.title,
+          release.publicKey,
+          playlistEntry.releasePubkey
+        )
+      }
+    })
+    setPlaylist((prevState) =>
+      [...prevState, ...newPlaylist].filter(
+        (playListItem, index, self) =>
+          self.findIndex(
+            (playListItem2) =>
+              playListItem2.releasePubkey === playListItem.releasePubkey
+          ) === index
+      )
+    )
   }
 
   return (
@@ -282,9 +333,13 @@ const audioPlayerContextHelper = ({
     setIsPlaying(true)
   }
 
-  const createPlaylistEntry = (releasePubkey) => {
+  const createPlaylistEntry = (releasePubkey, releaseMetadata) => {
     let playlistEntry = undefined
-    const releaseMetadata = releaseState.metadata[releasePubkey]
+
+    if (!releaseMetadata) {
+      releaseMetadata = releaseState.metadata[releasePubkey]
+    }
+
     if (releaseMetadata) {
       playlistEntry = {
         artist: releaseMetadata.properties.artist,
