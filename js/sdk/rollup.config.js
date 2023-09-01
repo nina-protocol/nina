@@ -6,6 +6,7 @@ export default [
   {
     external: [
       '@project-serum/anchor',
+      '@coral-xyz/anchor',
       'react',
       'axios',
       '@imgix/js-core',
