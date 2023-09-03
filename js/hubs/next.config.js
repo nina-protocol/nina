@@ -62,7 +62,7 @@ const moduleExports = withTM({
         '../node_modules/@project-serum/serum'
       ),
       '@project-serum/anchor': path.resolve(
-        '../node_modules/@project-serum/anchor'
+        '../node_modules/@coral-xyz/anchor'
       ),
       axios: path.resolve('../node_modules/axios'),
       buffer: path.resolve('../node_modules/buffer'),
