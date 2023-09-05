@@ -1,12 +1,8 @@
 import React, { createContext, useState, useEffect, useMemo } from 'react'
-import * as anchor from '@project-serum/anchor'
+import * as anchor from '@coral-xyz/anchor'
 import NinaSdk from '@nina-protocol/js-sdk'
 import axios from 'axios'
-import { getAccount } from '@solana/spl-token'
-import {
-  findOrCreateAssociatedTokenAccount,
-  TOKEN_PROGRAM_ID,
-} from '../../utils/web3'
+import { findOrCreateAssociatedTokenAccount } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
 import { logEvent } from '../../utils/event'
 import { truncateAddress } from '../../utils/truncateManager'
@@ -14,6 +10,11 @@ import Airtable from 'airtable'
 import { getConfirmTransaction } from '../../utils'
 import { encodeBase64 } from 'tweetnacl-util'
 import { initSdkIfNeeded } from '../../utils/sdkInit'
+import {
+  createTransferInstruction,
+  getAccount,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token'
 
 const NinaProgramAction = {
   HUB_ADD_COLLABORATOR: 'HUB_ADD_COLLABORATOR',
@@ -1084,10 +1085,6 @@ const ninaContextHelper = ({
             ))
         : (toUsdcTokenAccount = new anchor.web3.PublicKey(destination))
 
-      const program = anchor.Spl.token({
-        provider,
-      })
-
       const instructions = []
 
       if (fromUsdcTokenAccountIx) {
@@ -1098,15 +1095,18 @@ const ninaContextHelper = ({
         instructions.push(toUsdcTokenAccountIx)
       }
 
-      const tx = await program.methods
-        .transfer(new anchor.BN(ninaClient.uiToNative(amount, ids.mints.usdc)))
-        .accounts({
-          source: fromUsdcTokenAccount,
-          destination: toUsdcTokenAccount,
-          authority: provider.wallet.publicKey,
-        })
-        .preInstructions(instructions)
-        .transaction()
+      const transferInstruction = createTransferInstruction(
+        fromUsdcTokenAccount,
+        toUsdcTokenAccount,
+        provider.wallet.publicKey,
+        new anchor.BN(ninaClient.uiToNative(amount, ids.mints.usdc))
+      )
+
+      const tx = new anchor.web3.Transaction()
+      for (const instruction of instructions) {
+        tx.add(instruction)
+      }
+      tx.add(transferInstruction)
 
       tx.recentBlockhash = (
         await provider.connection.getRecentBlockhash()

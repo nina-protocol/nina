@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react'
-import * as anchor from '@project-serum/anchor'
+import * as anchor from '@coral-xyz/anchor'
 import { ninaErrorHandler } from '../../utils/errors'
 import {
   findAssociatedTokenAddress,

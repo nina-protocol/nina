@@ -5,7 +5,6 @@ import { terser } from 'rollup-plugin-terser'
 export default [
   {
     external: [
-      '@project-serum/anchor',
       '@coral-xyz/anchor',
       'react',
       'axios',

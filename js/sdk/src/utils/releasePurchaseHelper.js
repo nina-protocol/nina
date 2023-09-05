@@ -1,4 +1,4 @@
-import * as anchor from '@project-serum/anchor'
+import * as anchor from '@coral-xyz/anchor'
 import {
   buildWhirlpoolClient,
   WhirlpoolContext,
@@ -8,12 +8,8 @@ import {
 } from '@orca-so/whirlpools-sdk'
 import { Percentage } from '@orca-so/common-sdk'
 import axios from 'axios'
-import {
-  findOrCreateAssociatedTokenAccount,
-  TOKEN_PROGRAM_ID,
-  wrapSol,
-} from './web3'
-
+import { findOrCreateAssociatedTokenAccount, wrapSol } from './web3'
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { decodeNonEncryptedByteArray } from './encrypt'
 import { encodeBase64 } from 'tweetnacl-util'
 

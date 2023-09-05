@@ -1,15 +1,12 @@
 import React, { createContext, useState, useContext } from 'react'
-import * as anchor from '@project-serum/anchor'
+import * as anchor from '@coral-xyz/anchor'
 import Audio from '../Audio'
 import Nina from '../Nina'
 import Release from '../Release'
-import {
-  findOrCreateAssociatedTokenAccount,
-  wrapSol,
-  TOKEN_PROGRAM_ID,
-} from '../../utils/web3'
+import { findOrCreateAssociatedTokenAccount, wrapSol } from '../../utils/web3'
 import { ninaErrorHandler } from '../../utils/errors'
 import NinaSdk from '@nina-protocol/js-sdk'
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 
 const ExchangeContext = createContext()
 const ExchangeContextProvider = ({ children }) => {

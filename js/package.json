@@ -36,7 +36,7 @@
     "@nina-protocol/js-sdk": "^0.0.17",
     "@nina-protocol/nina-internal-sdk": "0.0.35",
     "@sentry/nextjs": "^7.8.0",
-    "@solana/spl-token": "^0.3.7",
+    "@solana/spl-token": "^0.3.8",
     "airtable": "^0.11.5",
     "ansi-regex": "^5.0.1",
     "env-cmd": "^10.1.0",
