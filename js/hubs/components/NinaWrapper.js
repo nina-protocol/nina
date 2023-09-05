@@ -5,7 +5,7 @@ import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import NinaClient from '@nina-protocol/nina-internal-sdk/esm/client'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
-import { AnchorProvider } from '@project-serum/anchor'
+import { AnchorProvider } from '@coral-xyz/anchor'
 
 const NinaWrapper = ({ children, network }) => {
   const { wallet, connection } = useContext(Wallet.Context)

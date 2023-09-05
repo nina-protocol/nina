@@ -5,7 +5,7 @@ import {
 } from '@solana/wallet-adapter-react'
 import { Magic } from 'magic-sdk'
 import { SolanaExtension } from '@magic-ext/solana'
-import * as anchor from '@project-serum/anchor'
+import * as anchor from '@coral-xyz/anchor'
 
 const WalletContext = createContext()
 const WalletContextProvider = ({ children }) => {

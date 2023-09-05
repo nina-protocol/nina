@@ -6,7 +6,7 @@ import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
 import NinaClient from '@nina-protocol/nina-internal-sdk/esm/client'
 
-import { AnchorProvider } from '@project-serum/anchor'
+import { AnchorProvider } from '@coral-xyz/anchor'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
 
 const NinaWrapper = ({ children, network }) => {

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import {AnchorProvider} from '@project-serum/anchor'
+import {AnchorProvider} from '@coral-xyz/anchor'
 import Router from "next/router";
 import { SnackbarProvider } from "notistack";
 import { ThemeProvider } from "@mui/material/styles";

@@ -1,15 +1,11 @@
 import React, { createContext, useEffect, useState, useContext } from 'react'
-import * as anchor from '@project-serum/anchor'
+import * as anchor from '@coral-xyz/anchor'
 import NinaSdk from '@nina-protocol/js-sdk'
 import promiseRetry from 'promise-retry'
 
 import Nina from '../Nina'
 import Wallet from '../Wallet'
-import {
-  createMintInstructions,
-  findOrCreateAssociatedTokenAccount,
-  TOKEN_PROGRAM_ID,
-} from '../../utils/web3'
+import { findOrCreateAssociatedTokenAccount } from '../../utils/web3'
 import axios from 'axios'
 import { ninaErrorHandler } from '../../utils/errors'
 import { encryptData, decodeNonEncryptedByteArray } from '../../utils/encrypt'
@@ -17,6 +13,12 @@ import releasePurchaseHelper from '../../utils/releasePurchaseHelper'
 import { logEvent } from '../../utils/event'
 import { initSdkIfNeeded } from '../../utils/sdkInit'
 import { getConfirmTransaction } from '../../utils'
+import {
+  createInitializeMint2Instruction,
+  getMinimumBalanceForRentExemptMint,
+  MINT_SIZE,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token'
 
 const MAX_INT = '18446744073709551615'
 
@@ -325,12 +327,26 @@ const releaseContextHelper = ({
           [release.toBuffer()],
           program.programId
         )
-      const releaseMintIx = await createMintInstructions(
-        provider,
-        provider.wallet.publicKey,
-        releaseMint.publicKey,
-        0
+
+      const lamports = await getMinimumBalanceForRentExemptMint(
+        provider.connection
       )
+      const releaseMintCreateIx = anchor.web3.SystemProgram.createAccount({
+        fromPubkey: provider.wallet.publicKey,
+        newAccountPubkey: releaseMint.publicKey,
+        space: MINT_SIZE,
+        lamports,
+        programId: TOKEN_PROGRAM_ID,
+      })
+
+      const releaseMintInitializeIx = createInitializeMint2Instruction(
+        releaseMint.publicKey,
+        0,
+        provider.wallet.publicKey,
+        provider.wallet.publicKey,
+        TOKEN_PROGRAM_ID
+      )
+
       const [authorityTokenAccount, authorityTokenAccountIx] =
         await findOrCreateAssociatedTokenAccount(
           provider.connection,
@@ -387,7 +403,7 @@ const releaseContextHelper = ({
         program.programId
       )
 
-      let [hubWallet] = await findOrCreateAssociatedTokenAccount(
+      let [hubWallet, hubWalletIx] = await findOrCreateAssociatedTokenAccount(
         provider.connection,
         provider.wallet.publicKey,
         hubSigner,
@@ -396,8 +412,15 @@ const releaseContextHelper = ({
         paymentMint
       )
 
-      let instructions = [...releaseMintIx, royaltyTokenAccountIx]
+      let instructions = [
+        releaseMintCreateIx,
+        releaseMintInitializeIx,
+        royaltyTokenAccountIx,
+      ]
 
+      if (hubWalletIx) {
+        instructions.push(hubWalletIx)
+      }
       if (authorityTokenAccountIx) {
         instructions.push(authorityTokenAccountIx)
       }
@@ -445,6 +468,7 @@ const releaseContextHelper = ({
       const request = {
         accounts: {
           authority: provider.wallet.publicKey,
+          payer: provider.wallet.publicKey,
           release,
           releaseSigner,
           hubCollaborator,
@@ -457,13 +481,12 @@ const releaseContextHelper = ({
           authorityTokenAccount,
           paymentMint,
           royaltyTokenAccount,
-          tokenProgram: new anchor.web3.PublicKey(ids.programs.token),
+          tokenProgram: TOKEN_PROGRAM_ID,
           metadata,
           metadataProgram,
           systemProgram: anchor.web3.SystemProgram.programId,
           rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         },
-        signers: [releaseMint],
         instructions,
       }
 
@@ -636,11 +659,24 @@ const releaseContextHelper = ({
         releasePubkey: release,
       })
 
-      const releaseMintIx = await createMintInstructions(
-        provider,
-        provider.wallet.publicKey,
+      const lamports = await getMinimumBalanceForRentExemptMint(
+        provider.connection
+      )
+
+      const releaseMintCreateIx = anchor.web3.SystemProgram.createAccount({
+        fromPubkey: provider.wallet.publicKey,
+        newAccountPubkey: releaseMint.publicKey,
+        space: MINT_SIZE,
+        lamports,
+        programId: TOKEN_PROGRAM_ID,
+      })
+
+      const releaseMintInitializeIx = createInitializeMint2Instruction(
         releaseMint.publicKey,
-        0
+        0,
+        provider.wallet.publicKey,
+        provider.wallet.publicKey,
+        TOKEN_PROGRAM_ID
       )
 
       const [authorityTokenAccount, authorityTokenAccountIx] =
@@ -664,7 +700,11 @@ const releaseContextHelper = ({
           true
         )
 
-      let instructions = [...releaseMintIx, royaltyTokenAccountIx]
+      let instructions = [
+        releaseMintCreateIx,
+        releaseMintInitializeIx,
+        royaltyTokenAccountIx,
+      ]
 
       if (authorityTokenAccountIx) {
         instructions.push(authorityTokenAccountIx)

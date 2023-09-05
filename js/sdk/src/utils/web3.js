@@ -1,53 +1,10 @@
-import * as anchor from '@project-serum/anchor'
+import * as anchor from '@coral-xyz/anchor'
 const BufferLayout = require('buffer-layout')
-
-export const TOKEN_PROGRAM_ID = new anchor.web3.PublicKey(
-  anchor.utils.token.TOKEN_PROGRAM_ID.toString()
-)
-
-export const ASSOCIATED_TOKEN_PROGRAM_ID = new anchor.web3.PublicKey(
-  anchor.utils.token.ASSOCIATED_PROGRAM_ID.toString()
-)
-
-import { createSyncNativeInstruction } from '@solana/spl-token'
-
-export async function createMintInstructions(
-  provider,
-  authority,
-  mint,
-  decimals
-) {
-  const tokenProgram = anchor.Spl.token(provider)
-  const systemProgram = anchor.Native.system(provider)
-  const mintSize = tokenProgram.coder.accounts.size(
-    tokenProgram.idl.accounts[0]
-  )
-
-  const mintRentExemption =
-    await provider.connection.getMinimumBalanceForRentExemption(mintSize)
-
-  let instructions = [
-    await systemProgram.methods
-      .createAccount(
-        new anchor.BN(mintRentExemption),
-        new anchor.BN(mintSize),
-        tokenProgram.programId
-      )
-      .accounts({
-        from: authority,
-        to: mint,
-      })
-      .instruction(),
-    await tokenProgram.methods
-      .initializeMint(decimals, authority, null)
-      .accounts({
-        mint,
-      })
-      .instruction(),
-  ]
-
-  return instructions
-}
+import {
+  TOKEN_PROGRAM_ID,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  createSyncNativeInstruction,
+} from '@solana/spl-token'
 
 export const findOrCreateAssociatedTokenAccount = async (
   connection,

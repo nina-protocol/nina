@@ -1,7 +1,8 @@
 import * as anchor from '@project-serum/anchor'
-import { findOrCreateAssociatedTokenAccount, TOKEN_PROGRAM_ID } from './web3'
+import { findOrCreateAssociatedTokenAccount } from './web3'
 
 import { decodeNonEncryptedByteArray } from './encrypt'
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 
 const releasePurchaseHelperTransactionBuilder = async (
   releasePubkey,
