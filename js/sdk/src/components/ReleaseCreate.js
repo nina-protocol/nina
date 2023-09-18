@@ -135,14 +135,21 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     [bundlrBalance, solPrice]
   )
   useEffect(() => {
-    setSolBalanceFetched(false)
-    refreshBundlr()
-    getUserBalances()
+    const handleInitialBalanceCheck = async () => {
+      setSolBalanceFetched(false)
+      await refreshBundlr()
+      await getUserBalances()
+    }
+    handleInitialBalanceCheck()
   }, [])
 
   useEffect(() => {
-    if (wallet.connected && solBalance === 0 && solBalanceFetched) {
-      setOpen(true)
+    if (solBalanceFetched) {
+      if (wallet.connected && solBalance === 0) {
+        setOpen(true)
+      } else {
+        setOpen(false)
+      }
     }
   }, [solBalanceFetched])
 
@@ -200,7 +207,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     let publicKey
 
     if (wallet.connected) {
-      publicKey = wallet.publicKey.toBase58()
+      publicKey = wallet.publicKey?.toBase58()
       getUserHubs(publicKey)
     }
   }, [wallet?.connected])
