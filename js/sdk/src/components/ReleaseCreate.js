@@ -80,6 +80,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     ninaClient,
     getUserBalances,
     solBalanceFetched,
+    setSolBalanceFetched,
   } = useContext(Nina.Context)
 
   const { getHubsForUser, fetchedHubsForUser, filterHubsForUser, hubState } =
@@ -134,11 +135,13 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
     [bundlrBalance, solPrice]
   )
   useEffect(() => {
+    setSolBalanceFetched(false)
     refreshBundlr()
     getUserBalances()
   }, [])
 
   useEffect(() => {
+    console.log('solBalance :>> ', solBalance)
     if (wallet.connected && solBalance === 0 && solBalanceFetched) {
       setOpen(true)
     }
