@@ -141,7 +141,6 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   }, [])
 
   useEffect(() => {
-    console.log('solBalance :>> ', solBalance)
     if (wallet.connected && solBalance === 0 && solBalanceFetched) {
       setOpen(true)
     }

@@ -757,13 +757,11 @@ const ninaContextHelper = ({
           anchor.web3.SYSVAR_RENT_PUBKEY,
           new anchor.web3.PublicKey(ids.mints.usdc)
         )
-        console.log('usdcTokenAccountPubkey :>> ', usdcTokenAccountPubkey)
         if (usdcTokenAccountPubkey) {
           let usdcTokenAccount =
             await provider.connection.getTokenAccountBalance(
               usdcTokenAccountPubkey
             )
-          console.log('usdcTokenAccount :>> ', usdcTokenAccount)
           usdc = Math.floor(usdcTokenAccount.value.uiAmount * 100) / 100
           setUsdcBalance(usdc)
           return
