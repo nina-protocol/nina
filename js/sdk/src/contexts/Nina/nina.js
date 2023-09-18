@@ -233,6 +233,7 @@ const NinaContextProvider = ({ children, releasePubkey, ninaClient }) => {
         submitEmailRequest,
         lowSolBalance,
         solBalanceFetched,
+        setSolBalanceFetched,
         getUsdcToSolSwapData,
         MAX_AUDIO_FILE_UPLOAD_SIZE,
         subscriptionSubscribeDelegated,
