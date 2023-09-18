@@ -125,6 +125,7 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
   const [showLowUploadModal, setShowLowUploadModal] = useState(false)
   const [open, setOpen] = useState(false)
   const hubData = useMemo(() => hubState[hubPubkey], [hubState, hubPubkey])
+  const [localBalanceFetched, setLocalBalanceFetched] = useState(false)
 
   const availableStorage = useMemo(
     () => bundlrBalance / bundlrPricePerMb,
@@ -139,19 +140,20 @@ const ReleaseCreate = ({ canAddContent, hubPubkey }) => {
       setSolBalanceFetched(false)
       await refreshBundlr()
       await getUserBalances()
+      setLocalBalanceFetched(true)
     }
     handleInitialBalanceCheck()
   }, [])
 
   useEffect(() => {
-    if (solBalanceFetched) {
+    if (localBalanceFetched) {
       if (wallet.connected && solBalance === 0) {
         setOpen(true)
       } else {
         setOpen(false)
       }
     }
-  }, [solBalanceFetched])
+  }, [localBalanceFetched])
 
   useEffect(() => {
     const checkBalance = setInterval(() => {
