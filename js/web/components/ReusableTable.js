@@ -637,7 +637,7 @@ const ReusableTableBody = (props) => {
                               )}
                             </Button>
                           )}
-                          {row.image.includes('https') ? (
+                          {row.image?.includes('https') ? (
                             <Image
                               height={50}
                               width={50}
