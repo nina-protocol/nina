@@ -39,8 +39,7 @@ const ContentTileView = ({ contentData, hubPubkey, hubHandle }) => {
     let filtered
     switch (displayType) {
       case 'all':
-        filtered = content.filter((item) => item.hub === hubPubkey)
-        setFilteredContent(filtered)
+        setFilteredContent(content)
         break
       case 'releases':
         filtered = content.filter((item) => {

@@ -78,6 +78,7 @@ const HubComponent = ({ hubPubkey }) => {
     if (hubReleases && hubPosts) {
       const contentArray = []
       const types = []
+
       const hubContent = [...hubReleases, ...hubPosts]
       hubContent.forEach((hubContentData) => {
         if (hubContentData.hub === hubPubkey) {
