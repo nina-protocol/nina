@@ -25,11 +25,11 @@ impl Hub {
 		hub_content: &mut Box<Account<'info, HubContent>>,
 		hub_release: &mut Box<Account<'info, HubRelease>>,
 		release: AccountLoader<'info, Release>,
-		authority: Signer<'info>,
+		authority: Pubkey,
 		is_published_through_hub: bool,
 		reposted_from_hub: Option<AccountInfo>
 	) -> Result<()> {
-		hub_content.added_by = authority.key();
+		hub_content.added_by = authority;
 		hub_content.hub = hub.key();
 		hub_content.child = hub_release.key();
 		hub_content.content_type = HubContentType::NinaReleaseV1;

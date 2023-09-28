@@ -240,7 +240,7 @@ impl Release {
         release_signer: AccountInfo<'info>,
         metadata: AccountInfo<'info>,
         release_mint: Box<Account<'info, Mint>>,
-        authority: Signer<'info>,
+		authority: UncheckedAccount<'info>,
         metadata_program: AccountInfo<'info>,
         token_program: Program<'info, Token>,
         system_program: Program<'info, System>,

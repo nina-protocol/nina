@@ -32,3 +32,8 @@ pub mod dispatcher_account {
     use solana_program::declare_id;
     declare_id!("BnhxwsrY5aaeMehsTRoJzX2X4w5sKMhMfBs2MCKUqMC");
 }
+
+pub mod file_service_account {
+    use solana_program::declare_id;
+    declare_id!("3skAZNf7EjUus6VNNgHog44JZFsp8BBaso9pBRgYntSd");
+}

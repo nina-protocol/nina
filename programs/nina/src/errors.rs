@@ -76,4 +76,6 @@ pub enum ErrorCode {
     SubscriptionPayerMismatch,
     #[msg("Subscription Delegated Payer Mismatch")]
     SubscriptionDelegatedPayerMismatch,
+    #[msg("Release Init Delegated Payer Mismatch")]
+    ReleaseInitDelegatedPayerMismatch
 }

@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, TokenAccount, Mint, Token, Burn};
-
+use anchor_spl::token::{self, TokenAccount, Mint, Token};
+use crate::utils::{file_service_account};
+use crate::errors::ErrorCode;
 use crate::state::*;
 
 #[derive(Accounts)]
@@ -22,16 +23,8 @@ pub struct ReleaseInitialize<'info> {
     pub release_mint: Box<Account<'info, Mint>>,
     #[account(mut)]
     pub payer: Signer<'info>,
-    /// CHECK: originally we would allow delegated payment for a release
-    /// anyone could publish a release on behalf of someone else
-    /// but we now require the authority == payer
-    /// in order to prevent someone from publishing a release on behalf of someone else
-    /// without their express approval.
-    /// Originally desired behavior will require more checks for approval
-    #[account(
-        mut,
-        constraint = payer.key() == authority.key(),
-    )]
+    /// CHECK: This is safe because we check in the handler that authority === payer 
+    /// or that payer is nina operated file-service wallet
     pub authority: UncheckedAccount<'info>,
     #[account(
         constraint = authority_token_account.owner == authority.key(),
@@ -62,6 +55,11 @@ pub fn handler(
     bumps: ReleaseBumps,
     metadata_data: ReleaseMetadataData,
 ) -> Result<()> {
+    if ctx.accounts.payer.key() != ctx.accounts.authority.key() {
+        if ctx.accounts.payer.key() != file_service_account::ID {
+            return Err(ErrorCode::ReleaseInitDelegatedPayerMismatch.into());
+        }
+    }
 
     Release::release_init_handler(
         &ctx.accounts.release,
@@ -81,7 +79,7 @@ pub fn handler(
         ctx.accounts.release_signer.to_account_info().clone(),
         ctx.accounts.metadata.to_account_info().clone(),
         ctx.accounts.release_mint.clone(),
-        ctx.accounts.payer.clone(),
+        ctx.accounts.authority.clone(),
         ctx.accounts.metadata_program.to_account_info().clone(),
         ctx.accounts.token_program.clone(),
         ctx.accounts.system_program.clone(),
