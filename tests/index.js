@@ -607,8 +607,8 @@ describe('Release', async () => {
           }
         );
       }, (err) => {
-        assert.equal(err.error.errorCode.number, 2003);
-        assert.equal(err.error.errorMessage, "A raw constraint was violated");
+        assert.equal(err.error.errorCode.number, 6037);
+        assert.equal(err.error.errorMessage, "Release Init Delegated Payer Mismatch");
         return true;
       }
     );
@@ -4430,6 +4430,7 @@ describe('Hub', async () => {
       hubParams.handle, {
         accounts: {
           authority: provider.wallet.publicKey,
+          payer: provider.wallet.publicKey,
           release: releaseAccount,
           releaseSigner: releaseSigner,
           hub,
@@ -4568,6 +4569,7 @@ describe('Hub', async () => {
       metadataData,
       hubParams.handle, {
         accounts: {
+          payer: user1.publicKey,
           authority: user1.publicKey,
           release: releaseAccount,
           releaseSigner,
@@ -4973,6 +4975,7 @@ describe('Hub', async () => {
           metadataData,
           hubParams.handle, {
             accounts: {
+              payer: user2.publicKey,
               authority: user2.publicKey,
               release: releaseAccount,
               releaseSigner: releaseSigner,
@@ -5099,6 +5102,7 @@ describe('Hub', async () => {
           metadataData,
           hubParams.handle, {
             accounts: {
+              payer: user3.publicKey,
               authority: user3.publicKey,
               release: releaseAccount,
               releaseSigner: releaseSigner,

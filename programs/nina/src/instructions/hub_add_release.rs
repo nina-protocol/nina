@@ -54,7 +54,7 @@ pub fn handler (
         &mut ctx.accounts.hub_content,
         &mut ctx.accounts.hub_release,
         ctx.accounts.release.clone(),
-        ctx.accounts.authority.clone(),
+        ctx.accounts.authority.key(),
         false,
         if ctx.remaining_accounts.len() == 1 {Some(ctx.remaining_accounts[0].clone())} else {None}
     )?;

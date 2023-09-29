@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, TokenAccount, Mint, Token};
+use crate::utils::{file_service_account};
+use crate::errors::ErrorCode;
 use crate::state::*;
 
 #[derive(Accounts)]
@@ -11,12 +13,12 @@ use crate::state::*;
 )]
 pub struct ReleaseInitializeViaHub<'info> {
     #[account(mut)]
-    pub authority: Signer<'info>,
+    pub payer: Signer<'info>,
     #[account(
         init,
         seeds = [b"nina-release".as_ref(), release_mint.key().as_ref()],
         bump,
-        payer = authority,
+        payer = payer,
         space = 1210
     )]
     pub release: AccountLoader<'info, Release>,
@@ -42,7 +44,7 @@ pub struct ReleaseInitializeViaHub<'info> {
         init,
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
-        payer = authority,
+        payer = payer,
         space = 120
     )]
     pub hub_release: Box<Account<'info, HubRelease>>,
@@ -50,7 +52,7 @@ pub struct ReleaseInitializeViaHub<'info> {
         init,
         seeds = [b"nina-hub-content".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
-        payer = authority,
+        payer = payer,
         space = 153
     )]
     pub hub_content: Box<Account<'info, HubContent>>,
@@ -87,6 +89,9 @@ pub struct ReleaseInitializeViaHub<'info> {
     pub metadata_program: AccountInfo<'info>,
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
+    /// CHECK: This is safe because we check in the handler that authority === payer 
+    /// or that payer is nina operated file-service wallet
+    pub authority: UncheckedAccount<'info>,
 }
 
 pub fn handler(
@@ -96,6 +101,12 @@ pub fn handler(
     metadata_data: ReleaseMetadataData,
     _hub_handle: String,
 ) -> Result<()> {
+    if ctx.accounts.payer.key() != ctx.accounts.authority.key() {
+        if ctx.accounts.payer.key() != file_service_account::ID {
+            return Err(ErrorCode::ReleaseInitDelegatedPayerMismatch.into());
+        }
+    }
+
     Hub::hub_collaborator_can_add_or_publish_content(
         &mut ctx.accounts.hub_collaborator,
         true
@@ -106,7 +117,7 @@ pub fn handler(
         ctx.accounts.release_signer.to_account_info().clone(),
         ctx.accounts.release_mint.to_account_info().clone(),
         ctx.accounts.payment_mint.to_account_info().clone(),
-        ctx.accounts.authority.to_account_info().clone(),
+        ctx.accounts.payer.to_account_info().clone(),
         ctx.accounts.authority.to_account_info().clone(),
         ctx.accounts.authority_token_account.to_account_info().clone(),
         ctx.accounts.royalty_token_account.to_account_info(),
@@ -147,7 +158,7 @@ pub fn handler(
         &mut ctx.accounts.hub_content,
         &mut ctx.accounts.hub_release,
         ctx.accounts.release.clone(),
-        ctx.accounts.authority.clone(),
+        ctx.accounts.authority.key(),
         true,
         None,
     )?;
