@@ -572,6 +572,7 @@ const releaseContextHelper = ({
         provider,
         ninaClient,
         usdcBalance,
+        solBalance,
         hubPubkey
       )
 
@@ -887,7 +888,8 @@ const releaseContextHelper = ({
         releasePubkey,
         provider,
         ninaClient,
-        usdcBalance
+        usdcBalance,
+        solBalance
       )
       await getConfirmTransaction(txid, provider.connection)
 
@@ -933,6 +935,8 @@ const releaseContextHelper = ({
         wallet: provider.wallet.publicKey.toBase58(),
         solBalance,
       })
+
+      console.log('ninaErrorHandler(error) :>> ', ninaErrorHandler(error))
 
       return ninaErrorHandler(error)
     }
