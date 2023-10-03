@@ -936,8 +936,6 @@ const releaseContextHelper = ({
         solBalance,
       })
 
-      console.log('ninaErrorHandler(error) :>> ', ninaErrorHandler(error))
-
       return ninaErrorHandler(error)
     }
   }

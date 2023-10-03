@@ -128,8 +128,6 @@ const releasePurchaseHelper = async (
   const program = await ninaClient.useProgram()
   const release = await program.account.release.fetch(releasePubkey)
 
-  //if sol === 0
-  console.log('solBalance :>> ', solBalance)
   if (release.price.toNumber() === 0 && solBalance === 0) {
     const message = new TextEncoder().encode(releasePubkey.toBase58())
     const messageBase64 = encodeBase64(message)
