@@ -120,6 +120,7 @@ const releasePurchaseHelper = async (
   provider,
   ninaClient,
   usdcBalance,
+  solBalance,
   hubPubkey = null
 ) => {
   let hub
@@ -127,7 +128,7 @@ const releasePurchaseHelper = async (
   const program = await ninaClient.useProgram()
   const release = await program.account.release.fetch(releasePubkey)
 
-  if (release.price.toNumber() === 0) {
+  if (release.price.toNumber() === 0 && solBalance === 0) {
     const message = new TextEncoder().encode(releasePubkey.toBase58())
     const messageBase64 = encodeBase64(message)
     const signature = await provider.wallet.signMessage(message)

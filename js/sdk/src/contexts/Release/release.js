@@ -572,6 +572,7 @@ const releaseContextHelper = ({
         provider,
         ninaClient,
         usdcBalance,
+        solBalance,
         hubPubkey
       )
 
@@ -887,7 +888,8 @@ const releaseContextHelper = ({
         releasePubkey,
         provider,
         ninaClient,
-        usdcBalance
+        usdcBalance,
+        solBalance
       )
       await getConfirmTransaction(txid, provider.connection)
 
