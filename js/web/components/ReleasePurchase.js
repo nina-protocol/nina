@@ -90,6 +90,7 @@ const ReleasePurchase = (props) => {
   const [showWalletModal, setShowWalletModal] = useState(false)
   const [coinflowPurchasePending, setCoinflowPurchasePending] = useState(false)
   const [showUnverifiedModal, setShowUnverifiedModal] = useState(false)
+  const [verificationError, setVerificationError] = useState('')
 
   const txPending = useMemo(
     () => releasePurchaseTransactionPending[releasePubkey],
@@ -214,6 +215,7 @@ const ReleasePurchase = (props) => {
   const showCompletedTransaction = (result) => {
     if (result.msg.indexOf('Unauthorized') > -1) {
       setShowUnverifiedModal(true)
+      setVerificationError(result.msg)
     }
     enqueueSnackbar(result.msg, {
       variant: result.success ? 'success' : 'warn',
@@ -426,6 +428,7 @@ const ReleasePurchase = (props) => {
       <UnverifiedModal
         open={showUnverifiedModal}
         setOpen={setShowUnverifiedModal}
+        error={verificationError}
       />
     </Box>
   )

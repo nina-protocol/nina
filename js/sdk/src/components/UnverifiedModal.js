@@ -8,11 +8,10 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Link from 'next/link'
 
-const UnverifiedModal = ({ open, setOpen }) => {
+const UnverifiedModal = ({ open, setOpen, error }) => {
   const handleClose = () => {
     setOpen(false)
   }
-
   return (
     <Root>
       <StyledModal
@@ -34,7 +33,7 @@ const UnverifiedModal = ({ open, setOpen }) => {
               id="transition-modal-title"
               gutterBottom
             >
-              Please connect your Soundcloud account to collect free releases
+              {error}
             </Typography>
             <Button
               style={{ marginTop: '15px' }}
