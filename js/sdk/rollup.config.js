@@ -62,6 +62,7 @@ export default [
       CoinflowModal: 'src/components/CoinflowModal.js',
       PurchaseModal: 'src/components/PurchaseModal.js',
       CoinflowWithdrawModal: 'src/components/CoinflowWithdrawModal.js',
+      UnverifiedModal: 'src/components/UnverifiedModal.js',
     },
     output: [
       {
