@@ -5584,6 +5584,7 @@ describe('Hub', async () => {
       slug,
       uri, {
         accounts: {
+          payer: provider.wallet.publicKey,
           author: provider.wallet.publicKey,
           hub,
           post,
@@ -5650,6 +5651,7 @@ describe('Hub', async () => {
           slug,
           uri, {
             accounts: {
+              payer: provider.wallet.publicKey,
               author: provider.wallet.publicKey,
               hub,
               post,

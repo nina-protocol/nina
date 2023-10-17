@@ -79,7 +79,7 @@ pub fn handler (
     let release = &ctx.accounts.reference_release;
 
     Post::post_init_helper(
-        &mut ctx.accounts.author,
+        ctx.accounts.author.key(),
         ctx.accounts.hub.clone(),
         &mut ctx.accounts.post,
         &mut ctx.accounts.hub_post,
