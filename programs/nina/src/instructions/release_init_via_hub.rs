@@ -9,7 +9,6 @@ use crate::state::*;
     _config: ReleaseConfig,
     _bumps: ReleaseBumps,
     _metadata_data: ReleaseMetadataData,
-    hub_handle: String
 )]
 pub struct ReleaseInitializeViaHub<'info> {
     #[account(mut)]
@@ -35,10 +34,6 @@ pub struct ReleaseInitializeViaHub<'info> {
         constraint = hub_collaborator.collaborator == authority.key(),
     )]
     pub hub_collaborator: Account<'info, HubCollaborator>,
-    #[account(
-        seeds = [b"nina-hub".as_ref(), hub_handle.as_bytes()],
-        bump,    
-    )]
     pub hub: AccountLoader<'info, Hub>,
     #[account(
         init,
@@ -91,6 +86,7 @@ pub struct ReleaseInitializeViaHub<'info> {
     pub rent: Sysvar<'info, Rent>,
     /// CHECK: This is safe because we check in the handler that authority === payer 
     /// or that payer is nina operated file-service wallet
+    #[account(mut)]
     pub authority: UncheckedAccount<'info>,
 }
 
@@ -106,11 +102,15 @@ pub fn handler(
             return Err(ErrorCode::ReleaseInitDelegatedPayerMismatch.into());
         }
     }
+    msg!("1");
+
 
     Hub::hub_collaborator_can_add_or_publish_content(
         &mut ctx.accounts.hub_collaborator,
         true
     )?;
+    msg!("2");
+
 
     Release::release_init_handler(
         &ctx.accounts.release,
@@ -125,6 +125,7 @@ pub fn handler(
         config,
         bumps,
     )?;
+    msg!("3");
 
     let hub = ctx.accounts.hub.load()?;
     Release::release_revenue_share_transfer_handler (
@@ -138,12 +139,14 @@ pub fn handler(
         hub.publish_fee,
         true,
     )?;
+    msg!("4");
+
 
     Release::create_metadata_handler(
         ctx.accounts.release_signer.to_account_info().clone(),
         ctx.accounts.metadata.to_account_info().clone(),
         ctx.accounts.release_mint.clone(),
-        ctx.accounts.authority.clone(),
+        ctx.accounts.payer.clone(),
         ctx.accounts.metadata_program.to_account_info().clone(),
         ctx.accounts.token_program.clone(),
         ctx.accounts.system_program.clone(),
@@ -152,6 +155,8 @@ pub fn handler(
         metadata_data.clone(),
         bumps,
     )?;
+    msg!("5");
+
 
     Hub::hub_release_create_handler(
         ctx.accounts.hub.clone(),
@@ -162,6 +167,8 @@ pub fn handler(
         true,
         None,
     )?;
+    msg!("6");
+
 
     Ok(())
 }
