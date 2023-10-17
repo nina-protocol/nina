@@ -23,16 +23,6 @@ pub mod nina {
         instructions::release_init::handler(ctx, config, bumps, metadata_data)
     }
 
-    #[deprecated(since="0.2.14", note="please use `release_init` instead")]
-    pub fn release_init_with_credit(
-        ctx: Context<ReleaseInitializeWithCredit>,
-        config: ReleaseConfig,
-        bumps: ReleaseBumps,
-        metadata_data: ReleaseMetadataData
-    ) -> Result<()> {
-        instructions::release_init_with_credit::handler(ctx, config, bumps, metadata_data)
-    }
-
     pub fn release_init_via_hub(
         ctx: Context<ReleaseInitializeViaHub>,
         config: ReleaseConfig,
@@ -41,6 +31,15 @@ pub mod nina {
         hub_handle: String,
     ) -> Result<()> {
         instructions::release_init_via_hub::handler(ctx, config, bumps, metadata_data, hub_handle)
+    }
+
+    pub fn release_init_via_hub_v0(
+        ctx: Context<ReleaseInitializeViaHubV0>,
+        config: ReleaseConfig,
+        bumps: ReleaseBumps,
+        metadata_data: ReleaseMetadataData,
+    ) -> Result<()> {
+        instructions::release_init_via_hub_v0::handler(ctx, config, bumps, metadata_data)
     }
 
     pub fn release_purchase(
@@ -178,14 +177,6 @@ pub mod nina {
         params: HubInitParams,
     ) -> Result<()> {
         instructions::hub_init::handler(ctx, params)
-    }
-
-    #[deprecated(since="0.2.14", note="please use `hub_init` instead")]
-    pub fn hub_init_with_credit(
-        ctx: Context<HubInitWithCredit>,
-        params: HubInitParams,
-    ) -> Result<()> {
-        instructions::hub_init_with_credit::handler(ctx, params)
     }
 
     pub fn hub_add_collaborator(

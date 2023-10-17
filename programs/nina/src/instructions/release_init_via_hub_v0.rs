@@ -9,9 +9,8 @@ use crate::state::*;
     _config: ReleaseConfig,
     _bumps: ReleaseBumps,
     _metadata_data: ReleaseMetadataData,
-    hub_handle: String
 )]
-pub struct ReleaseInitializeViaHub<'info> {
+pub struct ReleaseInitializeViaHubV0<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
     #[account(
@@ -35,10 +34,6 @@ pub struct ReleaseInitializeViaHub<'info> {
         constraint = hub_collaborator.collaborator == authority.key(),
     )]
     pub hub_collaborator: Account<'info, HubCollaborator>,
-    #[account(
-        seeds = [b"nina-hub".as_ref(), hub_handle.as_bytes()],
-        bump,    
-    )]
     pub hub: AccountLoader<'info, Hub>,
     #[account(
         init,
@@ -91,15 +86,15 @@ pub struct ReleaseInitializeViaHub<'info> {
     pub rent: Sysvar<'info, Rent>,
     /// CHECK: This is safe because we check in the handler that authority === payer 
     /// or that payer is nina operated file-service wallet
+    #[account(mut)]
     pub authority: UncheckedAccount<'info>,
 }
 
 pub fn handler(
-    ctx: Context<ReleaseInitializeViaHub>,
+    ctx: Context<ReleaseInitializeViaHubV0>,
     config: ReleaseConfig,
     bumps: ReleaseBumps,
     metadata_data: ReleaseMetadataData,
-    _hub_handle: String,
 ) -> Result<()> {
     if ctx.accounts.payer.key() != ctx.accounts.authority.key() {
         if ctx.accounts.payer.key() != file_service_account::ID {
