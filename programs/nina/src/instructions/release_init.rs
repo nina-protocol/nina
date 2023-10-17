@@ -79,7 +79,7 @@ pub fn handler(
         ctx.accounts.release_signer.to_account_info().clone(),
         ctx.accounts.metadata.to_account_info().clone(),
         ctx.accounts.release_mint.clone(),
-        ctx.accounts.authority.clone(),
+        ctx.accounts.payer.clone(),
         ctx.accounts.metadata_program.to_account_info().clone(),
         ctx.accounts.token_program.clone(),
         ctx.accounts.system_program.clone(),
