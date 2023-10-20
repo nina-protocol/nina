@@ -1,4 +1,4 @@
-import * as anchor from '@project-serum/anchor'
+import * as anchor from '@coral-xyz/anchor'
 import { findOrCreateAssociatedTokenAccount } from './web3'
 
 import { decodeNonEncryptedByteArray } from './encrypt'
