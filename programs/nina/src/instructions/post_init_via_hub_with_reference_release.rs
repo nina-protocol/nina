@@ -12,7 +12,7 @@ pub struct PostInitViaHubWithReferenceRelease<'info> {
     #[account(mut)]
     pub author: Signer<'info>,
     #[account(
-        seeds = [b"nina-hub".as_ref(), hub_handle.as_bytes()],
+        seeds = [b"nina-hub".as_ref(), hub_handle.as_ref()],
         bump,
     )]
     pub hub: AccountLoader<'info, Hub>,
