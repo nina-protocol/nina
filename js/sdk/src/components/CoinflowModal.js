@@ -16,7 +16,7 @@ import {
   faCcVisa,
   faCcDiscover,
   faCcApplePay,
-  faGooglePay
+  faGooglePay,
 } from '@fortawesome/free-brands-svg-icons'
 
 const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
@@ -77,8 +77,14 @@ const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
               icon={faCcDiscover}
               style={{ paddingRight: '8px' }}
             />
-            <FontAwesomeIcon icon={faCcApplePay} style={{ paddingRight: '8px' }} />
-            <FontAwesomeIcon icon={faGooglePay} style={{ paddingRight: '8px' }} />
+            <FontAwesomeIcon
+              icon={faCcApplePay}
+              style={{ paddingRight: '8px' }}
+            />
+            <FontAwesomeIcon
+              icon={faGooglePay}
+              style={{ paddingRight: '8px' }}
+            />
           </StyledCcContainter>
         </Button>
 
