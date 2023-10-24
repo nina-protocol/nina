@@ -14,8 +14,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { logEvent } from '../utils/event'
 import {
   faCcVisa,
-  faCcMastercard,
-  faCcAmex,
   faCcDiscover,
   faCcApplePay,
   faGooglePay
