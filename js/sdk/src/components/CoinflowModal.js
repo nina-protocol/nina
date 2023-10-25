@@ -14,9 +14,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { logEvent } from '../utils/event'
 import {
   faCcVisa,
-  faCcMastercard,
-  faCcAmex,
   faCcDiscover,
+  faCcApplePay,
+  faGooglePay,
 } from '@fortawesome/free-brands-svg-icons'
 
 const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
@@ -77,9 +77,12 @@ const CoinflowModal = ({ release, releasePubkey, onSuccess }) => {
               icon={faCcDiscover}
               style={{ paddingRight: '8px' }}
             />
-            <FontAwesomeIcon icon={faCcAmex} style={{ paddingRight: '8px' }} />
             <FontAwesomeIcon
-              icon={faCcMastercard}
+              icon={faCcApplePay}
+              style={{ paddingRight: '8px' }}
+            />
+            <FontAwesomeIcon
+              icon={faGooglePay}
               style={{ paddingRight: '8px' }}
             />
           </StyledCcContainter>
