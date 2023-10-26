@@ -5,17 +5,13 @@ use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
 #[instruction(
-    hub_handle: String,
+    _hub_handle: String,
     slug: String,
     _uri: String,
 )]
 pub struct PostInitViaHub<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
-    #[account(
-        seeds = [b"nina-hub".as_ref(), hub_handle.as_bytes()],
-        bump,
-    )]
     pub hub: AccountLoader<'info, Hub>,
     #[account(
         init,
