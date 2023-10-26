@@ -2,9 +2,13 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
 use solana_program::program_option::COption;
 use crate::state::*;
+use crate::utils::{file_service_account};
+use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
 pub struct ReleaseCloseEdition<'info> {
+    #[account(mut)]
+    pub payer: Signer<'info>,
     #[account(mut)]
     pub authority: Signer<'info>,
     #[account(
@@ -29,6 +33,12 @@ pub struct ReleaseCloseEdition<'info> {
 }
 
 pub fn handler(ctx: Context<ReleaseCloseEdition>) -> Result<()> {
+    if ctx.accounts.payer.key() != ctx.accounts.authority.key() {
+        if ctx.accounts.payer.key() != file_service_account::ID {
+            return Err(ErrorCode::ReleaseCloseEditionDelegatePayerMismatch.into());
+        }
+    }
+
     let mut release = ctx.accounts.release.load_mut()?;
     release.total_supply = release.sale_counter;
     release.remaining_supply = 0;

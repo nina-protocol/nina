@@ -1,9 +1,13 @@
 use anchor_lang::prelude::*;
 use crate::state::*;
+use crate::utils::{file_service_account};
+use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
 #[instruction(hub_handle: String)]
 pub struct HubAddRelease<'info> {
+    #[account(mut)]
+    pub payer: Signer<'info>,
     #[account(mut)]
     pub authority: Signer<'info>,
     #[account(
@@ -44,6 +48,12 @@ pub fn handler (
     ctx: Context<HubAddRelease>,
     _hub_handle: String,
 ) -> Result<()> {
+    if ctx.accounts.payer.key() != ctx.accounts.authority.key() {
+        if ctx.accounts.payer.key() != file_service_account::ID {
+            return Err(ErrorCode::HubAddReleaseDelegatedPayerMismatch.into());
+        }
+    }
+
     Hub::hub_collaborator_can_add_or_publish_content(
         &mut ctx.accounts.hub_collaborator,
         false

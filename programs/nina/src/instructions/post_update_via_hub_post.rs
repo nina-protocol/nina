@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 use crate::state::*;
+use crate::utils::{file_service_account};
+use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
 #[instruction(
@@ -8,11 +10,13 @@ use crate::state::*;
     _uri: String,
 )]
 pub struct PostUpdateViaHubPost<'info> {
+    #[account(mut)]
+    pub payer: Signer<'info>,
+    ///CHECK: This is safe bc we check constraints
     #[account(
-        mut,
         constraint = author.key() == post.load()?.author
     )]
-    pub author: Signer<'info>,
+    pub author: UncheckedAccount<'info>,
     #[account(
         seeds = [b"nina-hub".as_ref(), hub_handle.as_bytes()],
         bump,
@@ -43,6 +47,12 @@ pub fn handler (
     _slug: String,
     uri: String,
 ) -> Result<()> {
+    if ctx.accounts.payer.key() != ctx.accounts.author.key() {
+        if ctx.accounts.payer.key() != file_service_account::ID {
+            return Err(ErrorCode::PostUpdateViaHubPostDelegatePayerMismatch.into());
+        }
+    }
+
     let mut post = ctx.accounts.post.load_mut()?;
 
     let mut uri_array = [0u8; 100];

@@ -4,9 +4,13 @@ use solana_program::program_option::COption;
 use mpl_token_metadata::state::DataV2;
 
 use crate::state::*;
+use crate::utils::{file_service_account};
+use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
 pub struct ReleaseUpdateMetadata<'info> {
+    #[account(mut)]
+    pub payer: Signer<'info>,
     #[account(mut)]
     pub authority: Signer<'info>,
     #[account(
@@ -44,6 +48,12 @@ pub fn handler(
     bumps: ReleaseBumps,
     metadata_data: ReleaseMetadataData,
 ) -> Result<()> {
+    if ctx.accounts.payer.key() != ctx.accounts.authority.key() {
+        if ctx.accounts.payer.key() != file_service_account::ID {
+            return Err(ErrorCode::ReleaseUpdateMetadataDelegatePayerMismatch.into());
+        }
+    }
+
     Release::update_metadata_handler(
         ctx.accounts.release_signer.to_account_info().clone(),
         ctx.accounts.metadata.to_account_info().clone(),

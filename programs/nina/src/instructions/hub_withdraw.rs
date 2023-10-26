@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, TokenAccount, Token, Transfer, Mint};
 
+use crate::utils::{file_service_account};
 use crate::state::*;
 use crate::errors::ErrorCode;
 
@@ -10,6 +11,8 @@ use crate::errors::ErrorCode;
     hub_handle: String
 )]
 pub struct HubWithdraw<'info> {
+    #[account(mut)]
+    pub payer: Signer<'info>,
     #[account(mut)]
     pub authority: Signer<'info>,
     #[account(
@@ -47,6 +50,12 @@ pub fn handler(
     amount: u64,
     _hub_handle: String,
 ) -> Result<()> {
+    if ctx.accounts.payer.key() != ctx.accounts.authority.key() {
+        if ctx.accounts.payer.key() != file_service_account::ID {
+            return Err(ErrorCode::HubWithdrawDelegatedPayerMismatch.into());
+        }
+    }
+
     if ctx.accounts.withdraw_target.amount < amount {
         return Err(error!(ErrorCode::HubWithdrawAmountTooHigh));
     }

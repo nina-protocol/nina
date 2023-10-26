@@ -3,11 +3,16 @@ use anchor_lang::solana_program::{
     program_option::{COption},
 };
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
+use crate::utils::{file_service_account};
+use crate::errors::ErrorCode;
 
 use crate::state::*;
 
 #[derive(Accounts)]
 pub struct ReleaseRevenueShareCollect<'info> {
+    #[account(mut)]
+    pub payer: Signer<'info>,
+    #[account(mut)]
     pub authority: Signer<'info>,
     #[account(
         mut,
@@ -47,6 +52,11 @@ pub struct ReleaseRevenueShareCollect<'info> {
 pub fn handler(
     ctx: Context<ReleaseRevenueShareCollect>,
 ) -> Result<()> {
+    if ctx.accounts.payer.key() != ctx.accounts.authority.key() {
+        if ctx.accounts.payer.key() != file_service_account::ID {
+            return Err(ErrorCode::ReleaseRevenueShareCollectDelegatePayerMismatch.into());
+        }
+    }
 
     Release::release_revenue_share_collect_handler(
         &ctx.accounts.release,

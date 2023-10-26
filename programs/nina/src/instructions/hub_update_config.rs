@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 use crate::state::*;
+use crate::utils::{file_service_account};
+use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
 #[instruction(
@@ -9,6 +11,8 @@ use crate::state::*;
     _referral_fee: u64,
 )]
 pub struct HubUpdateConfig<'info> {
+    #[account(mut)]
+    pub payer: Signer<'info>,
     #[account(mut)]
     pub authority: Signer<'info>,
     #[account(
@@ -27,6 +31,12 @@ pub fn handler (
     publish_fee: u64,
     referral_fee: u64,
 ) -> Result<()> {
+    if ctx.accounts.payer.key() != ctx.accounts.authority.key() {
+        if ctx.accounts.payer.key() != file_service_account::ID {
+            return Err(ErrorCode::HubUpdateConfigDelegatePayerMismatch.into());
+        }
+    }
+
     Hub::check_hub_fees(
         publish_fee,
         referral_fee

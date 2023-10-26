@@ -62,7 +62,7 @@ pub fn handler (
 ) -> Result<()> {
     if ctx.accounts.payer.key() != ctx.accounts.author.key() {
         if ctx.accounts.payer.key() != file_service_account::ID {
-            return Err(ErrorCode::ReleaseInitDelegatedPayerMismatch.into());
+            return Err(ErrorCode::PostInitViaHubDelegatePayerMismatch.into());
         }
     }
 
