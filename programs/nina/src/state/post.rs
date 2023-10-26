@@ -14,7 +14,7 @@ pub struct Post {
 
 impl Post {
     pub fn post_init_helper<'info> (
-        author: &mut Signer<'info>,
+        author: Pubkey,
         hub: AccountLoader<'info, Hub>,
         post_account_loader: &mut AccountLoader<'info, Post>,
         hub_post_account_loader: &mut AccountLoader<'info, HubPost>,
@@ -30,7 +30,7 @@ impl Post {
        )?;
     
         let mut post = post_account_loader.load_init()?;
-        post.author = author.key();
+        post.author = author;
         post.created_at = Clock::get()?.unix_timestamp;
         post.updated_at = post.created_at;
     
@@ -43,10 +43,10 @@ impl Post {
         post.uri = uri_array;
     
         let hub_content = hub_content_account;
-        hub_content.added_by = author.key();
+        hub_content.added_by = author;
         hub_content.hub = hub.key();
         hub_content.child = hub_post_account_loader.key();
-        hub_content.content_type = HubContentType::Post;
+        hub_content.content_type = HubContentType::PostV2;
         hub_content.datetime = post.created_at;
         hub_content.visible = true;
         hub_content.published_through_hub = true;
