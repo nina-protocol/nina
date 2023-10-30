@@ -107,6 +107,16 @@ const walletContextHelper = ({
     const isLoggedIn = await magic.user.isLoggedIn()
     if (isLoggedIn) {
       const user = await magic.user.getMetadata()
+      if (user) {
+        try {
+          await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/login`, {
+            issuer: user.issuer,
+            publicKey: user.publicAddress,
+          })
+        } catch (error) {
+          console.error(error)
+        }
+      }
       const wallet = {
         connected: true,
         connecting: false,
