@@ -3757,6 +3757,7 @@ describe('Hub', async () => {
     await nina.rpc.hubInit(
       hubParams, {
         accounts: {
+          payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           hub,
           hubSigner,
@@ -3819,6 +3820,7 @@ describe('Hub', async () => {
     await nina.rpc.hubInit(
       hubParams, {
         accounts: {
+          payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           hub,
           hubSigner,
