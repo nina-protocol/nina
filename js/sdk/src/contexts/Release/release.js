@@ -835,6 +835,7 @@ const releaseContextHelper = ({
     try {
       const tx = await program.transaction.releaseCloseEdition({
         accounts: {
+          payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           release: new anchor.web3.PublicKey(releasePubkey),
           releaseSigner: release.releaseSigner,
@@ -967,6 +968,7 @@ const releaseContextHelper = ({
 
       const request = {
         accounts: {
+          payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           authorityTokenAccount,
           release: new anchor.web3.PublicKey(releasePubkey),
@@ -1045,6 +1047,7 @@ const releaseContextHelper = ({
 
       const request = {
         accounts: {
+          payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           authorityTokenAccount,
           release: releasePublicKey,

@@ -232,6 +232,7 @@ const hubContextHelper = ({
       const tx = await program.methods
         .hubInit(hubParams)
         .accounts({
+          payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           hub,
           hubSigner,
@@ -287,6 +288,7 @@ const hubContextHelper = ({
         new anchor.BN(referralFee * 10000),
         {
           accounts: {
+            payer: provider.wallet.publicKey,
             authority: provider.wallet.publicKey,
             hub: new anchor.web3.PublicKey(hubPubkey),
           },
@@ -356,6 +358,7 @@ const hubContextHelper = ({
         hub.handle,
         {
           accounts: {
+            payer: provider.wallet.publicKey,
             authority: provider.wallet.publicKey,
             authorityHubCollaborator,
             hub: hubPubkey,
@@ -433,6 +436,7 @@ const hubContextHelper = ({
         hub.handle,
         {
           accounts: {
+            payer: provider.wallet.publicKey,
             authority: provider.wallet.publicKey,
             authorityHubCollaborator,
             hub: hubPubkey,
@@ -508,6 +512,7 @@ const hubContextHelper = ({
 
       const request = {
         accounts: {
+          payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           hub: hubPubkey,
           hubRelease,
@@ -588,6 +593,7 @@ const hubContextHelper = ({
 
       const tx = await program.transaction.hubRemoveCollaborator(hub.handle, {
         accounts: {
+          payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           hub: hubPubkey,
           hubCollaborator,
@@ -743,6 +749,7 @@ const hubContextHelper = ({
         hub.handle,
         {
           accounts: {
+            payer: provider.wallet.publicKey,
             authority: provider.wallet.publicKey,
             hub: hubPubkey,
             hubSigner,
@@ -827,6 +834,7 @@ const hubContextHelper = ({
       const params = [handle, slugHash, uri]
       const request = {
         accounts: {
+          payer: provider.wallet.publicKey,
           author: provider.wallet.publicKey,
           hub: hubPubkey,
           post,
@@ -949,6 +957,7 @@ const hubContextHelper = ({
         uri,
         {
           accounts: {
+            payer: provider.wallet.publicKey,
             author: provider.wallet.publicKey,
             hub: hubPubkey,
             post,
@@ -1010,6 +1019,7 @@ const hubContextHelper = ({
 
       const request = {
         accounts: {
+          payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           royaltyTokenAccount: release.royaltyTokenAccount,
           release: releasePubkey,

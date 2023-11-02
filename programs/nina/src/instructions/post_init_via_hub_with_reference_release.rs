@@ -12,7 +12,7 @@ pub struct PostInitViaHubWithReferenceRelease<'info> {
     #[account(mut)]
     pub author: Signer<'info>,
     #[account(
-        seeds = [b"nina-hub".as_ref(), hub_handle.as_bytes()],
+        seeds = [b"nina-hub".as_ref(), hub_handle.as_ref()],
         bump,
     )]
     pub hub: AccountLoader<'info, Hub>,
@@ -79,7 +79,7 @@ pub fn handler (
     let release = &ctx.accounts.reference_release;
 
     Post::post_init_helper(
-        &mut ctx.accounts.author,
+        ctx.accounts.author.key(),
         ctx.accounts.hub.clone(),
         &mut ctx.accounts.post,
         &mut ctx.accounts.hub_post,

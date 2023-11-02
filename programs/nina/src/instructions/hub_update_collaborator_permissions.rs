@@ -2,6 +2,7 @@ use anchor_lang::prelude::*;
 
 use crate::state::*;
 use crate::errors::ErrorCode;
+use crate::utils::{file_service_account};
 
 #[derive(Accounts)]
 #[instruction(
@@ -11,6 +12,8 @@ use crate::errors::ErrorCode;
     hub_handle: String,
 )]
 pub struct HubUpdateCollaboratorPermissions<'info> {
+    #[account(mut)]
+    pub payer: Signer<'info>,
     #[account(mut)]
     pub authority: Signer<'info>,
     #[account(
@@ -40,6 +43,12 @@ pub fn handler (
     allowance: i8,
     _hub_handle: String,
 ) -> Result<()> {  
+    if ctx.accounts.payer.key() != ctx.accounts.authority.key() {
+        if ctx.accounts.payer.key() != file_service_account::ID {
+            return Err(ErrorCode::HubUpdateCollaboratorPermissionsDelegatePayerMismatch.into());
+        }
+    }
+
     if ctx.accounts.authority.key() != ctx.accounts.hub.load()?.authority {
       return Err(error!(ErrorCode::HubCollaboratorCannotUpdateHubCollaboratorUnauthorized))
     }

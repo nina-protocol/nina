@@ -77,5 +77,31 @@ pub enum ErrorCode {
     #[msg("Subscription Delegated Payer Mismatch")]
     SubscriptionDelegatedPayerMismatch,
     #[msg("Release Init Delegated Payer Mismatch")]
-    ReleaseInitDelegatedPayerMismatch
+    ReleaseInitDelegatedPayerMismatch,
+    #[msg("Hub Add Collaborator Delegated Payer Mismatch")]
+    HubAddCollaboratorDelegatedPayerMismatch,
+    #[msg("Hub Remove Collaborator Delegated Payer Mismatch")]
+    HubRemoveCollaboratorDelegatedPayerMismatch,
+    #[msg("Hub Add Release Delegated Payer Mismatch")]
+    HubAddReleaseDelegatedPayerMismatch,
+    #[msg("HubContentToggleVisibility Delegated Payer Mismatch")]
+    HubContentToggleVisibilityDelegatedPayerMismatch,
+    #[msg("Hub Withdraw Delegated Payer Mismatch")]
+    HubWithdrawDelegatedPayerMismatch,
+    #[msg("Release Revenue Share Collect Delegate Payer Mismatch")]
+    ReleaseRevenueShareCollectDelegatePayerMismatch,
+    #[msg("Hub Update Collaborator Permissions Delegated Payer Mismatch")]
+    HubUpdateCollaboratorPermissionsDelegatePayerMismatch,
+    #[msg("Hub Update Config Delegated Payer Mismatch")]
+    HubUpdateConfigDelegatePayerMismatch,
+    #[msg("Release Close Edition Delegated Payer Mismatch")]
+    ReleaseCloseEditionDelegatePayerMismatch,
+    #[msg("Release Revenue Share Transfer Delegate Payer Mismatch")]
+    ReleaseRevenueShareTransferDelegatePayerMismatch,
+    #[msg("Release Update Metadata Delegated Payer Mismatch")]
+    ReleaseUpdateMetadataDelegatePayerMismatch,
+    #[msg("Post Update Via Hub Delegated Payer Mismatch")]
+    PostUpdateViaHubPostDelegatePayerMismatch,
+    #[msg("Post Init Via Hub Delegated Payer Mismatch")]
+    PostInitViaHubDelegatePayerMismatch
 }

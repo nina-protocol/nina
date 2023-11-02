@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
 
 use crate::state::*;
+use crate::utils::{file_service_account};
 use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
@@ -11,6 +12,8 @@ use crate::errors::ErrorCode;
     hub_handle: String,
 )]
 pub struct HubAddCollaborator<'info> {
+    #[account(mut)]
+    pub payer: Signer<'info>,
     #[account(mut)]
     pub authority: Signer<'info>,
     #[account(
@@ -44,6 +47,12 @@ pub fn handler (
     allowance: i8,
     _hub_handle: String,
 ) -> Result<()> {
+    if ctx.accounts.payer.key() != ctx.accounts.authority.key() {
+        if ctx.accounts.payer.key() != file_service_account::ID {
+            return Err(ErrorCode::HubAddCollaboratorDelegatedPayerMismatch.into());
+        }
+    }
+
     let authority_hub_collaborator = &ctx.accounts.authority_hub_collaborator;
 
     if !authority_hub_collaborator.can_add_collaborator {

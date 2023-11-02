@@ -6,6 +6,7 @@ import {
 import { Magic } from 'magic-sdk'
 import { SolanaExtension } from '@magic-ext/solana'
 import * as anchor from '@coral-xyz/anchor'
+import axios from 'axios'
 
 const WalletContext = createContext()
 const WalletContextProvider = ({ children }) => {
@@ -106,7 +107,17 @@ const walletContextHelper = ({
   const connectMagicWallet = async (magic) => {
     const isLoggedIn = await magic.user.isLoggedIn()
     if (isLoggedIn) {
-      const user = await magic.user.getMetadata()
+      const user = await magic.user.getInfo()
+      if (user) {
+        try {
+          await axios.post(`${process.env.NINA_IDENTITY_ENDPOINT}/login`, {
+            issuer: user.issuer,
+            publicKey: user.publicAddress,
+          })
+        } catch (error) {
+          console.error(error)
+        }
+      }
       const wallet = {
         connected: true,
         connecting: false,

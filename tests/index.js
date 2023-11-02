@@ -517,6 +517,7 @@ describe('Release', async () => {
       bumps,
       metadataData, {
         accounts: {
+          payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           release,
           releaseSigner,
@@ -545,6 +546,7 @@ describe('Release', async () => {
           bumps,
           metadataData, {
             accounts: {
+              payer: user1.publicKey,
               authority: user1.publicKey,
               release,
               releaseSigner,
@@ -1323,6 +1325,7 @@ describe('Release', async () => {
 
     await nina.rpc.releaseCloseEdition({
       accounts: {
+        payer: provider.wallet.publicKey,
         authority: provider.wallet.publicKey,
         release: releaseSellOut,
         releaseSigner: releaseSignerSellOut,
@@ -1506,6 +1509,7 @@ describe("Revenue Share", async () => {
 
     await nina.rpc.releaseRevenueShareCollect({
       accounts: {
+        payer: provider.wallet.publicKey,
         authority: provider.wallet.publicKey,
         authorityTokenAccount: usdcTokenAccount,
         release,
@@ -1544,6 +1548,7 @@ describe("Revenue Share", async () => {
       async () => {
         await nina.rpc.releaseRevenueShareCollect({
           accounts: {
+            payer: user1.publicKey,
             authority: user1.publicKey,
             authorityTokenAccount: user1UsdcTokenAccount,
             release,
@@ -1575,6 +1580,7 @@ describe("Revenue Share", async () => {
 
     await nina.rpc.releaseRevenueShareCollect({
       accounts: {
+        payer: provider.wallet.publicKey,
         authority: provider.wallet.publicKey,
         authorityTokenAccount: wrappedSolTokenAccount,
         release: release2,
@@ -1625,6 +1631,7 @@ describe("Revenue Share", async () => {
     await nina.rpc.releaseRevenueShareTransfer(
       new anchor.BN(amountToTransfer), {
       accounts: {
+        payer: provider.wallet.publicKey,
         authority: provider.wallet.publicKey,
         authorityTokenAccount: usdcTokenAccount,
         release,
@@ -1667,6 +1674,7 @@ describe("Revenue Share", async () => {
         await nina.rpc.releaseRevenueShareTransfer(
           new anchor.BN(amountToTransfer), {
           accounts: {
+            payer: user3.publicKey,
             authority: user3.publicKey,
             authorityTokenAccount: user3UsdcTokenAccount,
             release,
@@ -1698,6 +1706,7 @@ describe("Revenue Share", async () => {
         await nina.rpc.releaseRevenueShareTransfer(
           new anchor.BN(amountToTransfer), {
           accounts: {
+            payer: provider.wallet.publicKey,
             authority: provider.wallet.publicKey,
             authorityTokenAccount: usdcTokenAccount,
             release,
@@ -1741,6 +1750,7 @@ describe("Revenue Share", async () => {
           await nina.rpc.releaseRevenueShareTransfer(
             new anchor.BN(amountToTransfer), {
             accounts: {
+              payer: provider.wallet.publicKey,
               authority: provider.wallet.publicKey,
               authorityTokenAccount: usdcTokenAccount,
               release,
@@ -1773,6 +1783,7 @@ describe("Revenue Share", async () => {
     await nina.rpc.releaseRevenueShareTransfer(
       new anchor.BN(amountToTransfer), {
       accounts: {
+        payer: provider.wallet.publicKey,
         authority: provider.wallet.publicKey,
         authorityTokenAccount: usdcTokenAccount,
         release,
@@ -3863,6 +3874,7 @@ describe('Hub', async () => {
       new anchor.BN(10),
       hubParams.handle, {
       accounts: {
+        payer: provider.wallet.publicKey,
         authority: provider.wallet.publicKey,
         authorityHubCollaborator,
         hub,
@@ -3885,6 +3897,7 @@ describe('Hub', async () => {
       new anchor.BN(5),
       hubParams.handle, {
       accounts: {
+        payer: provider.wallet.publicKey,
         authority: provider.wallet.publicKey,
         authorityHubCollaborator,
         hub,
@@ -3928,6 +3941,7 @@ describe('Hub', async () => {
       new anchor.BN(10),
       hubParams.handle, {
         accounts: {
+          payer: user1.publicKey,
           authority: user1.publicKey,
           authorityHubCollaborator,
           hub,
@@ -4026,6 +4040,7 @@ describe('Hub', async () => {
         await nina.rpc.hubAddRelease(
           hubParams.handle, {
           accounts: {
+            payer: user1.publicKey,
             authority: user1.publicKey,
             hub,
             hubRelease,
@@ -4070,6 +4085,7 @@ describe('Hub', async () => {
           new anchor.BN(10),
           hubParams.handle, {
           accounts: {
+            payer: user2.publicKey,
             authority: user2.publicKey,
             authorityHubCollaborator,
             hub,
@@ -4567,6 +4583,7 @@ describe('Hub', async () => {
       hubParams.publishFee,
       hubParams.referralFee, {
         accounts: {
+          payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           hub,
         }
@@ -4586,6 +4603,7 @@ describe('Hub', async () => {
           hubParams.publishFee,
           new anchor.BN(1000001), {
             accounts: {
+              payer: provider.wallet.publicKey,
               authority: provider.wallet.publicKey,
               hub,
             }
@@ -4608,6 +4626,7 @@ describe('Hub', async () => {
           new anchor.BN(1000001),
           hubParams.referralFee, {
             accounts: {
+              payer: provider.wallet.publicKey,
               authority: provider.wallet.publicKey,
               hub,
             }
@@ -4630,6 +4649,7 @@ describe('Hub', async () => {
           hubParams.publishFee,
           hubParams.referralFee, {
             accounts: {
+              payer: user2.publicKey,
               authority: user2.publicKey,
               hub,
             },
@@ -4922,6 +4942,7 @@ describe('Hub', async () => {
         await nina.rpc.hubRemoveCollaborator(
           hubParams.handle, {
           accounts: {
+            payer: user2.publicKey,
             authority: user2.publicKey,
             authorityHubCollaborator,
             hub,
@@ -4963,6 +4984,7 @@ describe('Hub', async () => {
         await nina.rpc.hubRemoveCollaborator(
           hubParams.handle, {
           accounts: {
+            payer: provider.wallet.publicKey,
             authority: provider.wallet.publicKey,
             authorityHubCollaborator,
             hub,
@@ -5000,6 +5022,7 @@ describe('Hub', async () => {
     await nina.rpc.hubRemoveCollaborator(
       hubParams.handle, {
       accounts: {
+        payer: user1.publicKey,
         authority: user1.publicKey,
         authorityHubCollaborator,
         hub,
@@ -5038,6 +5061,7 @@ describe('Hub', async () => {
         await nina.rpc.hubContentToggleVisibility(
           hubParams.handle, {
           accounts: {
+            payer: user2.publicKey,
             authority: user2.publicKey,
             hub,
             hubContent,
@@ -5079,6 +5103,7 @@ describe('Hub', async () => {
       new anchor.BN(10),
       hubParams.handle, {
         accounts: {
+          payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           authorityHubCollaborator,
           hub,
@@ -5093,6 +5118,7 @@ describe('Hub', async () => {
     await nina.rpc.hubRemoveCollaborator(
       hubParams.handle, {
       accounts: {
+        payer: provider.wallet.publicKey,
         authority: provider.wallet.publicKey,
         hub,
         hubCollaborator,
@@ -5139,6 +5165,7 @@ describe('Hub', async () => {
     await nina.rpc.hubAddRelease(
       hubParams.handle, {
         accounts: {
+          payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           hub,
           hubRelease,
@@ -5154,6 +5181,7 @@ describe('Hub', async () => {
     await nina.rpc.hubContentToggleVisibility(
       hubParams.handle, {
       accounts: {
+        payer: provider.wallet.publicKey,
         authority: provider.wallet.publicKey,
         hub,
         hubContent,
@@ -5171,6 +5199,7 @@ describe('Hub', async () => {
         await nina.rpc.releaseRevenueShareCollectViaHub(
           hubParams.handle, {
           accounts: {
+            payer: user2.publicKey,
             authority: user2.publicKey,
             royaltyTokenAccount: hubRoyaltyTokenAccount,
             release:releaseAccount,
@@ -5209,6 +5238,7 @@ describe('Hub', async () => {
     await nina.rpc.releaseRevenueShareCollectViaHub(
       hubParams.handle, {
       accounts: {
+        payer: provider.wallet.publicKey,
         authority: provider.wallet.publicKey,
         royaltyTokenAccount: hubRoyaltyTokenAccount,
         release:releaseAccount,
@@ -5278,6 +5308,7 @@ describe('Hub', async () => {
       new anchor.BN(withdrawAmount),
       hubParams.handle, {
         accounts: {
+          payer: provider.wallet.publicKey,
           authority: provider.wallet.publicKey,
           hub,
           hubSigner,
@@ -5349,6 +5380,7 @@ describe('Hub', async () => {
       slug,
       uri, {
         accounts: {
+          payer: provider.wallet.publicKey,
           author: provider.wallet.publicKey,
           hub,
           post,
@@ -5415,6 +5447,7 @@ describe('Hub', async () => {
           slug,
           uri, {
             accounts: {
+              payer: provider.wallet.publicKey,
               author: provider.wallet.publicKey,
               hub,
               post,
@@ -5441,6 +5474,7 @@ describe('Hub', async () => {
       slug,
       updatedUri, {
         accounts: {
+          payer: provider.wallet.publicKey,
           author: provider.wallet.publicKey,
           hub,
           post,
@@ -5465,6 +5499,7 @@ describe('Hub', async () => {
           slug,
           updatedUri, {
             accounts: {
+              payer: user1.publicKey,
               author: user1.publicKey,
               hub,
               post,

@@ -97,6 +97,7 @@ pub struct HubRelease {
 pub enum HubContentType {
 	NinaReleaseV1 = 0,
 	Post = 1,
+	PostV2 = 2
 }
 
 impl Default for HubContentType {

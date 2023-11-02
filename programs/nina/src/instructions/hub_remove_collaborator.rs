@@ -2,10 +2,13 @@ use anchor_lang::prelude::*;
 
 use crate::state::*;
 use crate::errors::ErrorCode;
+use crate::utils::{file_service_account};
 
 #[derive(Accounts)]
 #[instruction(hub_handle: String)]
 pub struct HubRemoveCollaborator<'info> {
+    #[account(mut)]
+    pub payer: Signer<'info>,
     #[account(mut)]
     pub authority: Signer<'info>,
     #[account(
@@ -32,6 +35,12 @@ pub fn handler (
     ctx: Context<HubRemoveCollaborator>,
     _hub_handle: String,
 ) -> Result<()> {
+    if ctx.accounts.payer.key() != ctx.accounts.authority.key() {
+        if ctx.accounts.payer.key() != file_service_account::ID {
+            return Err(ErrorCode::HubRemoveCollaboratorDelegatedPayerMismatch.into());
+        }
+    }
+
     let hub = ctx.accounts.hub.load()?;
     
     // Only authority of hub and collaborator in the HubCollaborator account can remove the account
