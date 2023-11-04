@@ -103,5 +103,7 @@ pub enum ErrorCode {
     #[msg("Post Update Via Hub Delegated Payer Mismatch")]
     PostUpdateViaHubPostDelegatePayerMismatch,
     #[msg("Post Init Via Hub Delegated Payer Mismatch")]
-    PostInitViaHubDelegatePayerMismatch
+    PostInitViaHubDelegatePayerMismatch,
+    #[msg("Hub Init Delegated Payer Mismatch")]
+    HubInitDelegatePayerMismatch,
 }

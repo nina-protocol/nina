@@ -56,7 +56,7 @@ const HubsModal = (props) => {
         >
           <StyledPaper>
             <Header>
-              <Typography fontWeight="700">{`Hubs featuring: ${metadata.properties.artist.substring(
+              <Typography fontWeight="700">{`Hubs featuring: ${metadata.properties.artist?.substring(
                 0,
                 100
               )} - "${metadata.properties.title.substring(

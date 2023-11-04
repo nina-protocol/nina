@@ -1,18 +1,22 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Token};
 use crate::state::*;
-use crate::utils::{wrapped_sol};
+use crate::utils::{wrapped_sol,file_service_account};
+use crate::errors::ErrorCode;
 
 #[derive(Accounts)]
 #[instruction(params: HubInitParams)]
 pub struct HubInit<'info> {
     #[account(mut)]
-    pub authority: Signer<'info>,
+    pub payer: Signer<'info>,
+    /// CHECK: This is safe because we check in the handler that authority === payer 
+    /// or that payer is nina operated file-service wallet
+    pub authority: UncheckedAccount<'info>,
     #[account(
         init,
         seeds = [b"nina-hub".as_ref(), params.handle.as_bytes()],
         bump,
-        payer = authority,
+        payer = payer,
         space = 337
     )]
     pub hub: AccountLoader<'info, Hub>,
@@ -26,7 +30,7 @@ pub struct HubInit<'info> {
         init,
         seeds = [b"nina-hub-collaborator".as_ref(), hub.key().as_ref(), authority.key().as_ref()],
         bump,
-        payer = authority,
+        payer = payer,
         space = 147,
     )]
     pub hub_collaborator: Account<'info, HubCollaborator>,
@@ -40,6 +44,12 @@ pub fn handler (
     ctx: Context<HubInit>,
     params: HubInitParams,
 ) -> Result<()> {
+    if ctx.accounts.payer.key() != ctx.accounts.authority.key() {
+        if ctx.accounts.payer.key() != file_service_account::ID {
+            return Err(ErrorCode::HubInitDelegatePayerMismatch.into());
+        }
+    }
+
     Hub::check_hub_fees(
         params.publish_fee,
         params.referral_fee
