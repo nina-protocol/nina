@@ -296,7 +296,7 @@ const audioPlayerContextHelper = ({
       if (playlistEntry) {
         setPlaylist([...playlist, playlistEntry])
         return {
-          msg: `${playlistEntry.artist.substring(
+          msg: `${playlistEntry.artist?.substring(
             0,
             100
           )} - ${playlistEntry.title.substring(0, 100)} added to queue`,

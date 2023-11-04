@@ -172,8 +172,8 @@ const ReleaseCard = (props) => {
               </Link>
             </Typography>
             <Typography variant="h4" color="white" align="left">
-              {metadata?.properties?.artist.substring(0, 100) ||
-                metadata?.artist.substring(0, 100)}{' '}
+              {metadata?.properties?.artist?.substring(0, 100) ||
+                metadata?.artist?.substring(0, 100)}{' '}
               - <i>{title}</i>
             </Typography>
           </>
@@ -186,7 +186,7 @@ const ReleaseCard = (props) => {
             src={
               artwork?.meta.status === undefined ? '' : artwork.meta.previewUrl
             }
-            alt={metadata.artist}
+            alt={metadata.artist | 'alt'}
             layout="responsive"
             height={350}
             width={350}

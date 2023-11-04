@@ -66,7 +66,7 @@ const CollectorModal = (props) => {
           >
             <StyledPaper>
               <Header>
-                <Typography fontWeight="700">{`${metadata.properties.artist.substring(
+                <Typography fontWeight="700">{`${metadata.properties.artist?.substring(
                   0,
                   100
                 )} - "${metadata.properties.title.substring(
