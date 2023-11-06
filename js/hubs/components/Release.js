@@ -6,16 +6,12 @@ import React, {
   Fragment,
   useMemo,
 } from 'react'
-import axios from 'axios'
 import dynamic from 'next/dynamic'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Hub from '@nina-protocol/nina-internal-sdk/esm/Hub'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Release from '@nina-protocol/nina-internal-sdk/esm/Release'
-import {
-  imageManager,
-  downloadHelper,
-} from '@nina-protocol/nina-internal-sdk/esm/utils'
+import { imageManager } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
@@ -32,8 +28,9 @@ import rehypeSanitize from 'rehype-sanitize'
 import rehypeExternalLinks from 'rehype-external-links'
 import { parseChecker } from '@nina-protocol/nina-internal-sdk/esm/utils'
 import { useSnackbar } from 'notistack'
-import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
+import { downloadManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+const { downloadAs } = downloadManager
 
 const Button = dynamic(() => import('@mui/material/Button'))
 const ReleasePurchase = dynamic(() => import('./ReleasePurchase'))
@@ -42,7 +39,6 @@ const AddToHubModal = dynamic(() =>
 )
 
 const { getImageFromCDN, loader } = imageManager
-const { downloadWithFallback } = downloadHelper
 
 const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const { wallet } = useContext(Wallet.Context)
@@ -61,7 +57,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
   const [userIsRecipient, setUserIsRecipient] = useState(false)
   const [release, setRelease] = useState()
   const [amountHeld, setAmountHeld] = useState(0)
-
   const isAuthority = useMemo(() => {
     if (wallet.connected) {
       return release?.authority === wallet?.publicKey.toBase58()
@@ -145,25 +140,6 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
       setUserIsRecipient(false)
     }
   }, [wallet?.disconnecting])
-
-  const downloadAs = async (url, name) => {
-    logEvent('track_download', 'engagement', {
-      publicKey: releasePubkey,
-      hub: hubPubkey,
-      wallet: wallet?.publicKey?.toBase58(),
-    })
-
-    const success = await downloadWithFallback(url, name)
-    if (success) {
-      enqueueSnackbar('Download complete', {
-        variant: 'success',
-      })
-    } else {
-      enqueueSnackbar('Download failed', {
-        variant: 'error',
-      })
-    }
-  }
 
   return (
     <>
@@ -264,10 +240,13 @@ const ReleaseComponent = ({ metadataSsr, releasePubkey, hubPubkey }) => {
                     onClick={(e) => {
                       e.stopPropagation()
                       downloadAs(
-                        metadata.properties.files[0].uri,
-                        `${metadata.name
-                          .replace(/[^a-z0-9]/gi, '_')
-                          .toLowerCase()}___nina.mp3`
+                        metadata,
+                        releasePubkey,
+                        undefined,
+                        enqueueSnackbar,
+                        wallet.publicKey.toBase58(),
+                        hubPubkey,
+                        false
                       )
                     }}
                   >

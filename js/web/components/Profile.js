@@ -24,6 +24,7 @@ const NewProfileCtas = dynamic(() => import('./NewProfileCtas'))
 const Profile = ({ profilePubkey }) => {
   const { wallet } = useContext(Wallet.Context)
   const router = useRouter()
+  const walletPubkey = wallet?.publicKey?.toBase58()
   const tableContainerRef = useRef(null)
   const {
     getUserCollectionAndPublished,
@@ -47,7 +48,6 @@ const Profile = ({ profilePubkey }) => {
     verificationState,
     displayImageForAccount,
   } = useContext(Nina.Context)
-  const walletPubkey = wallet.publicKey?.toBase58()
 
   const isAdmin = onboardingCodeWhitelist.includes(walletPubkey)
   const [profilePublishedReleases, setProfilePublishedReleases] =
@@ -304,6 +304,8 @@ const Profile = ({ profilePubkey }) => {
                 items={profileCollectionReleases}
                 hasOverflow={true}
                 inCollection={inCollection}
+                profileCollection={profileCollectionReleases}
+                walletAddress={walletPubkey}
               />
             )}
           </>
@@ -322,6 +324,7 @@ const Profile = ({ profilePubkey }) => {
                 items={profileHubs}
                 hasOverflow={true}
                 inDashboard={inDashboard}
+                walletConnected={wallet.connected}
               />
             )}
           </>
@@ -339,6 +342,7 @@ const Profile = ({ profilePubkey }) => {
                 tableType={'followers'}
                 items={profileSubscriptionsTo}
                 hasOverflow={true}
+                walletConnected={wallet.connected}
               />
             )}
           </>
@@ -356,6 +360,7 @@ const Profile = ({ profilePubkey }) => {
                 tableType={'following'}
                 items={profileSubscriptionsFrom}
                 hasOverflow={true}
+                walletConnected={wallet.connected}
               />
             )}
           </>

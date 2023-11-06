@@ -27,7 +27,6 @@ const ReleaseCreatePage = () => {
           name="twitter:description"
           content={'Nina Protocol is an independent music ecosystem'}
         />
-
         <meta
           name="twitter:image"
           content="https://ninaprotocol.com/images/nina-blue.png"

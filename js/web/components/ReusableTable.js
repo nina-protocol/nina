@@ -1,11 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useContext,
-  createElement,
-  Fragment,
-  useMemo,
-} from 'react'
+import { useState, useEffect, useContext, createElement, Fragment } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Box } from '@mui/system'
@@ -27,23 +20,18 @@ import rehypeExternalLinks from 'rehype-external-links'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
 import Wallet from '@nina-protocol/nina-internal-sdk/esm/Wallet'
-import {
-  imageManager,
-  downloadHelper,
-} from '@nina-protocol/nina-internal-sdk/src/utils'
+import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import { styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { useRouter } from 'next/router'
 import { orderBy } from 'lodash'
 import dynamic from 'next/dynamic'
-import TablePagination from '@mui/material/TablePagination'
-import axios from 'axios'
+import { downloadManager } from '@nina-protocol/nina-internal-sdk/src/utils'
+const { downloadAs } = downloadManager
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
-// import { downloadWithFallback } from '@nina-protocol/nina-internal-sdk/esm/utils/downloadHelper'
 import openInNewTab from '@nina-protocol/nina-internal-sdk/src/utils/openInNewTab'
 import Dots from '@nina-protocol/nina-internal-sdk/esm/Dots'
 const { getImageFromCDN, loader } = imageManager
-const { downloadWithFallback } = downloadHelper
 
 const Subscribe = dynamic(() => import('./Subscribe'))
 
@@ -170,35 +158,51 @@ const ReusableTableHead = (props) => {
   return (
     <TableHead>
       <TableRow>
-        {headCells?.map((headCell, i) => (
-          <StyledTableHeadCell key={headCell.id} sx={{ cursor: 'default' }}>
-            {headCell.id === 'artist' ||
-            headCell.id === 'releaseDate' ||
-            headCell.id === 'title' ||
-            headCell.id === 'dateAdded' ||
-            headCell.id === 'hubName' ? (
-              <TableSortLabel
-                active={orderBy === headCell.id}
-                direction={order}
-                onClick={createSortHandler(headCell.id)}
-                disabled={
-                  headCell.id === 'ctas' ||
-                  headCell.id === 'hubLink' ||
-                  headCell.id === 'hubDashboard'
-                }
-                sx={{ '& svg': { fontSize: '14px' } }}
-              >
-                <Typography sx={{ fontWeight: 'bold' }}>
-                  {headCell.label}
-                </Typography>
-              </TableSortLabel>
-            ) : (
-              <Typography sx={{ fontWeight: 'bold' }}>
-                {headCell.label}
-              </Typography>
-            )}
-          </StyledTableHeadCell>
-        ))}
+        {headCells?.map((headCell, i) => {
+          {
+            if (
+              headCell.id === 'artist' ||
+              headCell.id === 'releaseDate' ||
+              headCell.id === 'title' ||
+              headCell.id === 'dateAdded' ||
+              headCell.id === 'hubName'
+            ) {
+              return (
+                <StyledTableHeadCell
+                  key={headCell.id}
+                  sx={{ cursor: 'default' }}
+                >
+                  <TableSortLabel
+                    active={orderBy === headCell.id}
+                    direction={order}
+                    onClick={createSortHandler(headCell.id)}
+                    disabled={
+                      headCell.id === 'ctas' ||
+                      headCell.id === 'hubLink' ||
+                      headCell.id === 'hubDashboard'
+                    }
+                    sx={{ '& svg': { fontSize: '14px' } }}
+                  >
+                    <Typography sx={{ fontWeight: 'bold' }}>
+                      {headCell.label}
+                    </Typography>
+                  </TableSortLabel>
+                </StyledTableHeadCell>
+              )
+            } else {
+              return (
+                <StyledTableHeadCell
+                  key={headCell.id}
+                  sx={{ cursor: 'default' }}
+                >
+                  <Typography sx={{ fontWeight: 'bold' }}>
+                    {headCell.label}
+                  </Typography>
+                </StyledTableHeadCell>
+              )
+            }
+          }
+        })}
       </TableRow>
     </TableHead>
   )
@@ -236,7 +240,6 @@ const HubDescription = ({ description }) => {
 }
 
 const ReusableTableBody = (props) => {
-  const { wallet } = useContext(Wallet.Context)
   const {
     items,
     tableType,
@@ -247,6 +250,8 @@ const ReusableTableBody = (props) => {
     order,
     orderBy,
     inCollection,
+    walletAddress,
+    walletConnected,
   } = props
   const router = useRouter()
   const {
@@ -320,24 +325,6 @@ const ReusableTableBody = (props) => {
     }
   }
 
-  const downloadAs = async (url, name, releasePubkey) => {
-    setDownloadId(releasePubkey)
-    logEvent('track_download_dashboard', 'engagement', {
-      publicKey: releasePubkey,
-    })
-    const success = await downloadWithFallback(url, name)
-    if (success) {
-      enqueueSnackbar('Download complete', {
-        variant: 'success',
-      })
-    } else {
-      enqueueSnackbar('Download failed', {
-        variant: 'error',
-      })
-    }
-    setDownloadId(undefined)
-  }
-
   const getComparator = (order, orderBy, type) => {
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
@@ -345,7 +332,7 @@ const ReusableTableBody = (props) => {
   }
 
   let rows = items?.map((data) => {
-    const { releasePubkey, publicKey } = data
+    const { releasePubkey } = data
     const playData = {
       releasePubkey,
     }
@@ -362,6 +349,10 @@ const ReusableTableBody = (props) => {
         image: data?.metadata?.image,
         date: data?.metadata?.properties?.date,
         title: `${data?.metadata?.properties?.artist} - ${data?.metadata?.properties?.title}`,
+        artist: data?.metadata?.properties?.artist,
+        releaseName: data?.metadata?.properties?.title,
+        description: data?.metadata?.description,
+        external_url: data?.metadata?.external_url,
       }
       if (tableType === 'profileCollectionReleases') {
         formattedData.dateAdded = new Date(
@@ -425,7 +416,7 @@ const ReusableTableBody = (props) => {
         date: data?.createdAt,
         image: data?.data.image,
         hubName: data?.data.displayName,
-        description: data?.data.description,
+        hubDescription: data?.data.description,
         publicKey: data?.publicKey,
         subscribe: true,
         handle: data?.handle,
@@ -552,7 +543,11 @@ const ReusableTableBody = (props) => {
                   cellName !== 'link' &&
                   cellName !== 'authorityPublicKey' &&
                   cellName !== 'publicKey' &&
-                  cellName !== 'handle'
+                  cellName !== 'handle' &&
+                  cellName !== 'artist' &&
+                  cellName !== 'releaseName' &&
+                  cellName !== 'description' &&
+                  cellName !== 'external_url'
                 ) {
                   if (cellName === 'ctas') {
                     return (
@@ -576,11 +571,13 @@ const ReusableTableBody = (props) => {
                             onClickCapture={(e) => {
                               e.stopPropagation()
                               downloadAs(
-                                row.uri,
-                                `${row.fileName
-                                  .replace(/[^a-z0-9]/gi, '_')
-                                  .toLowerCase()}___nina.mp3`,
-                                row.id
+                                row,
+                                row.id,
+                                setDownloadId,
+                                enqueueSnackbar,
+                                walletAddress,
+                                undefined,
+                                true
                               )
                             }}
                             className="disableClickCapture"
@@ -652,28 +649,12 @@ const ReusableTableBody = (props) => {
                         </Box>
                       </StyledImageTableCell>
                     )
-                  } else if (cellName === 'description') {
+                  } else if (cellName === 'hubDescription') {
                     return (
                       <HubDescription
                         description={cellData || null}
                         key={cellName}
                       />
-                    )
-                  } else if (cellName === 'artist') {
-                    return (
-                      <StyledProfileTableCell key={cellName} type={'profile'}>
-                        <OverflowContainer
-                          overflowWidth={'20vw'}
-                          inDashboard={inDashboard}
-                        >
-                          <Typography
-                            noWrap
-                            sx={{ hover: 'pointer', maxWidth: '20vw' }}
-                          >
-                            {cellData}
-                          </Typography>
-                        </OverflowContainer>
-                      </StyledProfileTableCell>
                     )
                   } else if (cellName === 'title') {
                     return (
@@ -822,7 +803,7 @@ const ReusableTableBody = (props) => {
                   } else if (
                     cellName === 'subscribe' &&
                     row?.subscribe &&
-                    wallet.connected
+                    walletConnected
                   ) {
                     return (
                       <TableCell key={cellName} sx={{ padding: '0 30px' }}>
@@ -874,6 +855,9 @@ const ReusableTable = ({
   hasOverflow,
   minHeightOverride = false,
   inCollection,
+  profileCollection,
+  walletAddress,
+  walletConnected,
 }) => {
   const [order, setOrder] = useState('desc')
   const [orderBy, setOrderBy] = useState('')
@@ -896,6 +880,10 @@ const ReusableTable = ({
               inDashboard={inDashboard}
               onRequestSort={handleRequestSort}
               order={order}
+              inCollection={inCollection}
+              profileCollection={profileCollection}
+              walletAddress={walletAddress}
+              walletConnected={walletConnected}
             />
           )}
           <ReusableTableBody
@@ -909,6 +897,8 @@ const ReusableTable = ({
             order={order}
             orderBy={orderBy}
             inCollection={inCollection}
+            walletAddress={walletAddress}
+            walletConnected={walletConnected}
           />
         </Table>
       </ResponsiveTableContainer>
@@ -984,18 +974,16 @@ const StyledImageTableCell = styled(TableCell)(({ theme }) => ({
   maxWidth: '100px',
   width: '50px',
 }))
-const StyledTableCellButtonsContainer = styled(TableCell)(
-  ({ theme, inCollection }) => ({
-    width: '150px',
-    textAlign: 'left',
-    padding: '5px 0px',
-    textAlign: 'left',
-    minWidth: '100px',
-    [theme.breakpoints.down('md')]: {
-      padding: '0px',
-    },
-  })
-)
+const StyledTableCellButtonsContainer = styled(TableCell)(({ theme }) => ({
+  width: '150px',
+  textAlign: 'left',
+  padding: '5px 0px',
+  textAlign: 'left',
+  minWidth: '100px',
+  [theme.breakpoints.down('md')]: {
+    padding: '0px',
+  },
+}))
 const SearchResultTableCell = styled(TableCell)(({ theme }) => ({
   padding: '5px',
   textAlign: 'left',

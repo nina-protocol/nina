@@ -15,6 +15,7 @@ import ExchangeComponent from './Exchange'
 const ReleaseComponent = ({ metadataSsr, hub }) => {
   const router = useRouter()
   const releasePubkey = router.query.releasePubkey
+  const walletPubkey = wallet?.publicKey?.toBase58()
   const [amountHeld, setAmountHeld] = useState()
   const { wallet } = useContext(Wallet.Context)
   const { releaseState, getRelease, fetchGatesForRelease, gatesState } =
@@ -35,7 +36,6 @@ const ReleaseComponent = ({ metadataSsr, hub }) => {
     () => releaseState.tokenData[releasePubkey],
     [releaseState, releasePubkey]
   )
-
   const isAuthority = useMemo(() => {
     if (wallet.connected) {
       return release?.authority === wallet?.publicKey.toBase58()
@@ -133,6 +133,7 @@ const ReleaseComponent = ({ metadataSsr, hub }) => {
               isAuthority={isAuthority}
               userIsRecipient={userIsRecipient}
               hub={hub}
+              walletAddress={walletPubkey}
             />
             <ReleaseCtaWrapper>
               <ReleasePurchase

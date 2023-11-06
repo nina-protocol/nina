@@ -1,11 +1,8 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { styled } from '@mui/material/styles'
 import Audio from '@nina-protocol/nina-internal-sdk/esm/Audio'
 import Nina from '@nina-protocol/nina-internal-sdk/esm/Nina'
-import {
-  imageManager,
-  downloadHelper,
-} from '@nina-protocol/nina-internal-sdk/src/utils'
+import { imageManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -15,15 +12,13 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint'
 import Image from 'next/image'
 import DownloadIcon from '@mui/icons-material/Download'
 import { logEvent } from '@nina-protocol/nina-internal-sdk/src/utils/event'
-import axios from 'axios'
 import AddToHubModal from '@nina-protocol/nina-internal-sdk/esm/AddToHubModal'
 import ReleaseSettingsModal from '@nina-protocol/nina-internal-sdk/esm/ReleaseSettingsModal'
-
+import { downloadManager } from '@nina-protocol/nina-internal-sdk/src/utils'
 import Link from 'next/link'
 import { useSnackbar } from 'notistack'
-
+const { downloadAs } = downloadManager
 const { getImageFromCDN, loader } = imageManager
-const { downloadWithFallback } = downloadHelper
 
 const ReleaseCard = (props) => {
   const {
@@ -37,6 +32,7 @@ const ReleaseCard = (props) => {
     isAuthority,
     userIsRecipient,
     hub,
+    walletAddress,
   } = props
   const { enqueueSnackbar } = useSnackbar()
   const {
@@ -48,7 +44,6 @@ const ReleaseCard = (props) => {
     setInitialized,
   } = useContext(Audio.Context)
   const { displayNameForAccount } = useContext(Nina.Context)
-
   const image = useMemo(() => metadata?.image)
   const title = useMemo(() => {
     if (
@@ -59,23 +54,6 @@ const ReleaseCard = (props) => {
     }
     return metadata.properties.title
   }, [metadata.properties.title])
-
-  const downloadAs = async (url, name) => {
-    logEvent('track_download', 'engagement', {
-      publicKey: releasePubkey,
-    })
-
-    const success = await downloadWithFallback(url, name)
-    if (success) {
-      enqueueSnackbar('Download complete', {
-        variant: 'success',
-      })
-    } else {
-      enqueueSnackbar('Download failed', {
-        variant: 'error',
-      })
-    }
-  }
 
   return (
     <StyledReleaseCard>
@@ -123,10 +101,13 @@ const ReleaseCard = (props) => {
                     onClick={(e) => {
                       e.stopPropagation()
                       downloadAs(
-                        metadata.properties.files[0].uri,
-                        `${metadata.name
-                          .replace(/[^a-z0-9]/gi, '_')
-                          .toLowerCase()}___nina.mp3`
+                        metadata,
+                        releasePubkey,
+                        undefined,
+                        enqueueSnackbar,
+                        walletAddress,
+                        undefined,
+                        false
                       )
                     }}
                     sx={{
