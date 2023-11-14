@@ -11,7 +11,7 @@ nina: a self-publishing protocol for musicians - on solana
 # Getting Started
 
 ## Solana Program
-Nina's Solana program is written in [Anchor](https://github.com/project-serum/anchor/) - first follow their [guide](https://project-serum.github.io/anchor/getting-started/introduction.html)
+Nina's Solana program is written in [Anchor](https://github.com/coral-xyz/anchor) - first follow their [guide](https://www.anchor-lang.com/docs/installation)
 
 Once Anchor environment is configured you can run tests for the on-chain programs from the root directory:
 `anchor test ./tests`
