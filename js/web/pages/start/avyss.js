@@ -49,12 +49,12 @@ const StartPage = () => {
         />
       </Head>
 
-      <CustomHeader>
+      {/* <CustomHeader>
         <Typography mb={1} variant="h3">
           Welcome to Nina from Avyss
         </Typography>
         <Typography variant="body1">{welcomeString.header}</Typography>
-      </CustomHeader>
+      </CustomHeader> */}
       <Onboard customCode={'avyss'} />
     </>
   )

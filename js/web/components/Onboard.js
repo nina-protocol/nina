@@ -445,6 +445,11 @@ const Onboard = ({ customCode }) => {
   const renderSteps = (steps) => {
     return (
       <Box sx={{ width: '75%' }}>
+        {customCode === 'avyss' && (
+          <Typography mb={1} variant="h3">
+            Welcome to Nina from Avyss
+          </Typography>
+        )}
         <Stepper activeStep={activeStep} orientation="vertical">
           {steps.map((step, index) => {
             return (
