@@ -97,6 +97,13 @@ pub mod nina {
         instructions::release_claim::handler(ctx)
     }
 
+    pub fn release_open_to_limited_edition(
+        ctx: Context<ReleaseOpenToLimitedEdition>,
+        amount: u64,
+    ) -> Result<()> {
+        instructions::release_open_to_limited_edition::handler(ctx, amount)
+    }
+
     pub fn redeemable_init(
         ctx: Context<RedeemableInitialize>,
         config: RedeemableConfig,

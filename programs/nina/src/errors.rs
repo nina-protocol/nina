@@ -106,4 +106,6 @@ pub enum ErrorCode {
     PostInitViaHubDelegatePayerMismatch,
     #[msg("Hub Init Delegated Payer Mismatch")]
     HubInitDelegatePayerMismatch,
+    #[msg("Release Open To Limited Edition Invalid Amount")]
+    ReleaseOpenToLimitedEditionInvalidAmount
 }
