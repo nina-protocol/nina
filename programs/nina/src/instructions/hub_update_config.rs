@@ -13,8 +13,9 @@ use crate::errors::ErrorCode;
 pub struct HubUpdateConfig<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
-    #[account(mut)]
-    pub authority: Signer<'info>,
+    /// CHECK: This is safe because we check in the handler that authority === payer 
+    /// or that payer is nina operated file-service wallet
+    pub authority: UncheckedAccount<'info>,
     #[account(
         mut,
         constraint = hub.load()?.authority == authority.key(),
