@@ -30,7 +30,7 @@ pub struct HubAddCollaborator<'info> {
         init,
         seeds = [b"nina-hub-collaborator".as_ref(), hub.key().as_ref(), collaborator.key().as_ref()],
         bump,
-        payer = authority,
+        payer = payer,
         space = 147,
     )]
     pub hub_collaborator: Account<'info, HubCollaborator>,

@@ -214,7 +214,7 @@ describe('Init', async () => {
     vaultWrappedSolTokenAccount = wrappedSolVault;
 
     const bumps = {
-      vault,
+      vault: vaultBump,
       signer: vaultSignerBump,
       usdc: usdcVaultBump,
       wsol: wrappedSolVaultBump,

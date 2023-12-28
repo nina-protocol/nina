@@ -19,7 +19,7 @@ pub struct HubAddRelease<'info> {
         init,
         seeds = [b"nina-hub-release".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
-        payer = authority,
+        payer = payer,
         space  = 120
     )]
     pub hub_release: Box<Account<'info, HubRelease>>,
@@ -27,7 +27,7 @@ pub struct HubAddRelease<'info> {
         init,
         seeds = [b"nina-hub-content".as_ref(), hub.key().as_ref(), release.key().as_ref()],
         bump,
-        payer = authority,
+        payer = payer,
         space = 153
     )]
     pub hub_content: Box<Account<'info, HubContent>>,
