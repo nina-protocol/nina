@@ -277,7 +277,7 @@ const NavBar = ({ hubPubkey }) => {
     return (
       <List>
         {navData.map(({ label, href }) => {
-          href = label === 'Home' ? `/${hubHandle}${href}` : href
+          href = label === 'Dashboard' ? `/${hubHandle}${href}` : href
           return (
             <Link
               key={label}
