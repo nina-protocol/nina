@@ -25,7 +25,7 @@ const { getImageFromCDN, loader } = imageManager
 const navData = [
   {
     label: '+ Publish',
-    href: '/dashboard?action=publishRelease',
+    href: 'https://www.ninaprotocol.com',
   },
   {
     label: 'Dashboard',
@@ -173,6 +173,14 @@ const NavBar = ({ hubPubkey }) => {
             </LogoLinkWrapper>
           </a>
         </Link>
+        <BlueTypography>
+          {' '}
+          This sub domain will soon be deprecated. Please visit{' '}
+          <Link href="https://ninaprotocol.com">
+            <a target="_blank">ninaprotocol.com</a>
+          </Link>{' '}
+          to access or create hubs{' '}
+        </BlueTypography>
         <CtaWrapper>
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
           {!wallet?.connected && (
@@ -269,7 +277,7 @@ const NavBar = ({ hubPubkey }) => {
     return (
       <List>
         {navData.map(({ label, href }) => {
-          href = `/${hubHandle}${href}`
+          href = label === 'Home' ? `/${hubHandle}${href}` : href
           return (
             <Link
               key={label}
@@ -327,6 +335,14 @@ const LogoLinkWrapper = styled('a')(({ theme }) => ({
     },
   },
 }))
+
+const BlueTypography = styled(Typography)(({ theme }) => ({
+  '& a': {
+    color: theme.palette.blue,
+    textDecoration: 'none',
+  },
+}))
+
 
 const NavCtas = styled('div')(() => ({
   display: 'flex',

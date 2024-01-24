@@ -72,16 +72,6 @@ const Hubs = () => {
               </Box>
               <HubSlider />
               <DashboardContent item mt={4} md={12}>
-                <StyledLink href="/create">
-                  <Button
-                    color="primary"
-                    variant="outlined"
-                    fullWidth
-                    type="submit"
-                  >
-                    Create a Hub
-                  </Button>
-                </StyledLink>
                 <StyledLink href="/all">
                   <Button
                     color="primary"
