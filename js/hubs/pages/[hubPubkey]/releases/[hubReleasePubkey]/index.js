@@ -59,26 +59,30 @@ const ReleasePage = (props) => {
 
 export default ReleasePage
 
-export const getStaticPaths = async () => {
+export const getStaticPaths = async (context) => {
   await initSdkIfNeeded(true)
   const paths = []
-  const { hubs } = await NinaSdk.Hub.fetchAll({ limit: 1000 })
-  for await (const hub of hubs) {
-    const { releases } = await NinaSdk.Hub.fetchReleases(hub.publicKey)
-    releases.forEach((release) => {
-      paths.push({
-        params: {
-          hubPubkey: hub.publicKey,
-          hubReleasePubkey: release.hubReleasePublicKey,
-        },
+  try {
+    const { hubs } = await NinaSdk.Hub.fetchAll({ limit: 1000 })
+    for await (const hub of hubs) {
+      const { releases } = await NinaSdk.Hub.fetchReleases(hub.publicKey)
+      releases.forEach((release) => {
+        paths.push({
+          params: {
+            hubPubkey: hub.publicKey,
+            hubReleasePubkey: release.hubReleasePublicKey,
+          },
+        })
+        paths.push({
+          params: {
+            hubPubkey: hub.handle,
+            hubReleasePubkey: release.hubReleasePublicKey,
+          },
+        })
       })
-      paths.push({
-        params: {
-          hubPubkey: hub.handle,
-          hubReleasePubkey: release.hubReleasePublicKey,
-        },
-      })
-    })
+    }
+  } catch (error) {
+    console.warn(error)
   }
   return {
     paths,
