@@ -59,11 +59,15 @@ const ReleasePage = (props) => {
 
 export default ReleasePage
 
-export const getStaticPaths = async (context) => {
+export const getStaticPaths = async () => {
   await initSdkIfNeeded(true)
   const paths = []
   try {
-    const { hubs } = await NinaSdk.Hub.fetchAll({ limit: 1000 })
+    const { hubs } = await NinaSdk.Hub.fetchAll({
+      limit: 10,
+      offset: 0,
+      sort: 'desc',
+    })
     for await (const hub of hubs) {
       const { releases } = await NinaSdk.Hub.fetchReleases(hub.publicKey)
       releases.forEach((release) => {
