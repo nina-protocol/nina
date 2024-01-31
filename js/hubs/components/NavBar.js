@@ -173,14 +173,16 @@ const NavBar = ({ hubPubkey }) => {
             </LogoLinkWrapper>
           </a>
         </Link>
-        <BlueTypography>
+        <Typography style={{ display: 'flex', cursor: 'default' }}>
           {' '}
-          This sub domain will soon be deprecated. Please visit{' '}
-          <Link href="https://ninaprotocol.com">
-            <a target="_blank">ninaprotocol.com</a>
-          </Link>{' '}
+          This subdomain will soon be deprecated. Please visit{' '}
+          <BlueTypography style={{ margin: '0 4px' }}>
+            <Link href="https://ninaprotocol.com">
+              <a target="_blank"> ninaprotocol.com </a>
+            </Link>
+          </BlueTypography>
           to access or create hubs{' '}
-        </BlueTypography>
+        </Typography>
         <CtaWrapper>
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
           {!wallet?.connected && (
