@@ -11,17 +11,17 @@ const withTM = require('next-transpile-modules')([
   '@solana/wallet-adapter-sollet',
 ]) // pass the modules you would like to see transpiled
 
-const { withSentryConfig } = require('@sentry/nextjs')
-const sentryWebpackPluginOptions = {
-  // Additional config options for the Sentry Webpack plugin. Keep in mind that
-  // the following options are set automatically, and overriding them is not
-  // recommended:
-  //   release, url, org, project, authToken, configFile, stripPrefix,
-  //   urlPrefix, include, ignore
-  silent: true, // Suppresses all logs
-  // For all available options, see:
-  // https://github.com/getsentry/sentry-webpack-plugin#options.
-}
+// const { withSentryConfig } = require('@sentry/nextjs')
+// const sentryWebpackPluginOptions = {
+//   // Additional config options for the Sentry Webpack plugin. Keep in mind that
+//   // the following options are set automatically, and overriding them is not
+//   // recommended:
+//   //   release, url, org, project, authToken, configFile, stripPrefix,
+//   //   urlPrefix, include, ignore
+//   silent: true, // Suppresses all logs
+//   // For all available options, see:
+//   // https://github.com/getsentry/sentry-webpack-plugin#options.
+// }
 
 const cluster = process.env.SOLANA_CLUSTER
 const IMGIX_URL = cluster === 'devnet' ? 'nina-dev.imgix.net' : 'nina.imgix.net'
@@ -91,4 +91,4 @@ const moduleExports = withTM({
   },
 })
 
-module.exports = withSentryConfig(moduleExports, sentryWebpackPluginOptions)
+module.exports = moduleExports
