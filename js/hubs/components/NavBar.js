@@ -173,7 +173,7 @@ const NavBar = ({ hubPubkey }) => {
             </LogoLinkWrapper>
           </a>
         </Link>
-        <Typography style={{ display: 'flex', cursor: 'default' }}>
+        <Redirect style={{ display: 'flex', cursor: 'default' }}>
           {' '}
           This subdomain will soon be deprecated. Please visit{' '}
           <BlueTypography style={{ margin: '0 4px' }}>
@@ -182,7 +182,7 @@ const NavBar = ({ hubPubkey }) => {
             </Link>
           </BlueTypography>
           to access or create hubs{' '}
-        </Typography>
+        </Redirect>
         <CtaWrapper>
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
           {!wallet?.connected && (
@@ -374,6 +374,17 @@ const StyledWalletButton = styled(WalletButton)(({ theme }) => ({
 const CtaWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
+}))
+
+const Redirect = styled(Typography)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  [theme.breakpoints.down('md')]: {
+    width: '80vw',
+    margin: '140px auto',
+    display: 'flex',
+    flexDirection: 'column',
+  },
 }))
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
