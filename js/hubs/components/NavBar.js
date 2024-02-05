@@ -173,7 +173,7 @@ const NavBar = ({ hubPubkey }) => {
             </LogoLinkWrapper>
           </a>
         </Link>
-        <Redirect style={{ display: 'flex', cursor: 'default' }}>
+        <Redirect>
           {' '}
           This subdomain will soon be deprecated. Please visit{' '}
           <BlueTypography style={{ margin: '0 4px' }}>
@@ -379,11 +379,9 @@ const CtaWrapper = styled(Box)(({ theme }) => ({
 const Redirect = styled(Typography)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
+  cursor: 'default',
   [theme.breakpoints.down('md')]: {
-    width: '80vw',
-    margin: '140px auto',
-    display: 'flex',
-    flexDirection: 'column',
+    display: 'none',
   },
 }))
 
