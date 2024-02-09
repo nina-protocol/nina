@@ -379,7 +379,8 @@ const CtaWrapper = styled(Box)(({ theme }) => ({
 const Redirect = styled(Typography)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  cursor: 'default',
+  cursor: 'default !important',
+  fontWeight: 'bold',
   [theme.breakpoints.down('md')]: {
     display: 'none',
   },
