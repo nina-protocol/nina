@@ -25,7 +25,7 @@ const { getImageFromCDN, loader } = imageManager
 const navData = [
   {
     label: '+ Publish',
-    href: '/dashboard?action=publishRelease',
+    href: 'https://www.ninaprotocol.com',
   },
   {
     label: 'Dashboard',
@@ -173,6 +173,19 @@ const NavBar = ({ hubPubkey }) => {
             </LogoLinkWrapper>
           </a>
         </Link>
+        <Redirect>
+          {' '}
+          This domain is no longer being maintained. Please visit{' '}
+          <BlueTypography style={{ margin: '0 4px' }}>
+            <Link href="https://ninaprotocol.com">
+              <a target="_blank" style={{ fontWeight: 'bold' }}>
+                {' '}
+                ninaprotocol.com{' '}
+              </a>
+            </Link>
+          </BlueTypography>
+          to upload music or access your hubs.
+        </Redirect>
         <CtaWrapper>
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
           {!wallet?.connected && (
@@ -269,7 +282,7 @@ const NavBar = ({ hubPubkey }) => {
     return (
       <List>
         {navData.map(({ label, href }) => {
-          href = `/${hubHandle}${href}`
+          href = label === 'Dashboard' ? `/${hubHandle}${href}` : href
           return (
             <Link
               key={label}
@@ -328,6 +341,13 @@ const LogoLinkWrapper = styled('a')(({ theme }) => ({
   },
 }))
 
+const BlueTypography = styled(Typography)(({ theme }) => ({
+  '& a': {
+    color: theme.palette.blue,
+    textDecoration: 'none',
+  },
+}))
+
 const NavCtas = styled('div')(() => ({
   display: 'flex',
 }))
@@ -357,6 +377,16 @@ const StyledWalletButton = styled(WalletButton)(({ theme }) => ({
 const CtaWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
+}))
+
+const Redirect = styled(Typography)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  cursor: 'default !important',
+  fontWeight: 'bold',
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
+  },
 }))
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
