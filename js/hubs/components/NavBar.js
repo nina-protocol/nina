@@ -175,13 +175,16 @@ const NavBar = ({ hubPubkey }) => {
         </Link>
         <Redirect>
           {' '}
-          This subdomain will soon be deprecated. Please visit{' '}
+          This domain is no longer being maintained. Please visit{' '}
           <BlueTypography style={{ margin: '0 4px' }}>
             <Link href="https://ninaprotocol.com">
-              <a target="_blank"> ninaprotocol.com </a>
+              <a target="_blank" style={{ fontWeight: 'bold' }}>
+                {' '}
+                ninaprotocol.com{' '}
+              </a>
             </Link>
           </BlueTypography>
-          to access or create hubs{' '}
+          to upload music or access your hubs.
         </Redirect>
         <CtaWrapper>
           {!mobileView && canAddContent && getMenuButtons(hubData?.handle)}
