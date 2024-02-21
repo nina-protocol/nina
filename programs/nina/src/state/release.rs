@@ -1,20 +1,18 @@
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::{
-    program::{invoke, invoke_signed},
-};
 use mpl_token_metadata::{
     self,
-    state::{Creator, DataV2},
-    instruction::{create_metadata_accounts_v3, update_metadata_accounts_v2},
+    types::{Creator, DataV2},
+    instructions::{CreateMetadataAccountV3Cpi, UpdateMetadataAccountV2Cpi, CreateMetadataAccountV3CpiAccounts, UpdateMetadataAccountV2CpiAccounts, CreateMetadataAccountV3InstructionArgs, UpdateMetadataAccountV2InstructionArgs},
 };
 use anchor_spl::token::{self, TokenAccount, MintTo, Transfer, Token, Mint, SetAuthority};
 use spl_token::instruction::{close_account};
+use bytemuck::{Pod, Zeroable};
 use crate::utils::{wrapped_sol};
-
 use crate::errors::ErrorCode;
 
 #[account(zero_copy)]
 #[repr(packed)]
+#[repr(C)]
 #[derive(Default)]
 pub struct Release {
     pub payer: Pubkey,
@@ -143,7 +141,7 @@ impl Release {
         ];
         let signer = &[&seeds[..]];
 
-        let mut royalty_recipient = match release.find_royalty_recipient(authority) {
+        let royalty_recipient = match release.find_royalty_recipient(authority) {
             Some(royalty_recipient) => royalty_recipient,
             None => return Err(error!(ErrorCode::InvalidRoyaltyRecipientAuthority)),
         };
@@ -212,7 +210,7 @@ impl Release {
         ];
         let signer = &[&seeds[..]];
 
-        let mut royalty_recipient = match release.find_royalty_recipient(authority) {
+        let royalty_recipient = match release.find_royalty_recipient(authority) {
             Some(royalty_recipient) => royalty_recipient,
             None => return Err(error!(ErrorCode::InvalidRoyaltyRecipientAuthority)),
         };
@@ -242,9 +240,7 @@ impl Release {
         release_mint: Box<Account<'info, Mint>>,
 		payer: Signer<'info>,
         metadata_program: AccountInfo<'info>,
-        token_program: Program<'info, Token>,
         system_program: Program<'info, System>,
-        rent: Sysvar<'info, Rent>,
         release: AccountLoader<'info, Release>,
         metadata_data: ReleaseMetadataData,
         bumps: ReleaseBumps,
@@ -256,43 +252,41 @@ impl Release {
             share: 100,
         }];
 
-        let metadata_infos = vec![
-            metadata.clone(),
-            release_mint.to_account_info().clone(),
-            release_signer.clone(),
-            payer.to_account_info().clone(),
-            metadata_program.clone(),
-            token_program.to_account_info().clone(),
-            system_program.to_account_info().clone(),
-            rent.to_account_info().clone(),
-            release.to_account_info().clone(),
-        ];
-
         let seeds = &[
             release.to_account_info().key.as_ref(),
             &[bumps.signer],
         ];
-    
-        invoke_signed(
-            &create_metadata_accounts_v3(
-                metadata_program.key(),
-                metadata.key(),
-                release_mint.key(),
-                release_signer.key(),
-                payer.key(),
-                release_signer.key(),
-                metadata_data.name,
-                metadata_data.symbol,
-                metadata_data.uri.clone(),
-                Some(creators),
-                metadata_data.seller_fee_basis_points,
-                true,
-                true,
-                None,
-                None,
-                None
-            ),
-            metadata_infos.as_slice(),
+        let release_mint_binding = release_mint.to_account_info().clone();
+        let cpi = CreateMetadataAccountV3Cpi::new(
+            &metadata_program,
+            CreateMetadataAccountV3CpiAccounts {
+                metadata: &metadata,
+                mint: &release_mint_binding,
+                mint_authority: &release_signer,
+                payer: &payer,
+                update_authority: (
+                    &release_signer,
+                    release_signer.is_signer,
+                ),
+                system_program: &system_program,
+                rent: None,
+            },
+            CreateMetadataAccountV3InstructionArgs {
+                data: DataV2 {
+                    name: metadata_data.name,
+                    symbol: metadata_data.symbol,
+                    uri: metadata_data.uri.clone(),
+                    seller_fee_basis_points: metadata_data.seller_fee_basis_points,
+                    creators: Some(creators),
+                    collection: None,
+                    uses: None
+                },
+                is_mutable: true,
+                collection_details: None,
+            }
+        );
+
+        cpi.invoke_signed(
             &[seeds],
         )?;
     
@@ -303,12 +297,7 @@ impl Release {
     pub fn update_metadata_handler<'info>(
         release_signer: AccountInfo<'info>,
         metadata: AccountInfo<'info>,
-        release_mint: Box<Account<'info, Mint>>,
-        authority: Signer<'info>,
         metadata_program: AccountInfo<'info>,
-        token_program: Program<'info, Token>,
-        system_program: Program<'info, System>,
-        rent: Sysvar<'info, Rent>,
         release: AccountLoader<'info, Release>,
         metadata_data: ReleaseMetadataData,
         bumps: ReleaseBumps,
@@ -320,30 +309,19 @@ impl Release {
             share: 100,
         }];
 
-        let metadata_infos = vec![
-            metadata.clone(),
-            release_mint.to_account_info().clone(),
-            release_signer.clone(),
-            authority.to_account_info().clone(),
-            metadata_program.clone(),
-            token_program.to_account_info().clone(),
-            system_program.to_account_info().clone(),
-            rent.to_account_info().clone(),
-            release.to_account_info().clone(),
-        ];
-
         let seeds = &[
             release.to_account_info().key.as_ref(),
             &[bumps.signer],
         ];
-    
-        invoke_signed(
-            &update_metadata_accounts_v2(
-                metadata_program.key(),
-                metadata.key(),
-                release_signer.key(),
-                None,
-                Some(DataV2 {
+        
+        let cpi = UpdateMetadataAccountV2Cpi::new(
+            &metadata_program,
+            UpdateMetadataAccountV2CpiAccounts {
+                metadata: &metadata,
+                update_authority: &release_signer,
+            },
+            UpdateMetadataAccountV2InstructionArgs {
+                data: Some(DataV2 {
                     name: metadata_data.name,
                     symbol: metadata_data.symbol,
                     uri: metadata_data.uri.clone(),
@@ -352,10 +330,13 @@ impl Release {
                     collection: None,
                     uses: None
                 }),
-                None,
-                None
-            ),
-            metadata_infos.as_slice(),
+                is_mutable: Some(true),
+                new_update_authority: None,
+                primary_sale_happened: None,
+            }
+        );
+
+        cpi.invoke_signed(
             &[seeds],
         )?;
     
@@ -416,7 +397,7 @@ impl Release {
         };
         let cpi_program = token_program.to_account_info().clone();
         let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
-        token::set_authority(cpi_ctx, AuthorityType::MintTokens.into(), Some(release.release_signer))?;
+        token::set_authority(cpi_ctx, anchor_spl::token::spl_token::instruction::AuthorityType::MintTokens, Some(release.release_signer))?;
         
         Ok(())
     }
@@ -510,6 +491,7 @@ impl Release {
 
 #[zero_copy]
 #[repr(packed)]
+#[repr(C)]
 #[derive(Default)]
 pub struct RoyaltyRecipient {
     pub recipient_authority: Pubkey,
@@ -519,7 +501,9 @@ pub struct RoyaltyRecipient {
     pub collected: u64,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Default, Copy)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Default, Copy, Pod, Zeroable)]
+#[repr(packed)]
+#[repr(C)]
 pub struct ReleaseBumps {
     pub release: u8,
     pub signer: u8,

@@ -2,9 +2,11 @@ use anchor_lang::prelude::*;
 use std::default::Default;
 use crate::state::*;
 use crate::errors::ErrorCode;
+use bytemuck::Pod;
 
 #[account(zero_copy)]
 #[repr(packed)]
+#[repr(C)]
 // size = 8 + 32 + 32 + 100 + 100 + 8 + 8 + 8 + 1 + 8 (+ 32 extra) = 337
 pub struct Hub {
 	pub authority: Pubkey,
@@ -94,6 +96,7 @@ pub struct HubRelease {
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, PartialEq, Copy, Debug)]
+#[repr(C)]
 pub enum HubContentType {
 	NinaReleaseV1 = 0,
 	Post = 1,
@@ -120,8 +123,9 @@ pub struct HubContent {
 	pub reposted_from_hub: Pubkey
 }
 
-#[account(zero_copy)]
+#[account(zero_copy(unsafe))]
 #[repr(packed)]
+#[repr(C)]
 // size = 8 + 32 + 32 + 32 + 100 + 1 (+ 39) = 244
 pub struct HubPost {
 	pub hub: Pubkey,

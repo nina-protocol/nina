@@ -94,6 +94,7 @@ pub struct ReleaseInitializeViaHub<'info> {
     pub authority: UncheckedAccount<'info>,
 }
 
+#[inline(never)]
 pub fn handler(
     ctx: Context<ReleaseInitializeViaHub>,
     config: ReleaseConfig,
@@ -145,9 +146,7 @@ pub fn handler(
         ctx.accounts.release_mint.clone(),
         ctx.accounts.payer.clone(),
         ctx.accounts.metadata_program.to_account_info().clone(),
-        ctx.accounts.token_program.clone(),
         ctx.accounts.system_program.clone(),
-        ctx.accounts.rent.clone(),
         ctx.accounts.release.clone(),
         metadata_data.clone(),
         bumps,

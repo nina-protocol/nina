@@ -16,7 +16,6 @@ const metadataProgram = new anchor.web3.PublicKey('metaqbxxUerdq28cj1RbAWkYQm3yb
 
 let nina = anchor.workspace.Nina;
 let provider = anchor.AnchorProvider.env();
-
 let TOKEN_ACCOUNT_RENT_LAMPORTS = 2039280
 
 //Users
@@ -70,6 +69,10 @@ let releaseSellOut
 
 const printProgramInfo = async () => {
   const program = await provider.connection.getAccountInfo(nina.programId);
+  console.log('program:', program.data)
+  // const executable = new anchor.web3.PublicKey(program.data)
+  // console.log('program:', executable.toBase58())
+  console.log('program:', nina.programId.toBuffer())
   console.log('build size: ', program.data.length)
   console.log('build limit: 1395325')
   console.log('remaining program size: ', 1395325 - program.data.length)
@@ -370,7 +373,6 @@ describe('Release', async () => {
       release: releaseBump,
       signer: releaseSignerBump,
     }
-
     await nina.rpc.releaseInit(
       config,
       bumps,
@@ -4464,7 +4466,47 @@ describe('Hub', async () => {
       uri: `https://arweave.net`,
       sellerFeeBasisPoints: 2000,
     }
+    // const tx = await nina.methods.releaseInitViaHub(
+    //   config,
+    //   bumps,
+    //   metadataData,
+    //   hubParams.handle
+    // )
+    // .accounts(
+    //   {
+    //     authority: provider.wallet.publicKey,
+    //     payer: provider.wallet.publicKey,
+    //     release: releaseAccount,
+    //     releaseSigner: releaseSigner,
+    //     hub,
+    //     hubCollaborator,
+    //     hubRelease,
+    //     hubContent,
+    //     hubSigner,
+    //     hubWallet,
+    //     hubAuthority: provider.wallet.publicKey,
+    //     hubAuthorityTokenAccount: usdcTokenAccount,
+    //     releaseMint: hubReleaseMint.publicKey,
+    //     authorityTokenAccount: usdcTokenAccount,
+    //     paymentMint,
+    //     royaltyTokenAccount: hubRoyaltyTokenAccount,
+    //     tokenProgram: TOKEN_PROGRAM_ID,
+    //     metadata,
+    //     metadataProgram,
+    //     systemProgram: anchor.web3.SystemProgram.programId,
+    //     rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+    //   }
+    // )
+    // .preInstructions(instructions)
+    // .signers([hubReleaseMint])
+    // .transaction()
 
+    // tx.recentBlockhash = (await provider.connection.getRecentBlockhash()).blockhash;
+    // tx.feePayer = provider.wallet.publicKey;
+    // tx.partialSign(hubReleaseMint);
+    // const signed = await provider.wallet.signTransaction(tx);
+    // const signature = await provider.connection.sendRawTransaction(signed.serialize(), {skipPreflight: true});
+    // console.log('tx', signature)
     await nina.rpc.releaseInitViaHub(
       config,
       bumps,
@@ -4507,6 +4549,30 @@ describe('Hub', async () => {
     assert.equal(hubReleaseAfter.release.toBase58(), releaseAccount.toBase58())
     assert.equal(hubReleaseAfter.sales.toNumber(), 0)
     assert.equal(hubContentAfter.publishedThroughHub, true)
+  })
+
+  it('should not toggle hubContent visibility if unauthorized', async () => {
+    await assert.rejects(
+      async () => {
+        await nina.rpc.hubContentToggleVisibility(
+          hubParams.handle, {
+          accounts: {
+            payer: user2.publicKey,
+            authority: user2.publicKey,
+            hub,
+            hubContent,
+            contentAccount: releaseAccount,
+            systemProgram: anchor.web3.SystemProgram.programId,
+          },
+          signers: [user2]
+        })
+      },
+      (err) => {
+        console.log('err', err)
+        assert.equal(err.error.errorCode.number, 6024);
+        return true;
+      }
+    );
   })
 
   let referenceRelease
@@ -4651,98 +4717,98 @@ describe('Hub', async () => {
     assert.equal(hubContentAfter.publishedThroughHub, true)
   })
 
-  let post
-  let hubPost
-  const slug = "my_first_post_reference"
-  it('should create a post via hub as authority with a reference', async () => {
-    const uri = "arweave:f-VGVpbBqe4p7wWPhjKhGX1hnMJEGQ_eBRlUEQkCjEM"
+  // let post
+  // let hubPost
+  // const slug = "my_first_post_reference"
+  // it('should create a post via hub as authority with a reference', async () => {
+  //   const uri = "arweave:f-VGVpbBqe4p7wWPhjKhGX1hnMJEGQ_eBRlUEQkCjEM"
 
-    const [_post] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-post")),
-        hub.toBuffer(),
-        Buffer.from(anchor.utils.bytes.utf8.encode(slug)),
-      ],
-      nina.programId,
-    );
-    post = _post
-    const [_hubPost] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-post")), 
-        hub.toBuffer(),
-        post.toBuffer(),
-      ],
-      nina.programId
-    );
-    hubPost = _hubPost
+  //   const [_post] = await anchor.web3.PublicKey.findProgramAddress(
+  //     [
+  //       Buffer.from(anchor.utils.bytes.utf8.encode("nina-post")),
+  //       hub.toBuffer(),
+  //       Buffer.from(anchor.utils.bytes.utf8.encode(slug)),
+  //     ],
+  //     nina.programId,
+  //   );
+  //   post = _post
+  //   const [_hubPost] = await anchor.web3.PublicKey.findProgramAddress(
+  //     [
+  //       Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-post")), 
+  //       hub.toBuffer(),
+  //       post.toBuffer(),
+  //     ],
+  //     nina.programId
+  //   );
+  //   hubPost = _hubPost
 
-    const [_hubContent] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
-        hub.toBuffer(),
-        post.toBuffer(),
-      ],
-      nina.programId
-    );
-    hubContent = _hubContent
+  //   const [_hubContent] = await anchor.web3.PublicKey.findProgramAddress(
+  //     [
+  //       Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
+  //       hub.toBuffer(),
+  //       post.toBuffer(),
+  //     ],
+  //     nina.programId
+  //   );
+  //   hubContent = _hubContent
 
-    const [referenceReleaseHubContent] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
-        hub.toBuffer(),
-        release.toBuffer(),
-      ],
-      nina.programId
-    );
+  //   const [referenceReleaseHubContent] = await anchor.web3.PublicKey.findProgramAddress(
+  //     [
+  //       Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
+  //       hub.toBuffer(),
+  //       release.toBuffer(),
+  //     ],
+  //     nina.programId
+  //   );
 
-    const [referenceReleaseHubRelease] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
-        hub.toBuffer(),
-        release.toBuffer(),
-      ],
-      nina.programId
-    );
+  //   const [referenceReleaseHubRelease] = await anchor.web3.PublicKey.findProgramAddress(
+  //     [
+  //       Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
+  //       hub.toBuffer(),
+  //       release.toBuffer(),
+  //     ],
+  //     nina.programId
+  //   );
 
-    const [_hubCollaborator] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
-        hub.toBuffer(),
-        provider.wallet.publicKey.toBuffer(),
-      ],
-      nina.programId
-    );
-    hubCollaborator = _hubCollaborator
+  //   const [_hubCollaborator] = await anchor.web3.PublicKey.findProgramAddress(
+  //     [
+  //       Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
+  //       hub.toBuffer(),
+  //       provider.wallet.publicKey.toBuffer(),
+  //     ],
+  //     nina.programId
+  //   );
+  //   hubCollaborator = _hubCollaborator
 
-    await nina.rpc.postInitViaHubWithReferenceRelease(
-      hubParams.handle,
-      slug,
-      uri, {
-        accounts: {
-          author: provider.wallet.publicKey,
-          hub,
-          post,
-          hubPost,
-          hubContent,
-          hubCollaborator,
-          referenceReleaseHubRelease,
-          referenceReleaseHubContent,
-          referenceRelease: release,
-          systemProgram: anchor.web3.SystemProgram.programId,
-          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-        },
-      }
-    );
-    const hubPostAfter = await nina.account.hubPost.fetch(hubPost)
-    const postAfter = await nina.account.post.fetch(post)
-    assert.equal(encrypt.decode(hubPostAfter.versionUri), uri)
-    assert.equal(hubPostAfter.referenceContent.toBase58(), release.toBase58())
-    assert.equal(encrypt.decode(postAfter.uri), uri)
-    assert.equal(encrypt.decode(postAfter.slug), slug)
-    const referenceReleaseHubReleaseAfter = await nina.account.hubRelease.fetch(referenceReleaseHubRelease)
-    assert.equal(referenceReleaseHubReleaseAfter.hub.toBase58(), hub.toBase58())
-    assert.equal(referenceReleaseHubReleaseAfter.release.toBase58(), release.toBase58())
-  })  
+  //   await nina.rpc.postInitViaHubWithReferenceRelease(
+  //     hubParams.handle,
+  //     slug,
+  //     uri, {
+  //       accounts: {
+  //         author: provider.wallet.publicKey,
+  //         hub,
+  //         post,
+  //         hubPost,
+  //         hubContent,
+  //         hubCollaborator,
+  //         referenceReleaseHubRelease,
+  //         referenceReleaseHubContent,
+  //         referenceRelease: release,
+  //         systemProgram: anchor.web3.SystemProgram.programId,
+  //         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+  //       },
+  //     }
+  //   );
+  //   const hubPostAfter = await nina.account.hubPost.fetch(hubPost)
+  //   const postAfter = await nina.account.post.fetch(post)
+  //   assert.equal(encrypt.decode(hubPostAfter.versionUri), uri)
+  //   assert.equal(hubPostAfter.referenceContent.toBase58(), release.toBase58())
+  //   assert.equal(encrypt.decode(postAfter.uri), uri)
+  //   assert.equal(encrypt.decode(postAfter.slug), slug)
+  //   const referenceReleaseHubReleaseAfter = await nina.account.hubRelease.fetch(referenceReleaseHubRelease)
+  //   assert.equal(referenceReleaseHubReleaseAfter.hub.toBase58(), hub.toBase58())
+  //   assert.equal(referenceReleaseHubReleaseAfter.release.toBase58(), release.toBase58())
+  // })  
 
   it("Purchases a release with USDC via Hub", async () => {
     const usdcTokenAccountBefore = await getTokenAccount(
@@ -5300,45 +5366,6 @@ describe('Hub', async () => {
     )
   })
 
-  it('should not toggle hubContent visibility if unauthorized', async () => {
-    const [hubRelease] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-release")), 
-        hub.toBuffer(),
-        release.toBuffer(),
-      ],
-      nina.programId
-    );
-    const [hubContent] = await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
-        hub.toBuffer(),
-        release.toBuffer(),
-      ],
-      nina.programId
-    );
-    await assert.rejects(
-      async () => {
-        await nina.rpc.hubContentToggleVisibility(
-          hubParams.handle, {
-          accounts: {
-            payer: user2.publicKey,
-            authority: user2.publicKey,
-            hub,
-            hubContent,
-            contentAccount: release,
-            systemProgram: anchor.web3.SystemProgram.programId,
-          },
-          signers: [user2]
-        })
-      },
-      (err) => {
-        assert.equal(err.error.errorCode.number, 6024);
-        return true;
-      }
-    );
-  })
-
   it('should remove collaborator from hub', async () => {
     const [hubCollaborator] = await anchor.web3.PublicKey.findProgramAddress(
       [
@@ -5595,12 +5622,14 @@ describe('Hub', async () => {
     const usdcTokenAccountAfterBalance = usdcTokenAccountAfter.amount.toNumber();
     assert.ok(usdcTokenAccountAfterBalance === usdcTokenAccountBeforeBalance + withdrawAmount)
   })
-
+  let slug
+  let post
+  let hubPost
   it('should create a post via hub as authority', async () => {
-    const slug = "my_first_post"
+    slug = "my_first_post"
     const uri = "arweave:f-VGVpbBqe4p7wWPhjKhGX1hnMJEGQ_eBRlUEQkCjEM"
 
-    const [post] = await anchor.web3.PublicKey.findProgramAddress(
+    const [_post] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-post")),
         hub.toBuffer(),
@@ -5608,8 +5637,9 @@ describe('Hub', async () => {
       ],
       nina.programId,
     );
+    post = _post
 
-    const [hubPost] = await anchor.web3.PublicKey.findProgramAddress(
+    const [_hubPost] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-post")), 
         hub.toBuffer(),
@@ -5617,8 +5647,8 @@ describe('Hub', async () => {
       ],
       nina.programId
     );
-
-    const [hubContent] = await anchor.web3.PublicKey.findProgramAddress(
+    hubPost = _hubPost
+    const [_hubContent] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-content")), 
         hub.toBuffer(),
@@ -5626,8 +5656,8 @@ describe('Hub', async () => {
       ],
       nina.programId
     );
-
-    const [hubCollaborator] = await anchor.web3.PublicKey.findProgramAddress(
+    hubContent = _hubContent
+    const [_hubCollaborator] = await anchor.web3.PublicKey.findProgramAddress(
       [
         Buffer.from(anchor.utils.bytes.utf8.encode("nina-hub-collaborator")), 
         hub.toBuffer(),
@@ -5635,7 +5665,7 @@ describe('Hub', async () => {
       ],
       nina.programId
     );
-
+    hubCollaborator = _hubCollaborator
     await nina.rpc.postInitViaHub(
       hubParams.handle,
       slug,

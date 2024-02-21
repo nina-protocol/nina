@@ -16,7 +16,7 @@ pub struct VaultInitialize<'info> {
         payer = authority,
         space = 140
     )]
-    pub vault: Account<'info, Vault>,
+    pub vault: Box<Account<'info, Vault>>,
     /// CHECK: This is safe because we are initializing the vault
     #[account(
         seeds = [b"nina-vault-signer".as_ref(), vault.key().as_ref()],
@@ -41,15 +41,16 @@ pub struct VaultInitialize<'info> {
         token::authority = vault_signer,
     )]
     pub wrapped_sol_vault: Box<Account<'info, TokenAccount>>,
-    pub usdc_mint: Account<'info, Mint>,
+    pub usdc_mint: Box<Account<'info, Mint>>,
     #[account(address = wrapped_sol::ID)]
-    pub wrapped_sol_mint: Account<'info, Mint>,
+    pub wrapped_sol_mint: Box<Account<'info, Mint>>,
     pub system_program: Program<'info, System>,
     #[account(address = token::ID)]
     pub token_program: Program<'info, Token>,
     pub rent: Sysvar<'info, Rent>,
 }
 
+#[inline(never)]
 pub fn handler(
     ctx: Context<VaultInitialize>,
     bumps: VaultBumps,

@@ -99,7 +99,7 @@ pub fn handler(
     };
     let cpi_program = ctx.accounts.token_program.to_account_info().clone();
     let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
-    token::set_authority(cpi_ctx, AuthorityType::MintTokens.into(), Some(redeemable.redeemable_signer))?;
+    token::set_authority(cpi_ctx, anchor_spl::token::spl_token::instruction::AuthorityType::MintTokens.into(), Some(redeemable.redeemable_signer))?;
 
     Ok(())
 }
