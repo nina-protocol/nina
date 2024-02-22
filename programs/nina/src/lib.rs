@@ -165,6 +165,7 @@ pub mod nina {
         instructions::exchange_accept::handler(ctx, params)
     }
 
+    #[inline(never)]
     pub fn vault_init(
         ctx: Context<VaultInitialize>,
         bumps: VaultBumps,
@@ -252,15 +253,6 @@ pub mod nina {
         uri: String,
     ) -> Result<()> {
         instructions::post_init_via_hub::handler(ctx, hub_handle, slug, uri)
-    }
-
-    pub fn post_init_via_hub_with_reference_release(
-        ctx: Context<PostInitViaHubWithReferenceRelease>,
-        hub_handle: String,
-        slug: String,
-        uri: String,
-    ) -> Result<()> {
-        instructions::post_init_via_hub_with_reference_release::handler(ctx, hub_handle, slug, uri)
     }
 
     pub fn post_update_via_hub_post(

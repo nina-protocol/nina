@@ -1,7 +1,9 @@
 use anchor_lang::prelude::*;
+use bytemuck::{Pod, Zeroable};
 
 #[account(zero_copy)]
 #[repr(packed)]
+#[repr(C)]
 pub struct Redeemable {
     pub authority: Pubkey,
     pub release: Pubkey,
@@ -17,6 +19,7 @@ pub struct Redeemable {
 
 #[account(zero_copy)]
 #[repr(packed)]
+#[repr(C)]
 pub struct RedemptionRecord {
     pub redeemer: Pubkey,
     pub redeemable: Pubkey,
@@ -28,7 +31,9 @@ pub struct RedemptionRecord {
     pub tracking_number: [u8; 64],
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Default, Copy)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Default, Copy, Pod, Zeroable)]
+#[repr(packed)]
+#[repr(C)]
 pub struct RedeemableBumps {
     pub redeemable: u8,
     pub signer: u8,

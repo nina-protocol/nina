@@ -34,7 +34,6 @@ pub mod hub_update_config;
 pub mod hub_withdraw;
 
 pub mod post_init_via_hub;
-pub mod post_init_via_hub_with_reference_release;
 pub mod post_update_via_hub_post;
 
 pub mod subscription_subscribe_account;
@@ -77,7 +76,6 @@ pub use hub_update_config::*;
 pub use hub_withdraw::*;
 
 pub use post_init_via_hub::*;
-pub use post_init_via_hub_with_reference_release::*;
 pub use post_update_via_hub_post::*;
 
 pub use subscription_subscribe_account::*;

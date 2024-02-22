@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, TokenAccount, Mint, Token, Burn};
 use solana_program::program_option::COption;
-use mpl_token_metadata::state::DataV2;
+use mpl_token_metadata::types::DataV2;
 
 use crate::state::*;
 use crate::utils::{file_service_account};
@@ -11,8 +11,9 @@ use crate::errors::ErrorCode;
 pub struct ReleaseUpdateMetadata<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
-    #[account(mut)]
-    pub authority: Signer<'info>,
+    /// CHECK: This is safe because we check in the handler that authority === payer 
+    /// or that payer is nina operated file-service wallet
+    pub authority: UncheckedAccount<'info>,
     #[account(
         seeds = [b"nina-release".as_ref(), release_mint.key().as_ref()],
         constraint = release.load()?.authority == authority.key(),
@@ -57,12 +58,7 @@ pub fn handler(
     Release::update_metadata_handler(
         ctx.accounts.release_signer.to_account_info().clone(),
         ctx.accounts.metadata.to_account_info().clone(),
-        ctx.accounts.release_mint.clone(),
-        ctx.accounts.authority.clone(),
         ctx.accounts.metadata_program.to_account_info().clone(),
-        ctx.accounts.token_program.clone(),
-        ctx.accounts.system_program.clone(),
-        ctx.accounts.rent.clone(),
         ctx.accounts.release.clone(),
         metadata_data.clone(),
         bumps,
